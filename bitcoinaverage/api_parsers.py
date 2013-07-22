@@ -1,6 +1,7 @@
 import requests
+from decimal import Decimal
 
-from bitcoinaverage.config import CURRENCY_LIST
+from bitcoinaverage.config import CURRENCY_LIST, DEC_PLACES
 
 #@TODO all values should be Decimal
 
@@ -11,60 +12,60 @@ def mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, rur_api_url
     cad_result = requests.get(cad_api_url).json()
     rur_result = requests.get(rur_api_url).json()
 
-    return {CURRENCY_LIST['USD']: {'ask': float(usd_result['data']['buy']['value']),
-                                   'bid': float(usd_result['data']['sell']['value']),
-                                   'high': float(usd_result['data']['high']['value']),
-                                   'low': float(usd_result['data']['low']['value']),
-                                   'last': float(usd_result['data']['last']['value']),
-                                   'volume': float(usd_result['data']['vol']['value']),
+    return {CURRENCY_LIST['USD']: {'ask': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                                   'bid': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'high': Decimal(usd_result['data']['high']['value']).quantize(DEC_PLACES),
+                                   'low': Decimal(usd_result['data']['low']['value']).quantize(DEC_PLACES),
+                                   'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES),
+                                   'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES),
                                    },
-           CURRENCY_LIST['EUR']: { 'ask': float(eur_result['data']['buy']['value']),
-                                   'bid': float(eur_result['data']['sell']['value']),
-                                   'high': float(eur_result['data']['high']['value']),
-                                   'low': float(eur_result['data']['low']['value']),
-                                   'last': float(eur_result['data']['last']['value']),
-                                   'volume': float(eur_result['data']['vol']['value']),
+           CURRENCY_LIST['EUR']: { 'ask': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES),
+                                   'bid': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'high': Decimal(eur_result['data']['high']['value']).quantize(DEC_PLACES),
+                                   'low': Decimal(eur_result['data']['low']['value']).quantize(DEC_PLACES),
+                                   'last': Decimal(eur_result['data']['last']['value']).quantize(DEC_PLACES),
+                                   'volume': Decimal(eur_result['data']['vol']['value']).quantize(DEC_PLACES),
                                    },
-           CURRENCY_LIST['GBP']: { 'ask': float(gbp_result['data']['buy']['value']),
-                                   'bid': float(gbp_result['data']['sell']['value']),
-                                   'high': float(gbp_result['data']['high']['value']),
-                                   'low': float(gbp_result['data']['low']['value']),
-                                   'last': float(gbp_result['data']['last']['value']),
-                                   'volume': float(gbp_result['data']['vol']['value']),
+           CURRENCY_LIST['GBP']: { 'ask': Decimal(gbp_result['data']['buy']['value']).quantize(DEC_PLACES),
+                                   'bid': Decimal(gbp_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'high': Decimal(gbp_result['data']['high']['value']).quantize(DEC_PLACES),
+                                   'low': Decimal(gbp_result['data']['low']['value']).quantize(DEC_PLACES),
+                                   'last': Decimal(gbp_result['data']['last']['value']).quantize(DEC_PLACES),
+                                   'volume': Decimal(gbp_result['data']['vol']['value']).quantize(DEC_PLACES),
                                    },
-           CURRENCY_LIST['CAD']: { 'ask': float(cad_result['data']['buy']['value']),
-                                   'bid': float(cad_result['data']['sell']['value']),
-                                   'high': float(cad_result['data']['high']['value']),
-                                   'low': float(cad_result['data']['low']['value']),
-                                   'last': float(cad_result['data']['last']['value']),
-                                   'volume': float(cad_result['data']['vol']['value']),
+           CURRENCY_LIST['CAD']: { 'ask': Decimal(cad_result['data']['buy']['value']).quantize(DEC_PLACES),
+                                   'bid': Decimal(cad_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'high': Decimal(cad_result['data']['high']['value']).quantize(DEC_PLACES),
+                                   'low': Decimal(cad_result['data']['low']['value']).quantize(DEC_PLACES),
+                                   'last': Decimal(cad_result['data']['last']['value']).quantize(DEC_PLACES),
+                                   'volume': Decimal(cad_result['data']['vol']['value']).quantize(DEC_PLACES),
                                    },
-           CURRENCY_LIST['RUR']: { 'ask': float(rur_result['data']['buy']['value']),
-                                   'bid': float(rur_result['data']['sell']['value']),
-                                   'high': float(rur_result['data']['high']['value']),
-                                   'low': float(rur_result['data']['low']['value']),
-                                   'last': float(rur_result['data']['last']['value']),
-                                   'volume': float(rur_result['data']['vol']['value']),
+           CURRENCY_LIST['RUR']: { 'ask': Decimal(rur_result['data']['buy']['value']).quantize(DEC_PLACES),
+                                   'bid': Decimal(rur_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'high': Decimal(rur_result['data']['high']['value']).quantize(DEC_PLACES),
+                                   'low': Decimal(rur_result['data']['low']['value']).quantize(DEC_PLACES),
+                                   'last': Decimal(rur_result['data']['last']['value']).quantize(DEC_PLACES),
+                                   'volume': Decimal(rur_result['data']['vol']['value']).quantize(DEC_PLACES),
                                    },
            }
 
 def bitstampApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url).json()
 
-    return {CURRENCY_LIST['USD']: {'ask': float(result['ask']),
-                                   'bid': float(result['bid']),
-                                   'high': float(result['high']),
-                                   'low': float(result['low']),
-                                   'last': float(result['last']),
-                                   'volume': float(result['volume']),
+    return {CURRENCY_LIST['USD']: {'ask': Decimal(result['ask']).quantize(DEC_PLACES),
+                                   'bid': Decimal(result['bid']).quantize(DEC_PLACES),
+                                   'high': Decimal(result['high']).quantize(DEC_PLACES),
+                                   'low': Decimal(result['low']).quantize(DEC_PLACES),
+                                   'last': Decimal(result['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(result['volume']).quantize(DEC_PLACES),
                                    }}
 
 def campbxApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url).json()
 
-    return {CURRENCY_LIST['USD']: {'ask': float(result['Best Ask']),
-                                   'bid': float(result['Best Bid']),
-                                   'last': float(result['Last Trade']),
+    return {CURRENCY_LIST['USD']: {'ask': Decimal(result['Best Ask']).quantize(DEC_PLACES),
+                                   'bid': Decimal(result['Best Bid']).quantize(DEC_PLACES),
+                                   'last': Decimal(result['Last Trade']).quantize(DEC_PLACES),
                                    }}
 
 
@@ -74,28 +75,28 @@ def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
     eur_result = requests.get(eur_api_url).json()
     rur_result = requests.get(rur_api_url).json()
 
-    return {CURRENCY_LIST['USD']: {'ask': float(usd_result['ticker']['buy']),
-                                   'bid': float(usd_result['ticker']['sell']),
-                                   'high': float(usd_result['ticker']['high']),
-                                   'low': float(usd_result['ticker']['low']),
-                                   'last': float(usd_result['ticker']['last']),
-                                   'avg': float(usd_result['ticker']['avg']),
-                                   'volume': float(usd_result['ticker']['vol_cur']),
+    return {CURRENCY_LIST['USD']: {'ask': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES),
+                                   'bid': Decimal(usd_result['ticker']['sell']).quantize(DEC_PLACES),
+                                   'high': Decimal(usd_result['ticker']['high']).quantize(DEC_PLACES),
+                                   'low': Decimal(usd_result['ticker']['low']).quantize(DEC_PLACES),
+                                   'last': Decimal(usd_result['ticker']['last']).quantize(DEC_PLACES),
+                                   'avg': Decimal(usd_result['ticker']['avg']).quantize(DEC_PLACES),
+                                   'volume': Decimal(usd_result['ticker']['vol_cur']).quantize(DEC_PLACES),
                                    },
-            CURRENCY_LIST['EUR']: {'ask': float(eur_result['ticker']['buy']),
-                                   'bid': float(eur_result['ticker']['sell']),
-                                   'high': float(eur_result['ticker']['high']),
-                                   'low': float(eur_result['ticker']['low']),
-                                   'last': float(eur_result['ticker']['last']),
-                                   'avg': float(eur_result['ticker']['avg']),
-                                   'volume': float(eur_result['ticker']['vol_cur']),
+            CURRENCY_LIST['EUR']: {'ask': Decimal(eur_result['ticker']['buy']).quantize(DEC_PLACES),
+                                   'bid': Decimal(eur_result['ticker']['sell']).quantize(DEC_PLACES),
+                                   'high': Decimal(eur_result['ticker']['high']).quantize(DEC_PLACES),
+                                   'low': Decimal(eur_result['ticker']['low']).quantize(DEC_PLACES),
+                                   'last': Decimal(eur_result['ticker']['last']).quantize(DEC_PLACES),
+                                   'avg': Decimal(eur_result['ticker']['avg']).quantize(DEC_PLACES),
+                                   'volume': Decimal(eur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
                                    },
-            CURRENCY_LIST['RUR']: {'ask': float(rur_result['ticker']['buy']),
-                                   'bid': float(rur_result['ticker']['sell']),
-                                   'high': float(rur_result['ticker']['high']),
-                                   'low': float(rur_result['ticker']['low']),
-                                   'last': float(rur_result['ticker']['last']),
-                                   'avg': float(rur_result['ticker']['avg']),
-                                   'volume': float(rur_result['ticker']['vol_cur']),
+            CURRENCY_LIST['RUR']: {'ask': Decimal(rur_result['ticker']['buy']).quantize(DEC_PLACES),
+                                   'bid': Decimal(rur_result['ticker']['sell']).quantize(DEC_PLACES),
+                                   'high': Decimal(rur_result['ticker']['high']).quantize(DEC_PLACES),
+                                   'low': Decimal(rur_result['ticker']['low']).quantize(DEC_PLACES),
+                                   'last': Decimal(rur_result['ticker']['last']).quantize(DEC_PLACES),
+                                   'avg': Decimal(rur_result['ticker']['avg']).quantize(DEC_PLACES),
+                                   'volume': Decimal(rur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
                                    }}
 

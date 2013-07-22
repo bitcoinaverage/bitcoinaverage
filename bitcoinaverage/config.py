@@ -1,4 +1,9 @@
-COUCHDB = {'URL': 'http://localhost:5984/' }
+from decimal import Decimal
+
+COUCHDB = {'RATES_URL': 'http://88.198.122.134:5984/ba/rates',
+           }
+
+DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = {'USD':'USD',
                  'EUR':'EUR',
