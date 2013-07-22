@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            updateRates();
+            setInterval(updateRates, 5000);
+        });
+
+        function updateRates(){
+            $.getJSON('http://88.198.122.134:5984/ba/rates', function(result) {
+                $('#BTC-USD').text(result.USD.value);
+                $('#BTC-CAD').text(result.CAD.value);
+                $('#BTC-EUR').text(result.EUR.value);
+                $('#BTC-GBP').text(result.GBP.value);
+                $('#BTC-RUR').text(result.RUR.value);
+            });
+        }
+    </script>
+</head>
+<body>
+
+USD <div id="BTC-USD"></div>
+<br>
+CAD <div id="BTC-CAD"></div>
+<br>
+EUR <div id="BTC-EUR"></div>
+<br>
+GBP <div id="BTC-GBP"></div>
+<br>
+RUR <div id="BTC-RUR"></div>
+<br>
+
+</body>
+</html>

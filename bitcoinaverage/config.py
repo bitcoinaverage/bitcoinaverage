@@ -3,6 +3,8 @@ from decimal import Decimal
 COUCHDB = {'RATES_URL': 'http://88.198.122.134:5984/ba/rates',
            }
 
+API_QUERY_FREQUENCY = 15
+
 DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = {'USD':'USD',
