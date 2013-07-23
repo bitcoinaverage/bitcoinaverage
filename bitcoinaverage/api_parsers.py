@@ -3,8 +3,6 @@ from decimal import Decimal
 
 from bitcoinaverage.config import CURRENCY_LIST, DEC_PLACES
 
-#@TODO all values should be Decimal
-
 def mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, rur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
@@ -100,3 +98,8 @@ def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
                                    'volume': Decimal(rur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
                                    }}
 
+
+
+def fakeApiCall(api_url, *args, **kwargs):
+    result = requests.get(api_url)
+    print result.text
