@@ -4,6 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
     <script type="text/javascript">
         $(function(){
             updateRates();
@@ -20,19 +22,59 @@
             });
         }
     </script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <style type="text/css">
+        body{
+            background-color: #F5F5F5 ;
+        }
+        .container{
+            min-height: 100%;
+            height: 100%;
+        }
+        .digits{
+            vertical-align: middle;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
-
-USD <div id="BTC-USD"></div>
-<br>
-CAD <div id="BTC-CAD"></div>
-<br>
-EUR <div id="BTC-EUR"></div>
-<br>
-GBP <div id="BTC-GBP"></div>
-<br>
-RUR <div id="BTC-RUR"></div>
-<br>
-
+    <div class="container">
+        <div class="digits">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="row">
+                <div class="span12 text-center">
+                    <h1>1 BTC = <span id="BTC-USD"></span> USD</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12 text-center">
+                    <div class="span2"></div>
+                    <div class="span2">
+                        <h4><span id="BTC-CAD"></span> CAD</h4>
+                    </div>
+                    <div class="span2">
+                        <h4><span id="BTC-EUR"></span> EUR</h4>
+                    </div>
+                    <div class="span2">
+                        <h4><span id="BTC-GBP"></span> GBP</h4>
+                    </div>
+                    <div class="span2">
+                        <h4><span id="BTC-RUR"></span> RUR</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -20,10 +20,6 @@ while True:
 
     for exchange_name in EXCHANGE_LIST:
         result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
-        print ' '
-        print exchange_name
-        print time.time() - start
-        print ' '
         all_rates.append(result)
 
     previous_average_rates = requests.get(url=COUCHDB['RATES_URL']).json()
