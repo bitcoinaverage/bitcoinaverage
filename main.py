@@ -21,28 +21,31 @@ while True:
         result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
         all_rates.append(result)
 
-    last_average_rates = requests.get(url=COUCHDB['RATES_URL']).json()
+    previous_average_rates = requests.get(url=COUCHDB['RATES_URL']).json()
 
+    new_average_rates = {'_id': previous_average_rates['_id'],
+                         '_rev': previous_average_rates['_rev'],
+                         }
     for currency in CURRENCY_LIST:
-        last_average_rates[currency] = {'value': Decimal(0.00),
+        new_average_rates[currency] = {'value': Decimal(0.00),
                                         'count': 0,
                                         }
 
     for rate in all_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
-                last_average_rates[currency]['value'] = ( ( (last_average_rates[currency]['value']*Decimal(last_average_rates[currency]['count']))
+                new_average_rates[currency]['value'] = ( ( (new_average_rates[currency]['value']*Decimal(new_average_rates[currency]['count']))
                                                             + rate[currency]['last'])
-                                                         / Decimal(last_average_rates[currency]['count']+1) )
-                last_average_rates[currency]['count'] = last_average_rates[currency]['count'] + 1
+                                                         / Decimal(new_average_rates[currency]['count']+1) )
+                new_average_rates[currency]['count'] = new_average_rates[currency]['count'] + 1
 
-                last_average_rates[currency]['value'] = last_average_rates[currency]['value'].quantize(DEC_PLACES)
+                new_average_rates[currency]['value'] = new_average_rates[currency]['value'].quantize(DEC_PLACES)
 
 
     for currency in CURRENCY_LIST:
-        last_average_rates[currency]['value'] = str(last_average_rates[currency]['value'])
-        last_average_rates[currency]['count'] = str(last_average_rates[currency]['count'])
+        new_average_rates[currency]['value'] = str(new_average_rates[currency]['value'])
+        new_average_rates[currency]['count'] = str(new_average_rates[currency]['count'])
 
-    response = requests.put(url=COUCHDB['RATES_URL'], data=json.dumps(last_average_rates))
+    response = requests.put(url=COUCHDB['RATES_URL'], data=json.dumps(new_average_rates))
 
     time.sleep(API_QUERY_FREQUENCY)
