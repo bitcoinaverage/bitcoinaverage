@@ -12,6 +12,7 @@ from decimal import Decimal
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, COUCHDB
 from bitcoinaverage import api_parsers
 
+start = time.time()
 
 while True:
 
@@ -19,6 +20,10 @@ while True:
 
     for exchange_name in EXCHANGE_LIST:
         result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
+        print ' '
+        print exchange_name
+        print time.time() - start
+        print ' '
         all_rates.append(result)
 
     last_average_rates = requests.get(url=COUCHDB['RATES_URL']).json()
