@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
+
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
@@ -76,11 +78,7 @@
 
         #content {
             position : absolute;
-            /*display: table-cell;*/
-            /*vertical-align: middle;*/
-            /*left:50%;*/
             top:50%;
-            /*margin-bottom: 30px;*/
             margin-top: -175px;
         }
 
@@ -93,7 +91,6 @@
         }
 
         #footer {
-            /*border-top: 1px solid #c7c7c7;*/
             height: 25px;
             margin-top: -25px;
             width: 100%;
@@ -130,18 +127,18 @@
                 <div class="span10 text-center">
                     <div class="span1"></div>
                     <div class="span2">
-                        <h4><span id="BTC-CAD-last"></span> CAD</h4>
-                        <p>
-                            <span id="BTC-CAD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-CAD-ask" title="ask"></span> CAD
-                        </p>
-                    </div>
-                    <div class="span2">
                         <h4><span id="BTC-EUR-last"></span> EUR</h4>
                         <p> <span id="BTC-EUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-EUR-ask" title="ask"></span> EUR</p>
                     </div>
                     <div class="span2">
                         <h4><span id="BTC-GBP-last"></span> GBP</h4>
                         <p> <span id="BTC-GBP-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-GBP-ask" title="ask"></span> GBP</p>
+                    </div>
+                    <div class="span2">
+                        <h4><span id="BTC-CAD-last"></span> CAD</h4>
+                        <p>
+                            <span id="BTC-CAD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-CAD-ask" title="ask"></span> CAD
+                        </p>
                     </div>
                     <div class="span2">
                         <h4><span id="BTC-RUR-last"></span> RUR</h4>
@@ -159,7 +156,7 @@
 <div id="footer">
     <footer class="footer">
         <div class="text-center">
-            relative volumes:
+            relative USD volumes:
             MTGox <span id="mtgox-weight"></span>,
             bitstamp <span id="bitstamp-weight"></span>,
             btce <span id="bitstamp-weight"></span>,
