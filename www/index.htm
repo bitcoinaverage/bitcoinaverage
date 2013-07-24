@@ -2,14 +2,14 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-
+    <title>BitcoinAverage</title>
 
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        var config = {'LAST_BID_ASK_URL' : 'http://88.198.122.134:5984/ba/last-bid-ask',
+        var config = {'LAST_BID_ASK_URL' : 'http://88.198.122.134:5984/ba/ticker',
                       'domain':  'http://bitcoinaverage.com'
         }
 
@@ -96,6 +96,9 @@
             width: 100%;
             color: #999;
         }
+        .bid_ask {
+            font-size: 1.3em
+        }
 
         .USD_values{
             color: #333;
@@ -119,7 +122,7 @@
             <div class="row USD_values">
                 <div class="span10 text-center">
                     <h1><span id="BTC-USD-last"></span> USD</h1>
-                    <p> <span id="BTC-USD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-USD-ask" title="ask"></span> USD</p>
+                    <span>bid &nbsp<span class="bid_ask" id="BTC-USD-bid" title="bid"></span><span class="bid_ask" >&nbsp;/&nbsp;</span><span class="bid_ask" id="BTC-USD-ask" title="ask"></span>&nbsp ask</span>
                 </div>
             </div>
             <br>
@@ -128,21 +131,19 @@
                     <div class="span1"></div>
                     <div class="span2">
                         <h4><span id="BTC-EUR-last"></span> EUR</h4>
-                        <p> <span id="BTC-EUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-EUR-ask" title="ask"></span> EUR</p>
+                        <p> <span id="BTC-EUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-EUR-ask" title="ask"></span> </p>
                     </div>
                     <div class="span2">
                         <h4><span id="BTC-GBP-last"></span> GBP</h4>
-                        <p> <span id="BTC-GBP-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-GBP-ask" title="ask"></span> GBP</p>
+                        <p> <span id="BTC-GBP-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-GBP-ask" title="ask"></span> </p>
                     </div>
                     <div class="span2">
                         <h4><span id="BTC-CAD-last"></span> CAD</h4>
-                        <p>
-                            <span id="BTC-CAD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-CAD-ask" title="ask"></span> CAD
-                        </p>
+                        <p> <span id="BTC-CAD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-CAD-ask" title="ask"></span> </p>
                     </div>
                     <div class="span2">
                         <h4><span id="BTC-RUR-last"></span> RUR</h4>
-                        <p> <span id="BTC-RUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-RUR-ask" title="ask"></span> RUR</p>
+                        <p> <span id="BTC-RUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-RUR-ask" title="ask"></span> </p>
                     </div>
                 </div>
             </div>
