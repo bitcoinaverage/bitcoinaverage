@@ -7,74 +7,177 @@
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
+        var config = {'LAST_BID_ASK_URL' : 'http://88.198.122.134:5984/ba/last-bid-ask',
+                      'domain':  'http://bitcoinaverage.com'
+        }
+
         $(function(){
             updateRates();
+
             setInterval(updateRates, 5000);
         });
 
         function updateRates(){
-            $.getJSON('http://88.198.122.134:5984/ba/rates', function(result) {
-                $('#BTC-USD').text(result.USD.value);
-                $('#BTC-CAD').text(result.CAD.value);
-                $('#BTC-EUR').text(result.EUR.value);
-                $('#BTC-GBP').text(result.GBP.value);
-                $('#BTC-RUR').text(result.RUR.value);
+            $.getJSON(config['LAST_BID_ASK_URL'], function(result) {
+                $('#BTC-USD-last').text(result.USD.last);
+                $('#BTC-CAD-last').text(result.CAD.last);
+                $('#BTC-EUR-last').text(result.EUR.last);
+                $('#BTC-GBP-last').text(result.GBP.last);
+                $('#BTC-RUR-last').text(result.RUR.last);
+
+                $('#BTC-USD-ask').text(result.USD.ask);
+                $('#BTC-CAD-ask').text(result.CAD.ask);
+                $('#BTC-EUR-ask').text(result.EUR.ask);
+                $('#BTC-GBP-ask').text(result.GBP.ask);
+                $('#BTC-RUR-ask').text(result.RUR.ask);
+
+                $('#BTC-USD-bid').text(result.USD.bid);
+                $('#BTC-CAD-bid').text(result.CAD.bid);
+                $('#BTC-EUR-bid').text(result.EUR.bid);
+                $('#BTC-GBP-bid').text(result.GBP.bid);
+                $('#BTC-RUR-bid').text(result.RUR.bid);
+
+                $('body').show();
             });
         }
     </script>
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <style type="text/css">
-        body{
+        body {
             background-color: #F5F5F5 ;
+            position: relative;
+            font-family: 'Open Sans', sans-serif;
+            /*font-family: 'Helvetica', sans-serif;*/
         }
-        .container{
+
+        html, body {
+            height:100%;
+            min-height: 100%
+        }
+
+        #header-n-content {
+            width: 940px;
             min-height: 100%;
-            height: 100%;
-        }
-        .digits{
+            height: auto !important;
+            margin: 0 auto;
             vertical-align: middle;
-            margin: 0;
-            padding: 0;
+        }
+
+        #header{
+            margin-top: 50px;
+            font-size: 1.5em;
+            color: #999;
+        }
+        .beta{
+            color: #CCC;
+            font-size: 0.8em;
+            padding-left: 10px;
+        }
+
+        #content {
+            position : absolute;
+            /*display: table-cell;*/
+            /*vertical-align: middle;*/
+            /*left:50%;*/
+            top:50%;
+            /*margin-bottom: 30px;*/
+            margin-top: -175px;
+        }
+
+        #push_footer {
+            height: 45px;
+        }
+
+        #footer, #push_footer {
+            margin: 0 auto;
+        }
+
+        #footer {
+            /*border-top: 1px solid #c7c7c7;*/
+            height: 25px;
+            margin-top: -25px;
+            width: 100%;
+            color: #999;
+        }
+
+        .USD_values{
+            color: #333;
+            font-weight: bold;
+        }
+        .other_values{
+            color: #999;
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body style="display: none;">
+
+<div id="header-n-content" class="container">
+    <div id="header" class="navbar">
+        <div class="span3">BitcoinAverage <span class="beta">alpha</span></div>
+        <div class="span1 pull-right text-right"><a href="/ba/api">API</a></div>
+    </div>
+    <div id="content">
         <div class="digits">
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <div class="row">
-                <div class="span12 text-center">
-                    <h1>1 BTC = <span id="BTC-USD"></span> USD</h1>
+            <div class="row USD_values">
+                <div class="span10 text-center">
+                    <h1><span id="BTC-USD-last"></span> USD</h1>
+                    <p> <span id="BTC-USD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-USD-ask" title="ask"></span> USD</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="span12 text-center">
-                    <div class="span2"></div>
+            <br>
+            <div class="row other_values">
+                <div class="span10 text-center">
+                    <div class="span1"></div>
                     <div class="span2">
-                        <h4><span id="BTC-CAD"></span> CAD</h4>
+                        <h4><span id="BTC-CAD-last"></span> CAD</h4>
+                        <p>
+                            <span id="BTC-CAD-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-CAD-ask" title="ask"></span> CAD
+                        </p>
                     </div>
                     <div class="span2">
-                        <h4><span id="BTC-EUR"></span> EUR</h4>
+                        <h4><span id="BTC-EUR-last"></span> EUR</h4>
+                        <p> <span id="BTC-EUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-EUR-ask" title="ask"></span> EUR</p>
                     </div>
                     <div class="span2">
-                        <h4><span id="BTC-GBP"></span> GBP</h4>
+                        <h4><span id="BTC-GBP-last"></span> GBP</h4>
+                        <p> <span id="BTC-GBP-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-GBP-ask" title="ask"></span> GBP</p>
                     </div>
                     <div class="span2">
-                        <h4><span id="BTC-RUR"></span> RUR</h4>
+                        <h4><span id="BTC-RUR-last"></span> RUR</h4>
+                        <p> <span id="BTC-RUR-bid" title="bid"></span>&nbsp;/&nbsp;<span id="BTC-RUR-ask" title="ask"></span> RUR</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="push_footer"></div>
+</div>
+
+
+<div id="footer">
+    <footer class="footer">
+        <div class="text-center">
+            relative volumes:
+            MTGox <span id="mtgox-weight"></span>,
+            bitstamp <span id="bitstamp-weight"></span>,
+            btce <span id="bitstamp-weight"></span>,
+            bitstamp <span id="bitstamp-weight"></span>
+        </div>
+    </footer>
+</div>
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-42688472-1', 'bitcoinaverage.com');
+ga('send', 'pageview');
+
+</script>
 </body>
 </html>

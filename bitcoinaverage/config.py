@@ -1,6 +1,8 @@
 from decimal import Decimal
 
-COUCHDB = {'RATES_URL': 'http://88.198.122.134:5984/ba/rates',
+COUCHDB = {'TICKER_URL': 'http://88.198.122.134:5984/ba/ticker',
+           'LAST_BID_ASK_URL': 'http://88.198.122.134:5984/ba/last-bid-ask',
+           'FULL_URL': 'http://88.198.122.134:5984/ba/full',
            }
 
 API_QUERY_FREQUENCY = 15
