@@ -11,8 +11,11 @@ import time
 from email import utils
 from decimal import Decimal
 
-from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES
+from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, DOCUMENT_ROOT
 from bitcoinaverage import api_parsers
+
+if DOCUMENT_ROOT == '':
+    DOCUMENT_ROOT = os.path.join(project_abs_path, 'www')
 
 
 while True:
@@ -88,37 +91,37 @@ while True:
                         }
             all_data[currency] = cur_data
 
-        api_all_data_file = open(os.path.join(project_abs_path, API_FILES['ALL_FILE']), 'w+')
+        api_all_data_file = open(os.path.join(DOCUMENT_ROOT, API_FILES['ALL_FILE']), 'w+')
         api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
         api_all_data_file.close()
 
         rates_all = calculated_average_rates
         rates_all['timestamp'] = timestamp
-        api_ticker_all_file = open(os.path.join(project_abs_path, API_FILES['TICKER_PATH'], 'all'), 'w+')
+        api_ticker_all_file = open(os.path.join(DOCUMENT_ROOT, API_FILES['TICKER_PATH'], 'all'), 'w+')
         api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
         api_ticker_all_file.close()
 
         for currency in CURRENCY_LIST:
             ticker_cur = calculated_average_rates[currency]
             ticker_cur['timestamp'] = timestamp
-            api_ticker_file = open(os.path.join(project_abs_path, API_FILES['TICKER_PATH'], currency), 'w+')
+            api_ticker_file = open(os.path.join(DOCUMENT_ROOT, API_FILES['TICKER_PATH'], currency), 'w+')
             api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
             api_ticker_file.close()
 
         volumes_all = calculated_relative_volumes
         volumes_all['timestamp'] = timestamp
-        api_volume_all_file = open(os.path.join(project_abs_path, API_FILES['VOLUME_PATH'], 'all'), 'w+')
+        api_volume_all_file = open(os.path.join(DOCUMENT_ROOT, API_FILES['VOLUME_PATH'], 'all'), 'w+')
         api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
         api_volume_all_file.close()
 
         for currency in CURRENCY_LIST:
             volume_cur = calculated_relative_volumes[currency]
             volume_cur['timestamp'] = timestamp
-            api_ticker_file = open(os.path.join(project_abs_path, API_FILES['VOLUME_PATH'], currency), 'w+')
+            api_ticker_file = open(os.path.join(DOCUMENT_ROOT, API_FILES['VOLUME_PATH'], currency), 'w+')
             api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
             api_ticker_file.close()
 
-        api_ignored_file = open(os.path.join(project_abs_path, API_FILES['IGNORED_FILE']), 'w+')
+        api_ignored_file = open(os.path.join(DOCUMENT_ROOT, API_FILES['IGNORED_FILE']), 'w+')
         api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
         api_ignored_file.close()
 

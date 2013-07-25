@@ -5,12 +5,13 @@ from decimal import Decimal
 #            'FULL_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/full',
 #            }
 
-API_FILES = {'TICKER_PATH': 'www/api/ticker/',
-             'VOLUME_PATH': 'www/api/volume/',
-             'ALL_FILE': 'www/api/all',
-             'IGNORED_FILE': 'www/api/ignored',
+API_FILES = {'TICKER_PATH': 'api/ticker/',
+             'VOLUME_PATH': 'api/volume/',
+             'ALL_FILE': 'api/all',
+             'IGNORED_FILE': 'api/ignored',
              }
 
+DOCUMENT_ROOT = ''
 
 API_QUERY_FREQUENCY = 15
 
