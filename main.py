@@ -2,104 +2,130 @@
 import os
 import sys
 from requests.exceptions import ConnectionError
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
+project_abs_path = os.path.abspath(os.path.join(__file__, os.pardir))
+sys.path.insert(0, project_abs_path)
 
 
 import json
-import requests
 import time
+from email import utils
 from decimal import Decimal
 
-from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, COUCHDB
+from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES
 from bitcoinaverage import api_parsers
 
-start = time.time()
 
 while True:
 
-    all_rates = []
+    exchanges_rates = []
+    exchanges_ignored = []
 
     for exchange_name in EXCHANGE_LIST:
         try:
             result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
-            result['exchange_name'] = exchange_name
-            all_rates.append(result)
-        except ConnectionError:
+
+            if result is not None:
+                result['exchange_name'] = exchange_name
+                exchanges_rates.append(result)
+            else:
+                exchanges_ignored.append(exchange_name)
+
+        except (ValueError, ConnectionError):
             pass
 
-    previous_average_rates = requests.get(url=COUCHDB['TICKER_URL']).json()
-
-    new_average_rates = {}
-    if '_id' in previous_average_rates and '_rev' in previous_average_rates:
-        new_average_rates['_id'] = previous_average_rates['_id']
-        new_average_rates['_rev'] = previous_average_rates['_rev']
-
+    calculated_average_rates = {}
     total_volumes = {}
-    relative_volumes = {}
+    calculated_relative_volumes = {}
     for currency in CURRENCY_LIST:
-        new_average_rates[currency] = {'last': Decimal(0.00),
+        calculated_average_rates[currency] = {'last': Decimal(0.00),
                                        'ask': Decimal(0.00),
                                        'bid': Decimal(0.00),
-                                       'count': 0,
                                         }
         total_volumes[currency] = Decimal(0.00)
-        relative_volumes[currency] = {}
+        calculated_relative_volumes[currency] = {}
 
-    for rate in all_rates:
+    for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
                 total_volumes[currency] = total_volumes[currency] + rate[currency]['volume']
 
-    for rate in all_rates:
+    for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
-                relative_volumes[currency][rate['exchange_name']] = rate[currency]['volume'] / total_volumes[currency]
+                calculated_relative_volumes[currency][rate['exchange_name']] = rate[currency]['volume'] / total_volumes[currency]
+                calculated_relative_volumes[currency][rate['exchange_name']] = calculated_relative_volumes[currency][rate['exchange_name']].quantize(Decimal('0.0000'))
 
-    for rate in all_rates:
+    for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
-                new_average_rates[currency]['last'] = ( new_average_rates[currency]['last']
-                                                        + rate[currency]['last'] * relative_volumes[currency][rate['exchange_name']] )
-                new_average_rates[currency]['ask'] = ( new_average_rates[currency]['ask']
-                                                        + rate[currency]['ask'] * relative_volumes[currency][rate['exchange_name']] )
-                new_average_rates[currency]['bid'] = ( new_average_rates[currency]['bid']
-                                                        + rate[currency]['bid'] * relative_volumes[currency][rate['exchange_name']] )
+                calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
+                                                        + rate[currency]['last'] * calculated_relative_volumes[currency][rate['exchange_name']] )
+                calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
+                                                        + rate[currency]['ask'] * calculated_relative_volumes[currency][rate['exchange_name']] )
+                calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
+                                                        + rate[currency]['bid'] * calculated_relative_volumes[currency][rate['exchange_name']] )
 
-
-                # new_average_rates[currency]['ask'] = ( ( (new_average_rates[currency]['ask']*Decimal(new_average_rates[currency]['count']))
-                #                                             + rate[currency]['ask'])
-                #                                          / Decimal(new_average_rates[currency]['count']+1) )
-                # new_average_rates[currency]['bid'] = ( ( (new_average_rates[currency]['bid']*Decimal(new_average_rates[currency]['count']))
-                #                                             + rate[currency]['bid'])
-                #                                          / Decimal(new_average_rates[currency]['count']+1) )
-                # new_average_rates[currency]['count'] = new_average_rates[currency]['count'] + 1
-
-
-                new_average_rates[currency]['last'] = new_average_rates[currency]['last'].quantize(DEC_PLACES)
-                new_average_rates[currency]['ask'] = new_average_rates[currency]['ask'].quantize(DEC_PLACES)
-                new_average_rates[currency]['bid'] = new_average_rates[currency]['bid'].quantize(DEC_PLACES)
-
+                calculated_average_rates[currency]['last'] = calculated_average_rates[currency]['last'].quantize(DEC_PLACES)
+                calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
+                calculated_average_rates[currency]['bid'] = calculated_average_rates[currency]['bid'].quantize(DEC_PLACES)
 
     for currency in CURRENCY_LIST:
-        new_average_rates[currency]['last'] = str(new_average_rates[currency]['last'])
-        new_average_rates[currency]['ask'] = str(new_average_rates[currency]['ask'])
-        new_average_rates[currency]['bid'] = str(new_average_rates[currency]['bid'])
-        new_average_rates[currency]['count'] = str(new_average_rates[currency]['count'])
+        calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
+        calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
+        calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
 
-    response = requests.put(url=COUCHDB['TICKER_URL'], data=json.dumps(new_average_rates))
+        for exchange_name in EXCHANGE_LIST:
+            if exchange_name in calculated_relative_volumes[currency]:
+                calculated_relative_volumes[currency][exchange_name] = str(calculated_relative_volumes[currency][exchange_name])
+
+    timestamp = utils.formatdate(time.time())
+    try:
+        all_data = {}
+        all_data['timestamp'] = timestamp
+        for currency in CURRENCY_LIST:
+            cur_data = {'volumes': calculated_relative_volumes[currency],
+                        'rates': calculated_average_rates[currency],
+                        }
+            all_data[currency] = cur_data
+
+        api_all_data_file = open(os.path.join(project_abs_path, API_FILES['ALL_FILE']), 'w+')
+        api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
+        api_all_data_file.close()
+
+        rates_all = calculated_average_rates
+        rates_all['timestamp'] = timestamp
+        api_ticker_all_file = open(os.path.join(project_abs_path, API_FILES['TICKER_PATH'], 'all'), 'w+')
+        api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
+        api_ticker_all_file.close()
+
+        for currency in CURRENCY_LIST:
+            ticker_cur = calculated_average_rates[currency]
+            ticker_cur['timestamp'] = timestamp
+            api_ticker_file = open(os.path.join(project_abs_path, API_FILES['TICKER_PATH'], currency), 'w+')
+            api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
+            api_ticker_file.close()
+
+        volumes_all = calculated_relative_volumes
+        volumes_all['timestamp'] = timestamp
+        api_volume_all_file = open(os.path.join(project_abs_path, API_FILES['VOLUME_PATH'], 'all'), 'w+')
+        api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
+        api_volume_all_file.close()
+
+        for currency in CURRENCY_LIST:
+            volume_cur = calculated_relative_volumes[currency]
+            volume_cur['timestamp'] = timestamp
+            api_ticker_file = open(os.path.join(project_abs_path, API_FILES['VOLUME_PATH'], currency), 'w+')
+            api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
+            api_ticker_file.close()
+
+        api_ignored_file = open(os.path.join(project_abs_path, API_FILES['IGNORED_FILE']), 'w+')
+        api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
+        api_ignored_file.close()
+
+    except IOError as error:
+        raise error
+        continue
+
+    print '----'
 
     time.sleep(API_QUERY_FREQUENCY)
-
-{'USD': {'volume': Decimal('11629.64'), 'last': Decimal('94.69'), 'bid': Decimal('93.80'), 'high': Decimal('96.41'),
-         'low': Decimal('92.30'), 'ask': Decimal('94.68')},
- 'exchange_name': 'mtgox',
- 'GBP': {'volume': Decimal('283.05'), 'last': Decimal('61.94'), 'bid': Decimal('60.07'), 'high': Decimal('64.20'),
-         'low': Decimal('59.83'), 'ask': Decimal('62.12')},
- 'RUR': {'volume': Decimal('2.57'), 'last': Decimal('3067.74'), 'bid': Decimal('2969.43'), 'high': Decimal('3159.41'),
-         'low': Decimal('3053.17'), 'ask': Decimal('3104.98')},
- 'EUR': {'volume': Decimal('1950.10'), 'last': Decimal('71.28'), 'bid': Decimal('71.28'), 'high': Decimal('74.50'),
-         'low': Decimal('71.10'), 'ask': Decimal('71.70')},
- 'CAD': {'volume': Decimal('150.84'), 'last': Decimal('97.66'), 'bid': Decimal('94.72'), 'high': Decimal('99.00'),
-         'low': Decimal('96.07'), 'ask': Decimal('98.70')}}
-

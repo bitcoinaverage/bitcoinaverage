@@ -1,9 +1,16 @@
 from decimal import Decimal
 
-COUCHDB = {'TICKER_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/ticker',
-           'LAST_BID_ASK_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/last-bid-ask',
-           'FULL_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/full',
-           }
+# COUCHDB = {'TICKER_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/ticker',
+#            'LAST_BID_ASK_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/last-bid-ask',
+#            'FULL_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/full',
+#            }
+
+API_FILES = {'TICKER_PATH': 'www/api/ticker/',
+             'VOLUME_PATH': 'www/api/volume/',
+             'ALL_FILE': 'www/api/all',
+             'IGNORED_FILE': 'www/api/ignored',
+             }
+
 
 API_QUERY_FREQUENCY = 15
 
@@ -24,8 +31,8 @@ EXCHANGE_LIST = {
                                   },
                     'bitstamp': {'api_url': 'https://www.bitstamp.net/api/ticker/',
                                    },
-                    # 'campbx': {'api_url': 'http://campbx.com/api/xticker.php',
-                    #              },
+                    'campbx': {'api_url': 'http://campbx.com/api/xticker.php',
+                                 },
                     'btce': {'usd_api_url': 'https://btc-e.com/api/2/btc_usd/ticker',
                              'eur_api_url': 'https://btc-e.com/api/2/btc_eur/ticker',
                              'rur_api_url': 'https://btc-e.com/api/2/btc_rur/ticker',

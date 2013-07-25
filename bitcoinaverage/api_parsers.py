@@ -61,10 +61,13 @@ def bitstampApiCall(api_url, *args, **kwargs):
 def campbxApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url).json()
 
-    return {CURRENCY_LIST['USD']: {'ask': Decimal(result['Best Ask']).quantize(DEC_PLACES),
+    return_data = {CURRENCY_LIST['USD']: {'ask': Decimal(result['Best Ask']).quantize(DEC_PLACES),
                                    'bid': Decimal(result['Best Bid']).quantize(DEC_PLACES),
                                    'last': Decimal(result['Last Trade']).quantize(DEC_PLACES),
                                    }}
+
+    #no volume provided
+    return None
 
 
 
@@ -72,6 +75,12 @@ def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
     rur_result = requests.get(rur_api_url).json()
+
+    #dirty hack, BTC-e has a bug in their API - buy/sell prices mixed up
+    if eur_result['ticker']['sell'] < eur_result['ticker']['buy']:
+        temp = eur_result['ticker']['buy']
+        eur_result['ticker']['buy'] = eur_result['ticker']['sell']
+        eur_result['ticker']['sell'] = temp
 
     return {CURRENCY_LIST['USD']: {'ask': Decimal(usd_result['ticker']['sell']).quantize(DEC_PLACES),
                                    'bid': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES),
@@ -101,5 +110,4 @@ def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
 
 
 def fakeApiCall(api_url, *args, **kwargs):
-    result = requests.get(api_url)
-    print result.text
+    return None
