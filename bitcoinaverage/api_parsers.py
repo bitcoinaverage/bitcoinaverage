@@ -77,11 +77,21 @@ def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
     eur_result = requests.get(eur_api_url).json()
     rur_result = requests.get(rur_api_url).json()
 
-    #dirty hack, BTC-e has a bug in their API - buy/sell prices mixed up
+    #dirty hack, BTC-e has a bug in their APIs - buy/sell prices mixed up
+    if usd_result['ticker']['sell'] < usd_result['ticker']['buy']:
+        temp = usd_result['ticker']['buy']
+        usd_result['ticker']['buy'] = usd_result['ticker']['sell']
+        usd_result['ticker']['sell'] = temp
+
     if eur_result['ticker']['sell'] < eur_result['ticker']['buy']:
         temp = eur_result['ticker']['buy']
         eur_result['ticker']['buy'] = eur_result['ticker']['sell']
         eur_result['ticker']['sell'] = temp
+
+    if rur_result['ticker']['sell'] < rur_result['ticker']['buy']:
+        temp = rur_result['ticker']['buy']
+        rur_result['ticker']['buy'] = rur_result['ticker']['sell']
+        rur_result['ticker']['sell'] = temp
 
     return {CURRENCY_LIST['USD']: {'ask': Decimal(usd_result['ticker']['sell']).quantize(DEC_PLACES),
                                    'bid': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES),
