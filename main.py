@@ -127,14 +127,14 @@ while True:
 
         volumes_all = calculated_volumes
         volumes_all['timestamp'] = timestamp
-        api_volume_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['VOLUME_PATH'], 'all'), 'w+')
+        api_volume_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], 'all'), 'w+')
         api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
         api_volume_all_file.close()
 
         for currency in CURRENCY_LIST:
             volume_cur = calculated_volumes[currency]
             volume_cur['timestamp'] = timestamp
-            api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['VOLUME_PATH'], currency), 'w+')
+            api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], currency), 'w+')
             api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
             api_ticker_file.close()
 
@@ -144,7 +144,5 @@ while True:
 
     except IOError as error:
         continue
-
-    print '----'
 
     time.sleep(API_QUERY_FREQUENCY)

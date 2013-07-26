@@ -3,7 +3,7 @@ import bitcoinaverage.server
 
 API_DOCUMENT_ROOT = bitcoinaverage.server.API_DOCUMENT_ROOT
 API_FILES = {'TICKER_PATH': 'api/ticker/',
-             'VOLUME_PATH': 'api/volume/',
+             'EXCHANGES_PATH': 'api/exchanges/',
              'ALL_FILE': 'api/all',
              'IGNORED_FILE': 'api/ignored',
              }
