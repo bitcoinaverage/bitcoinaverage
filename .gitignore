@@ -1,3 +1,16 @@
 /.idea/
 *.pyc
-/www/api/*
+/api/all
+/api/ignored
+/api/ticker/all
+/api/ticker/CAD
+/api/ticker/EUR
+/api/ticker/GBP
+/api/ticker/USD
+/api/ticker/RUR
+/api/volume/all
+/api/volume/CAD
+/api/volume/EUR
+/api/volume/GBP
+/api/volume/USD
+/api/volume/RUR
