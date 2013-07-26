@@ -1,5 +1,6 @@
 /.idea/
 *.pyc
+/bitcoinaverage/server.py
 /api/all
 /api/ignored
 /api/ticker/all

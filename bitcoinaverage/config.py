@@ -1,11 +1,7 @@
 from decimal import Decimal
+import bitcoinaverage.server
 
-# COUCHDB = {'TICKER_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/ticker',
-#            'LAST_BID_ASK_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/last-bid-ask',
-#            'FULL_URL': 'http://admin:hMC9Lht1A8D15YTeLhm8@88.198.122.134:5984/ba/full',
-#            }
-
-API_DOCUMENT_ROOT = ''  # if empty - 'main.py folder'/api used
+API_DOCUMENT_ROOT = bitcoinaverage.server.API_DOCUMENT_ROOT
 API_FILES = {'TICKER_PATH': 'api/ticker/',
              'VOLUME_PATH': 'api/volume/',
              'ALL_FILE': 'api/all',

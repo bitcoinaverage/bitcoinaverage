@@ -1,0 +1,1 @@
+API_DOCUMENT_ROOT = ''  # if empty - 'main.py folder'/api used
