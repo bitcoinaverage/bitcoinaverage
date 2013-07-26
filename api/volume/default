@@ -1,0 +1,8 @@
+{
+    all: 'http://api.bitcoinaverage.com/volume/all',
+    USD: 'http://api.bitcoinaverage.com/volume/USD',
+    EUR: 'http://api.bitcoinaverage.com/volume/EUR',
+    GBP: 'http://api.bitcoinaverage.com/volume/GBP',
+    CAD: 'http://api.bitcoinaverage.com/volume/CAD',
+    RUR: 'http://api.bitcoinaverage.com/volume/RUR'
+}
