@@ -13,6 +13,7 @@
         var API_all_url = '';
         $(function(){
             var current_host = window.location.host;
+//            var current_host = '';
             if (current_host == '') {
                 current_host = 'dev.bitcoinaverage.com';
             }
@@ -23,8 +24,8 @@
             API_host = 'api.'+base_host;
             API_all_url = 'http://'+API_host+'/all';
 
-            updateRates();
-            setInterval(updateRates, 5000);
+            callAPI();
+            setInterval(callAPI, 5000);
 
             $('#BTC-USD-last, #BTC-CAD-last, #BTC-EUR-last, #BTC-GBP-last, #BTC-RUR-last, #BTC-USD-ask, #BTC-CAD-ask, #BTC-EUR-ask, #BTC-GBP-ask, #BTC-RUR-ask, #BTC-USD-bid, #BTC-CAD-bid, #BTC-EUR-bid, #BTC-GBP-bid, #BTC-RUR-bid').dblclick(function(event){
                 event.preventDefault();
@@ -33,8 +34,21 @@
         });
 
 
-        function updateRates(){
-            $.getJSON(API_all_url, function(result) {
+        function callAPI(){
+            if (window.XDomainRequest) {
+                var xhr = new window.XDomainRequest();
+                xhr.open('GET', API_all_url, true);
+                xhr.onload = function() {
+	                var result = JSON.parse(xhr.responseText);
+                    updateRates(result);
+    	        }
+                xhr.send();
+            } else {
+                $.getJSON(API_all_url, updateRates);
+            }
+        }
+
+        function updateRates(result){
                 $('body').show();
 
                 document.title = result.USD.rates.last+' - BitcoinAverage';
@@ -57,7 +71,6 @@
                 $('#BTC-GBP-bid').text(result.GBP.rates.bid);
                 $('#BTC-RUR-bid').text(result.RUR.rates.bid);
 
-            });
         }
 
 
