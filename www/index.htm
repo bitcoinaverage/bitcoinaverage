@@ -4,45 +4,83 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <title>BitcoinAverage</title>
 
-
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        var config = {'LAST_BID_ASK_URL' : 'http://88.198.122.134:5984/ba/ticker',
-                      'domain':  'http://bitcoinaverage.com'
-        }
-
+        var base_host = '';
+        var API_host = '';
+        var API_all_url = '';
         $(function(){
-            updateRates();
+            var current_host = window.location.host;
+            if (current_host == '') {
+                current_host = 'dev.bitcoinaverage.com';
+            }
+            current_host = current_host.split('.');
 
+            base_host = current_host.pop();
+            base_host = current_host.pop()+'.'+base_host;
+            API_host = 'api.'+base_host;
+            API_all_url = 'http://'+API_host+'/all';
+
+            updateRates();
             setInterval(updateRates, 5000);
+
+            $('#BTC-USD-last, #BTC-CAD-last, #BTC-EUR-last, #BTC-GBP-last, #BTC-RUR-last, #BTC-USD-ask, #BTC-CAD-ask, #BTC-EUR-ask, #BTC-GBP-ask, #BTC-RUR-ask, #BTC-USD-bid, #BTC-CAD-bid, #BTC-EUR-bid, #BTC-GBP-bid, #BTC-RUR-bid').dblclick(function(event){
+                event.preventDefault();
+                $(this).selectText();
+            });
         });
 
+
         function updateRates(){
-            $.getJSON(config['LAST_BID_ASK_URL'], function(result) {
-                $('#BTC-USD-last').text(result.USD.last);
-                $('#BTC-CAD-last').text(result.CAD.last);
-                $('#BTC-EUR-last').text(result.EUR.last);
-                $('#BTC-GBP-last').text(result.GBP.last);
-                $('#BTC-RUR-last').text(result.RUR.last);
-
-                $('#BTC-USD-ask').text(result.USD.ask);
-                $('#BTC-CAD-ask').text(result.CAD.ask);
-                $('#BTC-EUR-ask').text(result.EUR.ask);
-                $('#BTC-GBP-ask').text(result.GBP.ask);
-                $('#BTC-RUR-ask').text(result.RUR.ask);
-
-                $('#BTC-USD-bid').text(result.USD.bid);
-                $('#BTC-CAD-bid').text(result.CAD.bid);
-                $('#BTC-EUR-bid').text(result.EUR.bid);
-                $('#BTC-GBP-bid').text(result.GBP.bid);
-                $('#BTC-RUR-bid').text(result.RUR.bid);
-
+            $.getJSON(API_all_url, function(result) {
                 $('body').show();
+
+                document.title = result.USD.rates.last+' - BitcoinAverage';
+
+                $('#BTC-USD-last').text(result.USD.rates.last);
+                $('#BTC-CAD-last').text(result.CAD.rates.last);
+                $('#BTC-EUR-last').text(result.EUR.rates.last);
+                $('#BTC-GBP-last').text(result.GBP.rates.last);
+                $('#BTC-RUR-last').text(result.RUR.rates.last);
+
+                $('#BTC-USD-ask').text(result.USD.rates.ask);
+                $('#BTC-CAD-ask').text(result.CAD.rates.ask);
+                $('#BTC-EUR-ask').text(result.EUR.rates.ask);
+                $('#BTC-GBP-ask').text(result.GBP.rates.ask);
+                $('#BTC-RUR-ask').text(result.RUR.rates.ask);
+
+                $('#BTC-USD-bid').text(result.USD.rates.bid);
+                $('#BTC-CAD-bid').text(result.CAD.rates.bid);
+                $('#BTC-EUR-bid').text(result.EUR.rates.bid);
+                $('#BTC-GBP-bid').text(result.GBP.rates.bid);
+                $('#BTC-RUR-bid').text(result.RUR.rates.bid);
+
             });
         }
+
+
+        jQuery.fn.selectText = function(){
+            var doc = document
+                , element = this[0]
+                , range, selection
+            ;
+            if (doc.body.createTextRange) {
+                range = document.body.createTextRange();
+                range.moveToElementText(element);
+                range.select();
+            } else if (window.getSelection) {
+                selection = window.getSelection();
+                range = document.createRange();
+                range.selectNodeContents(element);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        };
+
     </script>
+
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <style type="text/css">
         body {
@@ -82,6 +120,23 @@
             margin-top: -100px;
         }
 
+        .bid_ask {
+            font-size: 1.3em
+        }
+        .bid_ask-titles {
+            color:#999;
+        }
+
+        .USD_values{
+            color: #333;
+            font-weight: bold;
+        }
+        .other_values{
+            color: #999;
+            font-weight: bold;
+        }
+
+
         #push_footer {
             height: 45px;
         }
@@ -96,33 +151,27 @@
             width: 100%;
             color: #999;
         }
-        .bid_ask {
-            font-size: 1.3em
-        }
-
-        .USD_values{
-            color: #333;
-            font-weight: bold;
-        }
-        .other_values{
-            color: #999;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body style="display: none;">
 
 <div id="header-n-content" class="container">
     <div id="header" class="navbar">
-        <div class="span3">BitcoinAverage <span class="beta">alpha</span></div>
-        <!--<div class="span1 pull-right text-right"><a href="/ba/api">API</a></div>-->
+        <div class="span3">BitcoinAverage <span class="beta">beta</span></div>
+        <div class="span1 pull-right text-right"><a href="http://api.bitcoinaverage.com">API</a></div>
     </div>
     <div id="content">
         <div class="digits">
             <div class="row USD_values">
                 <div class="span10 text-center">
                     <h1><span id="BTC-USD-last"></span> USD</h1>
-                    <span>bid &nbsp<span class="bid_ask" id="BTC-USD-bid" title="bid"></span><span class="bid_ask" >&nbsp;/&nbsp;</span><span class="bid_ask" id="BTC-USD-ask" title="ask"></span>&nbsp ask</span>
+                    <span class="bid_ask">
+                        <span class="bid_ask-titles">bid &nbsp;</span>
+                        <span id="BTC-USD-bid" title="bid"></span>
+                        &nbsp;/&nbsp;
+                        <span id="BTC-USD-ask" title="ask"></span>
+                        <span class="bid_ask-titles">&nbsp ask</span>
+                    </span>
                 </div>
             </div>
             <br>

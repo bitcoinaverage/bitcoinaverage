@@ -37,36 +37,38 @@ while True:
             pass
 
     calculated_average_rates = {}
-    total_volumes = {}
-    calculated_relative_volumes = {}
+    total_currency_volumes = {}
+    calculated_volumes = {}
     for currency in CURRENCY_LIST:
         calculated_average_rates[currency] = {'last': Decimal(0.00),
-                                       'ask': Decimal(0.00),
-                                       'bid': Decimal(0.00),
-                                        }
-        total_volumes[currency] = Decimal(0.00)
-        calculated_relative_volumes[currency] = {}
+                                               'ask': Decimal(0.00),
+                                               'bid': Decimal(0.00),
+                                                }
+        total_currency_volumes[currency] = Decimal(0.00)
+        calculated_volumes[currency] = {}
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
-                total_volumes[currency] = total_volumes[currency] + rate[currency]['volume']
+                total_currency_volumes[currency] = total_currency_volumes[currency] + rate[currency]['volume']
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
-                calculated_relative_volumes[currency][rate['exchange_name']] = rate[currency]['volume'] / total_volumes[currency]
-                calculated_relative_volumes[currency][rate['exchange_name']] = calculated_relative_volumes[currency][rate['exchange_name']].quantize(Decimal('0.0000'))
+                calculated_volumes[currency][rate['exchange_name']] = {}
+                calculated_volumes[currency][rate['exchange_name']]['absolute'] = rate[currency]['volume'].quantize(Decimal(DEC_PLACES))
+                calculated_volumes[currency][rate['exchange_name']]['percent'] = (rate[currency]['volume']
+                                                                                  / total_currency_volumes[currency] * Decimal(100) ).quantize(Decimal('0.0000'))
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
                 calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
-                                                        + rate[currency]['last'] * calculated_relative_volumes[currency][rate['exchange_name']] )
+                                                        + rate[currency]['last'] * calculated_volumes[currency][rate['exchange_name']]['percent'] / Decimal(100) )
                 calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
-                                                        + rate[currency]['ask'] * calculated_relative_volumes[currency][rate['exchange_name']] )
+                                                        + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['percent'] / Decimal(100) )
                 calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
-                                                        + rate[currency]['bid'] * calculated_relative_volumes[currency][rate['exchange_name']] )
+                                                        + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['percent'] / Decimal(100) )
 
                 calculated_average_rates[currency]['last'] = calculated_average_rates[currency]['last'].quantize(DEC_PLACES)
                 calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
@@ -78,15 +80,16 @@ while True:
         calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
 
         for exchange_name in EXCHANGE_LIST:
-            if exchange_name in calculated_relative_volumes[currency]:
-                calculated_relative_volumes[currency][exchange_name] = str(calculated_relative_volumes[currency][exchange_name])
+            if exchange_name in calculated_volumes[currency]:
+                calculated_volumes[currency][exchange_name]['absolute'] = str(calculated_volumes[currency][exchange_name]['absolute'])
+                calculated_volumes[currency][exchange_name]['percent'] = str(calculated_volumes[currency][exchange_name]['percent'])
 
     timestamp = utils.formatdate(time.time())
     try:
         all_data = {}
         all_data['timestamp'] = timestamp
         for currency in CURRENCY_LIST:
-            cur_data = {'volumes': calculated_relative_volumes[currency],
+            cur_data = {'volumes': calculated_volumes[currency],
                         'rates': calculated_average_rates[currency],
                         }
             all_data[currency] = cur_data
@@ -108,14 +111,14 @@ while True:
             api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
             api_ticker_file.close()
 
-        volumes_all = calculated_relative_volumes
+        volumes_all = calculated_volumes
         volumes_all['timestamp'] = timestamp
         api_volume_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['VOLUME_PATH'], 'all'), 'w+')
         api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
         api_volume_all_file.close()
 
         for currency in CURRENCY_LIST:
-            volume_cur = calculated_relative_volumes[currency]
+            volume_cur = calculated_volumes[currency]
             volume_cur['timestamp'] = timestamp
             api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['VOLUME_PATH'], currency), 'w+')
             api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
@@ -127,7 +130,5 @@ while True:
 
     except IOError as error:
         continue
-
-    print '----'
 
     time.sleep(API_QUERY_FREQUENCY)

@@ -1,8 +1,8 @@
 {
-    all: 'http://api.bitcoinaverage.com/ticker/all',
-    USD: 'http://api.bitcoinaverage.com/ticker/USD',
-    EUR: 'http://api.bitcoinaverage.com/ticker/EUR',
-    GBP: 'http://api.bitcoinaverage.com/ticker/GBP',
-    CAD: 'http://api.bitcoinaverage.com/ticker/CAD',
-    RUR: 'http://api.bitcoinaverage.com/ticker/RUR'
+    'all': 'http://api.bitcoinaverage.com/ticker/all',
+    'USD': 'http://api.bitcoinaverage.com/ticker/USD',
+    'EUR': 'http://api.bitcoinaverage.com/ticker/EUR',
+    'GBP': 'http://api.bitcoinaverage.com/ticker/GBP',
+    'CAD': 'http://api.bitcoinaverage.com/ticker/CAD',
+    'RUR': 'http://api.bitcoinaverage.com/ticker/RUR'
 }
