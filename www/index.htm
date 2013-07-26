@@ -13,16 +13,16 @@
         var API_all_url = '';
         $(function(){
             var current_host = window.location.host;
-//            var current_host = '';
             if (current_host == '') {
                 current_host = 'dev.bitcoinaverage.com';
             }
             current_host = current_host.split('.');
-
             base_host = current_host.pop();
             base_host = current_host.pop()+'.'+base_host;
             API_host = 'api.'+base_host;
             API_all_url = 'http://'+API_host+'/all';
+
+//            API_all_url = 'http://ba.virtualhost/api/all';
 
             callAPI();
             setInterval(callAPI, 5000);
@@ -51,26 +51,28 @@
         function updateRates(result){
                 $('body').show();
 
-                document.title = result.USD.rates.last+' - BitcoinAverage';
+                document.title = result.USD.averages.last+' - BitcoinAverage';
 
-                $('#BTC-USD-last').text(result.USD.rates.last);
-                $('#BTC-CAD-last').text(result.CAD.rates.last);
-                $('#BTC-EUR-last').text(result.EUR.rates.last);
-                $('#BTC-GBP-last').text(result.GBP.rates.last);
-                $('#BTC-RUR-last').text(result.RUR.rates.last);
+                $('#BTC-USD-last').text(result.USD.averages.last);
+                $('#BTC-CAD-last').text(result.CAD.averages.last);
+                $('#BTC-EUR-last').text(result.EUR.averages.last);
+                $('#BTC-GBP-last').text(result.GBP.averages.last);
+                $('#BTC-RUR-last').text(result.RUR.averages.last);
 
-                $('#BTC-USD-ask').text(result.USD.rates.ask);
-                $('#BTC-CAD-ask').text(result.CAD.rates.ask);
-                $('#BTC-EUR-ask').text(result.EUR.rates.ask);
-                $('#BTC-GBP-ask').text(result.GBP.rates.ask);
-                $('#BTC-RUR-ask').text(result.RUR.rates.ask);
+                $('#BTC-USD-ask').text(result.USD.averages.ask);
+                $('#BTC-CAD-ask').text(result.CAD.averages.ask);
+                $('#BTC-EUR-ask').text(result.EUR.averages.ask);
+                $('#BTC-GBP-ask').text(result.GBP.averages.ask);
+                $('#BTC-RUR-ask').text(result.RUR.averages.ask);
 
-                $('#BTC-USD-bid').text(result.USD.rates.bid);
-                $('#BTC-CAD-bid').text(result.CAD.rates.bid);
-                $('#BTC-EUR-bid').text(result.EUR.rates.bid);
-                $('#BTC-GBP-bid').text(result.GBP.rates.bid);
-                $('#BTC-RUR-bid').text(result.RUR.rates.bid);
+                $('#BTC-USD-bid').text(result.USD.averages.bid);
+                $('#BTC-CAD-bid').text(result.CAD.averages.bid);
+                $('#BTC-EUR-bid').text(result.EUR.averages.bid);
+                $('#BTC-GBP-bid').text(result.GBP.averages.bid);
+                $('#BTC-RUR-bid').text(result.RUR.averages.bid);
 
+                $('#BTC-USD-last, #BTC-CAD-last, #BTC-EUR-last, #BTC-GBP-last, #BTC-RUR-last, #BTC-USD-ask, #BTC-CAD-ask, #BTC-EUR-ask, #BTC-GBP-ask, #BTC-RUR-ask, #BTC-USD-bid, #BTC-CAD-bid, #BTC-EUR-bid, #BTC-GBP-bid, #BTC-RUR-bid').css({ 'opacity' : 0.5});
+                $('#BTC-USD-last, #BTC-CAD-last, #BTC-EUR-last, #BTC-GBP-last, #BTC-RUR-last, #BTC-USD-ask, #BTC-CAD-ask, #BTC-EUR-ask, #BTC-GBP-ask, #BTC-RUR-ask, #BTC-USD-bid, #BTC-CAD-bid, #BTC-EUR-bid, #BTC-GBP-bid, #BTC-RUR-bid').animate({ 'opacity' : 1 }, 100);
         }
 
 

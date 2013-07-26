@@ -28,11 +28,22 @@ EXCHANGE_LIST = {
                                   },
                     'bitstamp': {'api_url': 'https://www.bitstamp.net/api/ticker/',
                                    },
-                    'campbx': {'api_url': 'http://campbx.com/api/xticker.php',
-                                 },
                     'btce': {'usd_api_url': 'https://btc-e.com/api/2/btc_usd/ticker',
                              'eur_api_url': 'https://btc-e.com/api/2/btc_eur/ticker',
                              'rur_api_url': 'https://btc-e.com/api/2/btc_rur/ticker',
                                  },
+                    'bitcurex': { 'eur_api_url': 'https://eur.bitcurex.com/data/ticker.json',
+                                    },
+                    'vircurex': { 'usd_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=USD',
+                                  'eur_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=EUR',
+                                    },
+
+
+                    'campbx': {'api_url': 'http://campbx.com/api/xticker.php',  #no volume data now
+                                 },
+
+                    'cavirtex': False,
+                    'libertybit': False,
+                    'canadianbitcoins': False,
                     }
 

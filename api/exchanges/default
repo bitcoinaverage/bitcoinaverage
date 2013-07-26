@@ -1,0 +1,8 @@
+{
+    "all": "http://api.bitcoinaverage.com/exchanges/all",
+    "USD": "http://api.bitcoinaverage.com/exchanges/USD",
+    "EUR": "http://api.bitcoinaverage.com/exchanges/EUR",
+    "GBP": "http://api.bitcoinaverage.com/exchanges/GBP",
+    "CAD": "http://api.bitcoinaverage.com/exchanges/CAD",
+    "RUR": "http://api.bitcoinaverage.com/exchanges/RUR"
+}

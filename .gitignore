@@ -10,9 +10,9 @@
 /api/ticker/GBP
 /api/ticker/USD
 /api/ticker/RUR
-/api/volume/all
-/api/volume/CAD
-/api/volume/EUR
-/api/volume/GBP
-/api/volume/USD
-/api/volume/RUR
+/api/exchanges/all
+/api/exchanges/CAD
+/api/exchanges/EUR
+/api/exchanges/GBP
+/api/exchanges/USD
+/api/exchanges/RUR
