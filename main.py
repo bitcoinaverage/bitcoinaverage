@@ -17,7 +17,7 @@ from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_
 from bitcoinaverage import api_parsers
 
 if API_DOCUMENT_ROOT == '':
-    API_DOCUMENT_ROOT = project_abs_path
+    API_DOCUMENT_ROOT = os.path.join(project_abs_path, 'api')
 
 
 while True:
@@ -47,11 +47,11 @@ while True:
     total_currency_volumes = {}
     calculated_volumes = {}
     for currency in CURRENCY_LIST:
-        calculated_average_rates[currency] = {'last': Decimal(0.00),
-                                               'ask': Decimal(0.00),
-                                               'bid': Decimal(0.00),
+        calculated_average_rates[currency] = {'last': DEC_PLACES,
+                                               'ask': DEC_PLACES,
+                                               'bid': DEC_PLACES,
                                                 }
-        total_currency_volumes[currency] = Decimal(0.00)
+        total_currency_volumes[currency] = DEC_PLACES
         calculated_volumes[currency] = {}
 
     for rate in exchanges_rates:
@@ -63,13 +63,13 @@ while True:
         for currency in CURRENCY_LIST:
             if currency in rate:
                 calculated_volumes[currency][rate['exchange_name']] = {}
-                calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'].quantize(Decimal(DEC_PLACES)),
-                                                                                'bid': rate[currency]['bid'].quantize(Decimal(DEC_PLACES)),
-                                                                                'last': rate[currency]['last'].quantize(Decimal(DEC_PLACES)),
+                calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'].quantize(DEC_PLACES),
+                                                                                'bid': rate[currency]['bid'].quantize(DEC_PLACES),
+                                                                                'last': rate[currency]['last'].quantize(DEC_PLACES),
                                                                                     }
-                calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(Decimal(DEC_PLACES))
+                calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
                 calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
-                                                                                  / total_currency_volumes[currency] * Decimal(100) ).quantize(Decimal('0.0000'))
+                                                                                  / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
@@ -102,6 +102,7 @@ while True:
     try:
         all_data = {}
         all_data['timestamp'] = timestamp
+        all_data['ignored_exchanges'] = exchanges_ignored
         for currency in CURRENCY_LIST:
             cur_data = {'exchanges': calculated_volumes[currency],
                         'averages': calculated_average_rates[currency],
@@ -144,5 +145,7 @@ while True:
 
     except IOError as error:
         continue
+
+    print '----'
 
     time.sleep(API_QUERY_FREQUENCY)

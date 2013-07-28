@@ -2,10 +2,10 @@ from decimal import Decimal
 import bitcoinaverage.server
 
 API_DOCUMENT_ROOT = bitcoinaverage.server.API_DOCUMENT_ROOT
-API_FILES = {'TICKER_PATH': 'api/ticker/',
-             'EXCHANGES_PATH': 'api/exchanges/',
-             'ALL_FILE': 'api/all',
-             'IGNORED_FILE': 'api/ignored',
+API_FILES = {'TICKER_PATH': 'ticker/',
+             'EXCHANGES_PATH': 'exchanges/',
+             'ALL_FILE': 'all',
+             'IGNORED_FILE': 'ignored',
              }
 
 

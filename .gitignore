@@ -1,4 +1,5 @@
 /.idea/
+/runtime/
 *.pyc
 /bitcoinaverage/server.py
 /api/.htaccess
