@@ -11,7 +11,8 @@
     <script type="text/javascript">
     //config should be moved to server side
         var currencyOrder = ['USD','EUR','GBP','CAD','RUR'];
-        var legendSlots = 3;
+        var legendSlots = 10;
+        var API_data = {};
 
         var base_host = '';
         var API_host = '';
@@ -41,18 +42,13 @@
                     $(this).selectText();
                 });
 
-                var slotLegendSelector = $('.slot'+slotNum+'-legend');
+                var slotLegendSelector = $('.slot'+slotNum+'-box');
                 slotLegendSelector.mouseover(function(event){
-                    //$(this).css({'opacity':'1.0'});
-                    for(var slotNum1 in currencyOrder){
-                        $('.slot'+slotNum1+'-legend').css({'opacity':'1.0'});
-                    }
+                    renderLegend($(this).data('currencycode'));
+                    $('#legend-block').show();
                 });
                 slotLegendSelector.mouseout(function(event){
-//                    $(this).css({'opacity':'0.05'});
-                    for(var slotNum1 in currencyOrder){
-                        $('.slot'+slotNum1+'-legend').css({'opacity':'0.05'});
-                    }
+                    $('#legend-block').hide();
                 });
 
             }
@@ -65,22 +61,22 @@
                 xhr.open('GET', API_all_url, true);
                 xhr.onload = function() {
 	                var result = JSON.parse(xhr.responseText);
-                    updateAllData(result);
+                    renderAll(result);
     	        }
                 xhr.send();
             } else {
-                $.getJSON(API_all_url, updateAllData);
+                $.getJSON(API_all_url, renderAll);
             }
         }
 
-        function updateAllData(result){
+        function renderAll(result){
+                API_data = result;
                 var titleSet = false;
 
                 for(var slotNum in currencyOrder){
                     var currencyCode = currencyOrder[slotNum];
 
-                    updateRates(currencyCode, result[currencyCode], slotNum);
-                    updateLegend(currencyCode, result[currencyCode], slotNum);
+                    renderRates(currencyCode, result[currencyCode], slotNum);
 
                     if (!titleSet){
                         titleSet = true;
@@ -88,13 +84,13 @@
                     }
                 }
 
-                $('#ignored-count').text($(result.ignored_exchanges).countObj());
+                $('#legend-ignored-count').text($(result.ignored_exchanges).countObj());
 
                 $('body').show();
         }
 
-        function updateRates(currencyCode, currencyData, slotNum){
-
+        function renderRates(currencyCode, currencyData, slotNum){
+            $('.slot'+slotNum+'-box').data('currencycode', currencyCode);
             $('.slot'+slotNum+'-curcode').text(currencyCode);
             $('#slot'+slotNum+'-last').text(currencyData.averages.last);
             $('#slot'+slotNum+'-ask').text(currencyData.averages.ask);
@@ -105,8 +101,9 @@
             flashingFigures.animate({ 'opacity' : 1 }, 100);
         }
 
-        function updateLegend(currencyCode, currencyData, slotNum){
+        function renderLegend(currencyCode){
             var exchangeArray = [];
+            var currencyData = API_data[currencyCode];
 
             var index = 0;
             for(var exchange_name in currencyData.exchanges){
@@ -122,26 +119,28 @@
                 }
             });
 
+            $('.legend-curcode').text(currencyCode);
 
-            for(var subslotNum=0;subslotNum<legendSlots;subslotNum++){
-                $('#slot'+slotNum+'-subslot'+subslotNum).toggle(false);
+
+            for(var slotNum=0;slotNum<legendSlots;slotNum++){
+                $('#legend-slot'+slotNum).toggle(false);
             }
-            $('#slot'+slotNum+'-subslot-other').toggle(false);
+            $('#legend-other').toggle(false);
 
             var otherCount = 0;
             var otherPercent = 0;
             var otherVolume = 0;
-            for(var subslotNum in exchangeArray){
-                if(subslotNum<legendSlots){
-                    $('#slot'+slotNum+'-subslot'+subslotNum+'-name').text(exchangeArray[subslotNum]['name']);
-                    $('#slot'+slotNum+'-subslot'+subslotNum+'-volume_btc').text(exchangeArray[subslotNum]['volume_btc']);
-                    $('#slot'+slotNum+'-subslot'+subslotNum+'-volume_percent').text(exchangeArray[subslotNum]['volume_percent']);
-                    $('#slot'+slotNum+'-subslot'+subslotNum+'-rate').text(exchangeArray[subslotNum]['rates']['last']);
-                    $('#slot'+slotNum+'-subslot'+subslotNum).toggle(true);
+            for(var slotNum in exchangeArray){
+                if(slotNum<legendSlots){
+                    $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
+                    $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc']);
+                    $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent']);
+                    $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last']);
+                    $('#legend-slot'+slotNum).toggle(true);
                 } else {
                     otherCount = otherCount+1;
-                    otherPercent = otherPercent+exchangeArray[subslotNum]['volume_percent'];
-                    otherVolume = otherVolume+exchangeArray[subslotNum]['volume_btc'];
+                    otherPercent = otherPercent+exchangeArray[slotNum]['volume_percent'];
+                    otherVolume = otherVolume+exchangeArray[slotNum]['volume_btc'];
                 }
             }
             if(otherCount > 0){
@@ -223,65 +222,28 @@
             top:50%;
             margin-top: -100px;
         }
-        .bid_ask{font-weight: bold;}
-
-        .slot0-box h1{margin: 0 0 8px 8px;}
-        .slot0-legend,.slot1-legend,.slot2-legend,.slot3-legend,.slot4-legend{ opacity: 0.05; }
         .slot0-box{
             display: inline-block;
-            margin-left: 280px;
-            padding: 0px 10px 8px 10px;
-            color: #333;
         }
-        .slot0-data{
-            display: inline-block;
-            vertical-align: top;
-            font-weight: bold;
-        }
+
+        .bid_ask{font-weight: bold;}
         .slot0-bid_ask{font-size: 1.3em;}
         .slot0-bid_ask-titles{ color: #999; }
-        .slot0-legend{
-            display: inline-block;
-            font-size: 0.8em;
-            font-weight: normal;
-            width: 300px;
-            margin: 0 0 0 50px ;
-            overflow: hidden;
-            vertical-align: super;
-            border-left:1px solid #CCC;
-        }
-        .slot0-legend ul{
+        .legend ul{
             list-style: none outside;
-            margin: -0.1em 0 -0.05em 0.5em;
+            margin: 0;
         }
-        .slot0-legend ul li{line-height: 1.2em; }
-        .slot0-legend-name, .slot0-legend-volume_percent, .slot0-legend-volume_btc, .slot0-legend-rate, .slot0-legend-ignored { display: inline-block; }
-        .slot0-legend-name{ width: 50px; }
-        .slot0-legend-volume_percent{ width: 40px; }
-        .slot0-legend-volume_btc{ width: 90px; }
-        .slot0-legend-rate{ width: 100px; }
-        .slot0-legend-ignored{
-            margin: 0 0 0 50px;
-            width: 200px;
+        .legend-ignored{
+            margin-top: 5px;
         }
 
-        .slot1-box, .slot2-box, .slot3-box, .slot4-box{ color: #999; }
+        h2{font-size: 1.5em;}
 
-        .slot1-legend ul, .slot2-legend ul, .slot3-legend ul, .slot4-legend ul{
-            list-style: none outside;
-            margin: 30px 0 0 0;
-            border-top:1px solid #CCC;
+        #legend-block{
+            margin-top: 50px;
+            border-top: 1px solid #999;
+            display: none;
         }
-        .slot1-legend ul li, .slot2-legend ul li, .slot3-legend ul li, .slot4-legend ul li {
-            line-height: 1.2em;
-            margin: 5px 0;
-            font-size: 0.8em
-        }
-        .slot-minor-legend-name, .slot-minor-legend-volume_percent, .slot-minor-legend-volume_btc, .slot-minor-legend-rate { display: inline-block; }
-        .slot-minor-legend-name{width: 50px; }
-        .slot-minor-legend-volume_percent{width: 40px; }
-        .slot-minor-legend-volume_btc{width: 70px; }
-        .slot-minor-legend-rate{width: 170px; }
 
         #push_footer {
             height: 45px;
@@ -308,185 +270,137 @@
     </div>
     <div id="content">
         <div class="digits">
-            <div class="row slot0_values">
+            <div class="row">
                 <div class="span10 text-center">
-                    <div class="slot0-box text-left">
-                        <div class="slot0-data">
-                            <h1><span id="slot0-last"></span> <span class="slot0-curcode"></span></h1>
-                            <span class="slot0-bid_ask">
-                                <span class="slot0-bid_ask-titles">bid &nbsp;</span>
-                                <span id="slot0-bid" title="bid"></span>
-                                &nbsp;/&nbsp;
-                                <span id="slot0-ask" title="ask"></span>
-                                <span class="slot0-bid_ask-titles">&nbsp ask</span>
-                            </span>
-                        </div>
-                        <div class="slot0-legend text-left">
-                            <ul>
-                                <li id="slot0-subslot0">
-                                    <div class="slot0-legend-name"><span id="slot0-subslot0-name"></span></div>
-                                    <div class="slot0-legend-volume_percent text-right"><span id="slot0-subslot0-volume_percent"></span>%</div>
-                                    <div class="slot0-legend-volume_btc">(&#3647; <span id="slot0-subslot0-volume_btc"></span>)</div>
-                                    <div class="slot0-legend-rate text-right">at rate <span id="slot0-subslot0-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot0-subslot1">
-                                    <div class="slot0-legend-name"><span id="slot0-subslot1-name"></span></div>
-                                    <div class="slot0-legend-volume_percent text-right"><span id="slot0-subslot1-volume_percent"></span>%</div>
-                                    <div class="slot0-legend-volume_btc">(&#3647; <span id="slot0-subslot1-volume_btc"></span>)</div>
-                                    <div class="slot0-legend-rate text-right">at rate <span id="slot0-subslot1-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot0-subslot2">
-                                    <div class="slot0-legend-name"><span id="slot0-subslot2-name"></span></div>
-                                    <div class="slot0-legend-volume_percent text-right"><span id="slot0-subslot2-volume_percent"></span>%</div>
-                                    <div class="slot0-legend-volume_btc">(&#3647; <span id="slot0-subslot2-volume_btc"></span>)</div>
-                                    <div class="slot0-legend-rate text-right">at rate <span id="slot0-subslot2-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot0-subslot-other">
-                                    <div class="slot0-legend-name"><span id="slot0-subslot-other-count"></span> more</div>
-                                    <div class="slot0-legend-volume_percent text-right"><span id="slot0-subslot-other-volume_percent"></span>%</div>
-                                    <div class="slot0-legend-volume_btc">(&#3647; <span id="slot0-subslot-other-volume_btc"></span>)</div>
-                                </li>
-                                <li>
-                                    <div class="slot0-legend-ignored">
-                                        <span id="ignored-count"></span> ignored (no API or trading volume data)
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="slot0-box" data-currencycode="">
+                        <h1><span id="slot0-last"></span> <span class="slot0-curcode"></span></h1>
+                        <span class="slot0-bid_ask">
+                            <span class="slot0-bid_ask-titles">bid &nbsp;</span>
+                            <span id="slot0-bid" title="bid"></span>
+                            &nbsp;/&nbsp;
+                            <span id="slot0-ask" title="ask"></span>
+                            <span class="slot0-bid_ask-titles">&nbsp ask</span>
+                        </span>
                     </div>
                 </div>
             </div>
             <br>
             <div class="row other_values">
                 <div class="span10 text-center">
-                    <div class="span2 slot1-box">
+                    <div class="span2 offset1 slot1-box" data-currencycode="">
                         <h4><span id="slot1-last"></span> <span class="slot1-curcode"></span></h4>
                         <p class="bid_ask"> <span id="slot1-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot1-ask" title="ask"></span> </p>
-
-                        <div class="slot1-legend text-left">
-                            <ul>
-                                <li id="slot1-subslot0">
-                                    <div class="slot-minor-legend-name"><span id="slot1-subslot0-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot1-subslot0-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot1-subslot0-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot1-subslot0-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot1-subslot1">
-                                    <div class="slot-minor-legend-name"><span id="slot1-subslot1-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot1-subslot1-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot1-subslot1-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot1-subslot1-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot1-subslot2">
-                                    <div class="slot-minor-legend-name"><span id="slot1-subslot2-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot1-subslot2-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot1-subslot2-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot1-subslot2-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot1-subslot-other">
-                                    <div class="slot-minor-legend-name"><span id="slot1-subslot-other-count"></span> more</div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot1-subslot-other-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot1-subslot-other-volume_btc"></span>)</div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="span2 slot2-box">
+                    <div class="span2 slot2-box" data-currencycode="">
                         <h4><span id="slot2-last"></span> <span class="slot2-curcode"></span></h4>
                         <p> <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span> </p>
-
-                        <div class="slot2-legend text-left">
-                            <ul>
-                                <li id="slot2-subslot0">
-                                    <div class="slot-minor-legend-name"><span id="slot2-subslot0-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot2-subslot0-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot2-subslot0-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot2-subslot0-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot2-subslot1">
-                                    <div class="slot-minor-legend-name"><span id="slot2-subslot1-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot2-subslot1-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot2-subslot1-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot2-subslot1-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot2-subslot2">
-                                    <div class="slot-minor-legend-name"><span id="slot2-subslot2-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot2-subslot2-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot2-subslot2-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot2-subslot2-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot2-subslot-other">
-                                    <div class="slot-minor-legend-name"><span id="slot2-subslot-other-count"></span> more</div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot2-subslot-other-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot2-subslot-other-volume_btc"></span>)</div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="span2 slot3-box">
+                    <div class="span2 slot3-box" data-currencycode="">
                         <h4><span id="slot3-last"></span> <span class="slot3-curcode"></span></h4>
                         <p> <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span> </p>
-
-                        <div class="slot3-legend text-left">
-                            <ul>
-                                <li id="slot3-subslot0">
-                                    <div class="slot-minor-legend-name"><span id="slot3-subslot0-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot3-subslot0-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot3-subslot0-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot3-subslot0-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot3-subslot1">
-                                    <div class="slot-minor-legend-name"><span id="slot3-subslot1-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot3-subslot1-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot3-subslot1-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot3-subslot1-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot3-subslot2">
-                                    <div class="slot-minor-legend-name"><span id="slot3-subslot2-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot3-subslot2-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot3-subslot2-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot3-subslot2-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot3-subslot-other">
-                                    <div class="slot-minor-legend-name"><span id="slot3-subslot-other-count"></span> more</div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot3-subslot-other-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot3-subslot-other-volume_btc"></span>)</div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="span2 slot4-box">
+                    <div class="span2 slot4-box" data-currencycode="">
                         <h4><span id="slot4-last"></span> <span class="slot4-curcode"></span></h4>
                         <p> <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span> </p>
-
-                        <div class="slot4-legend text-left">
-                            <ul>
-                                <li id="slot4-subslot0">
-                                    <div class="slot-minor-legend-name"><span id="slot4-subslot0-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot4-subslot0-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot4-subslot0-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot4-subslot0-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot4-subslot1">
-                                    <div class="slot-minor-legend-name"><span id="slot4-subslot1-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot4-subslot1-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot4-subslot1-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot4-subslot1-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot4-subslot2">
-                                    <div class="slot-minor-legend-name"><span id="slot4-subslot2-name"></span></div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot4-subslot2-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot4-subslot2-volume_btc"></span>)</div>
-                                    <div class="slot-minor-legend-rate text-right">at rate <span id="slot4-subslot2-rate"></span> <span class="slot0-curcode"></span></div>
-                                </li>
-                                <li id="slot4-subslot-other">
-                                    <div class="slot-minor-legend-name"><span id="slot4-subslot-other-count"></span> more</div>
-                                    <div class="slot-minor-legend-volume_percent text-right"><span id="slot4-subslot-other-volume_percent"></span>%</div>
-                                    <div class="slot-minor-legend-volume_btc">(&#3647; <span id="slot4-subslot-other-volume_btc"></span>)</div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="offset2 span6" id="legend-block">
+                    <div class="">
+                        <h2>data for <span class="legend-curcode"></span> weighted average price picked from</h2>
+                    </div>
+
+                    <div class="legend text-left">
+                        <ul>
+                            <li id="legend-slot0">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot0-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot0-volume_percent"></span>%</div>
+                                    <div class="span2 legend-volume_btc">(&#3647; <span id="legend-slot0-volume_btc"></span>)</div>
+                                    <div class="span2 legend-rate text-right">at rate <span id="legend-slot0-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot1">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot1-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot1-volume_percent"></span>%</div>
+                                    <div class="span2 legend-volume_btc">(&#3647; <span id="legend-slot1-volume_btc"></span>)</div>
+                                    <div class="span2 legend-rate text-right">at rate <span id="legend-slot1-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot2">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot2-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot2-volume_percent"></span>%</div>
+                                    <div class="span2 legend-volume_btc">(&#3647; <span id="legend-slot2-volume_btc"></span>)</div>
+                                    <div class="span2 legend-rate text-right">at rate <span id="legend-slot2-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot3">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot3-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot3-volume_percent"></span>%</div>
+                                    <div class="span2 legend-volume_btc">(&#3647; <span id="legend-slot3-volume_btc"></span>)</div>
+                                    <div class="span2 legend-rate text-right">at rate <span id="legend-slot3-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot4">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot4-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot4-volume_percent"></span>%</div>
+                                    <div class="span3 legend-volume_btc">(&#3647; <span id="legend-slot4-volume_btc"></span>)</div>
+                                    <div class="span3 legend-rate text-right">at rate <span id="legend-slot4-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot5">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot5-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot5-volume_percent"></span>%</div>
+                                    <div class="span3 legend-volume_btc">(&#3647; <span id="legend-slot5-volume_btc"></span>)</div>
+                                    <div class="span3 legend-rate text-right">at rate <span id="legend-slot5-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot6">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot6-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot6-volume_percent"></span>%</div>
+                                    <div class="span3 legend-volume_btc">(&#3647; <span id="legend-slot6-volume_btc"></span>)</div>
+                                    <div class="span3 legend-rate text-right">at rate <span id="legend-slot6-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot7">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot7-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot7-volume_percent"></span>%</div>
+                                    <div class="span3 legend-volume_btc">(&#3647; <span id="legend-slot7-volume_btc"></span>)</div>
+                                    <div class="span3 legend-rate text-right">at rate <span id="legend-slot7-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot8">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot8-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot8-volume_percent"></span>%</div>
+                                    <div class="span3 legend-volume_btc">(&#3647; <span id="legend-slot8-volume_btc"></span>)</div>
+                                    <div class="span3 legend-rate text-right">at rate <span id="legend-slot8-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <li id="legend-slot9">
+                                <div class="row">
+                                    <div class="span1 legend-name"><span id="legend-slot9-name"></span></div>
+                                    <div class="span1 legend-volume_percent text-right"><span id="legend-slot9-volume_percent"></span>%</div>
+                                    <div class="span3 legend-volume_btc">(&#3647; <span id="legend-slot9-volume_btc"></span>)</div>
+                                    <div class="span3 legend-rate text-right">at rate <span id="legend-slot9-rate"></span> <span class="legend-curcode"></span></div>
+                                </div>
+                            </li>
+                            <!--<li>-->
+                                <!--<div class="span4 offset2 legend-ignored">-->
+                                    <!--<span id="legend-ignored-count"></span> ignored (no API or trading volume data)-->
+                                <!--</div>-->
+                            <!--</li>-->
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>
