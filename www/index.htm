@@ -28,7 +28,7 @@
             API_host = 'api.'+base_host;
             API_all_url = 'http://'+API_host+'/all';
 
-            API_all_url = 'http://ba.virtualhost/api/all';
+//            API_all_url = 'http://ba.virtualhost/api/all';
         });
     </script>
     <script type="text/javascript">
@@ -227,8 +227,9 @@
         }
 
         .bid_ask{font-weight: bold;}
-        .slot0-bid_ask{font-size: 1.3em;}
-        .slot0-bid_ask-titles{ color: #999; }
+        .slot0-bid_ask{font-size: 1.3em; font-weight: bold;}
+        .slot0-bid_ask-titles, .other_values{ color: #999; }
+
         .legend ul{
             list-style: none outside;
             margin: 0;
@@ -293,15 +294,15 @@
                     </div>
                     <div class="span2 slot2-box" data-currencycode="">
                         <h4><span id="slot2-last"></span> <span class="slot2-curcode"></span></h4>
-                        <p> <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span> </p>
+                        <p class="bid_ask"> <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span> </p>
                     </div>
                     <div class="span2 slot3-box" data-currencycode="">
                         <h4><span id="slot3-last"></span> <span class="slot3-curcode"></span></h4>
-                        <p> <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span> </p>
+                        <p class="bid_ask"> <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span> </p>
                     </div>
                     <div class="span2 slot4-box" data-currencycode="">
                         <h4><span id="slot4-last"></span> <span class="slot4-curcode"></span></h4>
-                        <p> <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span> </p>
+                        <p class="bid_ask"> <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span> </p>
                     </div>
                 </div>
             </div>
