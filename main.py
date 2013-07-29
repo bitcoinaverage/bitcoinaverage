@@ -70,6 +70,8 @@ while True:
                 calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
                 calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
                                                                                   / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = max(Decimal(0.01).quantize(DEC_PLACES),
+                                                                                            calculated_volumes[currency][rate['exchange_name']]['volume_percent'])
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
