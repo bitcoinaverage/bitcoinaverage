@@ -148,6 +148,6 @@ while True:
     except IOError as error:
         continue
 
-    print '----'
+    print timestamp
 
     time.sleep(API_QUERY_FREQUENCY)
