@@ -17,7 +17,7 @@ CURRENCY_LIST = {'USD':'USD',
                  'EUR':'EUR',
                  'GBP':'GBP',
                  'CAD':'CAD',
-                 'RUR':'RUR'}
+                 'RUB':'RUB'}
 
 EXCHANGE_LIST = {
                     'mtgox': {'usd_api_url': 'http://data.mtgox.com/api/2/BTCUSD/money/ticker',
@@ -38,12 +38,14 @@ EXCHANGE_LIST = {
                                   'eur_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=EUR',
                                     },
 
+                    'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
 
-                    'campbx': {'api_url': 'http://campbx.com/api/xticker.php',  #no volume data now
+                    'campbx': {'api_url': 'http://campbx.com/api/xticker.php',
                                  },
 
                     'cavirtex': False,
                     'libertybit': False,
                     'canadianbitcoins': False,
-                    }
+                    'bitcoin_de': False,
 
+                    }

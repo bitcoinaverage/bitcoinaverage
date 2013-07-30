@@ -28,7 +28,9 @@
             API_host = 'api.'+base_host;
             API_all_url = 'http://'+API_host+'/all';
 
-//            API_all_url = 'http://ba.virtualhost/api/all';
+            if (window.location.host == 'ba.virtualhost') {
+                API_all_url = 'http://ba.virtualhost/api/all';
+            }
         });
     </script>
     <script type="text/javascript">

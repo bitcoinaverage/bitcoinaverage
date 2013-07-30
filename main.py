@@ -76,12 +76,15 @@ while True:
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
-                calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
-                                                        + rate[currency]['last'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
-                calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
-                                                        + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
-                calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
-                                                        + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                if rate[currency]['last'] is not None:
+                    calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
+                                                            + rate[currency]['last'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                if rate[currency]['ask'] is not None:
+                    calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
+                                                            + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                if rate[currency]['bid'] is not None:
+                    calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
+                                                            + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
 
                 calculated_average_rates[currency]['last'] = calculated_average_rates[currency]['last'].quantize(DEC_PLACES)
                 calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
