@@ -34,7 +34,7 @@
     <script type="text/javascript">
         $(function(){
             callAPI();
-            //setInterval(callAPI, 5000);
+            setInterval(callAPI, 5000);
 
             for(var slotNum in currencyOrder){
                 $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid').dblclick(function(event){
