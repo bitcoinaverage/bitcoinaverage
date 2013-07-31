@@ -1,8 +1,10 @@
+from email import utils
+import os
 import time
 import requests
 from decimal import Decimal
 
-from bitcoinaverage.config import CURRENCY_LIST, DEC_PLACES
+from bitcoinaverage.config import CURRENCY_LIST, DEC_PLACES, API_DOCUMENT_ROOT
 from bitcoinaverage.exceptions import NoVolumeException
 
 
@@ -13,8 +15,6 @@ def mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url
     cad_result = requests.get(cad_api_url).json()
     pln_result = requests.get(pln_api_url).json()
     rub_result = requests.get(rub_api_url).json()
-
-    print pln_result
 
     return {CURRENCY_LIST['USD']: {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
                                    'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
@@ -72,18 +72,52 @@ def bitstampApiCall(api_url, *args, **kwargs):
                                    'volume': Decimal(result['volume']).quantize(DEC_PLACES),
     }}
 
+# direct volume calculation gives weird results, bitcoincharts API used for now
+#@TODO check with campbx why their API results are incorrect
+# def campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
+#     ticker_result = requests.get(api_ticker_url).json()
+#
+#     return_data = {CURRENCY_LIST['USD']: {'ask': Decimal(ticker_result['Best Ask']).quantize(DEC_PLACES),
+#                                            'bid': Decimal(ticker_result['Best Bid']).quantize(DEC_PLACES),
+#                                            'last': Decimal(ticker_result['Last Trade']).quantize(DEC_PLACES),
+#                                            'high': None,
+#                                            'low': None,
+#                                            }
+#                     }
+#
+#     from_time = int(time.time())-(86400)
+#     volume = 0.0
+#
+#     all_trades_direct = {}
+#
+#     while True:
+#         trades = requests.get(api_trades_url % from_time).json()
+#         new_from_time = from_time
+#         for trade in trades:
+#             if trade['Time'] > new_from_time:
+#                 all_trades_direct[trade['Order ID']] = {'time': trade['Time'],
+#                                                          'volume': trade['Bitcoins'],
+#                                                          'price': trade['Price'],
+#                                                          }
+#                 new_from_time = trade['Time']
+#                 volume = volume + float(trade['Bitcoins'])
+#
+#         if new_from_time == from_time:
+#             break
+#         else:
+#             from_time = new_from_time
+#
+#     return_data[CURRENCY_LIST['USD']]['volume'] = Decimal(volume).quantize(DEC_PLACES)
+#
+#     return return_data
 
-def campbxApiCall(api_url, *args, **kwargs):
-    result = requests.get(api_url).json()
-
-    #no volume provided
-    # return_data = {CURRENCY_LIST['USD']: {'ask': Decimal(result['Best Ask']).quantize(DEC_PLACES),
-    #                                'bid': Decimal(result['Best Bid']).quantize(DEC_PLACES),
-    #                                'last': Decimal(result['Last Trade']).quantize(DEC_PLACES),
-    #                                }}
-
-    raise NoVolumeException
-
+def sort_dates(x,y):
+    if x['time']>y['time']:
+        return 1
+    elif x['time']<y['time']:
+        return -1
+    else:
+        return 0
 
 def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()

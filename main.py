@@ -15,146 +15,156 @@ from decimal import Decimal
 
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, API_DOCUMENT_ROOT
 from bitcoinaverage import api_parsers
+from bitcoinaverage import bitcoinchart_fallback
 
 if API_DOCUMENT_ROOT == '':
     API_DOCUMENT_ROOT = os.path.join(project_abs_path, 'api')
 
 
 while True:
+    start_time = int(time.time())
+    timestamp = utils.formatdate(time.time())
 
-    exchanges_rates = []
-    exchanges_ignored = {}
-
-    for exchange_name in EXCHANGE_LIST:
-        try:
-            if not hasattr(api_parsers, exchange_name+'ApiCall'):
-                raise NoApiException
-
-            result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
-
-            if result is not None:
-                result['exchange_name'] = exchange_name
-                exchanges_rates.append(result)
-            else:
-                raise UnknownException
-        except (NoApiException, NoVolumeException, UnknownException) as error:
-            exchanges_ignored[exchange_name] = error.text
-        except (ValueError, ConnectionError, TypeError) as error:
-           pass
-
-    calculated_average_rates = {}
-    total_currency_volumes = {}
-    calculated_volumes = {}
-    for currency in CURRENCY_LIST:
-        calculated_average_rates[currency] = {'last': DEC_PLACES,
-                                               'ask': DEC_PLACES,
-                                               'bid': DEC_PLACES,
-                                                }
-        total_currency_volumes[currency] = DEC_PLACES
-        calculated_volumes[currency] = {}
-
-    for rate in exchanges_rates:
-        for currency in CURRENCY_LIST:
-            if currency in rate:
-                total_currency_volumes[currency] = total_currency_volumes[currency] + rate[currency]['volume']
-
-    for rate in exchanges_rates:
-        for currency in CURRENCY_LIST:
-            if currency in rate:
-                calculated_volumes[currency][rate['exchange_name']] = {}
-                calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'],
-                                                                                'bid': rate[currency]['bid'],
-                                                                                'last': rate[currency]['last'],
-                                                                                    }
-                if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
-                    calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
-                if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
-                    calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
-                if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
-                    calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
-
-                calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
-                calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
-                    / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
-
-    for rate in exchanges_rates:
-        for currency in CURRENCY_LIST:
-            if currency in rate:
-                if rate[currency]['last'] is not None:
-                    calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
-                                                            + rate[currency]['last'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
-                if rate[currency]['ask'] is not None:
-                    calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
-                                                            + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
-                if rate[currency]['bid'] is not None:
-                    calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
-                                                            + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
-
-                calculated_average_rates[currency]['last'] = calculated_average_rates[currency]['last'].quantize(DEC_PLACES)
-                calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
-                calculated_average_rates[currency]['bid'] = calculated_average_rates[currency]['bid'].quantize(DEC_PLACES)
-
-    for currency in CURRENCY_LIST:
-        calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
-        calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
-        calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
+    try:
+        exchanges_rates = []
+        exchanges_ignored = {}
 
         for exchange_name in EXCHANGE_LIST:
-            if exchange_name in calculated_volumes[currency]:
-                calculated_volumes[currency][exchange_name]['rates']['last'] = str(calculated_volumes[currency][exchange_name]['rates']['last'])
-                calculated_volumes[currency][exchange_name]['rates']['ask'] = str(calculated_volumes[currency][exchange_name]['rates']['ask'])
-                calculated_volumes[currency][exchange_name]['rates']['bid'] = str(calculated_volumes[currency][exchange_name]['rates']['bid'])
-                calculated_volumes[currency][exchange_name]['volume_btc'] = str(calculated_volumes[currency][exchange_name]['volume_btc'])
-                calculated_volumes[currency][exchange_name]['volume_percent'] = str(calculated_volumes[currency][exchange_name]['volume_percent'])
+            try:
+                if hasattr(api_parsers, exchange_name+'ApiCall'):
+                    result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
+                elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
+                    result = bitcoinchart_fallback.getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
+                else:
+                    raise NoApiException
 
-    timestamp = utils.formatdate(time.time())
-    try:
-        all_data = {}
-        all_data['timestamp'] = timestamp
-        all_data['ignored_exchanges'] = exchanges_ignored
+
+                if result is not None:
+                    result['exchange_name'] = exchange_name
+                    exchanges_rates.append(result)
+                else:
+                    raise UnknownException
+            except (NoApiException, NoVolumeException, UnknownException) as error:
+                exchanges_ignored[exchange_name] = error.text
+
+        calculated_average_rates = {}
+        total_currency_volumes = {}
+        calculated_volumes = {}
         for currency in CURRENCY_LIST:
-            cur_data = {'exchanges': calculated_volumes[currency],
-                        'averages': calculated_average_rates[currency],
-                        }
-            all_data[currency] = cur_data
+            calculated_average_rates[currency] = {'last': DEC_PLACES,
+                                                   'ask': DEC_PLACES,
+                                                   'bid': DEC_PLACES,
+                                                    }
+            total_currency_volumes[currency] = DEC_PLACES
+            calculated_volumes[currency] = {}
 
-        api_all_data_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['ALL_FILE']), 'w+')
-        api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
-        api_all_data_file.close()
+        for rate in exchanges_rates:
+            for currency in CURRENCY_LIST:
+                if currency in rate:
+                    total_currency_volumes[currency] = total_currency_volumes[currency] + rate[currency]['volume']
 
-        rates_all = calculated_average_rates
-        rates_all['timestamp'] = timestamp
-        api_ticker_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], 'all'), 'w+')
-        api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
-        api_ticker_all_file.close()
+        for rate in exchanges_rates:
+            for currency in CURRENCY_LIST:
+                if currency in rate:
+                    calculated_volumes[currency][rate['exchange_name']] = {}
+                    calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'],
+                                                                                    'bid': rate[currency]['bid'],
+                                                                                    'last': rate[currency]['last'],
+                                                                                        }
+                    if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
+                        calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
+                    if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
+                        calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
+                    if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
+                        calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
+
+                    calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
+                    calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
+                        / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
+
+        for rate in exchanges_rates:
+            for currency in CURRENCY_LIST:
+                if currency in rate:
+                    if rate[currency]['last'] is not None:
+                        calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
+                                                                + rate[currency]['last'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                    if rate[currency]['ask'] is not None:
+                        calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
+                                                                + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                    if rate[currency]['bid'] is not None:
+                        calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
+                                                                + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+
+                    calculated_average_rates[currency]['last'] = calculated_average_rates[currency]['last'].quantize(DEC_PLACES)
+                    calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
+                    calculated_average_rates[currency]['bid'] = calculated_average_rates[currency]['bid'].quantize(DEC_PLACES)
 
         for currency in CURRENCY_LIST:
-            ticker_cur = calculated_average_rates[currency]
-            ticker_cur['timestamp'] = timestamp
-            api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], currency), 'w+')
-            api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
-            api_ticker_file.close()
+            calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
+            calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
+            calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
 
-        volumes_all = calculated_volumes
-        volumes_all['timestamp'] = timestamp
-        api_volume_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], 'all'), 'w+')
-        api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
-        api_volume_all_file.close()
+            for exchange_name in EXCHANGE_LIST:
+                if exchange_name in calculated_volumes[currency]:
+                    calculated_volumes[currency][exchange_name]['rates']['last'] = str(calculated_volumes[currency][exchange_name]['rates']['last'])
+                    calculated_volumes[currency][exchange_name]['rates']['ask'] = str(calculated_volumes[currency][exchange_name]['rates']['ask'])
+                    calculated_volumes[currency][exchange_name]['rates']['bid'] = str(calculated_volumes[currency][exchange_name]['rates']['bid'])
+                    calculated_volumes[currency][exchange_name]['volume_btc'] = str(calculated_volumes[currency][exchange_name]['volume_btc'])
+                    calculated_volumes[currency][exchange_name]['volume_percent'] = str(calculated_volumes[currency][exchange_name]['volume_percent'])
 
-        for currency in CURRENCY_LIST:
-            volume_cur = calculated_volumes[currency]
-            volume_cur['timestamp'] = timestamp
-            api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], currency), 'w+')
-            api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
-            api_ticker_file.close()
 
-        api_ignored_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['IGNORED_FILE']), 'w+')
-        api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
-        api_ignored_file.close()
+        try:
+            all_data = {}
+            all_data['timestamp'] = timestamp
+            all_data['ignored_exchanges'] = exchanges_ignored
+            for currency in CURRENCY_LIST:
+                cur_data = {'exchanges': calculated_volumes[currency],
+                            'averages': calculated_average_rates[currency],
+                            }
+                all_data[currency] = cur_data
 
-    except IOError as error:
-        continue
+            api_all_data_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['ALL_FILE']), 'w+')
+            api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
+            api_all_data_file.close()
 
-    print timestamp
+            rates_all = calculated_average_rates
+            rates_all['timestamp'] = timestamp
+            api_ticker_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], 'all'), 'w+')
+            api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
+            api_ticker_all_file.close()
 
-    time.sleep(API_QUERY_FREQUENCY)
+            for currency in CURRENCY_LIST:
+                ticker_cur = calculated_average_rates[currency]
+                ticker_cur['timestamp'] = timestamp
+                api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], currency), 'w+')
+                api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
+                api_ticker_file.close()
+
+            volumes_all = calculated_volumes
+            volumes_all['timestamp'] = timestamp
+            api_volume_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], 'all'), 'w+')
+            api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
+            api_volume_all_file.close()
+
+            for currency in CURRENCY_LIST:
+                volume_cur = calculated_volumes[currency]
+                volume_cur['timestamp'] = timestamp
+                api_ticker_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], currency), 'w+')
+                api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
+                api_ticker_file.close()
+
+            api_ignored_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['IGNORED_FILE']), 'w+')
+            api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
+            api_ignored_file.close()
+
+        except IOError as error:
+            continue
+
+    except (ValueError, ConnectionError) as error:
+        print 'ERROR: "%s, %s"; API not updated' % (sys.exc_info()[0], error)
+
+    cycle_time = int(time.time())-start_time
+    sleep_time = max(0,API_QUERY_FREQUENCY-cycle_time)
+    print '%s, sleeping %ss' % (timestamp, str(sleep_time))
+
+    time.sleep(sleep_time)

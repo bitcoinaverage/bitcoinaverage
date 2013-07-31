@@ -9,7 +9,7 @@ API_FILES = {'TICKER_PATH': 'ticker/',
              }
 
 
-API_QUERY_FREQUENCY = 15
+API_QUERY_FREQUENCY = 15 #seconds
 
 DEC_PLACES = Decimal('0.00')
 
@@ -21,13 +21,15 @@ CURRENCY_LIST = {'USD':'USD',
                  'PLN':'PLN',
                  }
 
+BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
+
 EXCHANGE_LIST = {
                     'mtgox': {'usd_api_url': 'http://data.mtgox.com/api/2/BTCUSD/money/ticker',
                               'eur_api_url': 'http://data.mtgox.com/api/2/BTCEUR/money/ticker',
                               'gbp_api_url': 'http://data.mtgox.com/api/2/BTCGBP/money/ticker',
                               'cad_api_url': 'http://data.mtgox.com/api/2/BTCCAD/money/ticker',
                               'pln_api_url': 'http://data.mtgox.com/api/2/BTCPLN/money/ticker',
-                              'rur_api_url': 'http://data.mtgox.com/api/2/BTCRUB/money/ticker',
+                              'rub_api_url': 'http://data.mtgox.com/api/2/BTCRUB/money/ticker',
                                   },
                     'bitstamp': {'api_url': 'https://www.bitstamp.net/api/ticker/',
                                    },
@@ -55,13 +57,31 @@ EXCHANGE_LIST = {
                                    'eur_trades_url': 'https://www.therocktrading.com/api/trades/BTCEUR',
                                     },
 
-
-                    'campbx': {'api_url': 'http://campbx.com/api/xticker.php',
+                    'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
                                  },
 
-                    'cavirtex': False,
-                    'libertybit': False,
-                    'canadianbitcoins': False,
-                    'bitcoin_de': False,
+                    'cavirtex': {'bitcoincharts_symbols': {'CAD': 'virtexCAD',
+                                                           },
+                                 },
+                    'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
+                                                         },
+                                 },
+                    'bitkonan': {'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
+                                                           },
+                                 },
 
+
+                    'bitcoin_de': {'bitcoincharts_symbols':  {'EUR': 'btcdeEUR',
+                                                             },
+                                 },
+                    'fbtcEUR': {'bitcoincharts_symbols':  {'EUR': 'fbtcEUR',
+                                                           'USD': 'fbtcUSD',
+                                                           },
+                                 },
+
+
+                    'icbit': {'bitcoincharts_symbols': {'USD': 'icbitUSD',
+                                                           },
+                                 },
                     }
+

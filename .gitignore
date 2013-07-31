@@ -10,10 +10,12 @@
 /api/ticker/EUR
 /api/ticker/GBP
 /api/ticker/USD
-/api/ticker/RUR
+/api/ticker/PLN
+/api/ticker/RUB
 /api/exchanges/all
 /api/exchanges/CAD
 /api/exchanges/EUR
 /api/exchanges/GBP
 /api/exchanges/USD
-/api/exchanges/RUR
+/api/exchanges/PLN
+/api/exchanges/RUB
