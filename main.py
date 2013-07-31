@@ -37,11 +37,10 @@ while True:
                 exchanges_rates.append(result)
             else:
                 raise UnknownException
-
         except (NoApiException, NoVolumeException, UnknownException) as error:
             exchanges_ignored[exchange_name] = error.text
-        except (ValueError, ConnectionError):
-            pass
+        except (ValueError, ConnectionError, TypeError) as error:
+           pass
 
     calculated_average_rates = {}
     total_currency_volumes = {}
@@ -63,15 +62,20 @@ while True:
         for currency in CURRENCY_LIST:
             if currency in rate:
                 calculated_volumes[currency][rate['exchange_name']] = {}
-                calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'].quantize(DEC_PLACES),
-                                                                                'bid': rate[currency]['bid'].quantize(DEC_PLACES),
-                                                                                'last': rate[currency]['last'].quantize(DEC_PLACES),
+                calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'],
+                                                                                'bid': rate[currency]['bid'],
+                                                                                'last': rate[currency]['last'],
                                                                                     }
+                if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
+                    calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
+                if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
+                    calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
+                if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
+                    calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
+
                 calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
                 calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
-                                                                                  / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
-                calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = max(Decimal(0.01).quantize(DEC_PLACES),
-                                                                                            calculated_volumes[currency][rate['exchange_name']]['volume_percent'])
+                    / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:

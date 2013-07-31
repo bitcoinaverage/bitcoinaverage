@@ -17,13 +17,16 @@ CURRENCY_LIST = {'USD':'USD',
                  'EUR':'EUR',
                  'GBP':'GBP',
                  'CAD':'CAD',
-                 'RUB':'RUB'}
+                 'RUB':'RUB',
+                 'PLN':'PLN',
+                 }
 
 EXCHANGE_LIST = {
                     'mtgox': {'usd_api_url': 'http://data.mtgox.com/api/2/BTCUSD/money/ticker',
                               'eur_api_url': 'http://data.mtgox.com/api/2/BTCEUR/money/ticker',
                               'gbp_api_url': 'http://data.mtgox.com/api/2/BTCGBP/money/ticker',
                               'cad_api_url': 'http://data.mtgox.com/api/2/BTCCAD/money/ticker',
+                              'pln_api_url': 'http://data.mtgox.com/api/2/BTCPLN/money/ticker',
                               'rur_api_url': 'http://data.mtgox.com/api/2/BTCRUB/money/ticker',
                                   },
                     'bitstamp': {'api_url': 'https://www.bitstamp.net/api/ticker/',
@@ -32,13 +35,26 @@ EXCHANGE_LIST = {
                              'eur_api_url': 'https://btc-e.com/api/2/btc_eur/ticker',
                              'rur_api_url': 'https://btc-e.com/api/2/btc_rur/ticker',
                                  },
-                    'bitcurex': { 'eur_api_url': 'https://eur.bitcurex.com/data/ticker.json',
+                    'bitcurex': { 'eur_ticker_url': 'https://eur.bitcurex.com/data/ticker.json',
+                                  'eur_trades_url': 'https://eur.bitcurex.com/data/trades.json',
+                                  'pln_ticker_url': 'https://pln.bitcurex.com/data/ticker.json',
+                                  'pln_trades_url': 'https://pln.bitcurex.com/data/trades.json',
                                     },
                     'vircurex': { 'usd_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=USD',
                                   'eur_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=EUR',
                                     },
 
                     'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
+
+                    'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
+                                   'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',
+                                   },
+                    'rocktrading':{'usd_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCUSD',
+                                   'usd_trades_url': 'https://www.therocktrading.com/api/trades/BTCUSD',
+                                   'eur_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCEUR',
+                                   'eur_trades_url': 'https://www.therocktrading.com/api/trades/BTCEUR',
+                                    },
+
 
                     'campbx': {'api_url': 'http://campbx.com/api/xticker.php',
                                  },
