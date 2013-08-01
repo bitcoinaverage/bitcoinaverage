@@ -1,8 +1,6 @@
 #!/usr/bin/python2.7
 import os
 import sys
-from requests.exceptions import ConnectionError
-from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException
 
 project_abs_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, project_abs_path)
@@ -12,14 +10,18 @@ import json
 import time
 from email import utils
 from decimal import Decimal
+from requests.exceptions import ConnectionError
 
-from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, API_DOCUMENT_ROOT
 from bitcoinaverage import api_parsers
 from bitcoinaverage import bitcoinchart_fallback
+from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, API_DOCUMENT_ROOT
+from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException
+from bitcoinaverage.helpers import write_config
 
 if API_DOCUMENT_ROOT == '':
     API_DOCUMENT_ROOT = os.path.join(project_abs_path, 'api')
 
+write_config(project_abs_path)
 
 while True:
     start_time = int(time.time())
@@ -123,15 +125,13 @@ while True:
                             }
                 all_data[currency] = cur_data
 
-            api_all_data_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['ALL_FILE']), 'w+')
-            api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
-            api_all_data_file.close()
+            with open(os.path.join(API_DOCUMENT_ROOT, API_FILES['ALL_FILE']), 'w+') as api_all_data_file:
+                api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
 
             rates_all = calculated_average_rates
             rates_all['timestamp'] = timestamp
-            api_ticker_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], 'all'), 'w+')
-            api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
-            api_ticker_all_file.close()
+            with open(os.path.join(API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], 'all'), 'w+') as api_ticker_all_file:
+                api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
 
             for currency in CURRENCY_LIST:
                 ticker_cur = calculated_average_rates[currency]
@@ -142,9 +142,8 @@ while True:
 
             volumes_all = calculated_volumes
             volumes_all['timestamp'] = timestamp
-            api_volume_all_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], 'all'), 'w+')
-            api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
-            api_volume_all_file.close()
+            with open(os.path.join(API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], 'all'), 'w+') as api_volume_all_file:
+                api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
 
             for currency in CURRENCY_LIST:
                 volume_cur = calculated_volumes[currency]
@@ -153,12 +152,11 @@ while True:
                 api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
                 api_ticker_file.close()
 
-            api_ignored_file = open(os.path.join(API_DOCUMENT_ROOT, API_FILES['IGNORED_FILE']), 'w+')
-            api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
-            api_ignored_file.close()
+            with open(os.path.join(API_DOCUMENT_ROOT, API_FILES['IGNORED_FILE']), 'w+') as api_ignored_file:
+                api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
 
         except IOError as error:
-            continue
+            print 'ERROR: %s, %s ' % (sys.exc_info()[0], error)
 
     except (ValueError, ConnectionError) as error:
         print 'ERROR: "%s, %s"; API not updated' % (sys.exc_info()[0], error)

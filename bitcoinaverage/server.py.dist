@@ -1,1 +1,3 @@
-API_DOCUMENT_ROOT = ''  # if empty - 'main.py folder'/api used
+API_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api used
+WWW_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/www used
+API_INDEX_URL = '' #should be not empty

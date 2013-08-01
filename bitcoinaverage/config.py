@@ -9,17 +9,18 @@ API_FILES = {'TICKER_PATH': 'ticker/',
              }
 
 
-API_QUERY_FREQUENCY = 15 #seconds
+API_QUERY_FREQUENCY = 15 #seconds between calls to exchanges APIs
+FRONTEND_QUERY_FREQUENCY = 5000 #milliseconds between AJAX requests from frontend to our API
 
 DEC_PLACES = Decimal('0.00')
 
-CURRENCY_LIST = {'USD':'USD',
-                 'EUR':'EUR',
-                 'GBP':'GBP',
-                 'CAD':'CAD',
-                 'RUB':'RUB',
-                 'PLN':'PLN',
-                 }
+CURRENCY_LIST = ('USD',
+                 'EUR',
+                 'GBP',
+                 'CAD',
+                 'PLN',
+                 'RUB',
+                    )
 
 BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
 

@@ -8,36 +8,18 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript">
-    //config should be moved to server side
-        var currencyOrder = ['USD','EUR','GBP','CAD','PLN','RUB'];
         var legendSlots = 20;
         var API_data = {};
-        var refreshRate = 5000; //milliseconds
-
-        var base_host = '';
-        var API_host = '';
-        var API_all_url = '';
-        $(function(){
-            var current_host = window.location.host;
-            if (current_host == '') {
-                current_host = 'dev.bitcoinaverage.com';
-            }
-            current_host = current_host.split('.');
-            base_host = current_host.pop();
-            base_host = current_host.pop()+'.'+base_host;
-            API_host = 'api.'+base_host;
-            API_all_url = 'http://'+API_host+'/all';
-
-            API_all_url = 'http://ba.virtualhost/api/all';
-        });
+        var API_all_url = config.apiIndexUrl+'/all';
     </script>
     <script type="text/javascript">
         $(function(){
             callAPI();
-            setInterval(callAPI, refreshRate);
+            setInterval(callAPI, config.refreshRate);
 
-            for(var slotNum in currencyOrder){
+            for(var slotNum in config.currencyOrder){
                 $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid').dblclick(function(event){
                     event.preventDefault();
                     $(this).selectText();
@@ -54,7 +36,6 @@
 
             }
         });
-
 
         function callAPI(){
             if (window.XDomainRequest) {
@@ -74,8 +55,8 @@
                 API_data = result;
                 var titleSet = false;
 
-                for(var slotNum in currencyOrder){
-                    var currencyCode = currencyOrder[slotNum];
+                for(var slotNum in config.currencyOrder){
+                    var currencyCode = config.currencyOrder[slotNum];
 
                     renderRates(currencyCode, result[currencyCode], slotNum);
 
