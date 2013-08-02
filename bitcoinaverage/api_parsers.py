@@ -2,10 +2,36 @@ import time
 import requests
 from decimal import Decimal
 
-from bitcoinaverage.config import DEC_PLACES
+import bitcoinaverage
+from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY
 
+API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
 
-def mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, *args, **kwargs):
+def hasAPI(exchange_name):
+    return '_%sApiCall' % exchange_name in globals()
+
+def callAPI(exchange_name, exchange_params):
+    global API_QUERY_CACHE, API_QUERY_FREQUENCY
+
+    current_timestamp = int(time.time())
+    if exchange_name in API_QUERY_FREQUENCY:
+        if (exchange_name in API_QUERY_CACHE and
+            API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
+            result = API_QUERY_CACHE[exchange_name]['result']
+            print '%s from cache' % exchange_name
+        else:
+            result = globals()['_%sApiCall' % exchange_name](**exchange_params)
+            print '%s from API' % exchange_name
+            API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
+                                               'result':result,
+                                               }
+    else:
+        print '%s from API' % exchange_name
+        result = globals()['_%sApiCall' % exchange_name](**exchange_params)
+
+    return result
+
+def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
     gbp_result = requests.get(gbp_api_url).json()
@@ -58,7 +84,7 @@ def mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url
     }
 
 
-def bitstampApiCall(api_url, *args, **kwargs):
+def _bitstampApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url).json()
 
     return {'USD': {'ask': Decimal(result['ask']).quantize(DEC_PLACES),
@@ -108,15 +134,7 @@ def bitstampApiCall(api_url, *args, **kwargs):
 #
 #     return return_data
 
-def sort_dates(x,y):
-    if x['time']>y['time']:
-        return 1
-    elif x['time']<y['time']:
-        return -1
-    else:
-        return 0
-
-def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
+def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
     rur_result = requests.get(rur_api_url).json()
@@ -163,7 +181,7 @@ def btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
             }}
 
 
-def bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_url, *args, **kwargs):
+def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_url, *args, **kwargs):
     eur_result = requests.get(eur_ticker_url).json()
     pln_result = requests.get(eur_ticker_url).json()
 
@@ -199,7 +217,7 @@ def bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_u
             }
 
 
-def vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
+def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
 
@@ -215,7 +233,7 @@ def vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
             },
     }
 
-def bitbargainApiCall(gbp_api_url, *args, **kwargs):
+def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
     gbp_result = requests.get(gbp_api_url).json()
 
 
@@ -229,7 +247,7 @@ def bitbargainApiCall(gbp_api_url, *args, **kwargs):
                                     },
                 }
 
-def cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
+def _cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
 
@@ -251,7 +269,7 @@ def cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
                                     },
             }
 
-def rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trades_url, *args, **kwargs):
+def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trades_url, *args, **kwargs):
     usd_ticker_result = requests.get(usd_ticker_url, verify=False).json()
     eur_ticker_result = requests.get(eur_ticker_url, verify=False).json()
 
@@ -305,4 +323,3 @@ def rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trade
                                    'volume': Decimal(eur_vol).quantize(DEC_PLACES),
                                     },
             }
-

@@ -12,11 +12,11 @@ from email import utils
 from decimal import Decimal
 from requests.exceptions import ConnectionError
 
-from bitcoinaverage import api_parsers
 from bitcoinaverage import bitcoinchart_fallback
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, API_DOCUMENT_ROOT
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException
 from bitcoinaverage.helpers import write_config
+from bitcoinaverage import api_parsers
 
 if API_DOCUMENT_ROOT == '':
     API_DOCUMENT_ROOT = os.path.join(project_abs_path, 'api')
@@ -33,8 +33,8 @@ while True:
 
         for exchange_name in EXCHANGE_LIST:
             try:
-                if hasattr(api_parsers, exchange_name+'ApiCall'):
-                    result = getattr(api_parsers, exchange_name+'ApiCall')(**EXCHANGE_LIST[exchange_name])
+                if api_parsers.hasAPI(exchange_name):
+                    result = api_parsers.callAPI(exchange_name=exchange_name, exchange_params=EXCHANGE_LIST[exchange_name])
                 elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
                     result = bitcoinchart_fallback.getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
                 else:
@@ -162,7 +162,7 @@ while True:
         print 'ERROR: "%s, %s"; API not updated' % (sys.exc_info()[0], error)
 
     cycle_time = int(time.time())-start_time
-    sleep_time = max(0,API_QUERY_FREQUENCY-cycle_time)
+    sleep_time = max(0,API_QUERY_FREQUENCY['default']-cycle_time)
     print '%s, sleeping %ss' % (timestamp, str(sleep_time))
 
     time.sleep(sleep_time)

@@ -8,8 +8,11 @@ API_FILES = {'TICKER_PATH': 'ticker/',
              'IGNORED_FILE': 'ignored',
              }
 
-
-API_QUERY_FREQUENCY = 15 #seconds between calls to exchanges APIs
+#seconds between calls to various exchanges APIs
+API_QUERY_FREQUENCY = {'bitcoincharts': 900,
+                       'bitbargain': 600,
+                       'default': 15,
+                       }
 FRONTEND_QUERY_FREQUENCY = 5000 #milliseconds between AJAX requests from frontend to our API
 
 DEC_PLACES = Decimal('0.00')

@@ -1,25 +1,32 @@
+import time
 from decimal import Decimal
 
 import requests
 
-from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES
+from bitcoinaverage.api_parsers import API_QUERY_CACHE
+from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_QUERY_FREQUENCY
 
-bitcoincharts_data = None
 
 def fetchBitcoinChartsData():
-    global bitcoincharts_data
+    global API_QUERY_CACHE, API_QUERY_FREQUENCY
 
-    bitcoincharts_data = requests.get(BITCOIN_CHARTS_API_URL).json()
-
+    current_timestamp = int(time.time())
+    if ('bitcoincharts' in API_QUERY_CACHE
+        and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
+        result = API_QUERY_CACHE['bitcoincharts']['result']
+        print 'bitcoincharts from cache'
+    else:
+        result = requests.get(BITCOIN_CHARTS_API_URL).json()
+        print 'bitcoincharts from API'
+        API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
+                                             'result':result,
+                                               }
+    return result
 
 def getData(bitcoincharts_symbols):
-    global bitcoincharts_data
-
-    if bitcoincharts_data is None:
-        fetchBitcoinChartsData()
+    bitcoincharts_data = fetchBitcoinChartsData()
 
     return_result = {}
-
     for api in bitcoincharts_data:
         for currency_code in bitcoincharts_symbols:
             if api['symbol'] == bitcoincharts_symbols[currency_code]:
