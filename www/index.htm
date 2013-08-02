@@ -12,7 +12,11 @@
     <script type="text/javascript">
         var legendSlots = 20;
         var API_data = {};
+        if (typeof config.apiIndexUrl == 'undefined' || config.apiIndexUrl == ''){
+            alert('API URL config value empty!');
+        }
         var API_all_url = config.apiIndexUrl+'/all';
+
     </script>
     <script type="text/javascript">
         $(function(){

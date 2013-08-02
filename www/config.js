@@ -1,6 +1,6 @@
 
-var config = {'apiIndexUrl': "http://ba.virtualhost/api/",
-              'refreshRate': 5000,
-              'currencyOrder': ["USD", "EUR", "GBP", "CAD", "PLN", "RUB"]
+var config = {'apiIndexUrl': "",
+              'refreshRate': 0,
+              'currencyOrder': []
                 };
                     
