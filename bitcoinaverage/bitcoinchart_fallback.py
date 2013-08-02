@@ -14,10 +14,8 @@ def fetchBitcoinChartsData():
     if ('bitcoincharts' in API_QUERY_CACHE
         and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
         result = API_QUERY_CACHE['bitcoincharts']['result']
-        print 'bitcoincharts from cache'
     else:
         result = requests.get(BITCOIN_CHARTS_API_URL).json()
-        print 'bitcoincharts from API'
         API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
                                              'result':result,
                                                }

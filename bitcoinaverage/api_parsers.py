@@ -18,15 +18,12 @@ def callAPI(exchange_name, exchange_params):
         if (exchange_name in API_QUERY_CACHE and
             API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
             result = API_QUERY_CACHE[exchange_name]['result']
-            print '%s from cache' % exchange_name
         else:
             result = globals()['_%sApiCall' % exchange_name](**exchange_params)
-            print '%s from API' % exchange_name
             API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
                                                'result':result,
                                                }
     else:
-        print '%s from API' % exchange_name
         result = globals()['_%sApiCall' % exchange_name](**exchange_params)
 
     return result

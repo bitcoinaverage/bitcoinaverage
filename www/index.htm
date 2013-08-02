@@ -97,8 +97,9 @@
                 exchangeArray[index] = currencyData.exchanges[exchange_name];
                 index++;
             }
+
             exchangeArray.sort(function(a, b){
-                if(a.volume_percent < b.volume_percent){
+                if(parseFloat(a.volume_percent) < parseFloat(b.volume_percent)){
                     return 1;
                 } else {
                     return -1;

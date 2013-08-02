@@ -51,6 +51,8 @@ while True:
 
         calculated_average_rates = {}
         total_currency_volumes = {}
+        total_currency_volumes_ask = {}
+        total_currency_volumes_bid = {}
         calculated_volumes = {}
         for currency in CURRENCY_LIST:
             calculated_average_rates[currency] = {'last': DEC_PLACES,
@@ -58,12 +60,18 @@ while True:
                                                    'bid': DEC_PLACES,
                                                     }
             total_currency_volumes[currency] = DEC_PLACES
+            total_currency_volumes_ask[currency] = DEC_PLACES
+            total_currency_volumes_bid[currency] = DEC_PLACES
             calculated_volumes[currency] = {}
 
         for rate in exchanges_rates:
             for currency in CURRENCY_LIST:
                 if currency in rate:
                     total_currency_volumes[currency] = total_currency_volumes[currency] + rate[currency]['volume']
+                    if rate[currency]['ask'] is not None:
+                        total_currency_volumes_ask[currency] = total_currency_volumes_ask[currency] + rate[currency]['volume']
+                    if rate[currency]['bid'] is not None:
+                        total_currency_volumes_bid[currency] = total_currency_volumes_bid[currency] + rate[currency]['volume']
 
         for rate in exchanges_rates:
             for currency in CURRENCY_LIST:
@@ -73,16 +81,20 @@ while True:
                                                                                     'bid': rate[currency]['bid'],
                                                                                     'last': rate[currency]['last'],
                                                                                         }
-                    if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
-                        calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
-                    if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
-                        calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
-                    if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
-                        calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
-
+                    calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
                     calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
                     calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
                         / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
+
+                    if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
+                        calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = (rate[currency]['volume']
+                            / total_currency_volumes_ask[currency] * Decimal(100) ).quantize(DEC_PLACES)
+
+                    if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
+                        calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = (rate[currency]['volume']
+                            / total_currency_volumes_bid[currency] * Decimal(100) ).quantize(DEC_PLACES)
 
         for rate in exchanges_rates:
             for currency in CURRENCY_LIST:
@@ -92,10 +104,10 @@ while True:
                                                                 + rate[currency]['last'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
                     if rate[currency]['ask'] is not None:
                         calculated_average_rates[currency]['ask'] = ( calculated_average_rates[currency]['ask']
-                                                                + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                                                                + rate[currency]['ask'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] / Decimal(100) )
                     if rate[currency]['bid'] is not None:
                         calculated_average_rates[currency]['bid'] = ( calculated_average_rates[currency]['bid']
-                                                                + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent'] / Decimal(100) )
+                                                                + rate[currency]['bid'] * calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] / Decimal(100) )
 
                     calculated_average_rates[currency]['last'] = calculated_average_rates[currency]['last'].quantize(DEC_PLACES)
                     calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
@@ -113,7 +125,10 @@ while True:
                     calculated_volumes[currency][exchange_name]['rates']['bid'] = str(calculated_volumes[currency][exchange_name]['rates']['bid'])
                     calculated_volumes[currency][exchange_name]['volume_btc'] = str(calculated_volumes[currency][exchange_name]['volume_btc'])
                     calculated_volumes[currency][exchange_name]['volume_percent'] = str(calculated_volumes[currency][exchange_name]['volume_percent'])
-
+                    if 'volume_percent_ask' in calculated_volumes[currency][exchange_name]:
+                        del calculated_volumes[currency][exchange_name]['volume_percent_ask']
+                    if 'volume_percent_bid' in calculated_volumes[currency][exchange_name]:
+                        del calculated_volumes[currency][exchange_name]['volume_percent_bid']
 
         try:
             all_data = {}
