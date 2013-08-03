@@ -1,6 +1,7 @@
 #!/usr/bin/python2.7
 import os
 import sys
+from bitcoinaverage.server import LOG_PATH
 
 project_abs_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, project_abs_path)
@@ -20,6 +21,10 @@ from bitcoinaverage import api_parsers
 
 if API_DOCUMENT_ROOT == '':
     API_DOCUMENT_ROOT = os.path.join(project_abs_path, 'api')
+
+if LOG_PATH == '':
+    LOG_PATH = os.path.join(project_abs_path, 'runtime', 'app.error.log')
+
 
 write_config(project_abs_path)
 
@@ -174,10 +179,15 @@ while True:
                 api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
 
         except IOError as error:
+            with open(LOG_PATH, 'a') as log_file:
+                log_file.write('ERROR: %s, %s ' % (sys.exc_info()[0], error))
             print 'ERROR: %s, %s ' % (sys.exc_info()[0], error)
 
     except (ValueError, ConnectionError) as error:
+        with open(LOG_PATH, 'a') as log_file:
+            log_file.write('ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error))
         print 'ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error)
+        raise error
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0,API_QUERY_FREQUENCY['default']-cycle_time)
