@@ -19,6 +19,7 @@
 
     </script>
     <script type="text/javascript">
+        var legendClickStatus = false;
         $(function(){
             callAPI();
             setInterval(callAPI, config.refreshRate);
@@ -31,12 +32,39 @@
 
                 var slotLegendSelector = $('.slot'+slotNum+'-box');
                 slotLegendSelector.mouseover(function(event){
-                    renderLegend($(this).data('currencycode'));
-                    $('#legend-block').show();
+                    var curCode = $(this).data('currencycode');
+
+                    if (legendClickStatus == false || legendClickStatus == curCode){
+                        renderLegend(curCode);
+                        $(this).css('border-bottom', '2px solid #999999');
+                        $('#legend-block').show();
+                    }
                 });
                 slotLegendSelector.mouseout(function(event){
-                    $('#legend-block').hide();
+                    if (legendClickStatus == false){
+                        $(this).css('border-bottom', '2px solid #F5F5F5');
+                        $('#legend-block').hide();
+                    }
                 });
+
+                slotLegendSelector.click(function(event){
+                    event.preventDefault();
+                    var curCode = $(this).data('currencycode');
+
+                    if (legendClickStatus == false || legendClickStatus != curCode) {
+                        renderLegend(curCode);
+                        legendClickStatus = curCode;
+
+                        $('.slot0-box, .slot1-box, .slot2-box, .slot3-box, .slot4-box').css('border-bottom', '2px solid #F5F5F5');
+
+                        $(this).css('border-bottom', '2px solid #999999');
+                        $('#legend-block').show();
+                    } else {
+                        legendClickStatus = false;
+                    }
+                });
+
+
 
             }
         });
@@ -226,6 +254,10 @@
         }
 
         h2{font-size: 1.5em;}
+
+        .slot0-box, .slot1-box, .slot2-box, .slot3-box, .slot4-box{
+            border-bottom: 2px solid #F5F5F5;
+        }
 
         #legend-block{
             margin-top: 30px;
