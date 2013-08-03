@@ -187,7 +187,6 @@ while True:
         with open(LOG_PATH, 'a') as log_file:
             log_file.write('ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error))
         print 'ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error)
-        raise error
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0,API_QUERY_FREQUENCY['default']-cycle_time)
