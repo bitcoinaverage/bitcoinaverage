@@ -48,6 +48,9 @@ while True:
                     raise UnknownException
             except (NoApiException, NoVolumeException, UnknownException) as error:
                 exchanges_ignored[exchange_name] = error.text
+            except (ValueError, ConnectionError) as error:
+                error.exchange_name = exchange_name
+                raise error
 
         calculated_average_rates = {}
         total_currency_volumes = {}
@@ -174,7 +177,7 @@ while True:
             print 'ERROR: %s, %s ' % (sys.exc_info()[0], error)
 
     except (ValueError, ConnectionError) as error:
-        print 'ERROR: "%s, %s"; API not updated' % (sys.exc_info()[0], error)
+        print 'ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error)
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0,API_QUERY_FREQUENCY['default']-cycle_time)

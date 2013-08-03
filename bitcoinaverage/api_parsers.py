@@ -180,7 +180,7 @@ def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
 
 def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_url, *args, **kwargs):
     eur_result = requests.get(eur_ticker_url).json()
-    pln_result = requests.get(eur_ticker_url).json()
+    pln_result = requests.get(pln_ticker_url).json()
 
     last24h_time = int(time.time())-86400  #86400s in 24h
     eur_vol = 0.0
@@ -196,21 +196,21 @@ def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_
             pln_vol = pln_vol + float(trade['amount'])
 
     return {'EUR': {'ask': Decimal(eur_result['sell']).quantize(DEC_PLACES),
-                                   'bid': Decimal(eur_result['buy']).quantize(DEC_PLACES),
-                                   'high': Decimal(eur_result['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(eur_result['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(eur_result['last']).quantize(DEC_PLACES),
-                                   'avg': Decimal(eur_result['avg']).quantize(DEC_PLACES),
-                                   'volume': Decimal(eur_vol).quantize(DEC_PLACES),
-                                    },
+                       'bid': Decimal(eur_result['buy']).quantize(DEC_PLACES),
+                       'high': Decimal(eur_result['high']).quantize(DEC_PLACES),
+                       'low': Decimal(eur_result['low']).quantize(DEC_PLACES),
+                       'last': Decimal(eur_result['last']).quantize(DEC_PLACES),
+                       'avg': Decimal(eur_result['avg']).quantize(DEC_PLACES),
+                       'volume': Decimal(eur_vol).quantize(DEC_PLACES),
+                        },
             'PLN': {'ask': Decimal(pln_result['sell']).quantize(DEC_PLACES),
-                                   'bid': Decimal(pln_result['buy']).quantize(DEC_PLACES),
-                                   'high': Decimal(pln_result['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(pln_result['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(pln_result['last']).quantize(DEC_PLACES),
-                                   'avg': Decimal(pln_result['avg']).quantize(DEC_PLACES),
-                                   'volume': Decimal(pln_vol).quantize(DEC_PLACES),
-                                    },
+                   'bid': Decimal(pln_result['buy']).quantize(DEC_PLACES),
+                   'high': Decimal(pln_result['high']).quantize(DEC_PLACES),
+                   'low': Decimal(pln_result['low']).quantize(DEC_PLACES),
+                   'last': Decimal(pln_result['last']).quantize(DEC_PLACES),
+                   'avg': Decimal(pln_result['avg']).quantize(DEC_PLACES),
+                   'volume': Decimal(pln_vol).quantize(DEC_PLACES),
+                    },
             }
 
 
