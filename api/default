@@ -4,7 +4,7 @@
              "EUR": "http://api.bitcoinaverage.com/ticker/EUR",
              "GBP": "http://api.bitcoinaverage.com/ticker/GBP",
              "CAD": "http://api.bitcoinaverage.com/ticker/CAD",
-             "RUB": "http://api.bitcoinaverage.com/ticker/RUB"
+             "RUB": "http://api.bitcoinaverage.com/ticker/RUB",
              "PLN": "http://api.bitcoinaverage.com/ticker/PLN"
             },
 
@@ -13,7 +13,7 @@
              "EUR": "http://api.bitcoinaverage.com/exchanges/EUR",
              "GBP": "http://api.bitcoinaverage.com/exchanges/GBP",
              "CAD": "http://api.bitcoinaverage.com/exchanges/CAD",
-             "RUB": "http://api.bitcoinaverage.com/exchanges/RUB"
+             "RUB": "http://api.bitcoinaverage.com/exchanges/RUB",
              "PLN": "http://api.bitcoinaverage.com/exchanges/PLN"
             },
 

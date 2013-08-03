@@ -4,6 +4,6 @@
     "EUR": "http://api.bitcoinaverage.com/ticker/EUR",
     "GBP": "http://api.bitcoinaverage.com/ticker/GBP",
     "CAD": "http://api.bitcoinaverage.com/ticker/CAD",
-    "RUB": "http://api.bitcoinaverage.com/ticker/RUB"
+    "RUB": "http://api.bitcoinaverage.com/ticker/RUB",
     "PLN": "http://api.bitcoinaverage.com/ticker/PLN"
 }
