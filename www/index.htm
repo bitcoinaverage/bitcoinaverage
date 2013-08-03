@@ -24,6 +24,9 @@
             callAPI();
             setInterval(callAPI, config.refreshRate);
 
+            $('#legend-block').click(function(event){
+                event.stopPropagation();
+            });
             $('body').keyup(function(event){
                 if (event.keyCode == 27) {
                     $('.slot0-box, .slot1-box, .slot2-box, .slot3-box, .slot4-box').css('border-bottom', '2px solid #F5F5F5');
@@ -36,6 +39,7 @@
                 $('#legend-block').hide();
                 legendClickStatus = false;
             });
+
 
 
             for(var slotNum in config.currencyOrder){
