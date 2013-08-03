@@ -24,6 +24,20 @@
             callAPI();
             setInterval(callAPI, config.refreshRate);
 
+            $('body').keyup(function(event){
+                if (event.keyCode == 27) {
+                    $('.slot0-box, .slot1-box, .slot2-box, .slot3-box, .slot4-box').css('border-bottom', '2px solid #F5F5F5');
+                    $('#legend-block').hide();
+                    legendClickStatus = false;
+                }
+            });
+            $('body').click(function(event){
+                $('.slot0-box, .slot1-box, .slot2-box, .slot3-box, .slot4-box').css('border-bottom', '2px solid #F5F5F5');
+                $('#legend-block').hide();
+                legendClickStatus = false;
+            });
+
+
             for(var slotNum in config.currencyOrder){
                 $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid').dblclick(function(event){
                     event.preventDefault();
@@ -49,6 +63,7 @@
 
                 slotLegendSelector.click(function(event){
                     event.preventDefault();
+                    event.stopPropagation();
                     var curCode = $(this).data('currencycode');
 
                     if (legendClickStatus == false || legendClickStatus != curCode) {
