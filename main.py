@@ -181,13 +181,13 @@ while True:
                 api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
 
         except IOError as error:
-            with open(LOG_PATH, 'a') as log_file:
-                log_file.write('ERROR: %s, %s ' % (sys.exc_info()[0], error))
-            print 'ERROR: %s, %s ' % (sys.exc_info()[0], error)
+            error_text = '%s, %s ' % (sys.exc_info()[0], error)
+            write_log(LOG_PATH, error_text)
+            print 'ERROR: %s ' % (error_text)
 
     except (ValueError, ConnectionError) as error:
         error_text = '%s, %s, %s' % (error.exchange_name, sys.exc_info()[0], error)
-        write_log(error_text)
+        write_log(LOG_PATH, error_text)
         print 'ERROR: %s; API not updated' % error_text
 
     cycle_time = int(time.time())-start_time
