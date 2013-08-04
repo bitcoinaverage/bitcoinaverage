@@ -279,8 +279,6 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trad
 
     usd_volume_result = requests.get(usd_trades_url, verify=False).json()
     for trade in usd_volume_result:
-        print trade
-        exit()
         if trade['date'] > last24h_time:
             if usd_low > float(trade['price']) or usd_low == 0:
                 usd_low = float(trade['price'])

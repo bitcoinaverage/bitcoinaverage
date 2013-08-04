@@ -1,10 +1,9 @@
 #!/usr/bin/python2.7
 import os
 import sys
-from bitcoinaverage.server import LOG_PATH
 
-project_abs_path = os.path.abspath(os.path.join(__file__, os.pardir))
-sys.path.insert(0, project_abs_path)
+PROJECT_ABS_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
+sys.path.insert(0, PROJECT_ABS_PATH)
 
 
 import json
@@ -16,17 +15,20 @@ from requests.exceptions import ConnectionError
 from bitcoinaverage import bitcoinchart_fallback
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, API_DOCUMENT_ROOT
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException
-from bitcoinaverage.helpers import write_config
+from bitcoinaverage.helpers import write_config, write_log
 from bitcoinaverage import api_parsers
+from bitcoinaverage.server import LOG_PATH
 
 if API_DOCUMENT_ROOT == '':
-    API_DOCUMENT_ROOT = os.path.join(project_abs_path, 'api')
+    API_DOCUMENT_ROOT = os.path.join(PROJECT_ABS_PATH, 'api')
 
 if LOG_PATH == '':
-    LOG_PATH = os.path.join(project_abs_path, 'runtime', 'app.error.log')
+    LOG_PATH = os.path.join(PROJECT_ABS_PATH, 'runtime', 'app.error.log')
+
+write_log(LOG_PATH, 'script started', 'LOG')
 
 
-write_config(project_abs_path)
+write_config(PROJECT_ABS_PATH)
 
 while True:
     start_time = int(time.time())
@@ -184,9 +186,9 @@ while True:
             print 'ERROR: %s, %s ' % (sys.exc_info()[0], error)
 
     except (ValueError, ConnectionError) as error:
-        with open(LOG_PATH, 'a') as log_file:
-            log_file.write('ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error))
-        print 'ERROR: "%s, %s, %s"; API not updated' % (error.exchange_name, sys.exc_info()[0], error)
+        error_text = '%s, %s, %s' % (error.exchange_name, sys.exc_info()[0], error)
+        write_log(error_text)
+        print 'ERROR: %s; API not updated' % error_text
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0,API_QUERY_FREQUENCY['default']-cycle_time)
