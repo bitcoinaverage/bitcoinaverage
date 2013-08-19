@@ -245,27 +245,27 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
                 }
 
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
-    usd_result = requests.get(api_url).json()
+    result = requests.get(api_url).json()
 
-    return {'USD': {'ask': Decimal(usd_result['USD']['rates']['last']).quantize(DEC_PLACES),
+    return {'USD': {'ask': Decimal(result['USD']['rates']['last']).quantize(DEC_PLACES),
                                    'bid': None,
-                                   'last': Decimal(usd_result['USD']['rates']['last']).quantize(DEC_PLACES),
-                                   'volume': Decimal(usd_result['USD']['volume_btc']).quantize(DEC_PLACES),
+                                   'last': Decimal(result['USD']['rates']['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES),
             },
-            'EUR': {'ask': Decimal(eur_result['EUR']['rates']['last']).quantize(DEC_PLACES),
+            'EUR': {'ask': Decimal(result['EUR']['rates']['last']).quantize(DEC_PLACES),
                                    'bid': None,
-                                   'last': Decimal(eur_result['EUR']['rates']['last']).quantize(DEC_PLACES),
-                                   'volume': Decimal(eur_result['EUR']['volume_btc']).quantize(DEC_PLACES),
+                                   'last': Decimal(result['EUR']['rates']['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES),
             },
-            'GBP': {'ask': Decimal(gbp_result['GBP']['rates']['last']).quantize(DEC_PLACES),
+            'GBP': {'ask': Decimal(result['GBP']['rates']['last']).quantize(DEC_PLACES),
                                    'bid': None,
-                                   'last': Decimal(gbp_result['GBP']['rates']['last']).quantize(DEC_PLACES),
-                                   'volume': Decimal(gbp_result['GBP']['volume_btc']).quantize(DEC_PLACES),
+                                   'last': Decimal(result['GBP']['rates']['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES),
             },
-            'CAD': {'ask': Decimal(cad_result['CAD']['rates']['last']).quantize(DEC_PLACES),
+            'CAD': {'ask': Decimal(result['CAD']['rates']['last']).quantize(DEC_PLACES),
                                    'bid': None,
-                                   'last': Decimal(cad_result['CAD']['rates']['last']).quantize(DEC_PLACES),
-                                   'volume': Decimal(cad_result['CAD']['volume_btc']).quantize(DEC_PLACES),
+                                   'last': Decimal(result['CAD']['rates']['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES),
             },
     }
 
