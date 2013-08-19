@@ -244,11 +244,8 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
                                     },
                 }
 
-def _localbitcoinsApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url).json()
-    eur_result = requests.get(eur_api_url).json()
-    gbp_result = requests.get(gbp_api_url).json()
-    cad_result = requests.get(cad_api_url).json()
+def _localbitcoinsApiCall(api_url, *args, **kwargs):
+    usd_result = requests.get(api_url).json()
 
     return {'USD': {'ask': Decimal(usd_result['USD']['rates']['last']).quantize(DEC_PLACES),
                                    'bid': None,
