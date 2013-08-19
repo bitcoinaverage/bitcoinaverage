@@ -42,7 +42,7 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
                                    'low': Decimal(usd_result['data']['low']['value']).quantize(DEC_PLACES),
                                    'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES),
                                    'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES),
-    },
+            },
             'EUR': {'ask': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES),
                                    'bid': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES),
                                    'high': Decimal(eur_result['data']['high']['value']).quantize(DEC_PLACES),
@@ -243,6 +243,34 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
                                    'volume': volume_btc,
                                     },
                 }
+
+def _localbitcoinsApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, *args, **kwargs):
+    usd_result = requests.get(usd_api_url).json()
+    eur_result = requests.get(eur_api_url).json()
+    gbp_result = requests.get(gbp_api_url).json()
+    cad_result = requests.get(cad_api_url).json()
+
+    return {'USD': {'ask': Decimal(usd_result['last']).quantize(DEC_PLACES),
+                                   'bid': None,
+                                   'last': Decimal(usd_result['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(usd_result['volume_btc']).quantize(DEC_PLACES),
+            },
+            'EUR': {'ask': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'bid': None,
+                                   'last': Decimal(eur_result['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(eur_result['volume_btc']).quantize(DEC_PLACES),
+            },
+            'GBP': {'ask': Decimal(gbp_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'bid': None,
+                                   'last': Decimal(gbp_result['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(gbp_result['volume_btc']).quantize(DEC_PLACES),
+            },
+            'CAD': {'ask': Decimal(cad_result['data']['sell']['value']).quantize(DEC_PLACES),
+                                   'bid': None,
+                                   'last': Decimal(cad_result['last']).quantize(DEC_PLACES),
+                                   'volume': Decimal(cad_result['volume_btc']).quantize(DEC_PLACES),
+            },
+    }
 
 def _cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
