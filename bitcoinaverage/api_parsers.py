@@ -244,7 +244,7 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
                                     },
                 }
 
-def _localbitcoinsApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, *args, **kwargs):
+def _localbitcoinsApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
     gbp_result = requests.get(gbp_api_url).json()
