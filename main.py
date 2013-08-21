@@ -185,7 +185,4 @@ while True:
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)
     print '%s, sleeping %ss' % (timestamp, str(sleep_time))
 
-    for exchange_name in EXCHANGE_LIST:
-        EXCHANGE_LIST[exchange_name]['usd_api_url'] = 'http://qwsasz.sdfwetcom/'
-
     time.sleep(sleep_time)
