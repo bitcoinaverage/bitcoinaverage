@@ -448,12 +448,69 @@ def _bitcashApiCall(czk_api_url, *args, **kwargs):
                     },
             }
 
-# def _intersangoApiCall(czk_api_url, *args, **kwargs):
-#     czk_result = requests.get(czk_api_url).json()
-#
-#     return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
-#                        'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
-#                        'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
-#                        'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
-#                     },
-#             }
+def _intersangoApiCall(ticker_url, *args, **kwargs):
+    result = requests.get(ticker_url).json()
+
+    #'2' in here is ID for EUR in intersango terms
+    return {'CZK': {'ask': Decimal(result['2']['sell']).quantize(DEC_PLACES),
+                       'bid': Decimal(result['2']['buy']).quantize(DEC_PLACES),
+                       'last': Decimal(result['2']['last']).quantize(DEC_PLACES),
+                       'volume': Decimal(result['2']['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
+    ticker = requests.get(ticker_url).json()
+    trades = requests.get(trades_url).json()
+
+    last24h_time = int(time.time())-86400  #86400s in 24h
+    volume = 0
+    for trade in trades:
+        if trade['date'] > last24h_time:
+            volume = volume + float(trade['amount'])
+
+    return {'ILS': {'ask': Decimal(ticker['h']).quantize(DEC_PLACES),
+                       'bid': Decimal(ticker['l']).quantize(DEC_PLACES),
+                       'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
+                       'volume': Decimal(volume).quantize(DEC_PLACES),
+                    },
+            }
+
+def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
+    ticker = requests.get(ticker_url).json()
+    orders = requests.get(orders_url).json()
+    trades = requests.get(trades_url).json()
+
+    last24h_time = int(time.time())-86400  #86400s in 24h
+    volume = 0
+    for trade in trades:
+        if trade['date'] > last24h_time:
+            volume = volume + float(trade['amount'])
+
+    return {'ILS': {'ask': Decimal(orders['asks'][0][0]).quantize(DEC_PLACES),
+                       'bid': Decimal(orders['bids'][0][0]).quantize(DEC_PLACES),
+                       'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
+                       'volume': Decimal(volume).quantize(DEC_PLACES),
+                    },
+            }
+
+def _kapitonApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url).json()
+
+    return {'SEK': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['price']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+def _rmbtbApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url).json()
+
+    return {'SEK': {'ask': Decimal(ticker['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['data']['vol']['value']).quantize(DEC_PLACES),
+                    },
+            }
+

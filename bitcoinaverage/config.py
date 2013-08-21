@@ -33,7 +33,7 @@ CURRENCY_LIST = ('USD',
                  'CNY',
                  'CZK',
                  'DKK',
-                 'CHF'
+                 'CHF',
                  'ILS',
                  'JPY',
                  'NZD',
@@ -77,7 +77,7 @@ EXCHANGE_LIST = {
                                     },
 
                     'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
-                                        
+
                     'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
                                          },
 
@@ -92,15 +92,20 @@ EXCHANGE_LIST = {
 
                     'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
                                   },
-                    #intersango - only EUR is used, because one needs to convert to EUR to add/withdraw with it
+                    #with intersango only EUR is used, because trader needs to convert to EUR to add/withdraw with it
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
                                    },
 
                     'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/NIS/Ticker.json',
+                              'orders_url' : 'https://www.bit2c.co.il/Exchanges/NIS/orderbook.json',
                               'trades_url' : 'https://www.bit2c.co.il/Exchanges/NIS/trades.json',
                                 },
-                    'kapiton': {'ticker_url': 'https://kapiton.se//api/0/ticker',
+                    'kapiton': {'ticker_url': 'https://kapiton.se/api/0/ticker',
                                 },
+
+                    'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/secure/BTCCNY/ticker',
+                                },
+
 
 
 
@@ -150,4 +155,3 @@ EXCHANGE_LIST = {
                                  },
 
                 }
-
