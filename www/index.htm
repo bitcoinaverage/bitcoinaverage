@@ -66,7 +66,6 @@
 
                     if (legendClickStatus == false || legendClickStatus == curCode){
                         renderLegend(curCode);
-                        /*$(this).css('border-bottom', '2px solid #999999');*/
                         $('#legend-block').show();
                     }
                 });
@@ -85,9 +84,7 @@
                     if (legendClickStatus == false || legendClickStatus != curCode) {
                         renderLegend(curCode);
                         legendClickStatus = curCode;
-                        /*$('.slot0-box, .slot1-box, .slot2-box, .slot3-box, .slot4-box').css('border-bottom', '2px solid #F5F5F5');*/
 
-                        /*$(this).css('border-bottom', '2px solid #999999');*/
                         $('#legend-block').show();
                         $('#currency-navtabs').children('li').removeClass('active');
                         $(this).parent().addClass('active');
@@ -100,14 +97,12 @@
 
             }
             
-        /**Bootstrap ToolTip**/
-          $("#question-mark").tooltip({
-              'trigger':'click',
-              'html': $(this).data('original-title'),
-              'placement': 'left'
-          });
+            $("#question-mark").tooltip({
+                'trigger':'click',
+                'html': $(this).data('original-title'),
+                'placement': 'left'
+            });
           
-          /**Display first pane of currency **/
         });
 
         function callAPI(){
@@ -127,6 +122,23 @@
         function renderAll(result){
                 API_data = result;
                 var titleSet = false;
+
+                config.currencyOrder.sort(function(a,b){
+                    result[a].total_volume_btc = 0;
+                    for (var exchange in result[a].exchanges){
+                        result[a].total_volume_btc += parseInt(result[a].exchanges[exchange].volume_btc);
+                    }
+
+                    result[b].total_volume_btc = 0;
+                    for (var exchange in result[b].exchanges){
+                        result[b].total_volume_btc += parseInt(result[b].exchanges[exchange].volume_btc);
+                    }
+                    if (result[a].total_volume_btc<result[b].total_volume_btc) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
 
                 for(var slotNum in config.currencyOrder){
                     var currencyCode = config.currencyOrder[slotNum];
@@ -151,29 +163,25 @@
 
         }
         
-        var lastusdvalue= 0;
+        var lastusdvalue = 0;
         function renderRates(currencyCode, currencyData, slotNum){
             $('.slot'+slotNum+'-box').data('currencycode', currencyCode);
+            var clickLink = $('.slot'+slotNum+'-box a');
+            clickLink.text(currencyCode+' '+currencyData.total_volume_btc);
+            clickLink.attr('href', '#'+currencyCode);
             $('.slot'+slotNum+'-curcode').text(currencyCode);
             $('#slot'+slotNum+'-last').text(currencyData.averages.last);
             $('#slot'+slotNum+'-ask').text(currencyData.averages.ask);
             $('#slot'+slotNum+'-bid').text(currencyData.averages.bid);
             
-            /** Handle arrows next to USD currency**/
-            if(currencyCode=="USD")
-            {
-                if(lastusdvalue == 0)
-                {
+            if (currencyCode == "USD") {
+                if (lastusdvalue == 0) {
                     lastusdvalue = currencyData.averages.last;
                 } else {
-                    if(currencyData.averages.last > lastusdvalue)
-                    {
-                        //value has increased
+                    if (currencyData.averages.last > lastusdvalue) {
                         $('#usd-arrowup').show();
                         $('#usd-arrowdown').hide();
-                    }
-                    else if (currencyData.averages.last < lastusdvalue)
-                    {
+                    } else if (currencyData.averages.last < lastusdvalue) {
                         $('#usd-arrowup').hide();
                         $('#usd-arrowdown').show();                        
                     }
@@ -181,9 +189,9 @@
                 }
             }
             
-            /**var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
-            flashingFigures.css({ 'opacity' : 0.5});
-            flashingFigures.animate({ 'opacity' : 1 }, 100);**/
+//            var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
+//            flashingFigures.css({ 'opacity' : 0.5});
+//            flashingFigures.animate({ 'opacity' : 1 }, 100);
         }
 
         function renderLegend(currencyCode){
@@ -503,12 +511,27 @@
     <ul class="dropdown-menu visible-lg" id="currency-sidebar" role="menu" data-spy="affix" data-offset-top="200">
         <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
         <li class="divider"></li>
-        <li class="slot0-box"><a tabindex="-1" href="#">USD</a></li>
-        <li class="slot1-box"><a tabindex="-1" href="#">EUR</a></li>
-        <li class="slot2-box"><a tabindex="-1" href="#">GBP</a></li>                
-        <li class="slot3-box"><a tabindex="-1" href="#">CAD</a></li>
-        <li class="slot4-box"><a tabindex="-1" href="#">PLN</a></li>                
-    </ul>  
+        <li class="slot0-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot1-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot2-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot3-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot4-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot5-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot6-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot7-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot8-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot9-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot10-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot11-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot12-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot13-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot14-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot15-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot16-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot17-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot18-box"><a tabindex="-1" href=""></a></li>
+        <li class="slot19-box"><a tabindex="-1" href=""></a></li>
+    </ul>
     <div id="main-container" class="container">      
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -726,16 +749,6 @@
                 
     </div><!-- /container -->
 
-    <div class="container" style="max-width:100%;">
-            <ul class="hidden-lg col-lg-12" id="currency-sidebar-sm">
-                <!--<li>Convert&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>-->
-                <li class="slot0-box"><a tabindex="-1" href="#" onclick="return false;">USD</a></li>
-                <li class="slot1-box"><a tabindex="-1" href="#" onclick="return false;">EUR</a></li>
-                <li class="slot2-box"><a tabindex="-1" href="#" onclick="return false;">GBP</a></li>                
-                <li class="slot3-box"><a tabindex="-1" href="#" onclick="return false;">CAD</a></li>
-                <li class="slot4-box"><a tabindex="-1" href="#" onclick="return false;">PLN</a></li>                
-            </ul> 
-    </div>    
     <footer class="footer clearfix">
         <div class="container hidden-sm">
             <div class="row">

@@ -5,7 +5,7 @@ from decimal import Decimal
 from requests.exceptions import ConnectionError
 
 import bitcoinaverage
-from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
+from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS
 from bitcoinaverage.exceptions import CallFailedException
 from bitcoinaverage.helpers import write_log
 
@@ -13,6 +13,7 @@ API_QUERY_CACHE = {} #holds last calls to APIs and last received data between ca
 
 def hasAPI(exchange_name):
     return '_%sApiCall' % exchange_name in globals()
+
 
 def callAPI(exchange_name, exchange_params):
     global API_QUERY_CACHE, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
@@ -54,25 +55,25 @@ def callAPI(exchange_name, exchange_params):
             write_log(log_message, 'ERROR')
             raise exception
 
-
     return result
+
 
 def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, aud_api_url, chf_api_url,
                   cny_api_url, dkk_api_url, hkd_api_url, jpy_api_url, nzd_api_url, sgd_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url).json()
-    eur_result = requests.get(eur_api_url).json()
-    gbp_result = requests.get(gbp_api_url).json()
-    cad_result = requests.get(cad_api_url).json()
-    pln_result = requests.get(pln_api_url).json()
-    rub_result = requests.get(rub_api_url).json()
-    aud_result = requests.get(aud_api_url).json()
-    chf_result = requests.get(chf_api_url).json()
-    cny_result = requests.get(cny_api_url).json()
-    dkk_result = requests.get(dkk_api_url).json()
-    hkd_result = requests.get(hkd_api_url).json()
-    jpy_result = requests.get(jpy_api_url).json()
-    nzd_result = requests.get(nzd_api_url).json()
-    sgd_result = requests.get(sgd_api_url).json()
+    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
+    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
+    gbp_result = requests.get(gbp_api_url, headers=API_REQUEST_HEADERS).json()
+    cad_result = requests.get(cad_api_url, headers=API_REQUEST_HEADERS).json()
+    pln_result = requests.get(pln_api_url, headers=API_REQUEST_HEADERS).json()
+    rub_result = requests.get(rub_api_url, headers=API_REQUEST_HEADERS).json()
+    aud_result = requests.get(aud_api_url, headers=API_REQUEST_HEADERS).json()
+    chf_result = requests.get(chf_api_url, headers=API_REQUEST_HEADERS).json()
+    cny_result = requests.get(cny_api_url, headers=API_REQUEST_HEADERS).json()
+    dkk_result = requests.get(dkk_api_url, headers=API_REQUEST_HEADERS).json()
+    hkd_result = requests.get(hkd_api_url, headers=API_REQUEST_HEADERS).json()
+    jpy_result = requests.get(jpy_api_url, headers=API_REQUEST_HEADERS).json()
+    nzd_result = requests.get(nzd_api_url, headers=API_REQUEST_HEADERS).json()
+    sgd_result = requests.get(sgd_api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
                        'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
@@ -130,38 +131,38 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
                        'volume': Decimal(hkd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'JPY': {'ask': Decimal(jpy_result['data']['sell']['value']).quantize(DEC_PLACES),
-                       'bid': Decimal(jpy_result['data']['buy']['value']).quantize(DEC_PLACES),
-                       'last': Decimal(jpy_result['data']['last']['value']).quantize(DEC_PLACES),
-                       'volume': Decimal(jpy_result['data']['vol']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(jpy_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(jpy_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(jpy_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'NZD': {'ask': Decimal(nzd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                       'bid': Decimal(nzd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                       'last': Decimal(nzd_result['data']['last']['value']).quantize(DEC_PLACES),
-                       'volume': Decimal(nzd_result['data']['vol']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(nzd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(nzd_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(nzd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'SGD': {'ask': Decimal(sgd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                       'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                       'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES),
-                       'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
     }
 
 
 def _bitstampApiCall(api_url, *args, **kwargs):
-    result = requests.get(api_url).json()
+    result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'USD': {'ask': Decimal(result['ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(result['bid']).quantize(DEC_PLACES),
-                                   'high': Decimal(result['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(result['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(result['last']).quantize(DEC_PLACES),
-                                   'volume': Decimal(result['volume']).quantize(DEC_PLACES),
+                    'bid': Decimal(result['bid']).quantize(DEC_PLACES),
+                    'high': Decimal(result['high']).quantize(DEC_PLACES),
+                    'low': Decimal(result['low']).quantize(DEC_PLACES),
+                    'last': Decimal(result['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(result['volume']).quantize(DEC_PLACES),
     }}
 
 # direct volume calculation gives weird results, bitcoincharts API used for now
 #@TODO check with campbx why their API results are incorrect
 # def campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
-#     ticker_result = requests.get(api_ticker_url).json()
+#     ticker_result = requests.get(api_ticker_url, headers=API_REQUEST_HEADERS).json()
 #
 #     return_data = {'USD': {'ask': Decimal(ticker_result['Best Ask']).quantize(DEC_PLACES),
 #                                            'bid': Decimal(ticker_result['Best Bid']).quantize(DEC_PLACES),
@@ -177,7 +178,7 @@ def _bitstampApiCall(api_url, *args, **kwargs):
 #     all_trades_direct = {}
 #
 #     while True:
-#         trades = requests.get(api_trades_url % from_time).json()
+#         trades = requests.get(api_trades_url % from_time, headers=API_REQUEST_HEADERS).json()
 #         new_from_time = from_time
 #         for trade in trades:
 #             if trade['Time'] > new_from_time:
@@ -197,10 +198,11 @@ def _bitstampApiCall(api_url, *args, **kwargs):
 #
 #     return return_data
 
+
 def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url).json()
-    eur_result = requests.get(eur_api_url).json()
-    rur_result = requests.get(rur_api_url).json()
+    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
+    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
+    rur_result = requests.get(rur_api_url, headers=API_REQUEST_HEADERS).json()
 
     #dirty hack, BTC-e has a bug in their APIs - buy/sell prices mixed up
     if usd_result['ticker']['sell'] < usd_result['ticker']['buy']:
@@ -219,44 +221,44 @@ def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
         rur_result['ticker']['sell'] = temp
 
     return {'USD': {'ask': Decimal(usd_result['ticker']['sell']).quantize(DEC_PLACES),
-                                   'bid': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES),
-                                   'high': Decimal(usd_result['ticker']['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(usd_result['ticker']['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(usd_result['ticker']['last']).quantize(DEC_PLACES),
-                                   'avg': Decimal(usd_result['ticker']['avg']).quantize(DEC_PLACES),
-                                   'volume': Decimal(usd_result['ticker']['vol_cur']).quantize(DEC_PLACES),
-    },
+                    'bid': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES),
+                    'high': Decimal(usd_result['ticker']['high']).quantize(DEC_PLACES),
+                    'low': Decimal(usd_result['ticker']['low']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['ticker']['last']).quantize(DEC_PLACES),
+                    'avg': Decimal(usd_result['ticker']['avg']).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_result['ticker']['vol_cur']).quantize(DEC_PLACES),
+                    },
             'EUR': {'ask': Decimal(eur_result['ticker']['sell']).quantize(DEC_PLACES),
-                                   'bid': Decimal(eur_result['ticker']['buy']).quantize(DEC_PLACES),
-                                   'high': Decimal(eur_result['ticker']['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(eur_result['ticker']['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(eur_result['ticker']['last']).quantize(DEC_PLACES),
-                                   'avg': Decimal(eur_result['ticker']['avg']).quantize(DEC_PLACES),
-                                   'volume': Decimal(eur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['ticker']['buy']).quantize(DEC_PLACES),
+                    'high': Decimal(eur_result['ticker']['high']).quantize(DEC_PLACES),
+                    'low': Decimal(eur_result['ticker']['low']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['ticker']['last']).quantize(DEC_PLACES),
+                    'avg': Decimal(eur_result['ticker']['avg']).quantize(DEC_PLACES),
+                    'volume': Decimal(eur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
             },
             'RUB': {'ask': Decimal(rur_result['ticker']['sell']).quantize(DEC_PLACES),
-                                   'bid': Decimal(rur_result['ticker']['buy']).quantize(DEC_PLACES),
-                                   'high': Decimal(rur_result['ticker']['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(rur_result['ticker']['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(rur_result['ticker']['last']).quantize(DEC_PLACES),
-                                   'avg': Decimal(rur_result['ticker']['avg']).quantize(DEC_PLACES),
-                                   'volume': Decimal(rur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
+                    'bid': Decimal(rur_result['ticker']['buy']).quantize(DEC_PLACES),
+                    'high': Decimal(rur_result['ticker']['high']).quantize(DEC_PLACES),
+                    'low': Decimal(rur_result['ticker']['low']).quantize(DEC_PLACES),
+                    'last': Decimal(rur_result['ticker']['last']).quantize(DEC_PLACES),
+                    'avg': Decimal(rur_result['ticker']['avg']).quantize(DEC_PLACES),
+                    'volume': Decimal(rur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
             }}
 
 
 def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_url, *args, **kwargs):
-    eur_result = requests.get(eur_ticker_url).json()
-    pln_result = requests.get(pln_ticker_url).json()
+    eur_result = requests.get(eur_ticker_url, headers=API_REQUEST_HEADERS).json()
+    pln_result = requests.get(pln_ticker_url, headers=API_REQUEST_HEADERS).json()
 
     last24h_time = int(time.time())-86400  #86400s in 24h
     eur_vol = 0.0
-    eur_volume_result = requests.get(eur_trades_url).json()
+    eur_volume_result = requests.get(eur_trades_url, headers=API_REQUEST_HEADERS).json()
     for trade in eur_volume_result:
         if trade['date'] > last24h_time:
             eur_vol = eur_vol + float(trade['amount'])
 
     pln_vol = 0.0
-    pln_volume_result = requests.get(pln_trades_url).json()
+    pln_volume_result = requests.get(pln_trades_url, headers=API_REQUEST_HEADERS).json()
     for trade in pln_volume_result:
         if trade['date'] > last24h_time:
             pln_vol = pln_vol + float(trade['amount'])
@@ -281,37 +283,37 @@ def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_
 
 
 def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url).json()
-    eur_result = requests.get(eur_api_url).json()
+    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
+    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'USD': {'ask': Decimal(usd_result['lowest_ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(usd_result['highest_bid']).quantize(DEC_PLACES),
-                                   'last': Decimal(usd_result['last_trade']).quantize(DEC_PLACES),
-                                   'volume': Decimal(usd_result['volume']).quantize(DEC_PLACES),
-    },
+                    'bid': Decimal(usd_result['highest_bid']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['last_trade']).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_result['volume']).quantize(DEC_PLACES),
+                    },
             'EUR': {'ask': Decimal(eur_result['lowest_ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(eur_result['highest_bid']).quantize(DEC_PLACES),
-                                   'last': Decimal(eur_result['last_trade']).quantize(DEC_PLACES),
-                                   'volume': Decimal(eur_result['volume']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['highest_bid']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['last_trade']).quantize(DEC_PLACES),
+                    'volume': Decimal(eur_result['volume']).quantize(DEC_PLACES),
             },
     }
 
 def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
-    gbp_result = requests.get(gbp_api_url).json()
+    gbp_result = requests.get(gbp_api_url, headers=API_REQUEST_HEADERS).json()
 
 
     average_btc = Decimal(gbp_result['response']['avg_24h'])
     volume_btc = (Decimal(gbp_result['response']['vol_24h']) / average_btc).quantize(DEC_PLACES)
 
     return {'GBP': {'ask': average_btc.quantize(DEC_PLACES), #bitbargain is an OTC trader, so ask == last
-                                   'bid': None, #bitbargain is an OTC trader, so no bids available
-                                   'last': average_btc.quantize(DEC_PLACES),
-                                   'volume': volume_btc,
-                                    },
-                }
+                    'bid': None, #bitbargain is an OTC trader, so no bids available
+                    'last': average_btc.quantize(DEC_PLACES),
+                    'volume': volume_btc,
+                    },
+    }
 
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
-    result = requests.get(api_url).json()
+    result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
     
     if result['USD']['avg_1h'] != None:
         usd_rate = Decimal(result['USD']['avg_1h']).quantize(DEC_PLACES)
@@ -342,52 +344,52 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
         cad_rate = None
 
     return {'USD': {'ask': usd_rate,
-                                   'bid': None,
-                                   'last': usd_rate,
-                                   'volume': Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES),
-            },
+                    'bid': None,
+                    'last': usd_rate,
+                    'volume': Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES),
+                    },
             'EUR': {'ask': eur_rate,
-                                   'bid': None,
-                                   'last': eur_rate,
-                                   'volume': Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES),
+                    'bid': None,
+                    'last': eur_rate,
+                    'volume': Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES),
             },
             'GBP': {'ask': gbp_rate,
-                                   'bid': None,
-                                   'last': gbp_rate,
-                                   'volume': Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES),
+                    'bid': None,
+                    'last': gbp_rate,
+                    'volume': Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES),
             },
             'CAD': {'ask': cad_rate,
-                                   'bid': None,
-                                   'last': cad_rate,
-                                   'volume': Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES),
+                    'bid': None,
+                    'last': cad_rate,
+                    'volume': Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES),
             },
     }
 
 def _cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url).json()
-    eur_result = requests.get(eur_api_url).json()
+    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
+    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'USD': {'ask': Decimal(usd_result['data']['min_ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(usd_result['data']['max_bid']).quantize(DEC_PLACES),
-                                   'high': Decimal(usd_result['data']['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(usd_result['data']['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(usd_result['data']['last']).quantize(DEC_PLACES),
-                                   'avg': None,
-                                   'volume': Decimal(usd_result['data']['vol_btc']).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_result['data']['max_bid']).quantize(DEC_PLACES),
+                    'high': Decimal(usd_result['data']['high']).quantize(DEC_PLACES),
+                    'low': Decimal(usd_result['data']['low']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['data']['last']).quantize(DEC_PLACES),
+                    'avg': None,
+                    'volume': Decimal(usd_result['data']['vol_btc']).quantize(DEC_PLACES),
                                     },
             'EUR': {'ask': Decimal(eur_result['data']['min_ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(eur_result['data']['max_bid']).quantize(DEC_PLACES),
-                                   'high': Decimal(eur_result['data']['high']).quantize(DEC_PLACES),
-                                   'low': Decimal(eur_result['data']['low']).quantize(DEC_PLACES),
-                                   'last': Decimal(eur_result['data']['last']).quantize(DEC_PLACES),
-                                   'avg': None,
-                                   'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['data']['max_bid']).quantize(DEC_PLACES),
+                    'high': Decimal(eur_result['data']['high']).quantize(DEC_PLACES),
+                    'low': Decimal(eur_result['data']['low']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['data']['last']).quantize(DEC_PLACES),
+                    'avg': None,
+                    'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES),
                                     },
             }
 
 def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trades_url, *args, **kwargs):
-    usd_ticker_result = requests.get(usd_ticker_url, verify=False).json()
-    eur_ticker_result = requests.get(eur_ticker_url, verify=False).json()
+    usd_ticker_result = requests.get(usd_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
+    eur_ticker_result = requests.get(eur_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
 
     last24h_time = int(time.time())-86400  #86400s in 24h
 
@@ -396,7 +398,7 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trad
     usd_last = 0.0
     usd_vol = 0.0
 
-    usd_volume_result = requests.get(usd_trades_url, verify=False).json()
+    usd_volume_result = requests.get(usd_trades_url, verify=False, headers=API_REQUEST_HEADERS).json()
     for trade in usd_volume_result:
         if trade['date'] > last24h_time:
             if usd_low > float(trade['price']) or usd_low == 0:
@@ -410,7 +412,7 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trad
     eur_high = 0.0
     eur_last = 0.0
     eur_vol = 0.0
-    eur_volume_result = requests.get(eur_trades_url, verify=False).json()
+    eur_volume_result = requests.get(eur_trades_url, verify=False, headers=API_REQUEST_HEADERS).json()
     for trade in eur_volume_result:
         if trade['date'] > last24h_time:
             if eur_low > float(trade['price']) or eur_low == 0:
@@ -421,65 +423,49 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trad
             eur_last = float(trade['price'])
 
     return {'USD': {'ask': Decimal(usd_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(usd_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
-                                   'high': Decimal(usd_high).quantize(DEC_PLACES),
-                                   'low': Decimal(usd_low).quantize(DEC_PLACES),
-                                   'last': Decimal(usd_last).quantize(DEC_PLACES),
-                                   'avg': None,
-                                   'volume': Decimal(usd_vol).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
+                    'high': Decimal(usd_high).quantize(DEC_PLACES),
+                    'low': Decimal(usd_low).quantize(DEC_PLACES),
+                    'last': Decimal(usd_last).quantize(DEC_PLACES),
+                    'avg': None,
+                    'volume': Decimal(usd_vol).quantize(DEC_PLACES),
                                     },
             'EUR': {'ask': Decimal(eur_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
-                                   'bid': Decimal(eur_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
-                                   'high': Decimal(eur_high).quantize(DEC_PLACES),
-                                   'low': Decimal(eur_low).quantize(DEC_PLACES),
-                                   'last': Decimal(eur_last).quantize(DEC_PLACES),
-                                   'avg': None,
-                                   'volume': Decimal(eur_vol).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
+                    'high': Decimal(eur_high).quantize(DEC_PLACES),
+                    'low': Decimal(eur_low).quantize(DEC_PLACES),
+                    'last': Decimal(eur_last).quantize(DEC_PLACES),
+                    'avg': None,
+                    'volume': Decimal(eur_vol).quantize(DEC_PLACES),
                                     },
             }
 
 def _bitcashApiCall(czk_api_url, *args, **kwargs):
-    czk_result = requests.get(czk_api_url).json()
+    czk_result = requests.get(czk_api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
-                       'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
-                       'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
-                       'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
                     },
             }
 
 def _intersangoApiCall(ticker_url, *args, **kwargs):
-    result = requests.get(ticker_url).json()
+    result = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
 
     #'2' in here is ID for EUR in intersango terms
-    return {'CZK': {'ask': Decimal(result['2']['sell']).quantize(DEC_PLACES),
-                       'bid': Decimal(result['2']['buy']).quantize(DEC_PLACES),
-                       'last': Decimal(result['2']['last']).quantize(DEC_PLACES),
-                       'volume': Decimal(result['2']['vol']).quantize(DEC_PLACES),
+    return {'EUR': {'ask': Decimal(result['2']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(result['2']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(result['2']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(result['2']['vol']).quantize(DEC_PLACES),
                     },
             }
 
-def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
-    ticker = requests.get(ticker_url).json()
-    trades = requests.get(trades_url).json()
-
-    last24h_time = int(time.time())-86400  #86400s in 24h
-    volume = 0
-    for trade in trades:
-        if trade['date'] > last24h_time:
-            volume = volume + float(trade['amount'])
-
-    return {'ILS': {'ask': Decimal(ticker['h']).quantize(DEC_PLACES),
-                       'bid': Decimal(ticker['l']).quantize(DEC_PLACES),
-                       'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
-                       'volume': Decimal(volume).quantize(DEC_PLACES),
-                    },
-            }
 
 def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
-    ticker = requests.get(ticker_url).json()
-    orders = requests.get(orders_url).json()
-    trades = requests.get(trades_url).json()
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    orders = requests.get(orders_url, headers=API_REQUEST_HEADERS).json()
+    trades = requests.get(trades_url, headers=API_REQUEST_HEADERS).json()
 
     last24h_time = int(time.time())-86400  #86400s in 24h
     volume = 0
@@ -488,14 +474,14 @@ def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
             volume = volume + float(trade['amount'])
 
     return {'ILS': {'ask': Decimal(orders['asks'][0][0]).quantize(DEC_PLACES),
-                       'bid': Decimal(orders['bids'][0][0]).quantize(DEC_PLACES),
-                       'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
-                       'volume': Decimal(volume).quantize(DEC_PLACES),
+                    'bid': Decimal(orders['bids'][0][0]).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
+                    'volume': Decimal(volume).quantize(DEC_PLACES),
                     },
             }
 
 def _kapitonApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url).json()
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
 
     return {'SEK': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
@@ -504,10 +490,11 @@ def _kapitonApiCall(ticker_url, *args, **kwargs):
                     },
             }
 
-def _rmbtbApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url).json()
 
-    return {'SEK': {'ask': Decimal(ticker['data']['sell']['value']).quantize(DEC_PLACES),
+def _rmbtbApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['data']['sell']['value']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['data']['buy']['value']).quantize(DEC_PLACES),
                     'last': Decimal(ticker['data']['last']['value']).quantize(DEC_PLACES),
                     'volume': Decimal(ticker['data']['vol']['value']).quantize(DEC_PLACES),

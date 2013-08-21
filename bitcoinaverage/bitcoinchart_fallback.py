@@ -5,7 +5,7 @@ import requests
 from requests.exceptions import ConnectionError
 
 from bitcoinaverage.api_parsers import API_QUERY_CACHE
-from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
+from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS
 from bitcoinaverage.exceptions import CallFailedException
 from bitcoinaverage.helpers import write_log
 
@@ -19,7 +19,7 @@ def fetchBitcoinChartsData():
         result = API_QUERY_CACHE['bitcoincharts']['result']
     else:
         try:
-            result = requests.get(BITCOIN_CHARTS_API_URL).json()
+            result = requests.get(BITCOIN_CHARTS_API_URL, headers=API_REQUEST_HEADERS).json()
             API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
                                                  'result':result,
                                                    }

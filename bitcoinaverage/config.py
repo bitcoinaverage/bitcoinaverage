@@ -7,9 +7,12 @@ API_FILES = {'TICKER_PATH': 'ticker/',
              'IGNORED_FILE': 'ignored',
              }
 
+API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
+                       'Origin': 'bitcoinaverage.com'}
+
+
 #seconds between calls to various exchanges APIs
 API_QUERY_FREQUENCY = {'bitcoincharts': 900,
-                       'bitbargain': 600,
                        'default': 15,
                        }
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
@@ -23,24 +26,24 @@ FRONTEND_QUERY_FREQUENCY = 5000 #milliseconds between AJAX requests from fronten
 DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = ('USD',
+                 'CNY',
                  'EUR',
                  'GBP',
+                 'JPY',
                  'CAD',
                  'PLN',
                  'RUB',
                  'AUD',
-                 'BRL',
-                 'CNY',
-                 'CZK',
-                 'DKK',
-                 'CHF',
-                 'ILS',
-                 'JPY',
-                 'NZD',
                  'SEK',
+                 'BRL',
+                 'CZK',
+                 'NZD',
                  'SGD',
-                 'THB',
+                 'DKK',
+                 'ILS',
+                 'CHF',
                  'HKD',
+                 'THB',
                     )
 
 BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
@@ -149,7 +152,6 @@ EXCHANGE_LIST = {
                     'fybse':  {'bitcoincharts_symbols': {'SEK': 'fybseSEK',
                                                            },
                                  },
-
                     'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                  },

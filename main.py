@@ -38,7 +38,6 @@ while True:
     for exchange_name in EXCHANGE_LIST:
         try:
             if api_parsers.hasAPI(exchange_name):
-
                 result = api_parsers.callAPI(exchange_name=exchange_name, exchange_params=EXCHANGE_LIST[exchange_name])
             elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
                 result = bitcoinchart_fallback.getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
