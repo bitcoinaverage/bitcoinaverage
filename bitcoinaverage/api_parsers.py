@@ -313,30 +313,30 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url).json()
     
-    if result['USD']['avg_1h'] != 'null':
+    if result['USD']['avg_1h'] != None:
         usd_rate = Decimal(result['USD']['avg_1h']).quantize(DEC_PLACES)
-    elif result['USD']['avg_3h'] != 'null':
+    elif result['USD']['avg_3h'] != None:
         usd_rate = Decimal(result['USD']['avg_3h']).quantize(DEC_PLACES)
     else:
         usd_rate = None
         
-    if result['EUR']['avg_1h'] != 'null':
+    if result['EUR']['avg_1h'] != None:
         eur_rate = Decimal(result['EUR']['avg_1h']).quantize(DEC_PLACES)
-    elif result['EUR']['avg_3h'] != 'null':
+    elif result['EUR']['avg_3h'] != None:
         eur_rate = Decimal(result['EUR']['avg_3h']).quantize(DEC_PLACES)
     else:
         eur_rate = None
         
-    if result['GBP']['avg_1h'] != 'null':
+    if result['GBP']['avg_1h'] != None:
         gbp_rate = Decimal(result['GBP']['avg_1h']).quantize(DEC_PLACES)
-    elif result['GBP']['avg_3h'] != 'null':
+    elif result['GBP']['avg_3h'] != None:
         gbp_rate = Decimal(result['GBP']['avg_3h']).quantize(DEC_PLACES)
     else:
         gbp_rate = None
-        
-    if result['CAD']['avg_1h'] != 'null':
+  
+    if result['CAD']['avg_1h'] != None:
         cad_rate = Decimal(result['CAD']['avg_1h']).quantize(DEC_PLACES)
-    elif result['CAD']['avg_3h'] != 'null':
+    elif result['CAD']['avg_3h'] != None:
         cad_rate = Decimal(result['CAD']['avg_3h']).quantize(DEC_PLACES)
     else:
         cad_rate = None
