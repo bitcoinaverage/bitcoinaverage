@@ -28,19 +28,18 @@ CURRENCY_LIST = ('USD',
                  'CAD',
                  'PLN',
                  'RUB',
-
-                 'CNY',
-                 'JPY',
                  'AUD',
+                 'BRL',
+                 'CNY',
+                 'CZK',
+                 'DKK',
+                 'CHF'
+                 'ILS',
+                 'JPY',
                  'NZD',
                  'SEK',
-                 'NOK',
-                 'BRL',
-                 'XRP',
                  'SGD',
-                 'CZK',
                  'THB',
-                 'ILS',
                  'HKD',
                     )
 
@@ -53,6 +52,14 @@ EXCHANGE_LIST = {
                               'cad_api_url': 'http://data.mtgox.com/api/2/BTCCAD/money/ticker',
                               'pln_api_url': 'http://data.mtgox.com/api/2/BTCPLN/money/ticker',
                               'rub_api_url': 'http://data.mtgox.com/api/2/BTCRUB/money/ticker',
+                              'aud_api_url': 'http://data.mtgox.com/api/2/BTCAUD/money/ticker',
+                              'chf_api_url': 'http://data.mtgox.com/api/2/BTCCHF/money/ticker',
+                              'cny_api_url': 'http://data.mtgox.com/api/2/BTCCNY/money/ticker',
+                              'dkk_api_url': 'http://data.mtgox.com/api/2/BTCDKK/money/ticker',
+                              'hkd_api_url': 'http://data.mtgox.com/api/2/BTCHKD/money/ticker',
+                              'jpy_api_url': 'http://data.mtgox.com/api/2/BTCJPY/money/ticker',
+                              'nzd_api_url': 'http://data.mtgox.com/api/2/BTCNZD/money/ticker',
+                              'sgd_api_url': 'http://data.mtgox.com/api/2/BTCSGD/money/ticker',
                                   },
                     'bitstamp': {'api_url': 'https://www.bitstamp.net/api/ticker/',
                                    },
@@ -71,8 +78,8 @@ EXCHANGE_LIST = {
 
                     'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
                                         
-                    # 'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
-                    #                      },
+                    'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
+                                         },
 
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
                                    'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',
@@ -82,6 +89,22 @@ EXCHANGE_LIST = {
                                    'eur_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCEUR',
                                    'eur_trades_url': 'https://www.therocktrading.com/api/trades/BTCEUR',
                                     },
+
+                    'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
+                                  },
+
+                    #intersango - only EUR is used, because one needs to convert to EUR to add/withdraw with it
+                    'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
+                                   },
+
+                    'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/NIS/Ticker.json',
+                              'trades_url' : 'https://www.bit2c.co.il/Exchanges/NIS/trades.json',
+                                },
+                    'kapiton': {'ticker_url': 'https://kapiton.se//api/0/ticker',
+                                },
+
+
+
 
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
                                  },
@@ -95,19 +118,36 @@ EXCHANGE_LIST = {
                     'bitkonan': {'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
                                                            },
                                  },
-
-
                     'bitcoin_de': {'bitcoincharts_symbols':  {'EUR': 'btcdeEUR',
                                                              },
                                  },
-                    'fbtcEUR': {'bitcoincharts_symbols':  {'EUR': 'fbtcEUR',
-                                                           'USD': 'fbtcUSD',
+                    'fbtc': {'bitcoincharts_symbols':  {'EUR': 'fbtcEUR',
+                                                        'USD': 'fbtcUSD',
                                                            },
                                  },
-
-
                     'icbit': {'bitcoincharts_symbols': {'USD': 'icbitUSD',
                                                            },
                                  },
-                    }
+                    'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
+                                                        'CAD': 'weexCAD',
+                                                        'USD': 'weexUSD',
+                                                           },
+                                 },
+                    'mercado':  {'bitcoincharts_symbols': {'BRL': 'mrcdBRL',
+                                                           },
+                                 },
+                    'btcchina':  {'bitcoincharts_symbols': {'CNY': 'btcnCNY',
+                                                           },
+                                 },
+                    'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitNZD',
+                                                           },
+                                 },
+                    'fybse':  {'bitcoincharts_symbols': {'SEK': 'fybseSEK',
+                                                           },
+                                 },
 
+                    'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
+                                                           },
+                                 },
+
+                }
