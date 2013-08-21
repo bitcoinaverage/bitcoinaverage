@@ -57,55 +57,92 @@ def callAPI(exchange_name, exchange_params):
 
     return result
 
-def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, *args, **kwargs):
+def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, aud_api_url, chf_api_url,
+                  cny_api_url, dkk_api_url, hkd_api_url, jpy_api_url, nzd_api_url, sgd_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url).json()
     eur_result = requests.get(eur_api_url).json()
     gbp_result = requests.get(gbp_api_url).json()
     cad_result = requests.get(cad_api_url).json()
     pln_result = requests.get(pln_api_url).json()
     rub_result = requests.get(rub_api_url).json()
+    aud_result = requests.get(aud_api_url).json()
+    chf_result = requests.get(chf_api_url).json()
+    cny_result = requests.get(cny_api_url).json()
+    dkk_result = requests.get(dkk_api_url).json()
+    hkd_result = requests.get(hkd_api_url).json()
+    jpy_result = requests.get(jpy_api_url).json()
+    nzd_result = requests.get(nzd_api_url).json()
+    sgd_result = requests.get(sgd_api_url).json()
 
     return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                                   'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                                   'high': Decimal(usd_result['data']['high']['value']).quantize(DEC_PLACES),
-                                   'low': Decimal(usd_result['data']['low']['value']).quantize(DEC_PLACES),
-                                   'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES),
-                                   'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'EUR': {'ask': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES),
-                                   'bid': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES),
-                                   'high': Decimal(eur_result['data']['high']['value']).quantize(DEC_PLACES),
-                                   'low': Decimal(eur_result['data']['low']['value']).quantize(DEC_PLACES),
-                                   'last': Decimal(eur_result['data']['last']['value']).quantize(DEC_PLACES),
-                                   'volume': Decimal(eur_result['data']['vol']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(eur_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(eur_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'GBP': {'ask': Decimal(gbp_result['data']['sell']['value']).quantize(DEC_PLACES),
-                                   'bid': Decimal(gbp_result['data']['buy']['value']).quantize(DEC_PLACES),
-                                   'high': Decimal(gbp_result['data']['high']['value']).quantize(DEC_PLACES),
-                                   'low': Decimal(gbp_result['data']['low']['value']).quantize(DEC_PLACES),
-                                   'last': Decimal(gbp_result['data']['last']['value']).quantize(DEC_PLACES),
-                                   'volume': Decimal(gbp_result['data']['vol']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(gbp_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(gbp_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(gbp_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'CAD': {'ask': Decimal(cad_result['data']['sell']['value']).quantize(DEC_PLACES),
-                                   'bid': Decimal(cad_result['data']['buy']['value']).quantize(DEC_PLACES),
-                                   'high': Decimal(cad_result['data']['high']['value']).quantize(DEC_PLACES),
-                                   'low': Decimal(cad_result['data']['low']['value']).quantize(DEC_PLACES),
-                                   'last': Decimal(cad_result['data']['last']['value']).quantize(DEC_PLACES),
-                                   'volume': Decimal(cad_result['data']['vol']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(cad_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(cad_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(cad_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'PLN': {'ask': Decimal(pln_result['data']['sell']['value']).quantize(DEC_PLACES),
-                                   'bid': Decimal(pln_result['data']['buy']['value']).quantize(DEC_PLACES),
-                                   'high': Decimal(pln_result['data']['high']['value']).quantize(DEC_PLACES),
-                                   'low': Decimal(pln_result['data']['low']['value']).quantize(DEC_PLACES),
-                                   'last': Decimal(pln_result['data']['last']['value']).quantize(DEC_PLACES),
-                                   'volume': Decimal(pln_result['data']['vol']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(pln_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(pln_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(pln_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
             'RUB': {'ask': Decimal(rub_result['data']['sell']['value']).quantize(DEC_PLACES),
-                                   'bid': Decimal(rub_result['data']['buy']['value']).quantize(DEC_PLACES),
-                                   'high': Decimal(rub_result['data']['high']['value']).quantize(DEC_PLACES),
-                                   'low': Decimal(rub_result['data']['low']['value']).quantize(DEC_PLACES),
-                                   'last': Decimal(rub_result['data']['last']['value']).quantize(DEC_PLACES),
-                                   'volume': Decimal(rub_result['data']['vol']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(rub_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(rub_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(rub_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'AUD': {'ask': Decimal(aud_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(aud_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(aud_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(aud_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'CHF': {'ask': Decimal(chf_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(chf_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(chf_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(chf_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'CNY': {'ask': Decimal(cny_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(cny_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(cny_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(cny_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'DKK': {'ask': Decimal(dkk_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(dkk_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(dkk_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(dkk_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'HKD': {'ask': Decimal(hkd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(hkd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(hkd_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(hkd_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'JPY': {'ask': Decimal(jpy_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(jpy_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(jpy_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(jpy_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'NZD': {'ask': Decimal(nzd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(nzd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(nzd_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(nzd_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'SGD': {'ask': Decimal(sgd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
     }
 
@@ -372,3 +409,23 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trad
                                    'volume': Decimal(eur_vol).quantize(DEC_PLACES),
                                     },
             }
+
+def _bitcashApiCall(czk_api_url, *args, **kwargs):
+    czk_result = requests.get(czk_api_url).json()
+
+    return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
+                       'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
+                       'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
+                       'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
+                    },
+            }
+
+# def _intersangoApiCall(czk_api_url, *args, **kwargs):
+#     czk_result = requests.get(czk_api_url).json()
+#
+#     return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
+#                        'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
+#                        'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
+#                        'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
+#                     },
+#             }

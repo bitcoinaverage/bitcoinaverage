@@ -92,7 +92,6 @@ EXCHANGE_LIST = {
 
                     'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
                                   },
-
                     #intersango - only EUR is used, because one needs to convert to EUR to add/withdraw with it
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
                                    },
@@ -151,3 +150,4 @@ EXCHANGE_LIST = {
                                  },
 
                 }
+
