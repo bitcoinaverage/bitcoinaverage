@@ -13,8 +13,23 @@ API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
 
 #seconds between calls to various exchanges APIs
 API_QUERY_FREQUENCY = {'bitcoincharts': 900,
+                       'mtgox': 20,
+                       'bitstamp': 20,
+                       'btce': 20,
+                       'bitcurex': 20,
+                       'vircurex': 20,
+                       'bitbargain': 20,
+                       'localbitcoins': 20,
+                       'cryptotrade': 20,
+                       'rocktrading': 20,
+                       'bitcash': 20,
+                       'intersango': 20,
+                       'bit2c': 20,
+                       'kapiton': 20,
+                       'rmbtb': 20,
                        'default': 15,
-                       }
+}
+
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
     API_QUERY_FREQUENCY['default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE
 
@@ -39,12 +54,17 @@ CURRENCY_LIST = ('USD',
                  'CZK',
                  'NZD',
                  'SGD',
-                 'DKK',
-                 'ILS',
-                 'CHF',
-                 'HKD',
-                 'THB',
+                 # 'DKK',
+                 # 'ILS',
+                 # 'CHF',
+                 # 'HKD',
+                 # 'THB',
                     )
+
+CURRENCY_LIST_NOGOX = ('USD',
+                       'EUR',
+                       'GBP',
+)
 
 BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
 

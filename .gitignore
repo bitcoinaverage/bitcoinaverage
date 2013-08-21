@@ -3,6 +3,7 @@
 *.pyc
 /bitcoinaverage/server.py
 /www/config.js
+/api/no-mtgox/*
 /api/.htaccess
 /api/all
 /api/ignored
