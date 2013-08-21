@@ -71,8 +71,8 @@ EXCHANGE_LIST = {
 
                     'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
                                         
-                    # 'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
-                    #                      },
+                    'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
+                                          },
 
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
                                    'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',
