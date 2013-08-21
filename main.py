@@ -10,7 +10,6 @@ import json
 import time
 from email import utils
 from decimal import Decimal
-from requests.exceptions import ConnectionError
 
 import bitcoinaverage as ba
 from bitcoinaverage import bitcoinchart_fallback

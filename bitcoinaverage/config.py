@@ -12,7 +12,7 @@ API_QUERY_FREQUENCY = {'bitcoincharts': 900,
                        'bitbargain': 600,
                        'default': 15,
                        }
-if 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE' in bitcoinaverage.server:
+if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
     API_QUERY_FREQUENCY['default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE
 
 #seconds before a consequently failing API will be put into ignored list
