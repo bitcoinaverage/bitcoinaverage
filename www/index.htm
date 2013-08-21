@@ -20,7 +20,11 @@
         if (typeof config.apiIndexUrl == 'undefined' || config.apiIndexUrl == ''){
             alert('API URL config value empty!');
         }
-        var API_all_url = config.apiIndexUrl+'/all';
+        if (config.apiIndexUrl[config.apiIndexUrl.length-1] == '/') {
+            var API_all_url = config.apiIndexUrl+'all';
+        } else {
+            var API_all_url = config.apiIndexUrl+'/all';
+        }
 
     </script>
     <script type="text/javascript">
@@ -571,8 +575,8 @@
                         <thead>
                             <tr>
                                 <th style="width: 25%">Exchange</th>
-                                <th style="width: 20%">Volume (%)</th>
-                                <th style="width: 25%">Volume (&#3647)</th>
+                                <th style="width: 20%">Volume %</th>
+                                <th style="width: 25%">Volume &#3647</th>
                                 <th style="width: 30%; text-align: right">Last Price</th>
                             </tr>
                         </thead>
