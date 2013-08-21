@@ -2,6 +2,7 @@
 /runtime/*.log
 *.pyc
 /bitcoinaverage/server.py
+/www/config.js
 /api/.htaccess
 /api/all
 /api/ignored

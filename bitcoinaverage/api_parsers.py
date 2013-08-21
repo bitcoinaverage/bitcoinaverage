@@ -1,9 +1,13 @@
 import time
 import requests
+from email import utils
 from decimal import Decimal
+from requests.exceptions import ConnectionError
 
 import bitcoinaverage
-from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY
+from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
+from bitcoinaverage.exceptions import CallFailedException
+from bitcoinaverage.helpers import write_log
 
 API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
 
@@ -11,20 +15,45 @@ def hasAPI(exchange_name):
     return '_%sApiCall' % exchange_name in globals()
 
 def callAPI(exchange_name, exchange_params):
-    global API_QUERY_CACHE, API_QUERY_FREQUENCY
+    global API_QUERY_CACHE, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
 
     current_timestamp = int(time.time())
-    if exchange_name in API_QUERY_FREQUENCY:
-        if (exchange_name in API_QUERY_CACHE and
-            API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
+    result = None
+    if exchange_name not in API_QUERY_CACHE:
+        API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': 0,
+                                           'result': None,
+                                           'call_fail_count': 0,
+                                               }
+
+    try:
+        if (exchange_name in API_QUERY_FREQUENCY
+            and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
             result = API_QUERY_CACHE[exchange_name]['result']
         else:
             result = globals()['_%sApiCall' % exchange_name](**exchange_params)
             API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
                                                'result':result,
+                                               'call_fail_count': 0,
                                                }
-    else:
-        result = globals()['_%sApiCall' % exchange_name](**exchange_params)
+    except (ValueError, ConnectionError) as error:
+        API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
+        if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
+            result = API_QUERY_CACHE[exchange_name]['result']
+            write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
+                        str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
+                      'WARNING')
+        else:
+            exception = CallFailedException()
+            exception.text = exception.text % utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
+            log_message = ('%s call failed, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
+                           % (exchange_name,
+                              str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                              utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
+                                ))
+            write_log(log_message, 'ERROR')
+            raise exception
+
 
     return result
 

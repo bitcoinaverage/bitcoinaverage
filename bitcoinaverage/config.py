@@ -1,7 +1,6 @@
 from decimal import Decimal
 import bitcoinaverage.server
 
-API_DOCUMENT_ROOT = bitcoinaverage.server.API_DOCUMENT_ROOT
 API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',
              'ALL_FILE': 'all',
@@ -13,6 +12,9 @@ API_QUERY_FREQUENCY = {'bitcoincharts': 900,
                        'bitbargain': 600,
                        'default': 15,
                        }
+#seconds before a consequently failing API will be put into ignored list
+#(before that data will be taken from cache)
+API_IGNORE_TIMEOUT = 60
 FRONTEND_QUERY_FREQUENCY = 5000 #milliseconds between AJAX requests from frontend to our API
 
 DEC_PLACES = Decimal('0.00')
@@ -22,7 +24,18 @@ CURRENCY_LIST = ('USD',
                  'GBP',
                  'CAD',
                  'PLN',
-                 'RUB',
+                 # 'CNY',
+                 # 'JPY',
+                 # 'AUD',
+                 # 'NZD',
+                 # 'SEK',
+                 # 'NOK',
+                 # 'BRL',
+                 # 'XRP',
+                 # 'SGD',
+                 # 'CZK',
+                 # 'ILS',
+                 # 'HKD',
                     )
 
 BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
@@ -52,8 +65,8 @@ EXCHANGE_LIST = {
 
                     'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
                                         
-                    'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
-                                         },
+                    # 'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
+                    #                      },
 
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
                                    'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',

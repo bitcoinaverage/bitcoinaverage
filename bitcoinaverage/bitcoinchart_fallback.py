@@ -2,9 +2,12 @@ import time
 from decimal import Decimal
 
 import requests
+from requests.exceptions import ConnectionError
 
 from bitcoinaverage.api_parsers import API_QUERY_CACHE
-from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_QUERY_FREQUENCY
+from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
+from bitcoinaverage.exceptions import CallFailedException
+from bitcoinaverage.helpers import write_log
 
 
 def fetchBitcoinChartsData():
@@ -15,10 +18,26 @@ def fetchBitcoinChartsData():
         and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
         result = API_QUERY_CACHE['bitcoincharts']['result']
     else:
-        result = requests.get(BITCOIN_CHARTS_API_URL).json()
-        API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
-                                             'result':result,
-                                               }
+        try:
+            result = requests.get(BITCOIN_CHARTS_API_URL).json()
+            API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
+                                                 'result':result,
+                                                   }
+        except (ValueError, ConnectionError) as error:
+            if ('bitcoincharts' in API_QUERY_CACHE
+                and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
+                result = API_QUERY_CACHE['bitcoincharts']['result']
+                API_QUERY_CACHE['bitcoincharts']['call_fail_count'] = API_QUERY_CACHE['bitcoincharts']['call_fail_count'] + 1
+                write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % ('bitcoincharts',
+                            str(API_QUERY_CACHE['bitcoincharts']['call_fail_count']),
+                            str(current_timestamp-API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']) ),
+                          'WARNING')
+            else:
+                exception = CallFailedException()
+                exception.text = exception.text % ('bitcoincharts', str(API_QUERY_CACHE['bitcoincharts']['call_fail_count']))
+                write_log(exception.text, 'ERROR')
+                raise exception
+
     return result
 
 def getData(bitcoincharts_symbols):
