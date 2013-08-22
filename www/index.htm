@@ -167,7 +167,8 @@
         function renderRates(currencyCode, currencyData, slotNum){
             $('.slot'+slotNum+'-box').data('currencycode', currencyCode);
             var clickLink = $('.slot'+slotNum+'-box a');
-            clickLink.text(currencyCode+' '+currencyData.total_volume_btc);
+            clickLink.text(currencyCode);
+            clickLink.attr('title', currencyData.total_volume_btc);
             clickLink.attr('href', '#'+currencyCode);
             $('.slot'+slotNum+'-curcode').text(currencyCode);
             $('#slot'+slotNum+'-last').text(currencyData.averages.last);
@@ -285,11 +286,18 @@
             padding-top: 50px;
             overflow-y: scroll;
         }
-        
+        *{
+            margin: 0;
+            padding: 0;
+        }
         html, body {
           height: 100%;
         }            
         
+        a{
+            outline: none;
+        }
+
         h1 {
             font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
             font-weight: bold;
@@ -297,6 +305,9 @@
         
         h2 {
             font-size: 1.5em;
+        }
+        ul{
+            list-style: none;
         }
         
         .bid_ask{font-weight: bold; color: #999;}
@@ -314,8 +325,67 @@
         .legend-ignored{
             margin-top: 5px;
         }
-
         
+        .menu_title{
+            font-size: 20px;
+            padding: 2px 0 0;
+        }
+        
+        .dropdown-menu{
+            top: 0;
+            min-width: 53px;
+        }
+        .dropdown-menu>li>a{
+            outline: none;
+            display: block;
+            position: relative;
+            font-size: 20px;
+            padding-top: 7px;
+            padding-bottom: 5px;
+            line-height: 24px;
+        }
+        .dropdown-menu2{
+            position: absolute;
+            top: 188px;
+            left: 83px;
+            border: 1px solid #d9d9d9;
+            border-radius: 0 5px 5px 0;
+            padding: 8px 0 0;
+        }
+        .dropdown-menu2 a{
+            color: #000;
+            display: block;
+            padding: 3px 20px;
+        }
+        .dropdown-menu .link1{
+            font-size: 14px;
+            color: #2a6496;
+            text-transform: lowercase;
+            display: inline;
+            outline: none;
+            background: none !important;
+
+        }
+        .dropdown-menu .link1:hover{
+            color: #000;
+        }
+        .dropdown-menu .link1:after{
+            display: none !important;
+        }
+        .dropdown-menu>li>a:after{
+            display: none;
+            position: absolute;
+            border: 1px dotted #333333;
+            left: 1px;
+            top: 1px;
+            right: 1px;
+            bottom: 1px;
+            content: "";
+        }
+        .dropdown-menu>li:hover>a:after{
+            display: block;
+        }
+
 
         /* Set the fixed height of the footer here */
         #footer {
@@ -472,7 +542,9 @@
         
         #currency-sidebar{
             left:0;
-            top:40%;
+            top:50%;
+            height: 352px;
+            margin-top: -176px;
             position:absolute;
             z-index:5;
             border-radius:0 4px 4px 0;
@@ -508,30 +580,35 @@
             <!--<i id="question-mark" data-placement="left" data-original-title="This is a helpful text related to the question mark." class="icon-question-sign pull-right icon-2x"></i>-->
         </div>
     </div>
-    <ul class="dropdown-menu visible-lg" id="currency-sidebar" role="menu" data-spy="affix" data-offset-top="200">
-        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
-        <li class="divider"></li>
-        <li class="slot0-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot1-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot2-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot3-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot4-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot5-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot6-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot7-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot8-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot9-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot10-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot11-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot12-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot13-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot14-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot15-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot16-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot17-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot18-box"><a tabindex="-1" href=""></a></li>
-        <li class="slot19-box"><a tabindex="-1" href=""></a></li>
-    </ul>
+    <div id="currency-sidebar">
+        <ul class="dropdown-menu visible-lg" role="menu" data-spy="affix" data-offset-top="200">
+            <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
+            <li class="divider"></li>
+            <li class="slot0-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot1-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot2-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot3-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot4-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot5-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot6-box"><a tabindex="-1" href=""></a></li>
+            <li><a href="#" class="link1">More</a></li>
+        </ul>
+        <ul class="dropdown-menu2">
+            <li class="slot7-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot8-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot9-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot10-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot11-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot12-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot13-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot14-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot15-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot16-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot17-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot18-box"><a tabindex="-1" href=""></a></li>
+            <li class="slot19-box"><a tabindex="-1" href=""></a></li>
+        </ul>
+    </div>
     <div id="main-container" class="container">      
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -563,8 +640,30 @@
                     <p class="bid_ask"> <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span></p></a></li>
                     <li><a href="#legendpane" class="slot3-box" data-toggle="tab"><h4><span id="slot3-last" class="last"></span> <span class="slot3-curcode last"></span></h4>
                     <p class="bid_ask"> <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span></p></a></li>
-                    <li><a href="#legendpane" class="slot4-box" data-toggle="tab"><h4><span id="slot4-last" class="last"></span> <span class="slot4-curcode last"></span></h4>
-                    <p class="bid_ask"> <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span></p></a></li>
+                    <li>
+                        <a href="#legendpane" class="slot4-box" data-toggle="tab">
+                            <h4><span id="slot4-last" class="last"></span> <span class="slot4-curcode last"></span></h4>
+                            <p class="bid_ask">
+                                <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#legendpane" class="slot5-box" data-toggle="tab">
+                            <h4><span id="slot5-last" class="last"></span> <span class="slot5-curcode last"></span></h4>
+                            <p class="bid_ask">
+                                <span id="slot5-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot5-ask" title="ask"></span>
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#legendpane" class="slot6-box" data-toggle="tab">
+                            <h4><span id="slot6-last" class="last"></span> <span class="slot6-curcode last"></span></h4>
+                            <p class="bid_ask">
+                                <span id="slot6-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot6-ask" title="ask"></span>
+                            </p>
+                        </a>
+                    </li>
                 </ul>
                 <!--<div class="col-lg-2 col-offset-2 slot1-box" data-currencycode="">
                     <h4><span id="slot1-last"></span> <span class="slot1-curcode"></span></h4>

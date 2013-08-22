@@ -201,24 +201,24 @@ while True:
 
     #####################
     #NO-MTGOX starts here
-
     exchanges_rates = []
     exchanges_ignored = {}
-    EXCHANGE_LIST_NOGOX = EXCHANGE_LIST
-    if 'mtgox' in EXCHANGE_LIST_NOGOX:
-        del EXCHANGE_LIST_NOGOX['mtgox']
-    
-    for exchange_name in EXCHANGE_LIST_NOGOX:
+
+    for exchange_name in EXCHANGE_LIST:
         try:
             if api_parsers.hasAPI(exchange_name):
-                result = api_parsers.callAPI(exchange_name=exchange_name, exchange_params=EXCHANGE_LIST_NOGOX[exchange_name])
-            elif 'bitcoincharts_symbols' in EXCHANGE_LIST_NOGOX[exchange_name]:
-                result = bitcoinchart_fallback.getData(EXCHANGE_LIST_NOGOX[exchange_name]['bitcoincharts_symbols'])
+                result = api_parsers.callAPI(exchange_name=exchange_name, exchange_params=EXCHANGE_LIST[exchange_name])
+            elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
+                result = bitcoinchart_fallback.getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
             else:
                 raise NoApiException
-    
-    
+
             if result is not None:
+                if exchange_name == 'mtgox':
+                    result = result.copy()
+                    del result['USD']
+                    del result['GBP']
+                    del result['EUR']
                 result['exchange_name'] = exchange_name
                 exchanges_rates.append(result)
             else:
@@ -295,7 +295,7 @@ while True:
         calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
         calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
     
-        for exchange_name in EXCHANGE_LIST_NOGOX:
+        for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:
                 calculated_volumes[currency][exchange_name]['rates']['last'] = str(calculated_volumes[currency][exchange_name]['rates']['last'])
                 calculated_volumes[currency][exchange_name]['rates']['ask'] = str(calculated_volumes[currency][exchange_name]['rates']['ask'])
