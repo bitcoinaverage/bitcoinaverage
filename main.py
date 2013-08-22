@@ -86,8 +86,6 @@ while True:
                     # del exchanges_rates[i][currency]
                     # i think we should not hide exchanges with 0 volume, it should be just zeroed, but still shown. @AlexyKot
 
-    print total_currency_volumes
-
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
@@ -207,7 +205,8 @@ while True:
     exchanges_rates = []
     exchanges_ignored = {}
     EXCHANGE_LIST_NOGOX = EXCHANGE_LIST
-    del EXCHANGE_LIST_NOGOX['mtgox']
+    if 'mtgox' in EXCHANGE_LIST_NOGOX:
+        del EXCHANGE_LIST_NOGOX['mtgox']
     
     for exchange_name in EXCHANGE_LIST_NOGOX:
         try:

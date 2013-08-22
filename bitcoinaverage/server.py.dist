@@ -1,4 +1,5 @@
 API_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api used
+API_DOCUMENT_ROOT_NOGOX = ''  # if empty - <main.py folder>/api used
 WWW_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/www used
 
 LOG_PATH = ''  # if empty - <main.py folder>/runtime used
