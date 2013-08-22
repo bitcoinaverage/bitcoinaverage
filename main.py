@@ -84,7 +84,9 @@ while True:
                 else:
                     pass
                     # del exchanges_rates[i][currency]
-                    # i think we should not hide exchanges with 0 volume, it should be just zeroed, but still shown. AlexyKot
+                    # i think we should not hide exchanges with 0 volume, it should be just zeroed, but still shown. @AlexyKot
+
+    print total_currency_volumes
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
@@ -96,18 +98,27 @@ while True:
                                                                                     }
                 calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
                 calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
-                calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
-                    / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                if total_currency_volumes[currency] > 0:
+                    calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
+                        / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                else:
+                    calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = Decimal(0).quantize(DEC_PLACES)
 
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
-                    calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = (rate[currency]['volume']
-                        / total_currency_volumes_ask[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    if total_currency_volumes[currency] > 0:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = (rate[currency]['volume']
+                            / total_currency_volumes_ask[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    else:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = Decimal(0).quantize(DEC_PLACES)
 
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
-                    calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = (rate[currency]['volume']
-                        / total_currency_volumes_bid[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    if total_currency_volumes[currency] > 0:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = (rate[currency]['volume']
+                            / total_currency_volumes_bid[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    else:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = Decimal(0).quantize(DEC_PLACES)
 
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
