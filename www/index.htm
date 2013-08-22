@@ -132,22 +132,22 @@
                 API_data = result;
                 var titleSet = false;
 
-                config.currencyOrder.sort(function(a,b){
-                    result[a].total_volume_btc = 0;
-                    for (var exchange in result[a].exchanges){
-                        result[a].total_volume_btc += parseInt(result[a].exchanges[exchange].volume_btc);
-                    }
-
-                    result[b].total_volume_btc = 0;
-                    for (var exchange in result[b].exchanges){
-                        result[b].total_volume_btc += parseInt(result[b].exchanges[exchange].volume_btc);
-                    }
-                    if (result[a].total_volume_btc<result[b].total_volume_btc) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                });
+//                config.currencyOrder.sort(function(a,b){
+//                    result[a].total_volume_btc = 0;
+//                    for (var exchange in result[a].exchanges){
+//                        result[a].total_volume_btc += parseInt(result[a].exchanges[exchange].volume_btc);
+//                    }
+//
+//                    result[b].total_volume_btc = 0;
+//                    for (var exchange in result[b].exchanges){
+//                        result[b].total_volume_btc += parseInt(result[b].exchanges[exchange].volume_btc);
+//                    }
+//                    if (result[a].total_volume_btc<result[b].total_volume_btc) {
+//                        return 1;
+//                    } else {
+//                        return -1;
+//                    }
+//                });
 
                 for(var slotNum in config.currencyOrder){
                     var currencyCode = config.currencyOrder[slotNum];
@@ -900,7 +900,7 @@
             <li class="slot4-box"><a tabindex="-1" href="" style="display: none;"></a></li>
             <li class="slot5-box"><a tabindex="-1" href="" style="display: none;"></a></li>
             <li class="slot6-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li><a href="#" class="link1">More</a></li>
+            <!--<li><a href="#" class="link1">More</a></li>-->
         </ul>
         <ul class="dropdown-menu2">
             <li class="slot7-box"><a tabindex="-1" href="" style="display: none;"></a></li>
