@@ -1,9 +1,16 @@
-{
-    "all": "http://api.bitcoinaverage.com/ticker/all",
-    "USD": "http://api.bitcoinaverage.com/ticker/USD",
-    "EUR": "http://api.bitcoinaverage.com/ticker/EUR",
-    "GBP": "http://api.bitcoinaverage.com/ticker/GBP",
-    "CAD": "http://api.bitcoinaverage.com/ticker/CAD",
-    "RUB": "http://api.bitcoinaverage.com/ticker/RUB",
-    "PLN": "http://api.bitcoinaverage.com/ticker/PLN"
+{"all": "http://api.bitcoinaverage.com/ticker/all",
+ "USD": "http://api.bitcoinaverage.com/ticker/USD",
+ "EUR": "http://api.bitcoinaverage.com/ticker/EUR",
+ "GBP": "http://api.bitcoinaverage.com/ticker/GBP",
+ "CAD": "http://api.bitcoinaverage.com/ticker/CAD",
+ "RUB": "http://api.bitcoinaverage.com/ticker/RUB",
+ "AUD": "http://api.bitcoinaverage.com/ticker/AUD",
+ "BRL": "http://api.bitcoinaverage.com/ticker/BRL",
+ "CNY": "http://api.bitcoinaverage.com/ticker/CNY",
+ "CZK": "http://api.bitcoinaverage.com/ticker/CZK",
+ "JPY": "http://api.bitcoinaverage.com/ticker/JPY",
+ "NZD": "http://api.bitcoinaverage.com/ticker/NZD",
+ "SEK": "http://api.bitcoinaverage.com/ticker/SEK",
+ "SGD": "http://api.bitcoinaverage.com/ticker/SGD",
+ "PLN": "http://api.bitcoinaverage.com/ticker/PLN"
 }

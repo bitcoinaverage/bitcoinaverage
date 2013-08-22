@@ -1,5 +1,16 @@
 {"all": "http://api.bitcoinaverage.com/no-mtgox/exchanges/all",
  "USD": "http://api.bitcoinaverage.com/no-mtgox/exchanges/USD",
  "EUR": "http://api.bitcoinaverage.com/no-mtgox/exchanges/EUR",
- "GBP": "http://api.bitcoinaverage.com/no-mtgox/exchanges/GBP"
+ "GBP": "http://api.bitcoinaverage.com/no-mtgox/exchanges/GBP",
+ "CAD": "http://api.bitcoinaverage.com/no-mtgox/exchanges/CAD",
+ "RUB": "http://api.bitcoinaverage.com/no-mtgox/exchanges/RUB",
+ "AUD": "http://api.bitcoinaverage.com/no-mtgox/exchanges/AUD",
+ "BRL": "http://api.bitcoinaverage.com/no-mtgox/exchanges/BRL",
+ "CNY": "http://api.bitcoinaverage.com/no-mtgox/exchanges/CNY",
+ "CZK": "http://api.bitcoinaverage.com/no-mtgox/exchanges/CZK",
+ "JPY": "http://api.bitcoinaverage.com/no-mtgox/exchanges/JPY",
+ "NZD": "http://api.bitcoinaverage.com/no-mtgox/exchanges/NZD",
+ "SEK": "http://api.bitcoinaverage.com/no-mtgox/exchanges/SEK",
+ "SGD": "http://api.bitcoinaverage.com/no-mtgox/exchanges/SGD",
+ "PLN": "http://api.bitcoinaverage.com/no-mtgox/exchanges/PLN"
 }
