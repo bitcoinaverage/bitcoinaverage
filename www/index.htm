@@ -8,11 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin exchange, bitcoin exchange rate, weighted average, weighted price, mean price, mean" />
+    <!--<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />-->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" type="text/css" />    
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" />
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript">
         var legendSlots = 20;
@@ -20,11 +23,17 @@
         if (typeof config.apiIndexUrl == 'undefined' || config.apiIndexUrl == ''){
             alert('API URL config value empty!');
         }
-        if (config.apiIndexUrl[config.apiIndexUrl.length-1] == '/') {
-            var API_all_url = config.apiIndexUrl+'all';
-        } else {
-            var API_all_url = config.apiIndexUrl+'/all';
+        if (config.apiIndexUrl[config.apiIndexUrl.length-1] != '/') {
+            config.apiIndexUrl = config.apiIndexUrl + '/';
         }
+        var API_all_url = config.apiIndexUrl+'all';
+
+        if (config.apiIndexUrlNoGox[config.apiIndexUrlNoGox.length-1] != '/') {
+            config.apiIndexUrlNoGox = config.apiIndexUrlNoGox + '/';
+        }
+        var API_all_url_nogox = config.apiIndexUrlNoGox+'all';
+
+        var active_API_URL = API_all_url;
 
     </script>
     <script type="text/javascript">
@@ -52,7 +61,16 @@
                 legendClickStatus = false;
             });*/
 
-
+            $('#nogox-button').click(function(event){
+                if (active_API_URL == API_all_url){
+                    active_API_URL = API_all_url_nogox;
+                    $(this).addClass('active');
+                } else {
+                    active_API_URL = API_all_url;
+                    $(this).removeClass('active');
+                }
+                callAPI();
+            });
 
             for(var slotNum in config.currencyOrder){
                 $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid').dblclick(function(event){
@@ -108,14 +126,14 @@
         function callAPI(){
             if (window.XDomainRequest) {
                 var xhr = new window.XDomainRequest();
-                xhr.open('GET', API_all_url, true);
+                xhr.open('GET', active_API_URL, true);
                 xhr.onload = function() {
 	                var result = JSON.parse(xhr.responseText);
                     renderAll(result);
     	        }
                 xhr.send();
             } else {
-                $.getJSON(API_all_url, renderAll);
+                $.getJSON(active_API_URL, renderAll);
             }
         }
 
@@ -309,7 +327,9 @@
         ul{
             list-style: none;
         }
-        
+
+        #nogox-button[class="active"]{color:red;}
+
         .bid_ask{font-weight: bold; color: #999;}
         .last{font-size: 1.1em; font-weight: bold; color: #4F4F4F; }
         
@@ -578,6 +598,7 @@
             <a class="navbar-brand pull-left">beta</a>          
             <a class="navbar-text api pull-right" href="http://api.bitcoinaverage.com">API</a>
             <!--<i id="question-mark" data-placement="left" data-original-title="This is a helpful text related to the question mark." class="icon-question-sign pull-right icon-2x"></i>-->
+            <button id="nogox-button">exclude MTGox from USD, EUR & GBP prices</button>
         </div>
     </div>
     <div id="currency-sidebar">

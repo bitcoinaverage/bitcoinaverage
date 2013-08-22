@@ -13,7 +13,7 @@ from decimal import Decimal
 
 import bitcoinaverage as ba
 from bitcoinaverage import bitcoinchart_fallback
-from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, CURRENCY_LIST_NOGOX
+from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException, CallFailedException
 from bitcoinaverage.helpers import write_config, write_log
 from bitcoinaverage import api_parsers
@@ -225,13 +225,13 @@ while True:
                 raise UnknownException
         except (NoApiException, NoVolumeException, UnknownException, CallFailedException) as error:
             exchanges_ignored[exchange_name] = error.text
-    
+
     calculated_average_rates = {}
     total_currency_volumes = {}
     total_currency_volumes_ask = {}
     total_currency_volumes_bid = {}
     calculated_volumes = {}
-    for currency in CURRENCY_LIST_NOGOX:
+    for currency in CURRENCY_LIST:
         calculated_average_rates[currency] = {'last': DEC_PLACES,
                                                'ask': DEC_PLACES,
                                                'bid': DEC_PLACES,
@@ -242,7 +242,7 @@ while True:
         calculated_volumes[currency] = {}
     
     for rate in exchanges_rates:
-        for currency in CURRENCY_LIST_NOGOX:
+        for currency in CURRENCY_LIST:
             if currency in rate:
                 total_currency_volumes[currency] = total_currency_volumes[currency] + rate[currency]['volume']
                 if rate[currency]['ask'] is not None:
@@ -251,7 +251,7 @@ while True:
                     total_currency_volumes_bid[currency] = total_currency_volumes_bid[currency] + rate[currency]['volume']
     
     for rate in exchanges_rates:
-        for currency in CURRENCY_LIST_NOGOX:
+        for currency in CURRENCY_LIST:
             if currency in rate:
                 calculated_volumes[currency][rate['exchange_name']] = {}
                 calculated_volumes[currency][rate['exchange_name']]['rates'] = {'ask': rate[currency]['ask'],
@@ -260,21 +260,30 @@ while True:
                                                                                     }
                 calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
                 calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
-                calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
-                    / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
-    
+                if total_currency_volumes[currency] > 0:
+                    calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
+                        / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                else:
+                    calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = Decimal(0).quantize(DEC_PLACES)
+
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['ask'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['ask'].quantize(DEC_PLACES)
-                    calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = (rate[currency]['volume']
-                        / total_currency_volumes_ask[currency] * Decimal(100) ).quantize(DEC_PLACES)
-    
+                    if total_currency_volumes[currency] > 0:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = (rate[currency]['volume']
+                            / total_currency_volumes_ask[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    else:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_ask'] = Decimal(0).quantize(DEC_PLACES)
+
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['bid'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['bid'].quantize(DEC_PLACES)
-                    calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = (rate[currency]['volume']
-                        / total_currency_volumes_bid[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    if total_currency_volumes[currency] > 0:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = (rate[currency]['volume']
+                            / total_currency_volumes_bid[currency] * Decimal(100) ).quantize(DEC_PLACES)
+                    else:
+                        calculated_volumes[currency][rate['exchange_name']]['volume_percent_bid'] = Decimal(0).quantize(DEC_PLACES)
     
     for rate in exchanges_rates:
-        for currency in CURRENCY_LIST_NOGOX:
+        for currency in CURRENCY_LIST:
             if currency in rate:
                 if rate[currency]['last'] is not None:
                     calculated_average_rates[currency]['last'] = ( calculated_average_rates[currency]['last']
@@ -290,7 +299,7 @@ while True:
                 calculated_average_rates[currency]['ask'] = calculated_average_rates[currency]['ask'].quantize(DEC_PLACES)
                 calculated_average_rates[currency]['bid'] = calculated_average_rates[currency]['bid'].quantize(DEC_PLACES)
     
-    for currency in CURRENCY_LIST_NOGOX:
+    for currency in CURRENCY_LIST:
         calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
         calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
         calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
@@ -311,7 +320,7 @@ while True:
         all_data = {}
         all_data['timestamp'] = timestamp
         all_data['ignored_exchanges'] = exchanges_ignored
-        for currency in CURRENCY_LIST_NOGOX:
+        for currency in CURRENCY_LIST:
             cur_data = {'exchanges': calculated_volumes[currency],
                         'averages': calculated_average_rates[currency],
                         }
@@ -325,7 +334,7 @@ while True:
         with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], 'all'), 'w+') as api_ticker_all_file:
             api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
     
-        for currency in CURRENCY_LIST_NOGOX:
+        for currency in CURRENCY_LIST:
             ticker_cur = calculated_average_rates[currency]
             ticker_cur['timestamp'] = timestamp
             api_ticker_file = open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], currency), 'w+')
@@ -337,7 +346,7 @@ while True:
         with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'], 'all'), 'w+') as api_volume_all_file:
             api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
     
-        for currency in CURRENCY_LIST_NOGOX:
+        for currency in CURRENCY_LIST:
             volume_cur = calculated_volumes[currency]
             volume_cur['timestamp'] = timestamp
             api_ticker_file = open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'], currency), 'w+')
