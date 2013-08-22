@@ -10,7 +10,6 @@ API_FILES = {'TICKER_PATH': 'ticker/',
 API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}
 
-
 #seconds between calls to various exchanges APIs
 API_QUERY_FREQUENCY = {'bitcoincharts': 900,
                        'mtgox': 20,
@@ -33,20 +32,19 @@ API_QUERY_FREQUENCY = {'bitcoincharts': 900,
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
     API_QUERY_FREQUENCY['default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE
 
-#seconds before a consequently failing API will be put into ignored list
-#(before that data will be taken from cache)
-API_IGNORE_TIMEOUT = 60
-FRONTEND_QUERY_FREQUENCY = 5000 #milliseconds between AJAX requests from frontend to our API
+#seconds before a consequently failing API will be put into ignored list (in the mean time data will be taken from cache)
+API_IGNORE_TIMEOUT = 1800
+FRONTEND_QUERY_FREQUENCY = 5 #seconds between AJAX requests from frontend to our API
 
 DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = ('USD',
-                 'CNY',
                  'EUR',
                  'GBP',
-                 'JPY',
                  'CAD',
                  'PLN',
+                 'CNY',
+                 'JPY',
                  'RUB',
                  'AUD',
                  'SEK',
@@ -60,11 +58,6 @@ CURRENCY_LIST = ('USD',
                  # 'HKD',
                  # 'THB',
                     )
-
-CURRENCY_LIST_NOGOX = ('USD',
-                       'EUR',
-                       'GBP',
-)
 
 BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
 
