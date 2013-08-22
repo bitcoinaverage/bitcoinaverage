@@ -53,12 +53,12 @@
                     active_API_URL = API_all_url_nogox;
                     $(this).removeClass('btn-default');
                     $(this).addClass('btn-primary');
-                    button.text('MTGox ignored for USD/EUR/GBP');
+                    button.html('MTGox ignored <br> for USD/EUR/GBP');
                 } else {
                     active_API_URL = API_all_url;
                     $(this).addClass('btn-default');
                     $(this).removeClass('btn-primary');
-                    button.text('ignore MTGox for USD/EUR/GBP');
+                    button.html('ignore MTGox <br> for USD/EUR/GBP');
                 }
                 callAPI();
             });
@@ -660,7 +660,7 @@
                         </span>
                         <span id="slot0-last"></span>
                         <span class="slot0-curcode"></span>
-                        <button type="button" class="btn btn-default btn-xs" id="nogox-button">ignore MTGox for USD/EUR/GBP</button>
+                        <button type="button" class="btn btn-default btn-xs" id="nogox-button">ignore MTGox <br> for USD/EUR/GBP</button>
                     </h1>
                     <span class="slot0-bid_ask">
                         <span class="slot0-bid_ask-titles">bid &nbsp;</span>
