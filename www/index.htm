@@ -127,23 +127,23 @@
                 API_data = result;
                 var titleSet = false;
 
-//                config.currencyOrder.sort(function(a,b){
-//                    result[a].total_volume_btc = 0;
-//                    for (var exchange in result[a].exchanges){
-//                        result[a].total_volume_btc += parseInt(result[a].exchanges[exchange].volume_btc);
-//                    }
-//
-//                    result[b].total_volume_btc = 0;
-//                    for (var exchange in result[b].exchanges){
-//                        result[b].total_volume_btc += parseInt(result[b].exchanges[exchange].volume_btc);
-//                    }
-//                    if (result[a].total_volume_btc<result[b].total_volume_btc) {
-//                        return 1;
-//                    } else {
-//                        return -1;
-//                    }
-//                });
-//
+                config.currencyOrder.sort(function(a,b){
+                    result[a].total_volume_btc = 0;
+                    for (var exchange in result[a].exchanges){
+                        result[a].total_volume_btc += parseInt(result[a].exchanges[exchange].volume_btc);
+                    }
+
+                    result[b].total_volume_btc = 0;
+                    for (var exchange in result[b].exchanges){
+                        result[b].total_volume_btc += parseInt(result[b].exchanges[exchange].volume_btc);
+                    }
+                    if (result[a].total_volume_btc<result[b].total_volume_btc) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
+
                 for(var slotNum in config.currencyOrder){
                     var currencyCode = config.currencyOrder[slotNum];
 
@@ -477,6 +477,29 @@
                 margin:0 auto;
             }
         }
+
+        @media (max-width:1024px){
+            #currency-sidebar, #currency-sidebar>ul{
+                display: block;
+                position: relative !important;
+                top: auto !important;
+                right: auto !important;
+                bottom: auto !important;
+                left: auto !important;
+                margin: auto !important;
+                height: auto !important;
+                border-radius: 0;
+            }
+            #currency-sidebar>ul{
+                display: block !important;
+                min-width: auto;
+                float: none;
+                text-align: center;
+            }
+            #currency-sidebar>ul li{
+                display: inline-block;
+            }
+        }
         @media (max-width:768px){
             .footer{
                 height:auto;
@@ -587,35 +610,6 @@
             <!--<i id="question-mark" data-placement="left" data-original-title="This is a helpful text related to the question mark." class="icon-question-sign pull-right icon-2x"></i>-->
             <button id="nogox-button">exclude MTGox from USD, EUR & GBP prices</button>
         </div>
-    </div>
-    <div id="currency-sidebar">
-        <ul class="dropdown-menu visible-lg" role="menu" data-spy="affix" data-offset-top="200">
-            <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
-            <li class="divider"></li>
-            <li class="slot0-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot1-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot2-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot3-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot4-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot5-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot6-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li><a href="#" class="link1">More</a></li>
-        </ul>
-        <ul class="dropdown-menu2">
-            <li class="slot7-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot8-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot9-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot10-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot11-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot12-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot13-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot14-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot15-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot16-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot17-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot18-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot19-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-        </ul>
     </div>
     <div id="main-container" class="container">      
         <div class="row">
@@ -855,6 +849,37 @@
                 <!--</div>-->
                 
     </div><!-- /container -->
+    
+    <div id="currency-sidebar">
+        <ul class="dropdown-menu visible-lg" role="menu" data-spy="affix" data-offset-top="200">
+            <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
+            <li class="divider"></li>
+            <li class="slot0-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot1-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot2-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot3-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot4-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot5-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot6-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li><a href="#" class="link1">More</a></li>
+        </ul>
+        <ul class="dropdown-menu2">
+            <li class="slot7-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot8-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot9-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot10-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot11-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot12-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot13-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot14-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot15-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot16-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot17-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot18-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li class="slot19-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+        </ul>
+    </div>
+    <!-- currency sidebar end -->
 
     <footer class="footer clearfix">
         <div class="container hidden-sm">
