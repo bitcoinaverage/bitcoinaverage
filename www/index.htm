@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin exchange, bitcoin exchange rate, weighted average, weighted price, mean price, mean" />
-    <!--<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />-->
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!--<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">-->
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" />
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -48,12 +48,17 @@
             });
 
             $('#nogox-button').click(function(event){
+                var button = $(this);
                 if (active_API_URL == API_all_url){
                     active_API_URL = API_all_url_nogox;
-                    $(this).addClass('active');
+                    $(this).removeClass('btn-default');
+                    $(this).addClass('btn-primary');
+                    button.text('MTGox ignored for USD/EUR/GBP');
                 } else {
                     active_API_URL = API_all_url;
-                    $(this).removeClass('active');
+                    $(this).addClass('btn-default');
+                    $(this).removeClass('btn-primary');
+                    button.text('ignore MTGox for USD/EUR/GBP');
                 }
                 callAPI();
             });
@@ -314,6 +319,8 @@
         ul{
             list-style: none;
         }
+        .f_left{float: left;}
+        .f_right{float: right;}
 
         #nogox-button[class="active"]{color:red;}
 
@@ -341,6 +348,7 @@
         .dropdown-menu{
             top: 0;
             min-width: 53px;
+            box-shadow: none;
         }
         .dropdown-menu>li>a{
             outline: none;
@@ -403,8 +411,7 @@
         /**NavBar**/
         
         #header{
-            background-color: #ECECEC;
-            background-image: linear-gradient(#FFFFFF, #EEEEEE 50%, #E4E4E4);
+            background-color: #f9f9f9;
             background-repeat: no-repeat;
             border: 1px solid #D5D5D5;
             text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -434,13 +441,17 @@
             min-height:100%;
             height: auto !important;
             height: 100%;
-            margin: 0 auto -152px
+            margin: 0 auto -89px
         }
         
         .nav-tabs a:focus {
            outline: 0;
         }
         
+        .tab_content{
+            width: 50%;
+            margin: 0 auto; 
+        }
         /*Currency Arrows*/
         #usd-arrowup,#usd-arrowdown{
             font-size:0.8em;
@@ -459,6 +470,12 @@
             left:-20px;
             display:inline;
         }
+
+        .strip .btn{
+            position: absolute;
+            right: 10px;
+            top: 50px;
+        }
         
         /**Footer**/
         
@@ -467,10 +484,24 @@
             padding: 0;
             position: relative;
             z-index: 1;
-            -webkit-box-shadow: inset 0 4px 5px -2px rgba(0, 0, 0, 0.05);
-            -moz-box-shadow: inset 0 4px 5px -2px rgba(0, 0, 0, 0.05);
-            box-shadow: inset 0 4px 5px -2px rgba(0, 0, 0, 0.05);
-            height:152px;
+            background: #f9f9f9;
+            border-top: 1px solid #dadada;
+            height:89px;
+        }
+        footer .row{
+            position: relative;
+        }
+        .privacy{
+            width: 100%;
+            top: 0;
+            bottom: 0;
+            padding-top: 35px;
+            font-size: 10px;
+            text-transform: uppercase;
+            text-align: center;
+            vertical-align: middle;
+            position: absolute;
+            z-index: -1;
         }
         @media (max-width:1200px){
             #main-container{
@@ -507,7 +538,15 @@
             .nav > li > a {
                 padding:5px 5px;
             }
+
+            .foot_left,  .foot_right{
+                display: none;
+            }
+            .dropdown-menu .link1{display: none;}
+            .privacy{padding: 20px 0 30px;}
         }
+
+        
 
         .footer-credits {
             padding: 10px;
@@ -564,8 +603,8 @@
             z-index: 3;
             padding: .75% 0;
             background: #f7f7f7;
-            box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.05), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.05);
-            -webkit-box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.05), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #dadada;
+            border-bottom: 1px solid #dadada;
         }
         
         /** Sidebar Currency Bar **/
@@ -608,7 +647,6 @@
             <a class="navbar-brand pull-left">beta</a>          
             <a class="navbar-text api pull-right" href="http://api.bitcoinaverage.com">API</a>
             <!--<i id="question-mark" data-placement="left" data-original-title="This is a helpful text related to the question mark." class="icon-question-sign pull-right icon-2x"></i>-->
-            <button id="nogox-button">exclude MTGox from USD, EUR & GBP prices</button>
         </div>
     </div>
     <div id="main-container" class="container">      
@@ -622,6 +660,7 @@
                         </span>
                         <span id="slot0-last"></span>
                         <span class="slot0-curcode"></span>
+                        <button type="button" class="btn btn-default btn-xs" id="nogox-button">ignore MTGox for USD/EUR/GBP</button>
                     </h1>
                     <span class="slot0-bid_ask">
                         <span class="slot0-bid_ask-titles">bid &nbsp;</span>
@@ -690,7 +729,7 @@
             </div>
         </div>       
         <div class="row">           
-            <div class="col-lg-6 col-offset-3 tab-content" id="legend-block">
+            <div class="tab_content col-offset-3 tab-content" id="legend-block">
                 <div class="tab-pane fade in" id="legendpane">
                     <div class="">
                         <h2>Data for <span class="legend-curcode"></span> weighted average</h2>
@@ -882,15 +921,15 @@
     <!-- currency sidebar end -->
 
     <footer class="footer clearfix">
-        <div class="container hidden-sm">
+        <div class="container">
             <div class="row">
-                <div class="col-lg-8">
+                <div class="f_left foot_left">
                     <section>
                         <h4><span>Support Us</span></h4>
                         <span style="font-size: 80%">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</span>
                     </section>
                 </div>
-                <div class="col-lg-4" style="text-align: right">
+                <div class="f_right foot_right" style="text-align: right">
                     <section id="section-connect">
                         <h4><span>Connect with us</span></h4>
                         <!--<a href="#">
@@ -913,15 +952,11 @@
                         </a>
                     </section>
                 </div>
+                <div class="privacy">
+                    &copy; 2013 BitcoinAverage
+                </div>
             </div>
         </div>
-        <section class="footer-credits">
-            <div class="container">
-                <ul class="clearfix">
-                    <li class="text-center">&copy; 2013 BitcoinAverage</li>
-                </ul>
-            </div>
-        </section>        
     </footer><!-- /footer -->
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
