@@ -1,0 +1,16 @@
+{
+  "ticker": {"all": "http://api.bitcoinaverage.com/no-mtgox/ticker/all",
+             "USD": "http://api.bitcoinaverage.com/no-mtgox/ticker/USD",
+             "EUR": "http://api.bitcoinaverage.com/no-mtgox/ticker/EUR",
+             "GBP": "http://api.bitcoinaverage.com/no-mtgox/ticker/GBP"
+            },
+
+  "volume": {"all": "http://api.bitcoinaverage.com/no-mtgox/exchanges/all",
+             "USD": "http://api.bitcoinaverage.com/no-mtgox/exchanges/USD",
+             "EUR": "http://api.bitcoinaverage.com/no-mtgox/exchanges/EUR",
+             "GBP": "http://api.bitcoinaverage.com/no-mtgox/exchanges/GBP"
+            },
+
+  "all": "http://api.bitcoinaverage.com/no-mtgox/all",
+  "ignored": "http://api.bitcoinaverage.com/no-mtgox/ignored"
+}

@@ -1,0 +1,5 @@
+{"all": "http://api.bitcoinaverage.com/no-mtgox/ticker/all",
+ "USD": "http://api.bitcoinaverage.com/no-mtgox/ticker/USD",
+ "EUR": "http://api.bitcoinaverage.com/no-mtgox/ticker/EUR",
+ "GBP": "http://api.bitcoinaverage.com/no-mtgox/ticker/GBP"
+}
