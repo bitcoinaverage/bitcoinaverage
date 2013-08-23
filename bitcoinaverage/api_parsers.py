@@ -387,26 +387,27 @@ def _cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
                                     },
             }
 
-def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trades_url, *args, **kwargs):
-    usd_ticker_result = requests.get(usd_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
+def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
+                        eur_ticker_url, eur_trades_url, *args, **kwargs):
+    # usd_ticker_result = requests.get(usd_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
     eur_ticker_result = requests.get(eur_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
 
     last24h_time = int(time.time())-86400  #86400s in 24h
 
-    usd_low = 0.0
-    usd_high = 0.0
-    usd_last = 0.0
-    usd_vol = 0.0
-
-    usd_volume_result = requests.get(usd_trades_url, verify=False, headers=API_REQUEST_HEADERS).json()
-    for trade in usd_volume_result:
-        if trade['date'] > last24h_time:
-            if usd_low > float(trade['price']) or usd_low == 0:
-                usd_low = float(trade['price'])
-            if usd_high < float(trade['price']):
-                usd_high = float(trade['price'])
-            usd_vol = usd_vol + float(trade['price'])
-            usd_last = float(trade['price'])
+    # usd_low = 0.0
+    # usd_high = 0.0
+    # usd_last = 0.0
+    # usd_vol = 0.0
+    #
+    # usd_volume_result = requests.get(usd_trades_url, verify=False, headers=API_REQUEST_HEADERS).json()
+    # for trade in usd_volume_result:
+    #     if trade['date'] > last24h_time:
+    #         if usd_low > float(trade['price']) or usd_low == 0:
+    #             usd_low = float(trade['price'])
+    #         if usd_high < float(trade['price']):
+    #             usd_high = float(trade['price'])
+    #         usd_vol = usd_vol + float(trade['price'])
+    #         usd_last = float(trade['price'])
 
     eur_low = 0.0
     eur_high = 0.0
@@ -422,14 +423,15 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url, eur_ticker_url, eur_trad
             eur_vol = eur_vol + float(trade['amount'])
             eur_last = float(trade['price'])
 
-    return {'USD': {'ask': Decimal(usd_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
-                    'bid': Decimal(usd_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
-                    'high': Decimal(usd_high).quantize(DEC_PLACES),
-                    'low': Decimal(usd_low).quantize(DEC_PLACES),
-                    'last': Decimal(usd_last).quantize(DEC_PLACES),
-                    'avg': None,
-                    'volume': Decimal(usd_vol).quantize(DEC_PLACES),
-                                    },
+    return {
+            # 'USD': {'ask': Decimal(usd_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
+            #         'bid': Decimal(usd_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
+            #         'high': Decimal(usd_high).quantize(DEC_PLACES),
+            #         'low': Decimal(usd_low).quantize(DEC_PLACES),
+            #         'last': Decimal(usd_last).quantize(DEC_PLACES),
+            #         'avg': None,
+            #         'volume': Decimal(usd_vol).quantize(DEC_PLACES),
+            #                         },
             'EUR': {'ask': Decimal(eur_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(eur_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
                     'high': Decimal(eur_high).quantize(DEC_PLACES),
@@ -501,3 +503,56 @@ def _rmbtbApiCall(ticker_url, *args, **kwargs):
                     },
             }
 
+def _btcchinaApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+
+def _fxbtcApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['ticker']['ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['ticker']['bid']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['ticker']['last_rate']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+
+def _bterApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['vol_btc']).quantize(DEC_PLACES),
+                    },
+            }
+
+
+def _goxbtcApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+
+def _okcoinApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                    },
+            }

@@ -100,8 +100,8 @@ EXCHANGE_LIST = {
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
                                    'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',
                                    },
-                    'rocktrading':{'usd_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCUSD',
-                                   'usd_trades_url': 'https://www.therocktrading.com/api/trades/BTCUSD',
+                    'rocktrading':{# 'usd_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCUSD',
+                                   # 'usd_trades_url': 'https://www.therocktrading.com/api/trades/BTCUSD',
                                    'eur_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCEUR',
                                    'eur_trades_url': 'https://www.therocktrading.com/api/trades/BTCEUR',
                                     },
@@ -122,8 +122,16 @@ EXCHANGE_LIST = {
                     'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/secure/BTCCNY/ticker',
                                 },
 
-
-
+                    'btcchina':  {'ticker_url': 'https://data.btcchina.com/data/ticker',
+                                    },
+                    'fxbtc':  {'ticker_url': 'https://data.fxbtc.com/api?op=query_ticker&symbol=btc_cny',
+                                    },
+                    'bter':  {'ticker_url': 'https://bter.com/api/1/ticker/btc_cny',
+                                    },
+                    'goxbtc':  {'ticker_url': 'https://goxbtc.com/api/btc_cny/ticker.htm',
+                                    },
+                    'okcoin':  {'ticker_url': 'https://www.okcoin.com/api/ticker.do',
+                                    },
 
 
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
@@ -150,13 +158,10 @@ EXCHANGE_LIST = {
                                  },
                     'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
                                                         'CAD': 'weexCAD',
-                                                        'USD': 'weexUSD',
+                                                        # 'USD': 'weexUSD',
                                                            },
                                  },
                     'mercado':  {'bitcoincharts_symbols': {'BRL': 'mrcdBRL',
-                                                           },
-                                 },
-                    'btcchina':  {'bitcoincharts_symbols': {'CNY': 'btcnCNY',
                                                            },
                                  },
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitNZD',
@@ -168,5 +173,4 @@ EXCHANGE_LIST = {
                     'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                  },
-
                 }
