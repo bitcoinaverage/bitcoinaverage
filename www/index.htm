@@ -94,6 +94,12 @@
                         $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
                         $('#currency-sidebar li').removeClass('active');
                         $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+
+                        var currentHash = window.location.hash;
+                        var currentLocation = document.location.href;
+                        currentHash = currentHash.replace('#', '');
+                        var newLocation = currentLocation.replace(currentHash, '') + curCode;
+                        window.location.replace(newLocation);
                     }
                 });
 
@@ -123,6 +129,12 @@
                         $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
                         $('#currency-sidebar li').removeClass('active');
                         $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+
+                        var currentHash = window.location.hash;
+                        var currentLocation = document.location.href;
+                        currentHash = currentHash.replace('#', '');
+                        var newLocation = currentLocation.replace(currentHash, '') + curCode;
+                        window.location.replace(newLocation);
                     }
                 });
 
@@ -186,7 +198,15 @@
 
             if (!firstRenderDone) {
                 $('body').show();
-                $('#slot0-box').click();
+
+                var currentHash = window.location.hash;
+                currentHash = currentHash.replace('#', '');
+                if (currentHash != '') {
+                    $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
+                } else {
+                    $('#slot0-box').click();
+                }
+
                 firstRenderDone = true;
             }
         }
