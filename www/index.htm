@@ -199,7 +199,7 @@
 
                 var currentHash = window.location.hash;
                 currentHash = currentHash.replace('#', '');
-                if (currentHash != '') {
+                if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
                     $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
                 } else {
                     $('#slot0-box').click();
