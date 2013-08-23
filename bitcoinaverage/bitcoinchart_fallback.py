@@ -1,4 +1,5 @@
 import time
+import socket
 from decimal import Decimal
 
 import requests
@@ -23,7 +24,7 @@ def fetchBitcoinChartsData():
             API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
                                                  'result':result,
                                                    }
-        except (ValueError, ConnectionError) as error:
+        except (ValueError, ConnectionError, socket.error) as error:
             if ('bitcoincharts' in API_QUERY_CACHE
                 and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
                 result = API_QUERY_CACHE['bitcoincharts']['result']

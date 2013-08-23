@@ -6,8 +6,8 @@
     <title>BitcoinAverage</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean" />
 
-    <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin exchange, bitcoin exchange rate, weighted average, weighted price, mean price, mean" />
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" />
 
@@ -68,7 +68,7 @@
                     $(this).selectText();
                 });
 
-                var slotLegendSelector = $('.slot'+slotNum+'-box');
+                var slotLegendSelector = $('#slot'+slotNum+'-box');
                 slotLegendSelector.mouseover(function(event){
                     var curCode = $(this).data('currencycode');
 
@@ -104,13 +104,13 @@
 
 
             }
-            
+
             $("#question-mark").tooltip({
                 'trigger':'click',
                 'html': $(this).data('original-title'),
                 'placement': 'left'
             });
-          
+
         });
 
         function callAPI(){
@@ -162,24 +162,27 @@
                 $('#legend-ignored-count').text($(result.ignored_exchanges).countObj());
 
                 $('body').show();
-                if(!startup)
-                {
+                if (!startup) {
                     $('.slot0-box').click();
                     $('#legendpane').addClass('active');
                     startup=true;
                 }
 
         }
-        
+
         var lastusdvalue = 0;
         function renderRates(currencyCode, currencyData, slotNum){
-            $('.slot'+slotNum+'-box').data('currencycode', currencyCode);
-            var clickLink = $('.slot'+slotNum+'-box a');
+            $('#slot'+slotNum+'-link').data('currencycode', currencyCode);
+            var clickLink = $('#slot'+slotNum+'-link a');
             clickLink.text(currencyCode);
-            clickLink.attr('title', currencyData.total_volume_btc);
             clickLink.attr('href', '#'+currencyCode);
             clickLink.show();
-            $('.slot'+slotNum+'-curcode').text(currencyCode);
+            $('#slot'+slotNum+'-box').data('curcode', currencyCode);
+            $('#slot'+slotNum+'-curcode').text(currencyCode);
+            var dataChanged = false;
+            dataChanged = (dataChanged || $('#slot'+slotNum+'-last').text() != currencyData.averages.last);
+            dataChanged = (dataChanged || $('#slot'+slotNum+'-ask').text() != currencyData.averages.ask);
+            dataChanged = (dataChanged || $('#slot'+slotNum+'-bid').text() != currencyData.averages.bid);
             $('#slot'+slotNum+'-last').text(currencyData.averages.last);
             $('#slot'+slotNum+'-ask').text(currencyData.averages.ask);
             $('#slot'+slotNum+'-bid').text(currencyData.averages.bid);
@@ -198,10 +201,12 @@
                     lastusdvalue = currencyData.averages.last;
                 }
             }
-            
-//            var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
-//            flashingFigures.css({ 'opacity' : 0.5});
-//            flashingFigures.animate({ 'opacity' : 1 }, 100);
+
+            if (dataChanged) {
+                var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
+                flashingFigures.css({ 'opacity' : 0.5});
+                flashingFigures.animate({ 'opacity' : 1 }, 500);
+            }
         }
 
         function renderLegend(currencyCode){
@@ -312,7 +317,7 @@
             font-weight: bold;
         }
         
-        h2 {
+        h3 {
             font-size: 1.5em;
         }
         ul{
@@ -400,7 +405,6 @@
             display: block;
         }
 
-
         /* Set the fixed height of the footer here */
         #footer {
           height: 50px;
@@ -408,7 +412,6 @@
         }
         
         /**NavBar**/
-        
         #header{
             background-color: #f9f9f9;
             background-repeat: no-repeat;
@@ -435,24 +438,22 @@
         }
         
         /** Main Container **/
-        
         #main-container{
             min-height:100%;
             height: auto !important;
             height: 100%;
             margin: 0 auto -89px
         }
-        
-        .nav-tabs a:focus {
-           outline: 0;
+        #currency-navtabs h2 {
+            font-size: 1.4em;
         }
-        
+
         .tab_content{
             width: 50%;
             margin: 0 auto; 
         }
         /*Currency Arrows*/
-        #usd-arrowup,#usd-arrowdown{
+        #usd-arrowup, #usd-arrowdown{
             font-size:0.8em;
             position:absolute;
             display:none;
@@ -473,11 +474,10 @@
         .strip .btn{
             position: absolute;
             right: 10px;
-            top: 50px;
+            top: 10px;
         }
         
         /**Footer**/
-        
         .footer{
             clear: both;
             padding: 0;
@@ -534,7 +534,7 @@
             .footer{
                 height:auto;
             }
-            .nav > li > a {
+            .nav > li {
                 padding:5px 5px;
             }
 
@@ -607,7 +607,6 @@
         }
         
         /** Sidebar Currency Bar **/
-        
         #currency-sidebar{
             left:0;
             top:50%;
@@ -642,8 +641,8 @@
 <body>
     <div id="header" class="navbar navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand pull-left" href='#'>BitcoinAverage</a>
-            <a class="navbar-brand pull-left">beta</a>          
+            <a class="navbar-brand pull-left" href="">BitcoinAverage</a>
+            <span class="navbar-brand pull-left">beta</span>
             <a class="navbar-text api pull-right" href="http://api.bitcoinaverage.com">API</a>
             <!--<i id="question-mark" data-placement="left" data-original-title="This is a helpful text related to the question mark." class="icon-question-sign pull-right icon-2x"></i>-->
         </div>
@@ -674,64 +673,50 @@
         <div class="row">            
             <div class="col-lg-12 text-center">
                 <ul id="currency-navtabs" class="nav nav-tabs">
-                    <li><a href="#legendpane" class="slot1-box" data-toggle="tab"><h4><span id="slot1-last" class="last"></span> <span class="slot1-curcode last"></span></h4>
-                    <!--<span style="width: 50%">--><p class="bid_ask"> <span id="slot1-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot1-ask" title="ask"></span></p><!--</span>--></a></li>
-                    <li><a href="#legendpane" class="slot2-box" data-toggle="tab"><h4><span id="slot2-last" class="last"></span> <span class="slot2-curcode last"></span></h4>
-                    <p class="bid_ask"> <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span></p></a></li>
-                    <li><a href="#legendpane" class="slot3-box" data-toggle="tab"><h4><span id="slot3-last" class="last"></span> <span class="slot3-curcode last"></span></h4>
-                    <p class="bid_ask"> <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span></p></a></li>
-                    <li>
-                        <a href="#legendpane" class="slot4-box" data-toggle="tab">
-                            <h4><span id="slot4-last" class="last"></span> <span class="slot4-curcode last"></span></h4>
-                            <p class="bid_ask">
-                                <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
-                            </p>
-                        </a>
+                    <li id="slot1-box">
+                        <h2><span id="slot1-last" class="last"></span> <span id="slot1-curcode" class="last"></span></h2>
+                        <p class="bid_ask">
+                            <span id="slot1-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot1-ask" title="ask"></span>
+                        </p>
                     </li>
-                    <li>
-                        <a href="#legendpane" class="slot5-box" data-toggle="tab">
-                            <h4><span id="slot5-last" class="last"></span> <span class="slot5-curcode last"></span></h4>
-                            <p class="bid_ask">
-                                <span id="slot5-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot5-ask" title="ask"></span>
-                            </p>
-                        </a>
+                    <li id="slot2-box">
+                        <h2><span id="slot2-last" class="last"></span> <span id="slot2-curcode" class="last"></span></h2>
+                        <p class="bid_ask">
+                            <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span>
+                        </p>
                     </li>
-                    <li>
-                        <a href="#legendpane" class="slot6-box" data-toggle="tab">
-                            <h4><span id="slot6-last" class="last"></span> <span class="slot6-curcode last"></span></h4>
-                            <p class="bid_ask">
-                                <span id="slot6-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot6-ask" title="ask"></span>
-                            </p>
-                        </a>
+                    <li id="slot3-box">
+                        <h2><span id="slot3-last" class="last"></span> <span id="slot3-curcode" class="last"></span></h2>
+                        <p class="bid_ask">
+                            <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot4-box">
+                        <h2><span id="slot4-last" class="last"></span> <span id="slot4-curcode" class="last"></span></h2>
+                        <p class="bid_ask">
+                            <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot5-box">
+                        <h2><span id="slot5-last" class="last"></span> <span id="slot5-curcode" class="last"></span></h2>
+                        <p class="bid_ask">
+                            <span id="slot5-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot5-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot6-box">
+                        <h2><span id="slot6-last" class="last"></span> <span id="slot6-curcode" class="last"></span></h2>
+                        <p class="bid_ask">
+                            <span id="slot6-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot6-ask" title="ask"></span>
+                        </p>
                     </li>
                 </ul>
-                <!--<div class="col-lg-2 col-offset-2 slot1-box" data-currencycode="">
-                    <h4><span id="slot1-last"></span> <span class="slot1-curcode"></span></h4>
-                    <span style="width: 50%"><p class="bid_ask"><span id="slot1-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot1-ask" title="ask"></span></p></span>
-                </div>
-                <div class="col-lg-2 slot2-box" data-currencycode="">
-                    <h4><span id="slot2-last"></span> <span class="slot2-curcode"></span></h4>
-                    <p class="bid_ask"> <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span> </p>
-                </div>
-                <div class="col-lg-2 slot3-box" data-currencycode="">
-                    <h4><span id="slot3-last"></span> <span class="slot3-curcode"></span></h4>
-                    <p class="bid_ask"> <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span> </p>
-                </div>
-                <div class="col-lg-2 slot4-box" data-currencycode="">
-                    <h4><span id="slot4-last"></span> <span class="slot4-curcode"></span></h4>
-                    <p class="bid_ask"> <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span> </p>
-                </div>-->
-                <!--<div class="col-2 slot5-box" data-currencycode="">-->
-                    <!--<h4><span id="slot5-last"></span> <span class="slot5-curcode"></span></h4>-->
-                    <!--<p class="bid_ask"> <span id="slot5-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot5-ask" title="ask"></span> </p>-->
-                <!--</div>-->
             </div>
         </div>       
         <div class="row">           
             <div class="tab_content col-offset-3 tab-content" id="legend-block">
                 <div class="tab-pane fade in" id="legendpane">
                     <div class="">
-                        <h2>Data for <span class="legend-curcode"></span> weighted average</h2>
+                        <h3>Data for <span class="legend-curcode"></span> weighted average</h3>
                     </div>
                     <table class="table table-striped table-condensed table-hover">
                         <thead>
@@ -862,59 +847,39 @@
                                     <td class="legend-volume_btc"><span id="legend-slot19-volume_btc"></span></td>
                                     <td class="legend-rate text-right"><span id="legend-slot19-rate"></span> <span class="legend-curcode"></span></td>
                             </tr>
-                            <!--<li>-->
-                                <!--<div class="col-4 col-offset-2 legend-ignored">-->
-                                    <!--<span id="legend-ignored-count"></span> ignored (no API or trading volume data)-->
-                                <!--</div>-->
-                            <!--</li>-->
                     </table>
                 </div>
             </div>
         </div>
-                <!--<div class="row">-->
-                    <!--<div class="col-6 col-offset-3" id="ignored-block">-->
-                        <!--<div class="">-->
-                            <!--<h2>Ignored List</h2>-->
-                        <!--</div>-->
-                        <!--<table class="table table-striped">-->
-                                <!--<tr>-->
-                                    <!--<div class="col-4 legend-ignored">-->
-                                        <!--<span id="legend-ignored-count"></span> ignored (no API or trading volume data)-->
-                                    <!--</div>-->
-                                <!--</td>-->
-                        <!--</table>-->
-                    <!--</div>-->
-                <!--</div>-->
-                
     </div><!-- /container -->
     
     <div id="currency-sidebar">
         <ul class="dropdown-menu visible-lg" role="menu" data-spy="affix" data-offset-top="200">
             <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
             <li class="divider"></li>
-            <li class="slot0-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot1-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot2-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot3-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot4-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot5-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot6-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot0-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot1-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot2-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot3-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot4-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot5-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot6-link"><a tabindex="-1" href="" style="display: none;"></a></li>
             <!--<li><a href="#" class="link1">More</a></li>-->
         </ul>
-        <ul class="dropdown-menu2" style="display: none">
-            <li class="slot7-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot8-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot9-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot10-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot11-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot12-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot13-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot14-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot15-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot16-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot17-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot18-box"><a tabindex="-1" href="" style="display: none;"></a></li>
-            <li class="slot19-box"><a tabindex="-1" href="" style="display: none;"></a></li>
+        <ul class="dropdown-menu2">
+            <li id="slot7-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot8-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot9-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot10-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot11-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot12-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot13-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot14-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot15-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot16-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot17-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot18-link"><a tabindex="-1" href="" style="display: none;"></a></li>
+            <li id="slot19-link"><a tabindex="-1" href="" style="display: none;"></a></li>
         </ul>
     </div>
     <!-- currency sidebar end -->

@@ -1,5 +1,6 @@
 import time
 import requests
+import socket
 from email import utils
 from decimal import Decimal
 from requests.exceptions import ConnectionError
@@ -36,7 +37,7 @@ def callAPI(exchange_name, exchange_params):
                                                'result':result,
                                                'call_fail_count': 0,
                                                }
-    except (ValueError, ConnectionError) as error:
+    except (ValueError, ConnectionError, socket.error) as error:
         API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
         if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
             result = API_QUERY_CACHE[exchange_name]['result']
