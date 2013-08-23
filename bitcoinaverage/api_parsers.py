@@ -316,9 +316,9 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
     
     if result['USD']['avg_3h'] != None:
-        usd_rate = Decimal(result['USD']['avg_1h']).quantize(DEC_PLACES)
-    elif result['USD']['avg_12h'] != None:
         usd_rate = Decimal(result['USD']['avg_3h']).quantize(DEC_PLACES)
+    elif result['USD']['avg_12h'] != None:
+        usd_rate = Decimal(result['USD']['avg_12h']).quantize(DEC_PLACES)
     else:
         usd_rate = None
         
@@ -337,9 +337,9 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
         gbp_rate = None
   
     if result['CAD']['avg_3h'] != None:
-        cad_rate = Decimal(result['CAD']['avg_1h']).quantize(DEC_PLACES)
-    elif result['CAD']['avg_12h'] != None:
         cad_rate = Decimal(result['CAD']['avg_3h']).quantize(DEC_PLACES)
+    elif result['CAD']['avg_12h'] != None:
+        cad_rate = Decimal(result['CAD']['avg_12h']).quantize(DEC_PLACES)
     else:
         cad_rate = None
 
