@@ -97,8 +97,7 @@
 
                         var currentHash = window.location.hash;
                         var currentLocation = document.location.href;
-                        currentHash = currentHash.replace('#', '');
-                        var newLocation = currentLocation.replace(currentHash, '') + curCode;
+                        var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
                         window.location.replace(newLocation);
                     }
                 });
@@ -132,8 +131,7 @@
 
                         var currentHash = window.location.hash;
                         var currentLocation = document.location.href;
-                        currentHash = currentHash.replace('#', '');
-                        var newLocation = currentLocation.replace(currentHash, '') + curCode;
+                        var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
                         window.location.replace(newLocation);
                     }
                 });
