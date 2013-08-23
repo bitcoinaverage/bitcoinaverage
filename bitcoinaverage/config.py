@@ -98,7 +98,7 @@ EXCHANGE_LIST = {
                                          },
 
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
-                                   'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',
+                                   #'eur_api_url': 'https://crypto-trade.com/api/1/ticker/btc_eur',
                                    },
                     'rocktrading':{# 'usd_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCUSD',
                                    # 'usd_trades_url': 'https://www.therocktrading.com/api/trades/BTCUSD',
@@ -157,7 +157,7 @@ EXCHANGE_LIST = {
                                                            },
                                  },
                     'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
-                                                        'CAD': 'weexCAD',
+                                                        #'CAD': 'weexCAD',
                                                         # 'USD': 'weexUSD',
                                                            },
                                  },

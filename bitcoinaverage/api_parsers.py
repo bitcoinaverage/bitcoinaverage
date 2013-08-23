@@ -366,9 +366,10 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             },
     }
 
-def _cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
+def _cryptotradeApiCall(usd_api_url, #eur_api_url,
+                        *args, **kwargs):
     usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
-    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
+    #eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'USD': {'ask': Decimal(usd_result['data']['min_ask']).quantize(DEC_PLACES),
                     'bid': Decimal(usd_result['data']['max_bid']).quantize(DEC_PLACES),
@@ -378,14 +379,14 @@ def _cryptotradeApiCall(usd_api_url, eur_api_url, *args, **kwargs):
                     'avg': None,
                     'volume': Decimal(usd_result['data']['vol_btc']).quantize(DEC_PLACES),
                                     },
-            'EUR': {'ask': Decimal(eur_result['data']['min_ask']).quantize(DEC_PLACES),
-                    'bid': Decimal(eur_result['data']['max_bid']).quantize(DEC_PLACES),
-                    'high': Decimal(eur_result['data']['high']).quantize(DEC_PLACES),
-                    'low': Decimal(eur_result['data']['low']).quantize(DEC_PLACES),
-                    'last': Decimal(eur_result['data']['last']).quantize(DEC_PLACES),
-                    'avg': None,
-                    'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES),
-                                    },
+            # 'EUR': {'ask': Decimal(eur_result['data']['min_ask']).quantize(DEC_PLACES),
+            #         'bid': Decimal(eur_result['data']['max_bid']).quantize(DEC_PLACES),
+            #         'high': Decimal(eur_result['data']['high']).quantize(DEC_PLACES),
+            #         'low': Decimal(eur_result['data']['low']).quantize(DEC_PLACES),
+            #         'last': Decimal(eur_result['data']['last']).quantize(DEC_PLACES),
+            #         'avg': None,
+            #         'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES),
+            #                         },
             }
 
 def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
