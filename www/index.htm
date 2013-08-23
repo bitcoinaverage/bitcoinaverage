@@ -69,6 +69,7 @@
                 });
 
                 var slotLegendSelector = $('#slot'+slotNum+'-box');
+
                 slotLegendSelector.mouseover(function(event){
                     var curCode = $(this).data('currencycode');
 
@@ -120,7 +121,7 @@
                 xhr.onload = function() {
 	                var result = JSON.parse(xhr.responseText);
                     renderAll(result);
-    	        }
+    	        };
                 xhr.send();
             } else {
                 $.getJSON(active_API_URL, renderAll);
@@ -177,7 +178,7 @@
             clickLink.text(currencyCode);
             clickLink.attr('href', '#'+currencyCode);
             clickLink.show();
-            $('#slot'+slotNum+'-box').data('curcode', currencyCode);
+            $('#slot'+slotNum+'-box').data('currencycode', currencyCode);
             $('#slot'+slotNum+'-curcode').text(currencyCode);
             var dataChanged = false;
             dataChanged = (dataChanged || $('#slot'+slotNum+'-last').text() != currencyData.averages.last);
@@ -650,14 +651,14 @@
     <div id="main-container" class="container">      
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="slot0-box strip" data-currencycode="">
+                <div id="slot0-box" class="strip" data-currencycode="">
                     <h1>
                         <span id="currency-arrowcontainer">
                             <i id="usd-arrowup" class="icon-caret-up"></i>
                             <i id="usd-arrowdown" class="icon-caret-down"></i>
                         </span>
                         <span id="slot0-last"></span>
-                        <span class="slot0-curcode"></span>
+                        <span id="slot0-curcode"></span>
                         <button type="button" class="btn btn-default btn-xs" id="nogox-button">ignore MTGox <br> for USD/EUR/GBP</button>
                     </h1>
                     <span class="slot0-bid_ask">
