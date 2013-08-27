@@ -15,7 +15,7 @@ import bitcoinaverage as ba
 from bitcoinaverage import bitcoinchart_fallback
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException, CallFailedException
-from bitcoinaverage.helpers import write_config, write_log
+from bitcoinaverage.helpers import write_config, write_log, write_fiat_rates_config
 from bitcoinaverage import api_parsers
 from bitcoinaverage.nogox import create_nogox_api
 
@@ -32,6 +32,7 @@ if ba.server.WWW_DOCUMENT_ROOT == '':
 
 write_log('script started', 'LOG')
 write_config()
+write_fiat_rates_config()
 
 while True:
     start_time = int(time.time())
@@ -143,6 +144,7 @@ while True:
         calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
         calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
         calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
+        calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
 
         for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:

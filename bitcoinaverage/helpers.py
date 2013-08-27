@@ -1,7 +1,9 @@
+from decimal import Decimal
 import os
 import time
 import json
 from email import utils
+import requests
 
 import bitcoinaverage as ba
 
@@ -32,3 +34,37 @@ def write_log(log_string, message_type='ERROR'):
         log_string = '%s; %s: %s' % (timestamp, message_type, log_string)
         print log_string
         log_file.write(log_string+'\n')
+
+
+def write_fiat_rates_config():
+    global ba
+    js_config_template = "var fiatCurrencies = $FIAT_CURRENCIES_RATES;"
+
+    google_api_url_template = 'http://www.google.com/ig/calculator?hl=en&q=1USD%3D%3F'
+
+    rate_list = {}
+
+    for currency in ba.config.CURRENCY_LIST:
+        api_url = google_api_url_template + currency
+        result = requests.get(api_url, headers=ba.config.API_REQUEST_HEADERS).text
+        ##{lhs: "1 U.S. dollar",rhs: "33.1818031 Russian rubles",error: "",icc: true}
+        result = result.replace('lhs', '"lhs"')
+        result = result.replace('rhs', '"rhs"')
+        result = result.replace('error', '"error"')
+        result = result.replace('icc', '"icc"')
+        result = json.loads(result)
+        rate_string = result['rhs']
+        rate = ''
+        for c in rate_string:
+            if c == ' ':
+                break
+            else:
+                rate = rate + c
+        rate = Decimal(rate).quantize(ba.config.DEC_PLACES)
+        rate_list[currency] = str(rate)
+
+    config_string = js_config_template
+    config_string = js_config_template.replace('$FIAT_CURRENCIES_RATES', json.dumps(rate_list))
+
+    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'fiat_rates_config.js'), 'w') as fiat_exchange_config_file:
+        fiat_exchange_config_file.write(config_string)

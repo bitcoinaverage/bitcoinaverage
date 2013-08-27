@@ -114,6 +114,7 @@ def create_nogox_api(timestamp):
         calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
         calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
         calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
+        calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
 
         for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:
