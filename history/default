@@ -1,0 +1,9 @@
+{
+  "2013": {"Aug": "http://api.bitcoinaverage.com/history/2013/08"
+           "Sep": "http://api.bitcoinaverage.com/history/2013/09"
+           "Oct": "http://api.bitcoinaverage.com/history/2013/10"
+           "Nov": "http://api.bitcoinaverage.com/history/2013/11"
+           "Dec": "http://api.bitcoinaverage.com/history/2013/12"
+            }
+}
+

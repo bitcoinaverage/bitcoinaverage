@@ -14,7 +14,7 @@ import datetime
 from email import utils
 
 import bitcoinaverage as ba
-from bitcoinaverage.config import HISTORY_QUERY_FREQUENCY
+from bitcoinaverage.config import HISTORY_QUERY_FREQUENCY, CURRENCY_LIST
 from bitcoinaverage.helpers import write_log
 
 
@@ -31,14 +31,17 @@ while True:
     start_time = int(time.time())
 
     ticker_url = ba.server.API_INDEX_URL+'ticker/all'
-    current_data = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
+    current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
 
-    current_data_datetime = current_data['timestamp']
-    del current_data['timestamp']
-    current_data_datetime = current_data_datetime[:-6] #prior to python 3.2 strptime doesnt work with timezone offsets.
+    current_data_datetime = current_data_all['timestamp']
+    current_data_datetime = current_data_datetime[:-6] #prior to python 3.2 strptime doesnt work properly with numeric timezone offsets.
     current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%a, %d %b %Y %H:%M:%S')
     current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
 
+    current_data_last = {}
+    for currency_code in current_data_all:
+        if currency_code in CURRENCY_LIST:
+            current_data_last[currency_code] = current_data_all[currency_code]['last']
 
     current_data_year = str(current_data_datetime.year)
     current_data_month = str(current_data_datetime.month).rjust(2, '0')
@@ -47,13 +50,16 @@ while True:
     if not os.path.exists(current_data_history_path):
         os.makedirs(current_data_history_path)
 
+    with open(os.path.join(current_data_history_path, current_data_day), 'a') as history_file:
+        pass  #to make sure file exists, as r+ doesnt create it
+
     with open(os.path.join(current_data_history_path, current_data_day), 'r+') as history_file:
         history_data = history_file.read()
         try:
             history_data = json.loads(history_data)
         except(ValueError):
             history_data = {}
-        history_data[current_data_timestamp] = current_data
+        history_data[current_data_timestamp] = current_data_last
         history_file.write(json.dumps(history_data, indent=2, sort_keys=True, separators=(',', ': ')))
 
     timestamp = utils.formatdate(time.time())
