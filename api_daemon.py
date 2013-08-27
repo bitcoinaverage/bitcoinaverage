@@ -17,6 +17,8 @@ from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException, CallFailedException
 from bitcoinaverage.helpers import write_config, write_log
 from bitcoinaverage import api_parsers
+from bitcoinaverage.nogox import create_nogox_api
+
 
 if ba.server.PROJECT_PATH == '':
     ba.server.PROJECT_PATH = include_path
@@ -200,7 +202,7 @@ while True:
         print 'ERROR: %s ' % (error_text)
         raise error
 
-    ba.nogox.create_nogox_api(timestamp)
+    create_nogox_api(timestamp)
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)

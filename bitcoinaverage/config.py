@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 import bitcoinaverage.server
 
 API_FILES = {'TICKER_PATH': 'ticker/',
@@ -10,23 +11,25 @@ API_FILES = {'TICKER_PATH': 'ticker/',
 API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}
 
+HISTORY_QUERY_FREQUENCY = 60 #seconds between history_daemon requests
+
 #seconds between calls to various exchanges APIs
 API_QUERY_FREQUENCY = {'bitcoincharts': 900,
-                       'mtgox': 20,
-                       'bitstamp': 20,
-                       'btce': 20,
-                       'bitcurex': 20,
-                       'vircurex': 20,
-                       'bitbargain': 20,
-                       'localbitcoins': 20,
-                       'cryptotrade': 20,
-                       'rocktrading': 20,
-                       'bitcash': 20,
-                       'intersango': 20,
-                       'bit2c': 20,
-                       'kapiton': 20,
-                       'rmbtb': 20,
-                       'default': 15,
+                       'mtgox': 55,
+                       'bitstamp': 55,
+                       'btce': 55,
+                       'bitcurex': 55,
+                       'vircurex': 55,
+                       'bitbargain': 55,
+                       'localbitcoins': 55,
+                       'cryptotrade': 55,
+                       'rocktrading': 55,
+                       'bitcash': 55,
+                       'intersango': 55,
+                       'bit2c': 55,
+                       'kapiton': 55,
+                       'rmbtb': 55,
+                       'default': 60,
 }
 
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
@@ -34,7 +37,7 @@ if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
 
 #seconds before a consequently failing API will be put into ignored list (in the mean time data will be taken from cache)
 API_IGNORE_TIMEOUT = 1800
-FRONTEND_QUERY_FREQUENCY = 5 #seconds between AJAX requests from frontend to our API
+FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
 
 DEC_PLACES = Decimal('0.00')
 
@@ -174,3 +177,5 @@ EXCHANGE_LIST = {
                                                            },
                                  },
                 }
+
+
