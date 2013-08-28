@@ -282,11 +282,16 @@ function renderLegend(currencyCode){
     var otherCount = 0;
     var otherPercent = 0;
     var otherVolume = 0;
+
+    $('#legend-api-unavailable-note').hide();
+    $('#legend-api-down-note').hide();
     for(var slotNum in exchangeArray){
         if (exchangeArray[slotNum]['source'] == 'cache') {
-            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '*';
-        } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
             exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '**';
+            $('#legend-api-down-note').show();
+        } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
+            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '*';
+            $('#legend-api-unavailable-note').show();
         }
 
 
