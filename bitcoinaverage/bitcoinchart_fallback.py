@@ -14,19 +14,24 @@ from bitcoinaverage.helpers import write_log
 def fetchBitcoinChartsData():
     global API_QUERY_CACHE, API_QUERY_FREQUENCY
 
+    if 'bitcoincharts' not in API_QUERY_CACHE:
+        API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': 0,
+                                            'result': None,
+                                            'call_fail_count': 0,
+                                               }
+
     current_timestamp = int(time.time())
-    if ('bitcoincharts' in API_QUERY_CACHE
-        and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
+    if (API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
         result = API_QUERY_CACHE['bitcoincharts']['result']
     else:
         try:
             result = requests.get(BITCOIN_CHARTS_API_URL, headers=API_REQUEST_HEADERS).json()
             API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
-                                                 'result':result,
+                                                'result':result,
+                                                'call_fail_count':0,
                                                    }
         except (ValueError, ConnectionError, socket.error) as error:
-            if ('bitcoincharts' in API_QUERY_CACHE
-                and API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
+            if (API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
                 result = API_QUERY_CACHE['bitcoincharts']['result']
                 API_QUERY_CACHE['bitcoincharts']['call_fail_count'] = API_QUERY_CACHE['bitcoincharts']['call_fail_count'] + 1
                 write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % ('bitcoincharts',
