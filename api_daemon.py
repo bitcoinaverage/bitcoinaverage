@@ -13,7 +13,7 @@ from decimal import Decimal
 
 import bitcoinaverage as ba
 from bitcoinaverage import bitcoinchart_fallback
-from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES
+from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, FIAT_RATES_QUERY_FREQUENCY
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException, CallFailedException
 from bitcoinaverage.helpers import write_config, write_log, write_fiat_rates_config
 from bitcoinaverage import api_parsers
@@ -32,11 +32,14 @@ if ba.server.WWW_DOCUMENT_ROOT == '':
 
 write_log('script started', 'LOG')
 write_config()
-write_fiat_rates_config()
+last_fiat_exchange_rate_update = 0
 
 while True:
+    if last_fiat_exchange_rate_update< int(time.time()) - FIAT_RATES_QUERY_FREQUENCY:
+        write_fiat_rates_config()
+        last_fiat_exchange_rate_update = int(time.time())
+
     start_time = int(time.time())
-    timestamp = utils.formatdate(time.time())
 
     active_currency_list = []
     exchanges_rates = []
@@ -97,6 +100,7 @@ while True:
                                                                                 'bid': rate[currency]['bid'],
                                                                                 'last': rate[currency]['last'],
                                                                                     }
+                calculated_volumes[currency][rate['exchange_name']]['source'] = rate['data_source']
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
 
@@ -158,6 +162,7 @@ while True:
                 if 'volume_percent_bid' in calculated_volumes[currency][exchange_name]:
                     del calculated_volumes[currency][exchange_name]['volume_percent_bid']
 
+    timestamp = utils.formatdate(time.time())
     try:
         all_data = {}
         all_data['timestamp'] = timestamp

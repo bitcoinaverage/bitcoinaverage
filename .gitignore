@@ -26,6 +26,7 @@
 /api/no-mtgox/ticker/SEK
 /api/no-mtgox/ticker/SGD
 /api/no-mtgox/ticker/THB
+/api/no-mtgox/ticker/ZAR
 
 /api/no-mtgox/exchanges/all
 /api/no-mtgox/exchanges/USD
@@ -47,6 +48,7 @@
 /api/no-mtgox/exchanges/SEK
 /api/no-mtgox/exchanges/SGD
 /api/no-mtgox/exchanges/THB
+/api/no-mtgox/exchanges/ZAR
 
 /api/.htaccess
 /api/all
@@ -71,6 +73,7 @@
 /api/ticker/SEK
 /api/ticker/SGD
 /api/ticker/THB
+/api/ticker/ZAR
 
 /api/exchanges/all
 /api/exchanges/EUR
@@ -92,3 +95,4 @@
 /api/exchanges/SEK
 /api/exchanges/SGD
 /api/exchanges/THB
+/api/exchanges/ZAR

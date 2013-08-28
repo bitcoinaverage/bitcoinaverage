@@ -45,6 +45,7 @@ def getData(bitcoincharts_symbols):
     bitcoincharts_data = fetchBitcoinChartsData()
 
     return_result = {}
+    return_result['data_source'] = 'bitcoincharts'
     for api in bitcoincharts_data:
         for currency_code in bitcoincharts_symbols:
             if api['symbol'] == bitcoincharts_symbols[currency_code]:

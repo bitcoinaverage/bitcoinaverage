@@ -11,7 +11,9 @@ API_FILES = {'TICKER_PATH': 'ticker/',
 API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}
 
-HISTORY_QUERY_FREQUENCY = 60 #seconds between history_daemon requests
+FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
+HISTORY_QUERY_FREQUENCY = 15 #seconds between history_daemon requests
+FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates
 
 #seconds between calls to various exchanges APIs
 API_QUERY_FREQUENCY = {'bitcoincharts': 900,
@@ -37,7 +39,6 @@ if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
 
 #seconds before a consequently failing API will be put into ignored list (in the mean time data will be taken from cache)
 API_IGNORE_TIMEOUT = 1800
-FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
 
 DEC_PLACES = Decimal('0.00')
 
@@ -55,6 +56,7 @@ CURRENCY_LIST = ('USD',
                  'CZK',
                  'NZD',
                  'SGD',
+                 'ZAR',
                  # 'DKK',
                  # 'ILS',
                  # 'CHF',
@@ -135,6 +137,12 @@ EXCHANGE_LIST = {
                                     },
                     'okcoin':  {'ticker_url': 'https://www.okcoin.com/api/ticker.do',
                                     },
+                    'mercado':  {'ticker_url': 'http://www.mercadobitcoin.com.br/api/ticker/',
+                                    },
+                    'bitx':  {'ticker_url': 'https://bitx.co.za/api/1/BTCZAR/ticker',
+                                    },
+
+
 
 
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
@@ -162,9 +170,6 @@ EXCHANGE_LIST = {
                     'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
                                                         #'CAD': 'weexCAD',
                                                         # 'USD': 'weexUSD',
-                                                           },
-                                 },
-                    'mercado':  {'bitcoincharts_symbols': {'BRL': 'mrcdBRL',
                                                            },
                                  },
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitNZD',

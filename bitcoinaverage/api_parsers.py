@@ -33,6 +33,7 @@ def callAPI(exchange_name, exchange_params):
             result = API_QUERY_CACHE[exchange_name]['result']
         else:
             result = globals()['_%sApiCall' % exchange_name](**exchange_params)
+            result['data_source'] = 'api'
             API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
                                                'result':result,
                                                'call_fail_count': 0,
@@ -41,6 +42,7 @@ def callAPI(exchange_name, exchange_params):
         API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
         if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
             result = API_QUERY_CACHE[exchange_name]['result']
+            result['data_source'] = 'cache'
             write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
                         str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
                         str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
@@ -523,5 +525,25 @@ def _okcoinApiCall(ticker_url, *args, **kwargs):
                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
                     'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
                     'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+def _mercadoApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'BRL': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                    },
+            }
+
+def _bitxApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'ZAR': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['last_trade']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['rolling_24_hour_volume']).quantize(DEC_PLACES),
                     },
             }

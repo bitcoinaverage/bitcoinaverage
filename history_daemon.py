@@ -53,13 +53,15 @@ while True:
     with open(os.path.join(current_data_history_path, current_data_day), 'a') as history_file:
         pass  #to make sure file exists, as r+ doesnt create it
 
-    with open(os.path.join(current_data_history_path, current_data_day), 'r+') as history_file:
+    with open(os.path.join(current_data_history_path, current_data_day), 'r') as history_file:
         history_data = history_file.read()
         try:
             history_data = json.loads(history_data)
         except(ValueError):
             history_data = {}
         history_data[current_data_timestamp] = current_data_last
+
+    with open(os.path.join(current_data_history_path, current_data_day), 'w') as history_file:
         history_file.write(json.dumps(history_data, indent=2, sort_keys=True, separators=(',', ': ')))
 
     timestamp = utils.formatdate(time.time())
