@@ -12,7 +12,7 @@ API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}
 
 FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
-HISTORY_QUERY_FREQUENCY = 15 #seconds between history_daemon requests
+HISTORY_QUERY_FREQUENCY = 60 #seconds between history_daemon requests
 FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates
 
 #seconds between calls to various exchanges APIs
