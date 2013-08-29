@@ -69,6 +69,6 @@ while True:
     timestamp = utils.formatdate(time.time())
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, HISTORY_QUERY_FREQUENCY-cycle_time)
-    print '%s, sleeping %ss' % (timestamp, str(sleep_time))
+    print '%s, sleeping %ss - history daemon' % (timestamp, str(sleep_time))
 
     time.sleep(sleep_time)

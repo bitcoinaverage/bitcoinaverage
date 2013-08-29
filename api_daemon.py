@@ -214,6 +214,6 @@ while True:
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)
-    print '%s, sleeping %ss' % (timestamp, str(sleep_time))
+    print '%s, sleeping %ss - api daemon' % (timestamp, str(sleep_time))
 
     time.sleep(sleep_time)
