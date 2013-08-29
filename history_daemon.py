@@ -59,7 +59,9 @@ while True:
             history_data = json.loads(history_data)
         except(ValueError):
             history_data = {}
-        history_data[current_data_timestamp] = current_data_last
+
+        if str(current_data_timestamp) not in history_data:
+            history_data[str(current_data_timestamp)] = current_data_last
 
     with open(os.path.join(current_data_history_path, current_data_day), 'w') as history_file:
         history_file.write(json.dumps(history_data, indent=2, sort_keys=True, separators=(',', ': ')))

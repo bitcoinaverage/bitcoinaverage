@@ -3,7 +3,7 @@ import requests
 import socket
 from email import utils
 from decimal import Decimal
-from requests.exceptions import ConnectionError
+import simplejson
 
 import bitcoinaverage
 from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS
@@ -38,7 +38,11 @@ def callAPI(exchange_name, exchange_params):
                                                'result':result,
                                                'call_fail_count': 0,
                                                }
-    except (ValueError, ConnectionError, socket.error) as error:
+    except (KeyError,
+            ValueError,
+            requests.exceptions.ConnectionError,
+            socket.error,
+            simplejson.decoder.JSONDecodeError) as error:
         API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
         if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
             result = API_QUERY_CACHE[exchange_name]['result']
@@ -78,75 +82,75 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
     nzd_result = requests.get(nzd_api_url, headers=API_REQUEST_HEADERS).json()
     sgd_result = requests.get(sgd_api_url, headers=API_REQUEST_HEADERS).json()
 
-    return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES) if usd_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES) if usd_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES) if usd_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES) if usd_result['data']['vol']['value'] is not None else DEC_PLACES,
+    return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'EUR': {'ask': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES) if eur_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES) if eur_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(eur_result['data']['last']['value']).quantize(DEC_PLACES) if eur_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(eur_result['data']['vol']['value']).quantize(DEC_PLACES) if eur_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'EUR': {'ask': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(eur_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'GBP': {'ask': Decimal(gbp_result['data']['sell']['value']).quantize(DEC_PLACES) if gbp_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(gbp_result['data']['buy']['value']).quantize(DEC_PLACES) if gbp_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(gbp_result['data']['last']['value']).quantize(DEC_PLACES) if gbp_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(gbp_result['data']['vol']['value']).quantize(DEC_PLACES) if gbp_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'GBP': {'ask': Decimal(gbp_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(gbp_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(gbp_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(gbp_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'CAD': {'ask': Decimal(cad_result['data']['sell']['value']).quantize(DEC_PLACES) if cad_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(cad_result['data']['buy']['value']).quantize(DEC_PLACES) if cad_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(cad_result['data']['last']['value']).quantize(DEC_PLACES) if cad_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(cad_result['data']['vol']['value']).quantize(DEC_PLACES) if cad_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'CAD': {'ask': Decimal(cad_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(cad_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(cad_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(cad_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'PLN': {'ask': Decimal(pln_result['data']['sell']['value']).quantize(DEC_PLACES) if pln_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(pln_result['data']['buy']['value']).quantize(DEC_PLACES) if pln_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(pln_result['data']['last']['value']).quantize(DEC_PLACES) if pln_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(pln_result['data']['vol']['value']).quantize(DEC_PLACES) if pln_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'PLN': {'ask': Decimal(pln_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(pln_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(pln_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(pln_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'RUB': {'ask': Decimal(rub_result['data']['sell']['value']).quantize(DEC_PLACES) if rub_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(rub_result['data']['buy']['value']).quantize(DEC_PLACES) if rub_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(rub_result['data']['last']['value']).quantize(DEC_PLACES) if rub_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(rub_result['data']['vol']['value']).quantize(DEC_PLACES) if rub_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'RUB': {'ask': Decimal(rub_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(rub_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(rub_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(rub_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'AUD': {'ask': Decimal(aud_result['data']['sell']['value']).quantize(DEC_PLACES) if aud_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(aud_result['data']['buy']['value']).quantize(DEC_PLACES) if aud_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(aud_result['data']['last']['value']).quantize(DEC_PLACES) if aud_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(aud_result['data']['vol']['value']).quantize(DEC_PLACES) if aud_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'AUD': {'ask': Decimal(aud_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(aud_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(aud_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(aud_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'CHF': {'ask': Decimal(chf_result['data']['sell']['value']).quantize(DEC_PLACES) if chf_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(chf_result['data']['buy']['value']).quantize(DEC_PLACES) if chf_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(chf_result['data']['last']['value']).quantize(DEC_PLACES) if chf_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(chf_result['data']['vol']['value']).quantize(DEC_PLACES) if chf_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'CHF': {'ask': Decimal(chf_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(chf_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(chf_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(chf_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'CNY': {'ask': Decimal(cny_result['data']['sell']['value']).quantize(DEC_PLACES) if cny_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(cny_result['data']['buy']['value']).quantize(DEC_PLACES) if cny_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(cny_result['data']['last']['value']).quantize(DEC_PLACES) if cny_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(cny_result['data']['vol']['value']).quantize(DEC_PLACES) if cny_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'CNY': {'ask': Decimal(cny_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(cny_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(cny_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(cny_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'DKK': {'ask': Decimal(dkk_result['data']['sell']['value']).quantize(DEC_PLACES) if dkk_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(dkk_result['data']['buy']['value']).quantize(DEC_PLACES) if dkk_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(dkk_result['data']['last']['value']).quantize(DEC_PLACES) if dkk_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(dkk_result['data']['vol']['value']).quantize(DEC_PLACES) if dkk_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'DKK': {'ask': Decimal(dkk_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(dkk_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(dkk_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(dkk_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'HKD': {'ask': Decimal(hkd_result['data']['sell']['value']).quantize(DEC_PLACES) if hkd_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(hkd_result['data']['buy']['value']).quantize(DEC_PLACES) if hkd_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(hkd_result['data']['last']['value']).quantize(DEC_PLACES) if hkd_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(hkd_result['data']['vol']['value']).quantize(DEC_PLACES) if hkd_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'HKD': {'ask': Decimal(hkd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(hkd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(hkd_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(hkd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'JPY': {'ask': Decimal(jpy_result['data']['sell']['value']).quantize(DEC_PLACES) if jpy_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(jpy_result['data']['buy']['value']).quantize(DEC_PLACES) if jpy_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(jpy_result['data']['last']['value']).quantize(DEC_PLACES) if jpy_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(jpy_result['data']['vol']['value']).quantize(DEC_PLACES) if jpy_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'JPY': {'ask': Decimal(jpy_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(jpy_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(jpy_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(jpy_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'NZD': {'ask': Decimal(nzd_result['data']['sell']['value']).quantize(DEC_PLACES) if nzd_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(nzd_result['data']['buy']['value']).quantize(DEC_PLACES) if nzd_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(nzd_result['data']['last']['value']).quantize(DEC_PLACES) if nzd_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(nzd_result['data']['vol']['value']).quantize(DEC_PLACES) if nzd_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'NZD': {'ask': Decimal(nzd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(nzd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(nzd_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(nzd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
-            'SGD': {'ask': Decimal(sgd_result['data']['sell']['value']).quantize(DEC_PLACES) if sgd_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES) if sgd_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES) if sgd_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES) if sgd_result['data']['vol']['value'] is not None else DEC_PLACES,
+            'SGD': {'ask': Decimal(sgd_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
     }
 
@@ -154,10 +158,10 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
 def _bitstampApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
 
-    return {'USD': {'ask': Decimal(result['ask']).quantize(DEC_PLACES) if result['ask'] is not None else None,
-                    'bid': Decimal(result['bid']).quantize(DEC_PLACES) if result['bid'] is not None else None,
-                    'last': Decimal(result['last']).quantize(DEC_PLACES) if result['last'] is not None else None,
-                    'volume': Decimal(result['volume']).quantize(DEC_PLACES) if result['volume'] is not None else DEC_PLACES,
+    return {'USD': {'ask': Decimal(result['ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(result['bid']).quantize(DEC_PLACES),
+                    'last': Decimal(result['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(result['volume']).quantize(DEC_PLACES),
     }}
 
 # direct volume calculation gives weird results, bitcoincharts API used for now
@@ -221,20 +225,20 @@ def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
         rur_result['ticker']['buy'] = rur_result['ticker']['sell']
         rur_result['ticker']['sell'] = temp
 
-    return {'USD': {'ask': Decimal(usd_result['ticker']['sell']).quantize(DEC_PLACES) if usd_result['ticker']['sell'] is not None else None,
-                    'bid': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES) if usd_result['ticker']['buy'] is not None else None,
-                    'last': Decimal(usd_result['ticker']['last']).quantize(DEC_PLACES) if usd_result['ticker']['last'] is not None else None,
-                    'volume': Decimal(usd_result['ticker']['vol_cur']).quantize(DEC_PLACES) if usd_result['ticker']['vol_cur'] is not None else DEC_PLACES,
+    return {'USD': {'ask': Decimal(usd_result['ticker']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_result['ticker']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['ticker']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_result['ticker']['vol_cur']).quantize(DEC_PLACES),
                     },
-            'EUR': {'ask': Decimal(eur_result['ticker']['sell']).quantize(DEC_PLACES) if eur_result['ticker']['sell'] is not None else None,
-                    'bid': Decimal(eur_result['ticker']['buy']).quantize(DEC_PLACES) if eur_result['ticker']['buy'] is not None else None,
-                    'last': Decimal(eur_result['ticker']['last']).quantize(DEC_PLACES) if eur_result['ticker']['last'] is not None else None,
-                    'volume': Decimal(eur_result['ticker']['vol_cur']).quantize(DEC_PLACES) if eur_result['ticker']['vol_cur'] is not None else DEC_PLACES,
+            'EUR': {'ask': Decimal(eur_result['ticker']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['ticker']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['ticker']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(eur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
             },
-            'RUB': {'ask': Decimal(rur_result['ticker']['sell']).quantize(DEC_PLACES) if rur_result['ticker']['sell'] is not None else None,
-                    'bid': Decimal(rur_result['ticker']['buy']).quantize(DEC_PLACES) if rur_result['ticker']['buy'] is not None else None,
-                    'last': Decimal(rur_result['ticker']['last']).quantize(DEC_PLACES) if rur_result['ticker']['last'] is not None else None,
-                    'volume': Decimal(rur_result['ticker']['vol_cur']).quantize(DEC_PLACES) if rur_result['ticker']['vol_cur'] is not None else DEC_PLACES,
+            'RUB': {'ask': Decimal(rur_result['ticker']['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(rur_result['ticker']['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(rur_result['ticker']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(rur_result['ticker']['vol_cur']).quantize(DEC_PLACES),
             }}
 
 
@@ -255,14 +259,14 @@ def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_
         if trade['date'] > last24h_time:
             pln_vol = pln_vol + float(trade['amount'])
 
-    return {'EUR': {'ask': Decimal(eur_result['sell']).quantize(DEC_PLACES) if eur_result['sell'] is not None else None,
-                    'bid': Decimal(eur_result['buy']).quantize(DEC_PLACES) if eur_result['buy'] is not None else None,
-                    'last': Decimal(eur_result['last']).quantize(DEC_PLACES) if eur_result['last'] is not None else None,
+    return {'EUR': {'ask': Decimal(eur_result['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['last']).quantize(DEC_PLACES),
                     'volume': Decimal(eur_vol).quantize(DEC_PLACES),
                     },
-            'PLN': {'ask': Decimal(pln_result['sell']).quantize(DEC_PLACES) if pln_result['sell'] is not None else None,
-                    'bid': Decimal(pln_result['buy']).quantize(DEC_PLACES) if pln_result['buy'] is not None else None,
-                    'last': Decimal(pln_result['last']).quantize(DEC_PLACES) if pln_result['last'] is not None else None,
+            'PLN': {'ask': Decimal(pln_result['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(pln_result['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(pln_result['last']).quantize(DEC_PLACES),
                     'volume': Decimal(pln_vol).quantize(DEC_PLACES),
                     },
             }
@@ -272,15 +276,15 @@ def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
     eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
 
-    return {'USD': {'ask': Decimal(usd_result['lowest_ask']).quantize(DEC_PLACES) if usd_result['lowest_ask'] is not None else None,
-                    'bid': Decimal(usd_result['highest_bid']).quantize(DEC_PLACES) if usd_result['highest_bid'] is not None else None,
-                    'last': Decimal(usd_result['last_trade']).quantize(DEC_PLACES) if usd_result['last_trade'] is not None else None,
-                    'volume': Decimal(usd_result['volume']).quantize(DEC_PLACES) if usd_result['volume'] is not None else DEC_PLACES,
+    return {'USD': {'ask': Decimal(usd_result['lowest_ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_result['highest_bid']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['last_trade']).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_result['volume']).quantize(DEC_PLACES),
                     },
-            'EUR': {'ask': Decimal(eur_result['lowest_ask']).quantize(DEC_PLACES) if eur_result['lowest_ask'] is not None else None,
-                    'bid': Decimal(eur_result['highest_bid']).quantize(DEC_PLACES) if eur_result['highest_bid'] is not None else None,
-                    'last': Decimal(eur_result['last_trade']).quantize(DEC_PLACES) if eur_result['last_trade'] is not None else None,
-                    'volume': Decimal(eur_result['volume']).quantize(DEC_PLACES) if eur_result['volume'] is not None else DEC_PLACES,
+            'EUR': {'ask': Decimal(eur_result['lowest_ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(eur_result['highest_bid']).quantize(DEC_PLACES),
+                    'last': Decimal(eur_result['last_trade']).quantize(DEC_PLACES),
+                    'volume': Decimal(eur_result['volume']).quantize(DEC_PLACES),
             },
     }
 
@@ -335,22 +339,22 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     return {'USD': {'ask': usd_rate,
                     'bid': None,
                     'last': usd_rate,
-                    'volume': Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES) if result['USD']['volume_btc'] is not None else DEC_PLACES,
+                    'volume': Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES),
                     },
             'EUR': {'ask': eur_rate,
                     'bid': None,
                     'last': eur_rate,
-                    'volume': Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES) if result['EUR']['volume_btc'] is not None else DEC_PLACES,
+                    'volume': Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES),
             },
             'GBP': {'ask': gbp_rate,
                     'bid': None,
                     'last': gbp_rate,
-                    'volume': Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES) if result['GBP']['volume_btc'] is not None else DEC_PLACES,
+                    'volume': Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES),
             },
             'CAD': {'ask': cad_rate,
                     'bid': None,
                     'last': cad_rate,
-                    'volume': Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES) if result['CAD']['volume_btc'] is not None else DEC_PLACES,
+                    'volume': Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES),
             },
     }
 
@@ -361,15 +365,15 @@ def _cryptotradeApiCall(usd_api_url, #eur_api_url,
     usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
     #eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
 
-    return {'USD': {'ask': Decimal(usd_result['data']['min_ask']).quantize(DEC_PLACES) if usd_result['data']['min_ask'] is not None else None,
-                    'bid': Decimal(usd_result['data']['max_bid']).quantize(DEC_PLACES) if usd_result['data']['max_bid'] is not None else None,
-                    'last': Decimal(usd_result['data']['last']).quantize(DEC_PLACES) if usd_result['data']['last'] is not None else None,
-                    'volume': Decimal(usd_result['data']['vol_btc']).quantize(DEC_PLACES) if usd_result['data']['vol_btc'] is not None else DEC_PLACES,
+    return {'USD': {'ask': Decimal(usd_result['data']['min_ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_result['data']['max_bid']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_result['data']['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_result['data']['vol_btc']).quantize(DEC_PLACES),
                                     },
-            # 'EUR': {'ask': Decimal(eur_result['data']['min_ask']).quantize(DEC_PLACES) if eur_result['data']['min_ask'] is not None else None,
-            #         'bid': Decimal(eur_result['data']['max_bid']).quantize(DEC_PLACES) if eur_result['data']['max_bid'] is not None else None,
-            #         'last': Decimal(eur_result['data']['last']).quantize(DEC_PLACES) if eur_result['data']['last'] is not None else None,
-            #         'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES) if eur_result['data']['vol_btc'] is not None else DEC_PLACES,
+            # 'EUR': {'ask': Decimal(eur_result['data']['min_ask']).quantize(DEC_PLACES),
+            #         'bid': Decimal(eur_result['data']['max_bid']).quantize(DEC_PLACES),
+            #         'last': Decimal(eur_result['data']['last']).quantize(DEC_PLACES),
+            #         'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES),
             #                         },
             }
 
@@ -416,10 +420,10 @@ def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
 def _bitcashApiCall(czk_api_url, *args, **kwargs):
     czk_result = requests.get(czk_api_url, headers=API_REQUEST_HEADERS).json()
 
-    return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES) if czk_result['data']['sell']['value'] is not None else None,
-                    'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES) if czk_result['data']['buy']['value'] is not None else None,
-                    'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES) if czk_result['data']['last']['value'] is not None else None,
-                    'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES) if czk_result['data']['vol']['value'] is not None else DEC_PLACES,
+    return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
                     },
             }
 
@@ -446,9 +450,9 @@ def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
         if trade['date'] > last24h_time:
             volume = volume + float(trade['amount'])
 
-    return {'ILS': {'ask': Decimal(orders['asks'][0][0]).quantize(DEC_PLACES) if orders['bids'][0][0] is not None else None,
-                    'bid': Decimal(orders['bids'][0][0]).quantize(DEC_PLACES) if orders['bids'][0][0] is not None else None,
-                    'last': Decimal(ticker['ll']).quantize(DEC_PLACES) if ticker['ll'] is not None else None,
+    return {'ILS': {'ask': Decimal(orders['asks'][0][0]).quantize(DEC_PLACES),
+                    'bid': Decimal(orders['bids'][0][0]).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
                     'volume': Decimal(volume).quantize(DEC_PLACES),
                     },
             }

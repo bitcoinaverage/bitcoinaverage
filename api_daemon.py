@@ -10,6 +10,7 @@ import json
 import time
 from email import utils
 from decimal import Decimal
+import requests
 
 import bitcoinaverage as ba
 from bitcoinaverage import bitcoinchart_fallback
@@ -35,7 +36,7 @@ write_config()
 last_fiat_exchange_rate_update = 0
 
 while True:
-    if last_fiat_exchange_rate_update< int(time.time()) - FIAT_RATES_QUERY_FREQUENCY:
+    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
         write_fiat_rates_config()
         last_fiat_exchange_rate_update = int(time.time())
 

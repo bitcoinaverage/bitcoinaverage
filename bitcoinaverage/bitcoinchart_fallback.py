@@ -1,3 +1,4 @@
+import simplejson
 import time
 import socket
 from decimal import Decimal
@@ -30,7 +31,11 @@ def fetchBitcoinChartsData():
                                                 'result':result,
                                                 'call_fail_count':0,
                                                    }
-        except (ValueError, ConnectionError, socket.error) as error:
+        except (KeyError,
+                ValueError,
+                requests.exceptions.ConnectionError,
+                socket.error,
+                simplejson.decoder.JSONDecodeError) as error:
             if (API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
                 result = API_QUERY_CACHE['bitcoincharts']['result']
                 API_QUERY_CACHE['bitcoincharts']['call_fail_count'] = API_QUERY_CACHE['bitcoincharts']['call_fail_count'] + 1
