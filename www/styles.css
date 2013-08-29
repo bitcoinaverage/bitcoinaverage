@@ -102,8 +102,10 @@
         margin: 0 auto 0 !important;
     }
 }
-@media (max-width: 1200px){
-    
+@media (min-width: 1200px){
+    .dropdown-menu2 {
+        top:113px !important;
+    }
 }
 
 /** Main CSS **/
