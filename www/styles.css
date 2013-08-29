@@ -1,9 +1,10 @@
 /** Media Styling **/
 
-@media(max-width:767px) {
+
+/*
+ *@media(max-width:767px) {
     .ignore_btn{width:100%!important; position:relative!important; padding:0px!important; margin:0; top:-60px!important; right:0px!important;}
 }
-/*
 @media (max-width:1200px){
     #main-container{
         margin:0 auto;
@@ -55,30 +56,54 @@
         margin:0; top:-60px!important;
         right:0px!important;
     }
-}
-@media (max-width: 768px){
-    #currency-sidebar{
-        display: none !important;
-    }
-    .dropdown-menu {
-        display: none !important;
-    }
-    .dropdown-menu2 {
+    .foot_left,  .foot_right{
         display: none;
     }
-}
-
-@media (max-width: 992px){
-    #currency-sidebar{
-        display: block;
-    }
-    .dropdown-menu {
-        display: block;
+    .privacy{
+        padding: 20px 0 30px;
     }
 }
-
+@media (min-width: 480px){
+}
+@media (max-width: 768px){
+}
+@media (min-width: 768px){
+}
+@media (max-width: 991px){
+    #currency-navtabs > li.active, li.active:hover{
+        border-color: #fff !important;
+        border-bottom-color: #ddd !important;
+    }
+    #currency-sidebar, #currency-sidebar>ul{
+        display: block !important;
+        position: relative !important;
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin: auto !important;
+        height: auto !important;
+        border-radius: 0;
+        z-index: -1 !important;
+    }
+    #currency-sidebar>ul{
+        display: block !important;
+        min-width: auto;
+        float: none;
+        text-align: center;
+    }
+    #currency-sidebar>ul li{
+        display: inline-block;
+    }
+    .footer {
+        height: 89px !important;
+    }
+    #main-container{
+        margin: 0 auto 0 !important;
+    }
+}
 @media (max-width: 1200px){
-
+    
 }
 
 /** Main CSS **/
@@ -115,7 +140,6 @@ ul{
 .f_left{float: left;}
 .f_right{float: right;}
 
-#nogox-button[class="active"]{color:red;}
 
 .bid_ask{font-weight: bold; color: #999;}
 .last{font-size: 1.1em; font-weight: bold; color: #4F4F4F; }
@@ -139,7 +163,6 @@ ul{
 }
 
 
-
 /* Set the fixed height of the footer here */
 #footer {
   height: 50px;
@@ -148,7 +171,7 @@ ul{
 
 /**NavBar**/
 #header{
-    background-color: #f9f9f9;
+    background-color: #f7f7f7;
     background-repeat: no-repeat;
     border: 1px solid #D5D5D5;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -239,7 +262,7 @@ ul{
     padding: 0;
     position: relative;
     z-index: 1;
-    background: #f9f9f9;
+    background: #f7f7f7;
     border-top: 1px solid #dadada;
     height:89px;
 }
@@ -265,7 +288,7 @@ footer .row{
     clear: both;
     position: relative;
     text-transform: uppercase;
-    background: #DADADA;
+    background: #f7f7f7;
 }
 
 .footer-credits ul {
