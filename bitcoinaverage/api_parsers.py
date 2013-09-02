@@ -1,4 +1,5 @@
 import time
+import datetime
 import requests
 import socket
 from email import utils
@@ -53,7 +54,16 @@ def callAPI(exchange_name, exchange_params):
                       'WARNING')
         else:
             exception = CallFailedException()
-            exception.text = exception.text % utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
+            last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
+            today = datetime.datetime.now()
+            if current_timestamp == 0:
+                datetime_str = today.strftime('%H:%M')
+            elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
+                datetime_str = last_call_datetime.strftime('%H:%M')
+            else :
+                datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
+
+            exception.text = exception.text % datetime_str
             log_message = ('%s call failed, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
                            % (exchange_name,
                               str(API_QUERY_CACHE[exchange_name]['call_fail_count']),

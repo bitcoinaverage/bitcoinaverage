@@ -18,10 +18,12 @@ var active_API_URL = API_all_url;
 var legendClickStatus = false;
 var firstRenderDone = false;
 var fiatExchangeRates = [];
+var currentTimestamp = 0; //current time is fetched from remote resource, as user's local time may be not exact and result into negative data age
 $(function(){
     callAPI();
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
+    setInterval(updateTime, 1000);
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
@@ -40,7 +42,10 @@ $(function(){
             $(this).removeClass('btn-primary');
             button.html('ignore MTGox for USD/EUR/GBP');
         }
-        callAPI();
+        callAPI(function(result){
+            renderAll(result);
+            renderLegend('USD');
+        });
     });
 
     for(var slotNum in config.currencyOrder){
@@ -127,17 +132,21 @@ $(function(){
 
 });
 
-function callAPI(){
+function callAPI(callback){
+    if (typeof callback == 'undefined'){
+        callback = renderAll;
+    }
+
     if (window.XDomainRequest) {
         var xhr = new window.XDomainRequest();
         xhr.open('GET', active_API_URL, true);
         xhr.onload = function() {
             var result = JSON.parse(xhr.responseText);
-            renderAll(result);
+            callback(result);
         };
         xhr.send();
     } else {
-        $.getJSON(active_API_URL, renderAll);
+        $.getJSON(active_API_URL, callback);
     }
 }
 
@@ -270,9 +279,14 @@ function renderLegend(currencyCode){
         }
     }
 
-    var USD_BTC_fiat_rate = parseFloat(API_data['USD'].averages.last) * parseFloat(fiatCurrencies[currencyCode]);
-    USD_BTC_fiat_rate = Math.round(USD_BTC_fiat_rate*100)/100;
-    $('#legend-converted-to-USD').html(USD_BTC_fiat_rate);
+    if (currencyCode != 'USD') {
+        var USD_BTC_fiat_rate = parseFloat(API_data['USD'].averages.last) * parseFloat(fiatCurrencies[currencyCode]);
+        USD_BTC_fiat_rate = Math.round(USD_BTC_fiat_rate*100)/100;
+        USD_BTC_fiat_rate = USD_BTC_fiat_rate + ' ' + currencyCode;
+        $('#legend-converted-to-USD').html(USD_BTC_fiat_rate);
+    } else {
+        $('#legend-converted-to-USD').html('N/A');
+    }
 
     for(var slotNum=0;slotNum<legendSlots;slotNum++){
         $('#legend-slot'+slotNum).toggle(false);
@@ -316,11 +330,24 @@ function renderLegend(currencyCode){
 }
 
 function renderSecondsSinceUpdate(){
-    var currentTimestamp = Math.round(new Date().getTime()/1000);
-    var dataTimestamp = Math.round(Date.parse(API_data['timestamp'])/1000);
-    $('#legend-update-seconds-ago').html(currentTimestamp-dataTimestamp);
+    var seconds = currentTimestamp - Math.round(Date.parse(API_data['timestamp'])/1000);
+    if (seconds < 120) {
+        var timeString = seconds+' sec';
+    } else if (seconds < 120*60) {
+        var timeString = Math.round(seconds/60)+' min';
+    } else {
+        var timeString = Math.round(seconds/60/60)+' hours';
+    }
+    $('#legend-update-time-ago').html(timeString);
 }
 
+function updateTime(timeData){
+    if (typeof timeData != 'undefined'){
+        currentTimestamp = Math.round(Date.parse(timeData['dateString'])/1000);
+    } else {
+        currentTimestamp = currentTimestamp + 1;
+    }
+}
 jQuery.fn.selectText = function(){
     var doc = document
         , element = this[0]
@@ -350,3 +377,25 @@ jQuery.fn.countObj = function(){
     return count;
 }
 
+
+
+//$.get('data/intradata.csv', function(csv) {
+//jQuery(function($) { $.get('data/intradata.csv', function(csv) {
+//    var start = + new Date(); // parse the CSV data
+//    var data = [], volume = [], header, comment = /^#/, x;
+//    $.each(csv.split('\n'), function(i, line){
+//        if (!comment.test(line)) {
+//            if (!header) {
+//                header = line;
+//            } else if (line.length) {
+//                var point = line.split(','), date = point[0].split('-'), time = point[1].split(':');
+//                x = Date.UTC(date[2], date[1] - 1, date[0], time[0], time[1], time[2]);
+//                data.push([ parseFloat( x ));
+//            }
+//        }
+//        // time parseFloat(point[2]), // O parseFloat(point[3]), // H parseFloat(point[4]), // L parseFloat(point[5]) // C
+//        volume.push([ parseFloat( x ), parseFloat(point[6])]);
+//    })
+//}, volume)
+//
+//});

@@ -20,7 +20,6 @@ from bitcoinaverage.helpers import write_config, write_log, write_fiat_rates_con
 from bitcoinaverage import api_parsers
 from bitcoinaverage.nogox import create_nogox_api
 
-
 if ba.server.PROJECT_PATH == '':
     ba.server.PROJECT_PATH = include_path
 if ba.server.LOG_PATH == '':

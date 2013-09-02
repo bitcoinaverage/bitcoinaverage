@@ -21,6 +21,7 @@
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="fiat_rates_config.js"></script>
     <script type="text/javascript" src="scripts.js"></script>
+    <script type="text/javascript" src="http://timeapi.org/utc/now.json?callback=updateTime"></script>
 </head>
 <body>
     <div id="header" class="navbar navbar-fixed-top">
@@ -118,7 +119,7 @@
                   <tr>
                     <td align="right" valign="top" style="padding:0; line-height:10px;">
                         <small style="font-size:9px; margin:0;">
-                            data <span id="legend-update-seconds-ago"></span> sec old
+                            data <span id="legend-update-time-ago"></span> old
                         </small>
                     </td>
                   </tr>
@@ -137,8 +138,8 @@
               <td class="legend-rate text-right" width="33%"><span class="">&#3647; <span id="legend-total-volume"></span></span></td>
             </tr>
             <tr>
-              <td class="legend-name" colspan="2">Average USD price to <span class="legend-curcode"></span></td>
-              <td class="legend-rate text-right" width="33%"><span id="legend-converted-to-USD"></span> <span class="legend-curcode"></span></td>
+              <td class="legend-name" colspan="2">Average USD price in <span class="legend-curcode"></span></td>
+              <td class="legend-rate text-right" width="33%"><span id="legend-converted-to-USD"></span></td>
             </tr>
             <!--<tr>-->
               <!--<td class="legend-name" colspan="2"><span>24h average</span></td>-->
@@ -150,50 +151,50 @@
            <table class="table table-striped table-condensed table-hover" width="100%;" id="legend-ignored-table">
                <thead>
                <tr>
-                   <th width="40%">ignored exchange</th>
+                   <th width="40%" colspan="2">ignored exchange</th>
                    <th width="60%" style="text-align: right">reason</th>
                </tr>
                </thead>
                <tbody>
                <tr id="legend-ignored-slot0-box">
-                   <td class="legend-name" id="legend-ignored-slot0-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot0-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot0-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot0-reason"></td>
                </tr>
                <tr id="legend-ignored-slot1-box">
-                   <td class="legend-name" id="legend-ignored-slot1-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot1-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot1-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot1-reason"></td>
                </tr>
                <tr id="legend-ignored-slot2-box">
-                   <td class="legend-name" id="legend-ignored-slot2-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot2-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot2-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot2-reason"></td>
                </tr>
                <tr id="legend-ignored-slot3-box">
-                   <td class="legend-name" id="legend-ignored-slot3-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot3-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot3-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot3-reason"></td>
                </tr>
                <tr id="legend-ignored-slot4-box">
-                   <td class="legend-name" id="legend-ignored-slot4-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot4-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot4-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot4-reason"></td>
                </tr>
                <tr id="legend-ignored-slot5-box">
-                   <td class="legend-name" id="legend-ignored-slot5-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot5-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot5-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot5-reason"></td>
                </tr>
                <tr id="legend-ignored-slot6-box">
-                   <td class="legend-name" id="legend-ignored-slot6-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot6-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot6-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot6-reason"></td>
                </tr>
                <tr id="legend-ignored-slot7-box">
-                   <td class="legend-name" id="legend-ignored-slot7-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot7-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot7-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot7-reason"></td>
                </tr>
                <tr id="legend-ignored-slot8-box">
-                   <td class="legend-name" id="legend-ignored-slot8-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot8-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot8-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot8-reason"></td>
                </tr>
                <tr id="legend-ignored-slot9-box">
-                   <td class="legend-name" id="legend-ignored-slot9-name"></td>
-                   <td class="legend-rate text-right" id="legend-ignored-slot9-reason"></td>
+                   <td class="legend-name" width="30%" id="legend-ignored-slot9-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot9-reason"></td>
                </tr>
                </tbody>
            </table>
