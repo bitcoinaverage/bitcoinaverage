@@ -67,7 +67,7 @@ def write_fiat_rates_config():
         rate_list[currency] = str(rate)
 
     config_string = js_config_template
-    config_string = js_config_template.replace('$FIAT_CURRENCIES_RATES', json.dumps(rate_list))
+    config_string = config_string.replace('$FIAT_CURRENCIES_RATES', json.dumps(rate_list))
 
-    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'fiat_rates_config.js'), 'w') as fiat_exchange_config_file:
+    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'fiat_rates.js'), 'w') as fiat_exchange_config_file:
         fiat_exchange_config_file.write(config_string)
