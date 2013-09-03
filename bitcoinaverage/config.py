@@ -11,27 +11,39 @@ API_FILES = {'TICKER_PATH': 'ticker/',
 API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}
 
+if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_OVERRIDE'):
+    API_REQUEST_HEADERS['User-Agent'] = bitcoinaverage.server.DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_OVERRIDE
+
 FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
 HISTORY_QUERY_FREQUENCY = 60 #seconds between history_daemon requests
 FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates
 
 #seconds between calls to various exchanges APIs
-API_QUERY_FREQUENCY = {'bitcoincharts': 900,
-                       'mtgox': 55,
-                       'bitstamp': 55,
-                       'btce': 55,
-                       'bitcurex': 55,
-                       'vircurex': 55,
-                       'bitbargain': 55,
-                       'localbitcoins': 55,
-                       'cryptotrade': 55,
-                       'rocktrading': 55,
-                       'bitcash': 55,
-                       'intersango': 55,
-                       'bit2c': 55,
-                       'kapiton': 55,
-                       'rmbtb': 55,
-                       'default': 60,
+API_QUERY_FREQUENCY = {
+                        'default': 60,
+                        'bitcoincharts': 900,
+                        'mtgox': 55,
+                        'bitstamp': 55,
+                        'btce': 55,
+                        'bitcurex': 55,
+                        'vircurex': 55,
+                        'bitbargain': 55,
+                        'localbitcoins': 55,
+                        'cryptotrade': 55,
+                        'rocktrading': 55,
+                        'bitcash': 55,
+                        'intersango': 55,
+                        'bit2c': 55,
+                        'kapiton': 55,
+                        'rmbtb': 55,
+                        'bitx': 55,
+                        'btcchina': 55,
+                        'fxbtc': 55,
+                        'bter': 55,
+                        'goxbtc': 55,
+                        'okcoin': 55,
+                        'mercado': 55,
+                        'btctrade': 55,
 }
 
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
@@ -64,7 +76,7 @@ CURRENCY_LIST = ('USD',
                  # 'THB',
                     )
 
-BITCOIN_CHARTS_API_URL = 'http://api.bitcoincharts.com/v1/markets.json'
+BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
 
 EXCHANGE_LIST = {
                     'mtgox': {'usd_api_url': 'https://data.mtgox.com/api/2/BTCUSD/money/ticker',
@@ -137,9 +149,11 @@ EXCHANGE_LIST = {
                                     },
                     'okcoin':  {'ticker_url': 'https://www.okcoin.com/api/ticker.do',
                                     },
-                    'mercado':  {'ticker_url': 'http://www.mercadobitcoin.com.br/api/ticker/',
+                    'mercado':  {'ticker_url': 'https://www.mercadobitcoin.com.br/api/ticker/',
                                     },
-                    'bitx':  {'ticker_url': 'https://bitx.co.asdaza/api/1/BTCZAR/ticker',
+                    'bitx':  {'ticker_url': 'https://bitx.co.za/api/1/BTCZAR/ticker',
+                                    },
+                    'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker',
                                     },
 
 

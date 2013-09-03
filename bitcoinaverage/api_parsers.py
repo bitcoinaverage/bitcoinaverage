@@ -555,9 +555,21 @@ def _mercadoApiCall(ticker_url, *args, **kwargs):
 def _bitxApiCall(ticker_url, *args, **kwargs):
     ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
 
+
     return {'ZAR': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
                     'last': Decimal(ticker['last_trade']).quantize(DEC_PLACES),
                     'volume': Decimal(ticker['rolling_24_hour_volume']).quantize(DEC_PLACES),
+                    },
+            }
+
+
+def _btctradeApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    return {'CNY': {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
                     },
             }

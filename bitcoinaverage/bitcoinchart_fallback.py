@@ -26,7 +26,7 @@ def fetchBitcoinChartsData():
         result = API_QUERY_CACHE['bitcoincharts']['result']
     else:
         try:
-            result = requests.get(BITCOIN_CHARTS_API_URL, headers=API_REQUEST_HEADERS).json()
+            result = requests.get(BITCOIN_CHARTS_API_URL, verify=False, headers=API_REQUEST_HEADERS).json()
             API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
                                                 'result':result,
                                                 'call_fail_count':0,
@@ -45,7 +45,7 @@ def fetchBitcoinChartsData():
                           'WARNING')
             else:
                 exception = CallFailedException()
-                exception.text = exception.text % ('bitcoincharts', str(API_QUERY_CACHE['bitcoincharts']['call_fail_count']))
+                exception.text = exception.text % (str(API_QUERY_CACHE['bitcoincharts']['call_fail_count']))
                 write_log(exception.text, 'ERROR')
                 raise exception
 
@@ -59,19 +59,10 @@ def getData(bitcoincharts_symbols):
     for api in bitcoincharts_data:
         for currency_code in bitcoincharts_symbols:
             if api['symbol'] == bitcoincharts_symbols[currency_code]:
-                value_ask = api['ask'] if api['ask'] is not None else 0.0
-                value_bid = api['bid'] if api['bid'] is not None else 0.0
-                value_close = api['close'] if api['close'] is not None else 0.0
-                value_high = api['high'] if api['high'] is not None else 0.0
-                value_low = api['low'] if api['low'] is not None else 0.0
-                value_volume = api['volume'] if api['volume'] is not None else 0.0
-
-                return_result[currency_code] = {'ask': Decimal(value_ask).quantize(DEC_PLACES),
-                                                   'bid': Decimal(float(value_bid)).quantize(DEC_PLACES),
-                                                   'last': Decimal(float(value_close)).quantize(DEC_PLACES),
-                                                   'high': Decimal(float(value_high)).quantize(DEC_PLACES),
-                                                   'low': Decimal(float(value_low)).quantize(DEC_PLACES),
-                                                   'volume': Decimal(float(value_volume)).quantize(DEC_PLACES),
+                return_result[currency_code] = {'ask': Decimal(api['ask']).quantize(DEC_PLACES),
+                                                'bid': Decimal(float(api['bid'])).quantize(DEC_PLACES),
+                                                'last': Decimal(float(api['close'])).quantize(DEC_PLACES),
+                                                'volume': Decimal(float(api['volume'])).quantize(DEC_PLACES),
                                                    }
 
     return return_result

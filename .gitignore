@@ -3,7 +3,7 @@
 *.pyc
 /bitcoinaverage/server.py
 /www/config.js
-/www/fiat_rates_config.js
+/www/fiat_rates.js
 /api/no-mtgox/all
 /api/no-mtgox/ignored
 /api/no-mtgox/ticker/all
