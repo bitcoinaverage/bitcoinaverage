@@ -10,14 +10,13 @@ from bitcoinaverage.config import DEC_PLACES
 
 def write_default(currency_code):
     current_default_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, ba.config.INDEX_DOCUMENT_NAME)
-    if not os.path.exists(os.path.join(current_default_file_path)) or os.path.getsize(current_default_file_path) == 0:
-        with open(current_default_file_path, 'wb') as default_file:
-            default_contents = {}
-            default_contents['24h_sliding'] = ba.server.API_INDEX_URL_HISTORY+'%s/24h_sliding.csv' % currency_code
-            default_contents['1mon_sliding'] = ba.server.API_INDEX_URL_HISTORY+'%s/1mon_sliding.csv' % currency_code
-            default_contents['forever'] = ba.server.API_INDEX_URL_HISTORY+'%s/forever.csv' % currency_code
-            default_contents['volumes'] = ba.server.API_INDEX_URL_HISTORY+'%s/volumes.csv' % currency_code
-            default_file.write(json.dumps(default_contents))
+    with open(current_default_file_path, 'wb') as default_file:
+        default_contents = {}
+        default_contents['24h_sliding'] = '%s%s/24h_sliding.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_contents['1mon_sliding'] = '%s%s/1mon_sliding.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_contents['forever'] = '%s%s/forever.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_file.write(json.dumps(default_contents, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
 def write_24h_csv(currency_code, current_data, current_timestamp):

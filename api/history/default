@@ -1,9 +1,17 @@
 {
-  "2013": {"Aug": "http://api.bitcoinaverage.com/history/2013/08"
-           "Sep": "http://api.bitcoinaverage.com/history/2013/09"
-           "Oct": "http://api.bitcoinaverage.com/history/2013/10"
-           "Nov": "http://api.bitcoinaverage.com/history/2013/11"
-           "Dec": "http://api.bitcoinaverage.com/history/2013/12"
-            }
+  "AUD": "http://api.ba.localhost/history/AUD/",
+  "BRL": "http://api.ba.localhost/history/BRL/",
+  "CAD": "http://api.ba.localhost/history/CAD/",
+  "CNY": "http://api.ba.localhost/history/CNY/",
+  "CZK": "http://api.ba.localhost/history/CZK/",
+  "EUR": "http://api.ba.localhost/history/EUR/",
+  "GBP": "http://api.ba.localhost/history/GBP/",
+  "JPY": "http://api.ba.localhost/history/JPY/",
+  "NZD": "http://api.ba.localhost/history/NZD/",
+  "PLN": "http://api.ba.localhost/history/PLN/",
+  "RUB": "http://api.ba.localhost/history/RUB/",
+  "SEK": "http://api.ba.localhost/history/SEK/",
+  "SGD": "http://api.ba.localhost/history/SGD/",
+  "USD": "http://api.ba.localhost/history/USD/",
+  "ZAR": "http://api.ba.localhost/history/ZAR/"
 }
-

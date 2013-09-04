@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import bitcoinaverage.server
 
-INDEX_DOCUMENT_NAME = 'default'
+INDEX_DOCUMENT_NAME = 'default' #directory index document name, needs to match webserver setting
 
 API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',
