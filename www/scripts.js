@@ -18,12 +18,11 @@ var active_API_URL = API_all_url;
 var legendClickStatus = false;
 var firstRenderDone = false;
 var fiatExchangeRates = [];
-var currentTimestamp = 0; //current time is fetched from remote resource, as user's local time may be not exact and result into negative data age
+var timeGap = 0; //actual time is fetched from remote resource, and user's local time is adjusted by X seconds to be completely exact
 $(function(){
     callAPI();
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
-    setInterval(updateTime, 1000);
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
@@ -330,7 +329,7 @@ function renderLegend(currencyCode){
 }
 
 function renderSecondsSinceUpdate(){
-    var seconds = currentTimestamp - Math.round(Date.parse(API_data['timestamp'])/1000);
+    var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
     if (seconds < 120) {
         var timeString = seconds+' sec';
     } else if (seconds < 120*60) {
@@ -341,12 +340,11 @@ function renderSecondsSinceUpdate(){
     $('#legend-update-time-ago').html(timeString);
 }
 
-function updateTime(timeData){
-    if (typeof timeData != 'undefined'){
-        currentTimestamp = Math.round(Date.parse(timeData['dateString'])/1000);
-    } else {
-        currentTimestamp = currentTimestamp + 1;
-    }
+function getTimeGap(timeData){
+    var currentRemoteTimestamp = Math.round(Date.parse(timeData['dateString'])/1000);
+    var currentLocalTimestamp = Math.round(new Date().getTime()/1000);
+
+    timeGap = currentLocalTimestamp - currentRemoteTimestamp;
 }
 jQuery.fn.selectText = function(){
     var doc = document
