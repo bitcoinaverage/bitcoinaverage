@@ -13,4 +13,4 @@ class UnknownException(Exception):
 
 class CallFailedException(Exception):
     exchange_name = None
-    text = u'exchange unreachable since %s'
+    text = u'unreachable since %s UTC'
