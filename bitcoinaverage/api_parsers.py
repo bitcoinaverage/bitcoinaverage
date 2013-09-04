@@ -50,7 +50,7 @@ def callAPI(exchange_name, exchange_params):
             result['data_source'] = 'cache'
             write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
                         str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
+                        str(current_timestamp-API_QUERY_CACHE[exhange_name]['last_call_timestamp']) ),
                       'WARNING')
         else:
             exception = CallFailedException()
@@ -317,54 +317,62 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
 
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
-    
+
+    usd_volume = Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES)
     if result['USD']['avg_3h'] != None:
         usd_rate = Decimal(result['USD']['avg_3h']).quantize(DEC_PLACES)
     elif result['USD']['avg_12h'] != None:
         usd_rate = Decimal(result['USD']['avg_12h']).quantize(DEC_PLACES)
     else:
         usd_rate = None
+        usd_volume = None
         
-    if result['EUR']['avg_1h'] != None:
+    eur_volume = Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES)
+    if result['EUR']['avg_3h'] != None:
         eur_rate = Decimal(result['EUR']['avg_1h']).quantize(DEC_PLACES)
-    elif result['EUR']['avg_3h'] != None:
+    elif result['EUR']['avg_12h'] != None:
         eur_rate = Decimal(result['EUR']['avg_3h']).quantize(DEC_PLACES)
     else:
+        eur_volume = None
         eur_rate = None
         
-    if result['GBP']['avg_1h'] != None:
+    gbp_volume = Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES)
+    if result['GBP']['avg_3h'] != None:
         gbp_rate = Decimal(result['GBP']['avg_1h']).quantize(DEC_PLACES)
-    elif result['GBP']['avg_3h'] != None:
+    elif result['GBP']['avg_12h'] != None:
         gbp_rate = Decimal(result['GBP']['avg_3h']).quantize(DEC_PLACES)
     else:
+        gbp_volume = None
         gbp_rate = None
   
+    cad_volume = Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES)
     if result['CAD']['avg_3h'] != None:
         cad_rate = Decimal(result['CAD']['avg_3h']).quantize(DEC_PLACES)
     elif result['CAD']['avg_12h'] != None:
         cad_rate = Decimal(result['CAD']['avg_12h']).quantize(DEC_PLACES)
     else:
+        cad_volume = None
         cad_rate = None
 
     return {'USD': {'ask': usd_rate,
                     'bid': None,
                     'last': usd_rate,
-                    'volume': Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES),
+                    'volume': usd_volume,
                     },
             'EUR': {'ask': eur_rate,
                     'bid': None,
                     'last': eur_rate,
-                    'volume': Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES),
+                    'volume': eur_volume,
             },
             'GBP': {'ask': gbp_rate,
                     'bid': None,
                     'last': gbp_rate,
-                    'volume': Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES),
+                    'volume': gbp_volume,
             },
             'CAD': {'ask': cad_rate,
                     'bid': None,
                     'last': cad_rate,
-                    'volume': Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES),
+                    'volume': cad_volume,
             },
     }
 
