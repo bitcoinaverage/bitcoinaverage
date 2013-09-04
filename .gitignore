@@ -1,5 +1,6 @@
 /.idea/
 /runtime/*.log
+/api/history/*
 *.pyc
 /bitcoinaverage/server.py
 /www/config.js

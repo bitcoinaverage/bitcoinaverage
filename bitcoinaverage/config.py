@@ -2,6 +2,8 @@ from decimal import Decimal
 
 import bitcoinaverage.server
 
+INDEX_DOCUMENT_NAME = 'default'
+
 API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',
              'ALL_FILE': 'all',

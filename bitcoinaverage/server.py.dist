@@ -7,8 +7,8 @@ LOG_PATH = ''  # if empty - <main.py folder>/runtime used
 PROJECT_PATH = ''  # if empty - <main.py folder> used
 
 API_INDEX_URL = '' #should be not empty
+API_INDEX_URL_HISTORY = '' #should be not empty
 API_INDEX_URL_NOGOX = '' #should be not empty
-
 
 # DEFAULT_API_QUERY_FREQUENCY_OVERRIDE = 60 #if present - overrides normal frequency of exchange APIs calls
 # DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_OVERRIDE = 'bitcoinaverage.com test query bot' #if present - overrides normal "User-Agent" request value

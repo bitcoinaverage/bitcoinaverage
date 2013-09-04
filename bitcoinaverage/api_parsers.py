@@ -329,18 +329,18 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
         
     eur_volume = Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES)
     if result['EUR']['avg_3h'] != None:
-        eur_rate = Decimal(result['EUR']['avg_1h']).quantize(DEC_PLACES)
-    elif result['EUR']['avg_12h'] != None:
         eur_rate = Decimal(result['EUR']['avg_3h']).quantize(DEC_PLACES)
+    elif result['EUR']['avg_12h'] != None:
+        eur_rate = Decimal(result['EUR']['avg_12h']).quantize(DEC_PLACES)
     else:
         eur_volume = None
         eur_rate = None
         
     gbp_volume = Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES)
     if result['GBP']['avg_3h'] != None:
-        gbp_rate = Decimal(result['GBP']['avg_1h']).quantize(DEC_PLACES)
-    elif result['GBP']['avg_12h'] != None:
         gbp_rate = Decimal(result['GBP']['avg_3h']).quantize(DEC_PLACES)
+    elif result['GBP']['avg_12h'] != None:
+        gbp_rate = Decimal(result['GBP']['avg_12h']).quantize(DEC_PLACES)
     else:
         gbp_volume = None
         gbp_rate = None
