@@ -50,7 +50,7 @@ def callAPI(exchange_name, exchange_params):
             result['data_source'] = 'cache'
             write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
                         str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                        str(current_timestamp-API_QUERY_CACHE[exhange_name]['last_call_timestamp']) ),
+                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
                       'WARNING')
         else:
             exception = CallFailedException()
