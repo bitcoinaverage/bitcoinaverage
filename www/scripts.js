@@ -35,11 +35,21 @@ $(function(){
             $(this).removeClass('btn-default');
             $(this).addClass('btn-primary');
             button.html('MTGox ignored for USD/EUR/GBP');
+
+            var currentHash = window.location.hash;
+            var currentLocation = document.location.href;
+            var newLocation = currentLocation.replace(currentHash, '')+'#USD|nogox';
+            window.location.replace(newLocation);
         } else {
             active_API_URL = API_all_url;
             $(this).addClass('btn-default');
             $(this).removeClass('btn-primary');
             button.html('ignore MTGox for USD/EUR/GBP');
+
+            var currentHash = window.location.hash;
+            var currentLocation = document.location.href;
+            var newLocation = currentLocation.replace(currentHash, '')+'#USD';
+            window.location.replace(newLocation);
         }
         callAPI(function(result){
             renderAll(result);
@@ -83,6 +93,9 @@ $(function(){
                 var currentHash = window.location.hash;
                 var currentLocation = document.location.href;
                 var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
+                if (active_API_URL == API_all_url_nogox){
+                    newLocation = newLocation + '|nogox';
+                }
                 window.location.replace(newLocation);
             }
         });
@@ -117,6 +130,9 @@ $(function(){
                 var currentHash = window.location.hash;
                 var currentLocation = document.location.href;
                 var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
+                if (active_API_URL == API_all_url_nogox){
+                    newLocation = newLocation + '|nogox';
+                }
                 window.location.replace(newLocation);
             }
         });
@@ -181,6 +197,13 @@ function renderAll(result){
         $('body').show();
         var currentHash = window.location.hash;
         currentHash = currentHash.replace('#', '');
+        currentHash = currentHash.split('|');
+        if (currentHash.length == 2 && currentHash[1] == 'nogox'){
+            $('#nogox-button').click();
+        }
+        currentHash = currentHash[0];
+
+
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
             $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
         } else {
