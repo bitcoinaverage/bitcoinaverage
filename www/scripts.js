@@ -264,6 +264,8 @@ function renderLegend(currencyCode){
     $('#legend-bid').html(currencyData.averages.bid);
     $('#legend-ask').html(currencyData.averages.ask);
     $('#legend-total-volume').html(currencyData.averages.total_vol);
+    $('#legend-24h-avg').html(currencyData.averages['24h_avg']);
+
 
     $('#legend-ignored-table').hide();
     if ($(API_data.ignored_exchanges).countObj() > 0) {

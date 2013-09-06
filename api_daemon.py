@@ -1,6 +1,7 @@
 #!/usr/bin/python2.7
 import os
 import sys
+from bitcoinaverage.api_calculations import get24hAverage
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, include_path)
@@ -29,6 +30,8 @@ if ba.server.API_DOCUMENT_ROOT == '':
     ba.server.API_DOCUMENT_ROOT_NOGOX = os.path.join(ba.server.API_DOCUMENT_ROOT, 'no-mtgox')
 if ba.server.WWW_DOCUMENT_ROOT == '':
     ba.server.WWW_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'www')
+if ba.server.HISTORY_DOCUMENT_ROOT == '':
+    ba.server.HISTORY_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'api', 'history')
 
 write_log('script started', 'LOG')
 write_config()
@@ -149,6 +152,7 @@ while True:
         calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
         calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
         calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
+        calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
 
         for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:

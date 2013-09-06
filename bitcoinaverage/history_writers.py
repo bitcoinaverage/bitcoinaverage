@@ -8,19 +8,20 @@ import json
 import bitcoinaverage as ba
 from bitcoinaverage.config import DEC_PLACES
 
+
 def write_default(currency_code):
     current_default_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, ba.config.INDEX_DOCUMENT_NAME)
     with open(current_default_file_path, 'wb') as default_file:
         default_contents = {}
-        default_contents['24h_sliding'] = '%s%s/24h_sliding.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-        default_contents['1mon_sliding'] = '%s%s/1mon_sliding.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-        default_contents['forever'] = '%s%s/forever.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_contents['24h_sliding'] = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_contents['monthly_sliding'] = '%s%s/per_hour_monthly_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        default_contents['all_time'] = '%s%s/per_day_all_time_history.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
         default_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
         default_file.write(json.dumps(default_contents, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
 def write_24h_csv(currency_code, current_data, current_timestamp):
-    current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '24h_sliding.csv')
+    current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
 
     current_24h_sliding_data = []
     with open(current_24h_sliding_file_path, 'a') as csvfile: #to create file if not exists
@@ -55,7 +56,7 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
 
 
 def write_1mon_csv(currency_code, current_timestamp):
-    current_1h_1mon_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '1mon_sliding.csv')
+    current_1h_1mon_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_hour_monthly_sliding_window.csv')
 
     current_1mon_sliding_data = []
     with open(current_1h_1mon_sliding_file_path, 'a') as csvfile: #to create file if not exists
@@ -78,7 +79,7 @@ def write_1mon_csv(currency_code, current_timestamp):
                                                            '%Y-%m-%d %H:%M:%S').timetuple())
 
     if int(time.time())-last_recorded_timestamp > 3600*2:
-        current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '24h_sliding.csv')
+        current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
         price_high = 0.0
         price_low = 0.0
         price_sum = Decimal(DEC_PLACES)
@@ -118,7 +119,7 @@ def write_1mon_csv(currency_code, current_timestamp):
 
 
 def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
-    current_forever_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'forever.csv')
+    current_forever_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_day_all_time_history.csv')
 
     if not os.path.exists(os.path.join(current_forever_file_path)) or os.path.getsize(current_forever_file_path) == 0:
         with open(current_forever_file_path, 'wb') as csvfile:
@@ -136,7 +137,7 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
             last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
 
     if current_timestamp - last_recorded_timestamp > 86400*2: #60*60*24
-        current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '24h_sliding.csv')
+        current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
         price_high = 0.0
         price_low = 0.0
         price_sum = Decimal(DEC_PLACES)

@@ -50,7 +50,6 @@ def write_fiat_rates_config():
     for currency in ba.config.CURRENCY_LIST:
         api_url = google_api_url_template + currency
         result = requests.get(api_url, headers=ba.config.API_REQUEST_HEADERS).text
-        ##{lhs: "1 U.S. dollar",rhs: "33.1818031 Russian rubles",error: "",icc: true}
         result = result.replace('lhs', '"lhs"')
         result = result.replace('rhs', '"rhs"')
         result = result.replace('error', '"error"')
@@ -63,6 +62,10 @@ def write_fiat_rates_config():
                 break
             else:
                 rate = rate + c
+        try:
+            rate = float(rate)
+        except ValueError:
+            return
         rate = Decimal(rate).quantize(ba.config.DEC_PLACES)
         rate_list[currency] = str(rate)
 
