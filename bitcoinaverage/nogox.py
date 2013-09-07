@@ -5,6 +5,7 @@ from decimal import Decimal
 
 import bitcoinaverage as ba
 from bitcoinaverage import api_parsers, bitcoinchart_fallback
+from bitcoinaverage.api_calculations import get24hAverage
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_FILES
 from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException, CallFailedException
 from bitcoinaverage.helpers import write_log
@@ -112,18 +113,49 @@ def create_nogox_api(timestamp):
                 calculated_average_rates[currency]['bid'] = calculated_average_rates[currency]['bid'].quantize(DEC_PLACES)
 
     for currency in CURRENCY_LIST:
-        calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
-        calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
-        calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
-        calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
+        try:
+            calculated_average_rates[currency]['last'] = float(calculated_average_rates[currency]['last'])
+        except TypeError:
+            calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
+        try:
+            calculated_average_rates[currency]['ask'] = float(calculated_average_rates[currency]['ask'])
+        except TypeError:
+            calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
+        try:
+            calculated_average_rates[currency]['bid'] = float(calculated_average_rates[currency]['bid'])
+        except TypeError:
+            calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
+        try:
+            calculated_average_rates[currency]['total_vol'] = float(total_currency_volumes[currency])
+        except TypeError:
+            calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
+        try:
+            calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
+        except TypeError:
+            calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
 
         for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:
-                calculated_volumes[currency][exchange_name]['rates']['last'] = str(calculated_volumes[currency][exchange_name]['rates']['last'])
-                calculated_volumes[currency][exchange_name]['rates']['ask'] = str(calculated_volumes[currency][exchange_name]['rates']['ask'])
-                calculated_volumes[currency][exchange_name]['rates']['bid'] = str(calculated_volumes[currency][exchange_name]['rates']['bid'])
-                calculated_volumes[currency][exchange_name]['volume_btc'] = str(calculated_volumes[currency][exchange_name]['volume_btc'])
-                calculated_volumes[currency][exchange_name]['volume_percent'] = str(calculated_volumes[currency][exchange_name]['volume_percent'])
+                try:
+                    calculated_volumes[currency][exchange_name]['rates']['last'] = float(calculated_volumes[currency][exchange_name]['rates']['last'])
+                except TypeError:
+                    calculated_volumes[currency][exchange_name]['rates']['last'] = str(calculated_volumes[currency][exchange_name]['rates']['last'])
+                try:
+                    calculated_volumes[currency][exchange_name]['rates']['ask'] = float(calculated_volumes[currency][exchange_name]['rates']['ask'])
+                except TypeError:
+                    calculated_volumes[currency][exchange_name]['rates']['ask'] = str(calculated_volumes[currency][exchange_name]['rates']['ask'])
+                try:
+                    calculated_volumes[currency][exchange_name]['rates']['bid'] = float(calculated_volumes[currency][exchange_name]['rates']['bid'])
+                except TypeError:
+                    calculated_volumes[currency][exchange_name]['rates']['bid'] = str(calculated_volumes[currency][exchange_name]['rates']['bid'])
+                try:
+                    calculated_volumes[currency][exchange_name]['volume_btc'] = float(calculated_volumes[currency][exchange_name]['volume_btc'])
+                except TypeError:
+                    calculated_volumes[currency][exchange_name]['volume_btc'] = str(calculated_volumes[currency][exchange_name]['volume_btc'])
+                try:
+                    calculated_volumes[currency][exchange_name]['volume_percent'] = float(calculated_volumes[currency][exchange_name]['volume_percent'])
+                except TypeError:
+                    calculated_volumes[currency][exchange_name]['volume_percent'] = str(calculated_volumes[currency][exchange_name]['volume_percent'])
                 if 'volume_percent_ask' in calculated_volumes[currency][exchange_name]:
                     del calculated_volumes[currency][exchange_name]['volume_percent_ask']
                 if 'volume_percent_bid' in calculated_volumes[currency][exchange_name]:
