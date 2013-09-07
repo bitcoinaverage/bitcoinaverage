@@ -129,10 +129,6 @@ def create_nogox_api(timestamp):
             calculated_average_rates[currency]['total_vol'] = float(total_currency_volumes[currency])
         except TypeError:
             calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
-        try:
-            calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
-        except TypeError:
-            calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
 
         for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:
