@@ -55,6 +55,9 @@ def create_nogox_api(timestamp):
     for rate in exchanges_rates:
         for currency in CURRENCY_LIST:
             if currency in rate:
+                if rate[currency]['volume'] is None:
+                    rate[currency]['volume'] = DEC_PLACES
+
                 total_currency_volumes[currency] = total_currency_volumes[currency] + rate[currency]['volume']
                 if rate[currency]['ask'] is not None:
                     total_currency_volumes_ask[currency] = total_currency_volumes_ask[currency] + rate[currency]['volume']
