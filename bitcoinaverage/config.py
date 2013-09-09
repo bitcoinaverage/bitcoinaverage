@@ -95,6 +95,7 @@ EXCHANGE_LIST = {
                               'jpy_api_url': 'https://data.mtgox.com/api/2/BTCJPY/money/ticker',
                               'nzd_api_url': 'https://data.mtgox.com/api/2/BTCNZD/money/ticker',
                               'sgd_api_url': 'https://data.mtgox.com/api/2/BTCSGD/money/ticker',
+                              'sek_api_url': 'https://data.mtgox.com/api/2/BTCSEK/money/ticker',
                                   },
                     'bitstamp': {'api_url': 'https://www.bitstamp.net/api/ticker/',
                                    },
@@ -188,7 +189,7 @@ EXCHANGE_LIST = {
                                                         # 'USD': 'weexUSD',
                                                            },
                                  },
-                    'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitNZD',
+                    'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitnzNZD',
                                                            },
                                  },
                     'fybse':  {'bitcoincharts_symbols': {'SEK': 'fybseSEK',
@@ -197,6 +198,10 @@ EXCHANGE_LIST = {
                     'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                  },
+                    'justcoin':  {'bitcoincharts_symbols': {'NOK': 'justNOK'
+                                                           },
+                                 },
+
                 }
 
 

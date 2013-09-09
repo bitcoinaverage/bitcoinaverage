@@ -168,23 +168,6 @@ function callAPI(callback){
 function renderAll(result){
     API_data = result;
 
-//            config.currencyOrder.sort(function(a,b){
-//                result[a].total_volume_btc = 0;
-//                for (var exchange in result[a].exchanges){
-//                    result[a].total_volume_btc += parseInt(result[a].exchanges[exchange].volume_btc);
-//                }
-//
-//                result[b].total_volume_btc = 0;
-//                for (var exchange in result[b].exchanges){
-//                    result[b].total_volume_btc += parseInt(result[b].exchanges[exchange].volume_btc);
-//                }
-//                if (result[a].total_volume_btc<result[b].total_volume_btc) {
-//                    return 1;
-//                } else {
-//                    return -1;
-//                }
-//            });
-
     $('#currency-sidebar li[id^="slot"] a').hide();
 
     for(var slotNum in config.currencyOrder){
@@ -332,24 +315,11 @@ function renderLegend(currencyCode){
             $('#legend-api-unavailable-note').show();
         }
 
-
-        if(slotNum<legendSlots){
-            $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
-            $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc']);
-            $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent']);
-            $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last']);
-            $('#legend-slot'+slotNum).toggle(true);
-        } else {
-            otherCount = otherCount+1;
-            otherPercent = otherPercent+exchangeArray[slotNum]['volume_percent'];
-            otherVolume = otherVolume+exchangeArray[slotNum]['volume_btc'];
-        }
-    }
-    if(otherCount > 0){
-        $('#slot'+slotNum+'-subslot-other').toggle(true);
-        $('#slot'+slotNum+'-subslot-other-count').text(otherCount);
-        $('#slot'+slotNum+'-subslot-other-volume_btc').text(otherVolume);
-        $('#slot'+slotNum+'-subslot-other-volume_percent').text(otherPercent);
+        $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
+        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(2));
+        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(2));
+        $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last'].toFixed(2));
+        $('#legend-slot'+slotNum).toggle(true);
     }
 }
 

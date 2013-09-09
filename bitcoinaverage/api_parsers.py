@@ -76,7 +76,7 @@ def callAPI(exchange_name, exchange_params):
 
 
 def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, aud_api_url, chf_api_url,
-                  cny_api_url, dkk_api_url, hkd_api_url, jpy_api_url, nzd_api_url, sgd_api_url, *args, **kwargs):
+                  cny_api_url, dkk_api_url, hkd_api_url, jpy_api_url, nzd_api_url, sgd_api_url, sek_api_url, *args, **kwargs):
     usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
     eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
     gbp_result = requests.get(gbp_api_url, headers=API_REQUEST_HEADERS).json()
@@ -91,6 +91,7 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
     jpy_result = requests.get(jpy_api_url, headers=API_REQUEST_HEADERS).json()
     nzd_result = requests.get(nzd_api_url, headers=API_REQUEST_HEADERS).json()
     sgd_result = requests.get(sgd_api_url, headers=API_REQUEST_HEADERS).json()
+    sek_result = requests.get(sek_api_url, headers=API_REQUEST_HEADERS).json()
 
     return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
                     'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
@@ -161,6 +162,11 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
                     'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES),
                     'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES),
                     'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES),
+            },
+            'SEK': {'ask': Decimal(sek_result['data']['sell']['value']).quantize(DEC_PLACES),
+                    'bid': Decimal(sek_result['data']['buy']['value']).quantize(DEC_PLACES),
+                    'last': Decimal(sek_result['data']['last']['value']).quantize(DEC_PLACES),
+                    'volume': Decimal(sek_result['data']['vol']['value']).quantize(DEC_PLACES),
             },
     }
 
@@ -319,40 +325,85 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
 
     usd_volume = Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES)
-    if result['USD']['avg_3h'] != None:
+    if result['USD']['avg_3h'] is not None:
         usd_rate = Decimal(result['USD']['avg_3h']).quantize(DEC_PLACES)
-    elif result['USD']['avg_12h'] != None:
+    elif result['USD']['avg_12h'] is not None:
         usd_rate = Decimal(result['USD']['avg_12h']).quantize(DEC_PLACES)
     else:
         usd_rate = None
         usd_volume = None
         
     eur_volume = Decimal(result['EUR']['volume_btc']).quantize(DEC_PLACES)
-    if result['EUR']['avg_3h'] != None:
+    if result['EUR']['avg_3h'] is not None:
         eur_rate = Decimal(result['EUR']['avg_3h']).quantize(DEC_PLACES)
-    elif result['EUR']['avg_12h'] != None:
+    elif result['EUR']['avg_12h'] is not None:
         eur_rate = Decimal(result['EUR']['avg_12h']).quantize(DEC_PLACES)
     else:
         eur_volume = None
         eur_rate = None
         
     gbp_volume = Decimal(result['GBP']['volume_btc']).quantize(DEC_PLACES)
-    if result['GBP']['avg_3h'] != None:
+    if result['GBP']['avg_3h'] is not None:
         gbp_rate = Decimal(result['GBP']['avg_3h']).quantize(DEC_PLACES)
-    elif result['GBP']['avg_12h'] != None:
+    elif result['GBP']['avg_12h'] is not None:
         gbp_rate = Decimal(result['GBP']['avg_12h']).quantize(DEC_PLACES)
     else:
         gbp_volume = None
         gbp_rate = None
   
     cad_volume = Decimal(result['CAD']['volume_btc']).quantize(DEC_PLACES)
-    if result['CAD']['avg_3h'] != None:
+    if result['CAD']['avg_3h'] is not None:
         cad_rate = Decimal(result['CAD']['avg_3h']).quantize(DEC_PLACES)
-    elif result['CAD']['avg_12h'] != None:
+    elif result['CAD']['avg_12h'] is not None:
         cad_rate = Decimal(result['CAD']['avg_12h']).quantize(DEC_PLACES)
     else:
         cad_volume = None
         cad_rate = None
+
+    nok_volume = Decimal(result['NOK']['volume_btc']).quantize(DEC_PLACES)
+    if result['NOK']['avg_3h'] is not None:
+        nok_rate = Decimal(result['NOK']['avg_3h']).quantize(DEC_PLACES)
+    elif result['NOK']['avg_12h'] is not None:
+        nok_rate = Decimal(result['NOK']['avg_12h']).quantize(DEC_PLACES)
+    else:
+        nok_volume = None
+        nok_rate = None
+
+    nzd_volume = Decimal(result['NZD']['volume_btc']).quantize(DEC_PLACES)
+    if result['NZD']['avg_3h'] is not None:
+        nzd_rate = Decimal(result['NZD']['avg_3h']).quantize(DEC_PLACES)
+    elif result['NZD']['avg_12h'] is not None:
+        nzd_rate = Decimal(result['NZD']['avg_12h']).quantize(DEC_PLACES)
+    else:
+        nzd_volume = None
+        nzd_rate = None
+
+    zar_volume = Decimal(result['ZAR']['volume_btc']).quantize(DEC_PLACES)
+    if result['ZAR']['avg_3h'] is not None:
+        zar_rate = Decimal(result['ZAR']['avg_3h']).quantize(DEC_PLACES)
+    elif result['ZAR']['avg_12h'] is not None:
+        zar_rate = Decimal(result['ZAR']['avg_12h']).quantize(DEC_PLACES)
+    else:
+        zar_volume = None
+        zar_rate = None
+
+    sek_volume = Decimal(result['SEK']['volume_btc']).quantize(DEC_PLACES)
+    if result['SEK']['avg_3h'] is not None:
+        sek_rate = Decimal(result['SEK']['avg_3h']).quantize(DEC_PLACES)
+    elif result['SEK']['avg_12h'] is not None:
+        sek_rate = Decimal(result['SEK']['avg_12h']).quantize(DEC_PLACES)
+    else:
+        sek_volume = None
+        sek_rate = None
+
+    aud_volume = Decimal(result['AUD']['volume_btc']).quantize(DEC_PLACES)
+    if result['AUD']['avg_3h'] is not None:
+        aud_rate = Decimal(result['AUD']['avg_3h']).quantize(DEC_PLACES)
+    elif result['AUD']['avg_12h'] is not None:
+        aud_rate = Decimal(result['AUD']['avg_12h']).quantize(DEC_PLACES)
+    else:
+        aud_volume = None
+        aud_rate = None
 
     return {'USD': {'ask': usd_rate,
                     'bid': None,
@@ -373,6 +424,31 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                     'bid': None,
                     'last': cad_rate,
                     'volume': cad_volume,
+            },
+            'NOK': {'ask': nok_rate,
+                    'bid': None,
+                    'last': nok_rate,
+                    'volume': nok_volume,
+            },
+            'NZD': {'ask': nzd_rate,
+                    'bid': None,
+                    'last': nzd_rate,
+                    'volume': nzd_volume,
+            },
+            'SEK': {'ask': sek_rate,
+                    'bid': None,
+                    'last': sek_rate,
+                    'volume': sek_volume,
+            },
+            'ZAR': {'ask': zar_rate,
+                    'bid': None,
+                    'last': zar_rate,
+                    'volume': zar_volume,
+            },
+            'AUD': {'ask': aud_rate,
+                    'bid': None,
+                    'last': aud_rate,
+                    'volume': aud_volume,
             },
     }
 
