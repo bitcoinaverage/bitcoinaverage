@@ -657,3 +657,24 @@ def _btctradeApiCall(ticker_url, *args, **kwargs):
                     'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
                     },
             }
+
+
+def _justcoinApiCall(ticker_url, *args, **kwargs):
+    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+
+    result = {}
+    for currency_data in ticker:
+        if currency_data['id'] == 'BTCEUR':
+            result['EUR'] = {'ask': Decimal(currency_data['ask']).quantize(DEC_PLACES),
+                             'bid': Decimal(currency_data['bid']).quantize(DEC_PLACES),
+                             'last': Decimal(currency_data['last']).quantize(DEC_PLACES),
+                             'volume': Decimal(currency_data['volume']).quantize(DEC_PLACES),
+                             }
+        if currency_data['id'] == 'BTCNOK':
+            result['NOK'] = {'ask': Decimal(currency_data['ask']).quantize(DEC_PLACES),
+                             'bid': Decimal(currency_data['bid']).quantize(DEC_PLACES),
+                             'last': Decimal(currency_data['last']).quantize(DEC_PLACES),
+                             'volume': Decimal(currency_data['volume']).quantize(DEC_PLACES),
+                             }
+
+    return result

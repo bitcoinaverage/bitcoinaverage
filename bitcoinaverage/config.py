@@ -38,14 +38,15 @@ API_QUERY_FREQUENCY = {
                         'bit2c': 55,
                         'kapiton': 55,
                         'rmbtb': 55,
-                        'bitx': 55,
                         'btcchina': 55,
                         'fxbtc': 55,
                         'bter': 55,
                         'goxbtc': 55,
                         'okcoin': 55,
                         'mercado': 55,
+                        'bitx': 55,
                         'btctrade': 55,
+                        'justcoin': 55,
 }
 
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
@@ -71,6 +72,7 @@ CURRENCY_LIST = ('USD',
                  'NZD',
                  'SGD',
                  'ZAR',
+                 'NOK',
                  # 'DKK',
                  # 'ILS',
                  # 'CHF',
@@ -158,6 +160,9 @@ EXCHANGE_LIST = {
                                     },
                     'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker',
                                     },
+                    'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
+                                    },
+
 
 
 
@@ -198,10 +203,6 @@ EXCHANGE_LIST = {
                     'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                  },
-                    'justcoin':  {'bitcoincharts_symbols': {'NOK': 'justNOK'
-                                                           },
-                                 },
-
                 }
 
 

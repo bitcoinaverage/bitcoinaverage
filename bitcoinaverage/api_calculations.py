@@ -1,7 +1,7 @@
-import os
 import csv
 import StringIO
 from decimal import Decimal
+from decimal import InvalidOperation
 import requests
 
 import bitcoinaverage as ba
@@ -27,8 +27,10 @@ def get24hAverage(currency_code):
             index = index + 1
         except IndexError:
             continue
-
-    average_price = (price_sum / Decimal(index)).quantize(DEC_PLACES)
+    try:
+        average_price = (price_sum / Decimal(index)).quantize(DEC_PLACES)
+    except InvalidOperation:
+        average_price = DEC_PLACES
 
     return average_price
 
