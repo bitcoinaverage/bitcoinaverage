@@ -22,8 +22,11 @@ def get24hAverage(currency_code):
         if not header_passed:
             header_passed = True
             continue
-        price_sum = price_sum + Decimal(row[1])
-        index = index + 1
+        try:
+            price_sum = price_sum + Decimal(row[1])
+            index = index + 1
+        except IndexError:
+            continue
 
     average_price = (price_sum / Decimal(index)).quantize(DEC_PLACES)
 

@@ -110,7 +110,7 @@ while True:
                 if rate[currency]['volume'] is None:
                     rate[currency]['volume'] = DEC_PLACES
                 calculated_volumes[currency][rate['exchange_name']]['volume_btc'] = rate[currency]['volume'].quantize(DEC_PLACES)
-                
+
                 if total_currency_volumes[currency] > 0:
                     calculated_volumes[currency][rate['exchange_name']]['volume_percent'] = (rate[currency]['volume']
                         / total_currency_volumes[currency] * Decimal(100) ).quantize(DEC_PLACES)
