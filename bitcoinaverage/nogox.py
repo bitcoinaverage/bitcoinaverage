@@ -4,10 +4,7 @@ import json
 from decimal import Decimal
 
 import bitcoinaverage as ba
-from bitcoinaverage import api_parsers, bitcoinchart_fallback
-from bitcoinaverage.api_calculations import get24hAverage
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_FILES
-from bitcoinaverage.exceptions import NoApiException, NoVolumeException, UnknownException, CallFailedException
 from bitcoinaverage.helpers import write_log
 
 
@@ -15,27 +12,7 @@ def create_nogox_api(timestamp):
     exchanges_rates = []
     exchanges_ignored = {}
 
-    for exchange_name in EXCHANGE_LIST:
-        try:
-            if api_parsers.hasAPI(exchange_name):
-                result = api_parsers.callAPI(exchange_name=exchange_name, exchange_params=EXCHANGE_LIST[exchange_name])
-            elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
-                result = bitcoinchart_fallback.getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
-            else:
-                raise NoApiException
-
-            if result is not None:
-                if exchange_name == 'mtgox':
-                    result = result.copy()
-                    del result['USD']
-                    del result['GBP']
-                    del result['EUR']
-                result['exchange_name'] = exchange_name
-                exchanges_rates.append(result)
-            else:
-                raise UnknownException
-        except (NoApiException, NoVolumeException, UnknownException, CallFailedException) as error:
-            exchanges_ignored[exchange_name] = error.text
+    exchanges_rates, exchanges_ignored = ba.api_parsers.callAll(ignore_mtgox=True)
 
     calculated_average_rates = {}
     total_currency_volumes = {}

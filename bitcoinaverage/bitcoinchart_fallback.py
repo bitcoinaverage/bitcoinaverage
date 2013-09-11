@@ -6,48 +6,30 @@ from decimal import Decimal
 import requests
 from requests.exceptions import ConnectionError
 
-from bitcoinaverage.api_parsers import API_QUERY_CACHE
-from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS
-from bitcoinaverage.exceptions import CallFailedException
-from bitcoinaverage.helpers import write_log
+import bitcoinaverage as ba
+from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_REQUEST_HEADERS
 
 
 def fetchBitcoinChartsData():
-    global API_QUERY_CACHE, API_QUERY_FREQUENCY
+    global ba
 
-    if 'bitcoincharts' not in API_QUERY_CACHE:
-        API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': 0,
+    if 'bitcoincharts' not in ba.api_parsers.API_QUERY_CACHE:
+        ba.api_parsers.API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': 0,
                                             'result': None,
                                             'call_fail_count': 0,
                                                }
 
     current_timestamp = int(time.time())
-    if (API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
-        result = API_QUERY_CACHE['bitcoincharts']['result']
+    if (ba.api_parsers.API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+ba.api_parsers.API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
+        result = ba.api_parsers.API_QUERY_CACHE['bitcoincharts']['result']
     else:
-        try:
-            result = requests.get(BITCOIN_CHARTS_API_URL, verify=False, headers=API_REQUEST_HEADERS).json()
-            API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
-                                                'result':result,
-                                                'call_fail_count':0,
-                                                   }
-        except (KeyError,
-                ValueError,
-                requests.exceptions.ConnectionError,
-                socket.error,
-                simplejson.decoder.JSONDecodeError) as error:
-            if (API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
-                result = API_QUERY_CACHE['bitcoincharts']['result']
-                API_QUERY_CACHE['bitcoincharts']['call_fail_count'] = API_QUERY_CACHE['bitcoincharts']['call_fail_count'] + 1
-                write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % ('bitcoincharts',
-                            str(API_QUERY_CACHE['bitcoincharts']['call_fail_count']),
-                            str(current_timestamp-API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']) ),
-                          'WARNING')
-            else:
-                exception = CallFailedException()
-                exception.text = exception.text % (str(API_QUERY_CACHE['bitcoincharts']['call_fail_count']))
-                write_log(exception.text, 'ERROR')
-                raise exception
+        #TODO, TODO, TODO-TODO-TODO TODO-TODO TODO-DO-DO-DO
+        result = requests.get(BITCOIN_CHARTS_API_URL, verify=False, headers=API_REQUEST_HEADERS).json()
+
+        ba.api_parsers.API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
+                                            'result':result,
+                                            'call_fail_count':0,
+                                               }
 
     return result
 

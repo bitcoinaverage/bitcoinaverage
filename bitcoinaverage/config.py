@@ -49,6 +49,8 @@ API_QUERY_FREQUENCY = {
                         'justcoin': 55,
 }
 
+API_CALL_TIMEOUT_THRESHOLD = 5 #seconds before exchange API call timeout. exchange may have multiple calls and multiple consequent thresholds
+
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
     API_QUERY_FREQUENCY['default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE
 

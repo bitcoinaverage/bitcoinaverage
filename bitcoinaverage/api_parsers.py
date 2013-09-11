@@ -1,27 +1,57 @@
-import time
-import datetime
-import requests
+import email
+import json
 import socket
-from email import utils
+import time
 from decimal import Decimal
+import datetime
+import eventlet
+from eventlet.green import urllib2
+from eventlet.timeout import Timeout
 import simplejson
 
-import bitcoinaverage
-from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS
-from bitcoinaverage.exceptions import CallFailedException
+from bitcoinaverage.bitcoinchart_fallback import getData
+from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD
+from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException, NoVolumeException
 from bitcoinaverage.helpers import write_log
 
 API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
 
-def hasAPI(exchange_name):
-    return '_%sApiCall' % exchange_name in globals()
+exchanges_rates = []
+exchanges_ignored = {}
+
+def callAll(ignore_mtgox=False):
+    global EXCHANGE_LIST, exchanges_rates, exchanges_ignored
+    pool = eventlet.GreenPool()
+
+    exchanges_rates = []
+    exchanges_ignored = {}
+
+    start_time = time.time()
+
+    print 'all start - %s' % (start_time)
+    for exchange_name, exchange_data, exchange_ignore_reason in pool.imap(callAPI, EXCHANGE_LIST):
+        if exchange_ignore_reason is None:
+            if ignore_mtgox and exchange_name == 'mtgox':
+                exchange_data = exchange_data.copy()
+                del exchange_data['USD']
+                del exchange_data['GBP']
+                del exchange_data['EUR']
+
+            exchange_data['exchange_name'] = exchange_name
+            exchanges_rates.append(exchange_data)
+        else:
+            exchanges_ignored[exchange_name] = exchange_ignore_reason
+    print 'all end - %s, %s' % (start_time, time.time()-start_time)
+    return exchanges_rates, exchanges_ignored
 
 
-def callAPI(exchange_name, exchange_params):
-    global API_QUERY_CACHE, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT
+def callAPI(exchange_name):
+    global API_QUERY_CACHE, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, EXCHANGE_LIST
 
     current_timestamp = int(time.time())
     result = None
+    exchange_ignore_reason = None
+
     if exchange_name not in API_QUERY_CACHE:
         API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': 0,
                                            'result': None,
@@ -29,69 +59,109 @@ def callAPI(exchange_name, exchange_params):
                                                }
 
     try:
-        if (exchange_name in API_QUERY_FREQUENCY
-            and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
-            result = API_QUERY_CACHE[exchange_name]['result']
-        else:
-            result = globals()['_%sApiCall' % exchange_name](**exchange_params)
-            result['data_source'] = 'api'
-            API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
-                                               'result':result,
-                                               'call_fail_count': 0,
-                                               }
-    except (KeyError,
-            ValueError,
-            requests.exceptions.ConnectionError,
-            socket.error,
-            simplejson.decoder.JSONDecodeError) as error:
-        API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
-        if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
-            result = API_QUERY_CACHE[exchange_name]['result']
-            result['data_source'] = 'cache'
-            write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
-                        str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
-                      'WARNING')
-        else:
-            exception = CallFailedException()
-            last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
-            today = datetime.datetime.now()
-            if current_timestamp == 0:
-                datetime_str = today.strftime('%H:%M')
-            elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
-                datetime_str = last_call_datetime.strftime('%H:%M')
-            else :
-                datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
+        try:
+            if (exchange_name in API_QUERY_FREQUENCY
+                and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
+                result = API_QUERY_CACHE[exchange_name]['result']
+            else:
+                if '_%sApiCall' % exchange_name in globals():
+                    result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
+                    result['data_source'] = 'api'
+                elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
+                    result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
+                    result['data_source'] = 'bitcoincharts'
+                else:
+                    raise NoApiException
 
-            exception.text = exception.text % datetime_str
-            log_message = ('%s call failed, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
-                           % (exchange_name,
-                              str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                              utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
-                                ))
-            write_log(log_message, 'ERROR')
-            raise exception
+                API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
+                                                   'result':result,
+                                                   'call_fail_count': 0,
+                                                   }
+        except (KeyError,
+                ValueError,
+                socket.error,
+                simplejson.decoder.JSONDecodeError,
+                CallTimeoutException) as error:
+            API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
+            if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
+                result = API_QUERY_CACHE[exchange_name]['result']
+                result['data_source'] = 'cache'
+                write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
+                            str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                            str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
+                          'WARNING')
+            else:
+                last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
+                today = datetime.datetime.now()
+                if current_timestamp == 0:
+                    datetime_str = today.strftime('%H:%M')
+                elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
+                    datetime_str = last_call_datetime.strftime('%H:%M')
+                else :
+                    datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
 
-    return result
+                log_message = ('%s call failed, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
+                               % (exchange_name,
+                                  str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                                  email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
+                                    ))
+                write_log(log_message, 'ERROR')
+                exception = CacheTimeoutException()
+                exception.text = exception.text % datetime_str
+                raise exception
+    except (NoApiException, NoVolumeException, CacheTimeoutException):
+        exchange_ignore_reason = error.text
+
+    return exchange_name, result, exchange_ignore_reason
 
 
 def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, aud_api_url, chf_api_url,
                   cny_api_url, dkk_api_url, hkd_api_url, jpy_api_url, nzd_api_url, sgd_api_url, sek_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
-    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
-    gbp_result = requests.get(gbp_api_url, headers=API_REQUEST_HEADERS).json()
-    cad_result = requests.get(cad_api_url, headers=API_REQUEST_HEADERS).json()
-    pln_result = requests.get(pln_api_url, headers=API_REQUEST_HEADERS).json()
-    rub_result = requests.get(rub_api_url, headers=API_REQUEST_HEADERS).json()
-    aud_result = requests.get(aud_api_url, headers=API_REQUEST_HEADERS).json()
-    chf_result = requests.get(chf_api_url, headers=API_REQUEST_HEADERS).json()
-    cny_result = requests.get(cny_api_url, headers=API_REQUEST_HEADERS).json()
-    dkk_result = requests.get(dkk_api_url, headers=API_REQUEST_HEADERS).json()
-    hkd_result = requests.get(hkd_api_url, headers=API_REQUEST_HEADERS).json()
-    jpy_result = requests.get(jpy_api_url, headers=API_REQUEST_HEADERS).json()
-    nzd_result = requests.get(nzd_api_url, headers=API_REQUEST_HEADERS).json()
-    sgd_result = requests.get(sgd_api_url, headers=API_REQUEST_HEADERS).json()
-    sek_result = requests.get(sek_api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_api_url, headers=API_REQUEST_HEADERS)).read()
+        usd_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_api_url, headers=API_REQUEST_HEADERS)).read()
+        eur_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=gbp_api_url, headers=API_REQUEST_HEADERS)).read()
+        gbp_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=cad_api_url, headers=API_REQUEST_HEADERS)).read()
+        cad_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=pln_api_url, headers=API_REQUEST_HEADERS)).read()
+        pln_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=rub_api_url, headers=API_REQUEST_HEADERS)).read()
+        rub_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=aud_api_url, headers=API_REQUEST_HEADERS)).read()
+        aud_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=chf_api_url, headers=API_REQUEST_HEADERS)).read()
+        chf_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=cny_api_url, headers=API_REQUEST_HEADERS)).read()
+        cny_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=dkk_api_url, headers=API_REQUEST_HEADERS)).read()
+        dkk_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=hkd_api_url, headers=API_REQUEST_HEADERS)).read()
+        hkd_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=jpy_api_url, headers=API_REQUEST_HEADERS)).read()
+        jpy_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=nzd_api_url, headers=API_REQUEST_HEADERS)).read()
+        nzd_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=sgd_api_url, headers=API_REQUEST_HEADERS)).read()
+        sgd_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=sek_api_url, headers=API_REQUEST_HEADERS)).read()
+        sek_result = json.loads(response)
 
     return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
                     'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
@@ -172,7 +242,9 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
 
 
 def _bitstampApiCall(api_url, *args, **kwargs):
-    result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=api_url, headers=API_REQUEST_HEADERS)).read()
+        result = json.loads(response)
 
     return {'USD': {'ask': Decimal(result['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(result['bid']).quantize(DEC_PLACES),
@@ -221,9 +293,15 @@ def _bitstampApiCall(api_url, *args, **kwargs):
 
 
 def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
-    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
-    rur_result = requests.get(rur_api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_api_url, headers=API_REQUEST_HEADERS)).read()
+        usd_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_api_url, headers=API_REQUEST_HEADERS)).read()
+        eur_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=rur_api_url, headers=API_REQUEST_HEADERS)).read()
+        rur_result = json.loads(response)
 
     #dirty hack, BTC-e has a bug in their APIs - buy/sell prices mixed up
     if usd_result['ticker']['sell'] < usd_result['ticker']['buy']:
@@ -259,18 +337,27 @@ def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
 
 
 def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_url, *args, **kwargs):
-    eur_result = requests.get(eur_ticker_url, headers=API_REQUEST_HEADERS).json()
-    pln_result = requests.get(pln_ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        eur_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=pln_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        pln_result = json.loads(response)
 
     last24h_time = int(time.time())-86400  #86400s in 24h
     eur_vol = 0.0
-    eur_volume_result = requests.get(eur_trades_url, headers=API_REQUEST_HEADERS).json()
+
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_trades_url, headers=API_REQUEST_HEADERS)).read()
+        eur_volume_result = json.loads(response)
     for trade in eur_volume_result:
         if trade['date'] > last24h_time:
             eur_vol = eur_vol + float(trade['amount'])
 
     pln_vol = 0.0
-    pln_volume_result = requests.get(pln_trades_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=pln_trades_url, headers=API_REQUEST_HEADERS)).read()
+        pln_volume_result = json.loads(response)
     for trade in pln_volume_result:
         if trade['date'] > last24h_time:
             pln_vol = pln_vol + float(trade['amount'])
@@ -289,8 +376,13 @@ def _bitcurexApiCall(eur_ticker_url, eur_trades_url, pln_ticker_url, pln_trades_
 
 
 def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
-    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
-    eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_api_url, headers=API_REQUEST_HEADERS)).read()
+        usd_result = json.loads(response)
+
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_api_url, headers=API_REQUEST_HEADERS)).read()
+        eur_result = json.loads(response)
 
     return {'USD': {'ask': Decimal(usd_result['lowest_ask']).quantize(DEC_PLACES),
                     'bid': Decimal(usd_result['highest_bid']).quantize(DEC_PLACES),
@@ -305,7 +397,9 @@ def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
     }
 
 def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
-    gbp_result = requests.get(gbp_api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=gbp_api_url, headers=API_REQUEST_HEADERS)).read()
+        gbp_result = json.loads(response)
 
     if gbp_result['response']['avg_24h'] is not None and gbp_result['response']['vol_24h'] is not None :
         average_btc = Decimal(gbp_result['response']['avg_24h'])
@@ -322,7 +416,9 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
     }
 
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
-    result = requests.get(api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=api_url, headers=API_REQUEST_HEADERS)).read()
+        result = json.loads(response)
 
     usd_volume = Decimal(result['USD']['volume_btc']).quantize(DEC_PLACES)
     if result['USD']['avg_3h'] is not None:
@@ -456,8 +552,13 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
 
 def _cryptotradeApiCall(usd_api_url, #eur_api_url,
                         *args, **kwargs):
-    usd_result = requests.get(usd_api_url, headers=API_REQUEST_HEADERS).json()
-    #eur_result = requests.get(eur_api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_api_url, headers=API_REQUEST_HEADERS)).read()
+        usd_result = json.loads(response)
+    # with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+    #     response = urllib2.urlopen(urllib2.Request(url=eur_api_url, headers=API_REQUEST_HEADERS)).read()
+    #     eur_result = json.loads(response)
+
 
     return {'USD': {'ask': Decimal(usd_result['data']['min_ask']).quantize(DEC_PLACES),
                     'bid': Decimal(usd_result['data']['max_bid']).quantize(DEC_PLACES),
@@ -473,23 +574,29 @@ def _cryptotradeApiCall(usd_api_url, #eur_api_url,
 
 def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
                         eur_ticker_url, eur_trades_url, *args, **kwargs):
-    # usd_ticker_result = requests.get(usd_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
-    eur_ticker_result = requests.get(eur_ticker_url, verify=False, headers=API_REQUEST_HEADERS).json()
-
     last24h_time = int(time.time())-86400  #86400s in 24h
 
+    # with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+    #     response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
+    #     usd_ticker_result = json.loads(response)
+    # with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+    #     response = urllib2.urlopen(urllib2.Request(url=usd_trades_url, headers=API_REQUEST_HEADERS)).read()
+    #     usd_volume_result = json.loads(response)
     # usd_last = 0.0
     # usd_vol = 0.0
-    #
-    # usd_volume_result = requests.get(usd_trades_url, verify=False, headers=API_REQUEST_HEADERS).json()
     # for trade in usd_volume_result:
     #     if trade['date'] > last24h_time:
     #         usd_vol = usd_vol + float(trade['price'])
     #         usd_last = float(trade['price'])
 
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        eur_ticker_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_trades_url, headers=API_REQUEST_HEADERS)).read()
+        eur_volume_result = json.loads(response)
     eur_last = 0.0
     eur_vol = 0.0
-    eur_volume_result = requests.get(eur_trades_url, verify=False, headers=API_REQUEST_HEADERS).json()
     for trade in eur_volume_result:
         if trade['date'] > last24h_time:
             eur_vol = eur_vol + float(trade['amount'])
@@ -512,7 +619,9 @@ def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
             }
 
 def _bitcashApiCall(czk_api_url, *args, **kwargs):
-    czk_result = requests.get(czk_api_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=czk_api_url, headers=API_REQUEST_HEADERS)).read()
+        czk_result = json.loads(response)
 
     return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
                     'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
@@ -522,7 +631,9 @@ def _bitcashApiCall(czk_api_url, *args, **kwargs):
             }
 
 def _intersangoApiCall(ticker_url, *args, **kwargs):
-    result = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        result = json.loads(response)
 
     #'2' in here is ID for EUR in intersango terms
     return {'EUR': {'ask': Decimal(result['2']['sell']).quantize(DEC_PLACES) if result['2']['sell'] is not None else None,
@@ -534,9 +645,15 @@ def _intersangoApiCall(ticker_url, *args, **kwargs):
 
 
 def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
-    orders = requests.get(orders_url, headers=API_REQUEST_HEADERS).json()
-    trades = requests.get(trades_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=orders_url, headers=API_REQUEST_HEADERS)).read()
+        orders = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
 
     last24h_time = int(time.time())-86400  #86400s in 24h
     volume = 0
@@ -552,7 +669,9 @@ def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
             }
 
 def _kapitonApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'SEK': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
@@ -563,7 +682,9 @@ def _kapitonApiCall(ticker_url, *args, **kwargs):
 
 
 def _rmbtbApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['data']['sell']['value']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['data']['buy']['value']).quantize(DEC_PLACES),
@@ -573,7 +694,9 @@ def _rmbtbApiCall(ticker_url, *args, **kwargs):
             }
 
 def _btcchinaApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
@@ -584,7 +707,9 @@ def _btcchinaApiCall(ticker_url, *args, **kwargs):
 
 
 def _fxbtcApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['ticker']['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['ticker']['bid']).quantize(DEC_PLACES),
@@ -595,7 +720,9 @@ def _fxbtcApiCall(ticker_url, *args, **kwargs):
 
 
 def _bterApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
@@ -606,7 +733,9 @@ def _bterApiCall(ticker_url, *args, **kwargs):
 
 
 def _goxbtcApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
@@ -617,7 +746,9 @@ def _goxbtcApiCall(ticker_url, *args, **kwargs):
 
 
 def _okcoinApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
@@ -627,7 +758,9 @@ def _okcoinApiCall(ticker_url, *args, **kwargs):
             }
 
 def _mercadoApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'BRL': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
@@ -637,8 +770,9 @@ def _mercadoApiCall(ticker_url, *args, **kwargs):
             }
 
 def _bitxApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
-
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'ZAR': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
@@ -649,7 +783,9 @@ def _bitxApiCall(ticker_url, *args, **kwargs):
 
 
 def _btctradeApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     return {'CNY': {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
@@ -660,7 +796,9 @@ def _btctradeApiCall(ticker_url, *args, **kwargs):
 
 
 def _justcoinApiCall(ticker_url, *args, **kwargs):
-    ticker = requests.get(ticker_url, headers=API_REQUEST_HEADERS).json()
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
     result = {}
     for currency_data in ticker:
@@ -678,3 +816,4 @@ def _justcoinApiCall(ticker_url, *args, **kwargs):
                              }
 
     return result
+
