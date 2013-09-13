@@ -19,6 +19,8 @@ if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_O
 FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
 HISTORY_QUERY_FREQUENCY = 15 #seconds between history_daemon requests
 FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates
+API_CALL_TIMEOUT_THRESHOLD = 15 #seconds before exchange API call timeout. exchange may have multiple calls
+                                #and total time spent querying one exchange will be threshold * number of calls
 
 #seconds between calls to various exchanges APIs
 API_QUERY_FREQUENCY = {
@@ -49,7 +51,6 @@ API_QUERY_FREQUENCY = {
                         'justcoin': 55,
 }
 
-API_CALL_TIMEOUT_THRESHOLD = 5 #seconds before exchange API call timeout. exchange may have multiple calls and multiple consequent thresholds
 
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
     API_QUERY_FREQUENCY['default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE

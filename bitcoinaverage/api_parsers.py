@@ -28,7 +28,6 @@ def callAll(ignore_mtgox=False):
 
     start_time = time.time()
 
-    print 'all start - %s' % (start_time)
     for exchange_name, exchange_data, exchange_ignore_reason in pool.imap(callAPI, EXCHANGE_LIST):
         if exchange_ignore_reason is None:
             if ignore_mtgox and exchange_name == 'mtgox':
@@ -41,7 +40,6 @@ def callAll(ignore_mtgox=False):
             exchanges_rates.append(exchange_data)
         else:
             exchanges_ignored[exchange_name] = exchange_ignore_reason
-    print 'all end - %s, %s' % (start_time, time.time()-start_time)
     return exchanges_rates, exchanges_ignored
 
 
@@ -86,9 +84,11 @@ def callAPI(exchange_name):
             if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
                 result = API_QUERY_CACHE[exchange_name]['result']
                 result['data_source'] = 'cache'
-                write_log('%s call failed, %s fails in a row, using cache, cache age %ss' % (exchange_name,
-                            str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                            str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
+                write_log('%s call failed, %s, %s fails in a row, using cache, cache age %ss'
+                          % (exchange_name,
+                             type(error).__name__,
+                             str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                             str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
                           'WARNING')
             else:
                 last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
@@ -100,8 +100,9 @@ def callAPI(exchange_name):
                 else :
                     datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
 
-                log_message = ('%s call failed, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
+                log_message = ('%s call failed, %s, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
                                % (exchange_name,
+                                  type(error).__name__,
                                   str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
                                   email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
                                     ))
