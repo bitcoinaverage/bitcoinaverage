@@ -1,133 +1,197 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
+<!DOCTYPE html>
+<html lang="en">
+<head>   
     <title>BitcoinAverage</title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
     <meta name="description" content="BitcoinAverage helps provide a more accurate price of a bitcoin using a weighted average for multiple exchanges.">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="http://code.highcharts.com/stock/highstock.js"></script>
-    <script type="text/javascript" src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+
+
+    <link href="styles.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="fiat_rates.js"></script>
+    <script type="text/javascript" src="scripts.js"></script>
+    <script type="text/javascript" src="http://timeapi.org/utc/now.json?callback=updateTime"></script>
+    
+    
     <script type="text/javascript">
-
-var API_data = {};
-if (typeof config.apiIndexUrl == 'undefined' || config.apiIndexUrl == ''){
-    alert('API URL config value empty!');
-}
-if (config.apiIndexUrl[config.apiIndexUrl.length-1] != '/') {
-    config.apiIndexUrl = config.apiIndexUrl + '/';
-}
-var firstRenderDone = false;
-var currencyCode;
-
-function parseDate(dateString){
-    var parts = dateString.split(' ');
-    var dateParts = parts[0].split('-');
-    var timeParts = parts[1].split(':');
-    return new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
-}
-
-$(function(){
-    var currentHash = window.location.hash;
-    currentHash = currentHash.replace('#', '');
-    currentHash = currentHash.split('|');
-    if (currentHash.length == 2 && currentHash[1] == 'nogox'){
-        $('#nogox-button').click();
-    }
-    currencyCode = currentHash[0];
-
-
-    var data_24h_URL = config.apiHistoryIndexUrl + 'USD' + '/per_minute_24h_sliding_window.csv';
-    var data_all_time_URL = sprintf('%s%s/per_day_all_time_history.csv', config.apiHistoryIndexUrl, currencyCode);
-    var data_monthly_URL = sprintf('%s%s/per_hour_monthly_sliding_window.csv', config.apiHistoryIndexUrl, currencyCode);
-
-    var data = [];
-	$.get(data_24h_URL, function(csv){
-        $.each(csv.split('\n'), function(i, line){
-            var values = line.split(',');
-            if (i == 0 || line.length == 0 || values.length != 2){
-                return;
-            }
-//            data.push([parseInt(Math.round(parseDate(values[0]).getTime()/1000)),
-//                       parseFloat(values[1])
-//                        ]);
-        });
-
-        $.get(data_monthly_URL, function(csv){
-            $.each(csv.split('\n'), function(i, line){
-                var values = line.split(',');
-                if (i == 0 || line.length == 0 || values.length != 4){
-                    return;
-                }
-                data.push([parseInt(Math.round(parseDate(values[0]).getTime()/1000)),
-                           parseFloat(values[3])
-                            ]);
-            });
-
-
-            $.get(data_all_time_URL, function(csv){
-                $.each(csv.split('\n'), function(i, line){
-                    var values = line.split(',');
-                    if (i == 0 || line.length == 0 || values.length != 5){
-                        return;
-                    }
-//                    data.push([parseInt(Math.round(parseDate(values[0]).getTime()/1000)),
-//                               parseFloat(values[3])
-//                                ]);
+        $(function() {
+        
+                $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
+                        // Create the chart
+                        $('#chart').highcharts('StockChart', {
+                            
+                                rangeSelector : {
+                                        selected : 1
+                                },
+        
+                                title : {
+                                        text : 'AAPL Stock Price'
+                                },
+                                
+                                series : [{
+                                        name : 'AAPL',
+                                        data : data,
+                                        tooltip: {
+                                                valueDecimals: 2
+                                        }
+                                }]
+                        });
                 });
-
-                //$('#data').text(JSON.stringify(data));
-                $('#big-chart').highcharts('StockChart', {
-                    chart : {
-                        animation : {
-                            duration: 10000
-                                        },
-                        spacingBottom: 0,
-                        spacingLeft: 0,
-                        spacingRight: 0,
-                        spacingTop: 0
-                    },
-
-                    rangeSelector: {enabled: false},
-                    title: {enabled : false},
-                    exporting: {enabled: false},
-                    tooltip: {enabled : false},
-                    credits: {enabled : false},
-
-                    xAxis:{
-                        tickPixelInterval: 100
-                    },
-
-                    yAxis:{
-                        tickPixelInterval: 50
-                    },
-
-                    series : [{
-                        data : data
-                    }]
-                });
-
-            });
+        
         });
-    });
-});
-
-(function(e){function r(e){return Object.prototype.toString.call(e).slice(8,-1).toLowerCase()}function i(e,t){for(var n=[];t>0;n[--t]=e);return n.join("")}var t=function(){return t.cache.hasOwnProperty(arguments[0])||(t.cache[arguments[0]]=t.parse(arguments[0])),t.format.call(null,t.cache[arguments[0]],arguments)};t.format=function(e,n){var s=1,o=e.length,u="",a,f=[],l,c,h,p,d,v;for(l=0;l<o;l++){u=r(e[l]);if(u==="string")f.push(e[l]);else if(u==="array"){h=e[l];if(h[2]){a=n[s];for(c=0;c<h[2].length;c++){if(!a.hasOwnProperty(h[2][c]))throw t('[sprintf] property "%s" does not exist',h[2][c]);a=a[h[2][c]]}}else h[1]?a=n[h[1]]:a=n[s++];if(/[^s]/.test(h[8])&&r(a)!="number")throw t("[sprintf] expecting number but found %s",r(a));switch(h[8]){case"b":a=a.toString(2);break;case"c":a=String.fromCharCode(a);break;case"d":a=parseInt(a,10);break;case"e":a=h[7]?a.toExponential(h[7]):a.toExponential();break;case"f":a=h[7]?parseFloat(a).toFixed(h[7]):parseFloat(a);break;case"o":a=a.toString(8);break;case"s":a=(a=String(a))&&h[7]?a.substring(0,h[7]):a;break;case"u":a>>>=0;break;case"x":a=a.toString(16);break;case"X":a=a.toString(16).toUpperCase()}a=/[def]/.test(h[8])&&h[3]&&a>=0?"+"+a:a,d=h[4]?h[4]=="0"?"0":h[4].charAt(1):" ",v=h[6]-String(a).length,p=h[6]?i(d,v):"",f.push(h[5]?a+p:p+a)}}return f.join("")},t.cache={},t.parse=function(e){var t=e,n=[],r=[],i=0;while(t){if((n=/^[^\x25]+/.exec(t))!==null)r.push(n[0]);else if((n=/^\x25{2}/.exec(t))!==null)r.push("%");else{if((n=/^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-fosuxX])/.exec(t))===null)throw"[sprintf] huh?";if(n[2]){i|=1;var s=[],o=n[2],u=[];if((u=/^([a-z_][a-z_\d]*)/i.exec(o))===null)throw"[sprintf] huh?";s.push(u[1]);while((o=o.substring(u[0].length))!=="")if((u=/^\.([a-z_][a-z_\d]*)/i.exec(o))!==null)s.push(u[1]);else{if((u=/^\[(\d+)\]/.exec(o))===null)throw"[sprintf] huh?";s.push(u[1])}n[2]=s}else i|=2;if(i===3)throw"[sprintf] mixing positional and named placeholders is not (yet) supported";r.push(n)}t=t.substring(n[0].length)}return r};var n=function(e,n,r){return r=n.slice(0),r.splice(0,0,e),t.apply(null,r)};e.sprintf=t,e.vsprintf=n})(typeof exports!="undefined"?exports:window);
     </script>
-	</head>
-	<body>
+    
+    <script src="./js/highstock.js"></script>
+    <script src="./js/modules/exporting.js"></script>
 
-        <div id="big-chart" style="height: 500px; min-width: 500px"></div>
-        <div id="data"></div>
-	</body>
+</head>
+<body>
+    
+    <div id="header" class="navbar navbar-fixed-top">
+        <div class="container">
+            <a class="navbar-brand pull-left" href="">BitcoinAverage</a>
+            <span class="navbar-brand pull-left">beta</span>
+            <a class="navbar-text api pull-right" href="http://api.bitcoinaverage.com">API</a>
+            <!--<i id="question-mark" data-placement="left" data-original-title="This is a helpful text related to the question mark." class="icon-question-sign pull-right icon-2x"></i>-->
+        </div>
+    </div>
+    
+    <div id="main-container" class="container">      
+        
+        <div class="row">
+            <div id="chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
+        </div>
+    
+        <!--
+        <div style="text-align: center; font-weight: bold; padding-top: 20px; margin-bottom: 0px !important;">
+            <ul class="pagination">
+                <li class="disabled"><a href="#">&laquo;</a></li>
+                <li class="active"><a href="#">USD</a></li>
+                <li><a href="#">EUR</a></li>
+                <li><a href="#">GBP</a></li>
+                <li><a href="#">CNY</a></li>
+                <li><a href="#">CAD</a></li>
+                <li><a href="#">PLN</a></li>
+                <li><a href="#">JPY</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+        <div style="text-align: center; font-weight: bold; margin-top: 0px !important;">
+            <ul class="pagination pagination-sm">
+                <li class="disabled"><a href="#">&laquo;</a></li>
+                <li class="active"><a href="#">USD</a></li>
+                <li><a href="#">EUR</a></li>
+                <li><a href="#">GBP</a></li>
+                <li><a href="#">CNY</a></li>
+                <li><a href="#">CAD</a></li>
+                <li><a href="#">PLN</a></li>
+                <li><a href="#">JPY</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+        -->
+        <!--
+        <div class="row text-center">
+            <div style="font-weight: bold;">
+                <ul class="pagination">
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                    <li class="active"><a href="#">average price</a></li>
+                    <li><a href="#">exhange volume</a></li>
+                    <li><a href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        -->
+    </div> <!-- container end -->
+    
+        <div id="currency-sidebar">
+            <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
+                <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
+                <li class="divider"></li>
+                <li id="slot0-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot1-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot2-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot3-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot4-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot5-link"><a tabindex="-1" href=""></a></li>
+                <!--<li><a href="#" class="link1">More</a></li>-->
+            </ul>
+            <ul class="dropdown-menu2 ">
+                <li id="slot6-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot7-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot8-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot9-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot10-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot11-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot12-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot13-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot14-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot15-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot16-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot17-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot18-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot19-link"><a tabindex="-1" href=""></a></li>
+            </ul>
+        </div>   
+    
+    
+    <footer class="footer clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="f_left foot_left">
+                    <section>
+                        <h4><span>Support Us</span></h4>
+                        <span style="font-size: 80%">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</span>
+                    </section>
+                </div>
+                <div class="f_right foot_right" style="text-align: right">
+                    <section id="section-connect">
+                        <h4><span>Connect with us</span></h4>
+                        <a href="https://bitcointalk.org/index.php?topic=270190.0" target="_blank" title="bitcointalk thread">
+                            <span class="icon-stack">
+                              <i class="icon-circle icon-stack-base"></i>
+                              <i class="icon-comment icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="https://twitter.com/BitcoinAverage" target="_blank" title="twitter">
+                            <span class="icon-stack">
+                              <i class="icon-circle icon-stack-base"></i>
+                              <i class="icon-twitter icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="mailto:bitcoinaverage@gmail.com" title="email">
+                            <span class="icon-stack">
+                              <i class="icon-circle icon-stack-base"></i>
+                              <i class="icon-envelope icon-light"></i>
+                            </span>
+                        </a>
+                    </section>
+                </div>
+                <div class="privacy">
+                    &copy; 2013 BitcoinAverage
+                </div>
+            </div>
+        </div>
+    </footer><!-- /footer -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-42688472-1', 'bitcoinaverage.com');
+ga('send', 'pageview');
+</script>
+</body>
 </html>
