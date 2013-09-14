@@ -94,6 +94,8 @@ ul{
 
 .bid_ask{font-weight: bold; color: #999;}
 .last{font-size: 1.1em; font-weight: bold; color: #4F4F4F; }
+.last-main{font-size: 2.3em; font-weight: bold; color: #4F4F4F; width: 250px; cursor: pointer;}
+.arrows{font-size: 2em; }
 
 .slot0-bid_ask{font-size: 1.5em; font-weight: bold; }
 .slot0-bid_ask-titles, .other_values{ color: #999; }
