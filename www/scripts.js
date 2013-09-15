@@ -58,6 +58,7 @@ $(function(){
             renderAll(result);
             renderLegend('USD');
         });
+        renderSmallChart('USD');
     });
 
     for(var slotNum in config.currencyOrder){
@@ -279,7 +280,12 @@ function renderLegend(currencyCode){
     $('#legend-bid').html(currencyData.averages.bid.toFixed(2));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(2));
     $('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(2));
-    $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(2));
+    if (typeof currencyData.averages['24h_avg'] != 'undefined') {
+        $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(2));
+        $('#legend-24h-avg-container').show();
+    } else {
+        $('#legend-24h-avg-container').hide();
+    }
 
 
     $('#legend-ignored-table').hide();
@@ -337,7 +343,7 @@ function renderSmallChart(currencyCode){
     $('#charts-link a').show();
     $('#charts-link a').attr('href', '/charts.htm#'+currencyCode);
 
-    if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies) {
+    if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies || active_API_URL == API_all_url_nogox) {
         $('#charts-link a').hide();
         return;
     }
@@ -382,7 +388,7 @@ function renderSmallChart(currencyCode){
                 spacingTop: 0
 			},
 			rangeSelector: {enabled: false},
-			title: {enabled : false},
+			title: {text: '24h price '+currencyCode+' movement'},
 			scrollbar: {enabled: false},
 			navigator: {enabled: false},
 			exporting: {enabled: false},
