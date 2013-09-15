@@ -100,7 +100,9 @@ ul{
 .slot0-bid_ask{font-size: 1.5em; font-weight: bold; }
 .slot0-bid_ask-titles, .other_values{ color: #999; }
 
-.api {font-size: 1.3em; margin-bottom: 0px; }
+.submenu {color: #428BCA !important; }
+.logo {color: #428BCA !important; }
+.slogan {font-size: small; }
 
 .legend ul{
     list-style: none outside;
