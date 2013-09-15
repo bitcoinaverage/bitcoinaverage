@@ -86,6 +86,7 @@ $(function(){
             var curCode = $(this).data('currencycode');
             if (legendClickStatus == false || legendClickStatus != curCode) {
                 renderLegend(curCode);
+                renderSmallChart(curCode);
                 legendClickStatus = curCode;
 
                 $('#currency-navtabs').children('li').removeClass('active');
@@ -124,6 +125,7 @@ $(function(){
             if (legendClickStatus == false || legendClickStatus != curCode) {
                 legendClickStatus = curCode;
                 renderLegend(curCode);
+                renderSmallChart(curCode);
 
                 $('#currency-navtabs').children('li').removeClass('active');
                 $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
@@ -325,6 +327,8 @@ function renderLegend(currencyCode){
         $('#legend-slot'+slotNum).toggle(true);
     }
 
+}
+function renderSmallChart(currencyCode){
     var data_24h_URL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
 	$.get(data_24h_URL, function(csv){
         var data = [];
@@ -383,6 +387,7 @@ function renderLegend(currencyCode){
 		});
     });
 }
+
 
 function renderSecondsSinceUpdate(){
     var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
