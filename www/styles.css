@@ -101,6 +101,8 @@ ul{
 .slot0-bid_ask-titles, .other_values{ color: #999; }
 
 .submenu {color: #428BCA !important; }
+.navbar-nav > li > a:hover {text-decoration: underline !important; }
+
 .logo {color: #428BCA !important; }
 .slogan {font-size: small; }
 
@@ -447,7 +449,7 @@ footer .row{
  color: #999999;
  font-size: 15px;
 }
-.ignore_btn{width:130px; float:left; white-space:normal; line-height:20px;}
+.ignore_btn{width:130px; float:left; white-space:normal; line-height:20px; }
 
 
 #small-chart{height:200px;}
