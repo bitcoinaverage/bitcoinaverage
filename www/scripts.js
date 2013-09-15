@@ -1,4 +1,6 @@
 var legendSlots = 20;
+var majorCurrencies = 6; //first X currencies in the config are major
+
 var API_data = {};
 if (typeof config.apiIndexUrl == 'undefined' || config.apiIndexUrl == ''){
     alert('API URL config value empty!');
@@ -211,9 +213,13 @@ function renderAll(result){
 var lastusdvalue = 0;
 function renderRates(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-link').attr('data-currencycode', currencyCode);
-    $('#slot'+slotNum+'-link a').text(currencyCode);
-    $('#slot'+slotNum+'-link a').attr('href', '#'+currencyCode);
-    $('#slot'+slotNum+'-link a').show();
+
+    var slotLegendLink_a = $('#slot'+slotNum+'-link a');
+    slotLegendLink_a.text(currencyCode);
+    slotLegendLink_a.attr('href', '#'+currencyCode);
+    slotLegendLink_a.show();
+
+    majorCurrencies
     $('#slot'+slotNum+'-box').attr('data-currencycode', currencyCode);
     $('#slot'+slotNum+'-curcode').text(currencyCode);
 
@@ -329,6 +335,11 @@ function renderLegend(currencyCode){
 
 }
 function renderSmallChart(currencyCode){
+    $('#small-chart').html('');
+    if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies) {
+        return;
+    }
+
     var data_24h_URL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
 	$.get(data_24h_URL, function(csv){
         var data = [];
@@ -359,7 +370,7 @@ function renderSmallChart(currencyCode){
                                 },
                 events: {
                     click: function(e){
-                        alert('click!');
+                        window.location.href = '/charts.htm#'+currencyCode;
                     }
                 },
                 spacingBottom: 0,
@@ -379,7 +390,7 @@ function renderSmallChart(currencyCode){
 				data : data,
                 events:{
                     click: function(event){
-                        alert('another click!');
+                        window.location.href = '/charts.htm#'+currencyCode;
                     }
                 }
 			}]
