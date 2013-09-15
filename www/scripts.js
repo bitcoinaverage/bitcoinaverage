@@ -23,8 +23,6 @@ var fiatExchangeRates = [];
 var timeGap = 0; //actual time is fetched from remote resource, and user's local time is adjusted by X seconds to be completely exact
 
 $(function(){
-
-
     callAPI();
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
@@ -336,9 +334,14 @@ function renderLegend(currencyCode){
 }
 function renderSmallChart(currencyCode){
     $('#small-chart').html('');
+    $('#charts-link a').show();
+    $('#charts-link a').attr('href', '/charts.htm#'+currencyCode);
+
     if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies) {
+        $('#charts-link a').hide();
         return;
     }
+
 
     var data_24h_URL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
 	$.get(data_24h_URL, function(csv){

@@ -15,7 +15,9 @@ var config = {'apiIndexUrl': $API_INDEX_URL,
               'apiIndexUrlNoGox': $API_INDEX_NOGOX_URL,
               'apiHistoryIndexUrl': $API_HISTORY_INDEX_URL,
               'refreshRate': $refreshRate,
-              'currencyOrder': $currencyOrder
+              'currencyOrder': $currencyOrder,
+              'legendSlots': 20,
+              'majorCurrencies': 6
                 };
                     """
     config_string = js_config_template

@@ -68,6 +68,15 @@ function ajaxCall(url, callback){
 
 
 $(function(){
+    var currentHash = window.location.hash;
+    currencyCode = currentHash.replace('#', '');
+    if ($.inArray(currencyCode, config.currencyOrder) == -1){
+        currencyCode = 'USD';
+        var currentLocation = document.location.href;
+        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
+        window.location.replace(newLocation);
+    }
+
     for(var slotNum=0;slotNum<legendSlots;slotNum++){
         $('#slot'+slotNum+'-link').hide();
     }
@@ -79,6 +88,9 @@ $(function(){
 
         var slotLegendLink = $('#slot'+slotNum+'-link');
         slotLegendLink.attr('data-currencycode', config.currencyOrder[slotNum]);
+        if (config.currencyOrder[slotNum] == currencyCode) {
+            slotLegendLink.addClass('active');
+        }
         slotLegendLink.show();
         slotLegendLink.mouseover(function(event){
             var curCode = $(this).data('currencycode');
@@ -104,16 +116,6 @@ $(function(){
     }
     $('body').show();
 
-    var currentHash = window.location.hash;
-    currentHash = currentHash.replace('#', '');
-    currentHash = currentHash.split('|');
-    currencyCode = currentHash[0];
-    if ($.inArray(currencyCode, config.currencyOrder) == -1){
-        currencyCode = 'USD';
-        var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
-        window.location.replace(newLocation);
-    }
 
     renderPriceChart(currencyCode);
 
@@ -190,6 +192,7 @@ function renderPriceChart(currencyCode){
                     },
 
                     title: { text: currencyCode+' average price history'},
+        			rangeSelector: {enabled: false},
 
                     xAxis:{
                         tickPixelInterval: 100
@@ -210,7 +213,8 @@ function renderPriceChart(currencyCode){
 }
 
 function renderVolumeChart(currencyCode){
-
+    var dataVolumesURL = config.apiHistoryIndexUrl + currencyCode + '/volumes.csv';
+    
 }
 
     </script>
