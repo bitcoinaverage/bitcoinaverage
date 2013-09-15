@@ -14,47 +14,207 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/stock/highstock.js"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 
 
     <link href="styles.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="fiat_rates.js"></script>
-    <script type="text/javascript" src="scripts.js"></script>
-    <script type="text/javascript" src="http://timeapi.org/utc/now.json?callback=updateTime"></script>
-    
-    
+
     <script type="text/javascript">
-        $(function() {
-        
-                $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
-                        // Create the chart
-                        $('#chart').highcharts('StockChart', {
-                            
-                                rangeSelector : {
-                                        selected : 1
-                                },
-        
-                                title : {
-                                        text : 'AAPL Stock Price'
-                                },
-                                
-                                series : [{
-                                        name : 'AAPL',
-                                        data : data,
-                                        tooltip: {
-                                                valueDecimals: 2
-                                        }
-                                }]
-                        });
-                });
-        
+
+var legendSlots = 20;
+
+var API_data = {};
+if (typeof config.apiIndexUrl == 'undefined' || config.apiIndexUrl == ''){
+    alert('API URL config value empty!');
+}
+if (config.apiIndexUrl[config.apiIndexUrl.length-1] != '/') {
+    config.apiIndexUrl = config.apiIndexUrl + '/';
+}
+if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
+    config.apiHistoryIndexUrl = config.apiHistoryIndexUrl + '/';
+}
+
+var firstRenderDone = false;
+var currencyCode;
+
+function parseDate(dateString){
+    var parts = dateString.split(' ');
+    var dateParts = parts[0].split('-');
+    var timeParts = parts[1].split(':');
+    var result = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
+    return result;
+}
+
+function ajaxCall(url, callback){
+    if (typeof callback == 'undefined'){
+        callback = function(data){};
+    }
+
+    if (window.XDomainRequest) { //IE9-10 implements crossdomain AJAX this way only
+        var xhr = new window.XDomainRequest();
+        xhr.open('GET', url, true);
+        xhr.onload = function() {
+            callback(xhr.responseText);
+        };
+        xhr.send();
+    } else {
+        $.get(url, callback);
+    }
+}
+
+
+$(function(){
+    for(var slotNum=0;slotNum<legendSlots;slotNum++){
+        $('#slot'+slotNum+'-link').hide();
+    }
+
+    for(var slotNum in config.currencyOrder){
+        var slotLegendLink_a = $('#slot'+slotNum+'-link a');
+        slotLegendLink_a.text(config.currencyOrder[slotNum]);
+        slotLegendLink_a.attr('href', '#'+config.currencyOrder[slotNum]);
+
+        var slotLegendLink = $('#slot'+slotNum+'-link');
+        slotLegendLink.attr('data-currencycode', config.currencyOrder[slotNum]);
+        slotLegendLink.show();
+        slotLegendLink.mouseover(function(event){
+            var curCode = $(this).data('currencycode');
+            $('#currency-sidebar li').removeClass('active');
+            $(this).addClass('active');
         });
+        slotLegendLink.mouseout(function(event){
+            $('#currency-sidebar li').removeClass('active');
+            if (legendClickStatus != false) {
+                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+            }
+        });
+        slotLegendLink.click(function(event){
+            event.preventDefault();
+            event.stopPropagation();
+            currencyCode = $(this).data('currencycode');
+            $('#big-chart').html('');
+            renderPriceChart(currencyCode);
+            var currentLocation = document.location.href;
+            var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
+            window.location.replace(newLocation);
+        });
+    }
+    $('body').show();
+
+    var currentHash = window.location.hash;
+    currentHash = currentHash.replace('#', '');
+    currentHash = currentHash.split('|');
+    currencyCode = currentHash[0];
+    if ($.inArray(currencyCode, config.currencyOrder) == -1){
+        currencyCode = 'USD';
+        var currentLocation = document.location.href;
+        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
+        window.location.replace(newLocation);
+    }
+
+    renderPriceChart(currencyCode);
+
+    var tickerURL = config.apiIndexUrl+'all';
+    var tickerData = {};
+    ajaxCall(tickerURL, function(data){
+        if (typeof data == 'object'){
+            tickerData = data;
+        } else {
+            tickerData = JSON.parse(data);
+        }
+    });
+
+});
+
+function renderPriceChart(currencyCode){
+    var data24hURL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
+    var dataAllTimeURL = config.apiHistoryIndexUrl + currencyCode + '/per_day_all_time_history.csv';
+    var dataMonthlyURL = config.apiHistoryIndexUrl + currencyCode + '/per_hour_monthly_sliding_window.csv';
+
+    var data = [];
+	ajaxCall(data24hURL, function(csv){
+        $.each(csv.split('\n'), function(i, line){
+            var values = line.split(',');
+            if (i == 0 || line.length == 0 || values.length != 2){
+                return;
+            }
+            data.push([parseDate(values[0]).getTime(),
+                       parseFloat(values[1])
+                        ]);
+        });
+
+        ajaxCall(dataMonthlyURL, function(csv){
+            $.each(csv.split('\n'), function(i, line){
+                var values = line.split(',');
+                if (i == 0 || line.length == 0 || values.length != 4){
+                    return;
+                }
+                data.push([parseDate(values[0]).getTime(),
+                           parseFloat(values[3])
+                            ]);
+            });
+
+            ajaxCall(dataAllTimeURL, function(csv){
+                $.each(csv.split('\n'), function(i, line){
+                    var values = line.split(',');
+                    if (i == 0 || line.length == 0 || values.length != 5){
+                        return;
+                    }
+                    data.push([parseDate(values[0]).getTime(),
+                               parseFloat(values[3])
+                                ]);
+                });
+
+                data.sort(function(a,b){
+                    if (a[0] > b[0]){
+                        return 1;
+                    } else if (a[0] < b[0]){
+                        return -1;
+                    } else {
+                        return -0;
+                    }
+                });
+
+                $('#big-chart').highcharts('StockChart', {
+                    chart : {
+                        animation : {
+                            duration: 10000
+                                        },
+                        spacingBottom: 0,
+                        spacingLeft: 0,
+                        spacingRight: 0,
+                        spacingTop: 0
+                    },
+
+                    title: { text: currencyCode+' average price history'},
+
+                    xAxis:{
+                        tickPixelInterval: 100
+                    },
+
+                    yAxis:{
+                        tickPixelInterval: 50
+                    },
+
+                    series : [{
+                        data : data
+                    }]
+                });
+            });
+        });
+    });
+
+}
+
+function renderVolumeChart(currencyCode){
+
+}
+
     </script>
     
-    <script src="./js/highstock.js"></script>
-    <script src="./js/modules/exporting.js"></script>
-
 </head>
 <body>
     
@@ -70,9 +230,12 @@
     <div id="main-container" class="container">      
         
         <div class="row">
-            <div id="chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
+            <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
         </div>
-    
+        <div class="row">
+            <div id="data" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
+        </div>
+
         <!--
         <div style="text-align: center; font-weight: bold; padding-top: 20px; margin-bottom: 0px !important;">
             <ul class="pagination">
@@ -119,29 +282,29 @@
             <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
                 <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
                 <li class="divider"></li>
-                <li id="slot0-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot1-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot2-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot3-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot4-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot5-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot0-link"><a href=""></a></li>
+                <li id="slot1-link"><a href=""></a></li>
+                <li id="slot2-link"><a href=""></a></li>
+                <li id="slot3-link"><a href=""></a></li>
+                <li id="slot4-link"><a href=""></a></li>
+                <li id="slot5-link"><a href=""></a></li>
                 <!--<li><a href="#" class="link1">More</a></li>-->
             </ul>
             <ul class="dropdown-menu2 ">
-                <li id="slot6-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot7-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot8-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot9-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot10-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot11-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot12-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot13-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot14-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot15-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot16-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot17-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot18-link"><a tabindex="-1" href=""></a></li>
-                <li id="slot19-link"><a tabindex="-1" href=""></a></li>
+                <li id="slot6-link"><a href=""></a></li>
+                <li id="slot7-link"><a href=""></a></li>
+                <li id="slot8-link"><a href=""></a></li>
+                <li id="slot9-link"><a href=""></a></li>
+                <li id="slot10-link"><a href=""></a></li>
+                <li id="slot11-link"><a href=""></a></li>
+                <li id="slot12-link"><a href=""></a></li>
+                <li id="slot13-link"><a href=""></a></li>
+                <li id="slot14-link"><a href=""></a></li>
+                <li id="slot15-link"><a href=""></a></li>
+                <li id="slot16-link"><a href=""></a></li>
+                <li id="slot17-link"><a href=""></a></li>
+                <li id="slot18-link"><a href=""></a></li>
+                <li id="slot19-link"><a href=""></a></li>
             </ul>
         </div>   
     
@@ -179,7 +342,7 @@
                     </section>
                 </div>
                 <div class="privacy">
-                    &copy; 2013 BitcoinAverage
+                    2013 GPLv3 (&#1021;) BITCOINAVERAGE
                 </div>
             </div>
         </div>
