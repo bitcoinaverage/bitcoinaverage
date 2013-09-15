@@ -391,6 +391,7 @@ function renderSmallChart(currencyCode){
 
 			series : [{
 				data : data,
+                cursor:'pointer',
                 events:{
                     click: function(event){
                         window.location.href = '/charts.htm#'+currencyCode;

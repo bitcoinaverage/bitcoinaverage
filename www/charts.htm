@@ -192,14 +192,45 @@ function renderPriceChart(currencyCode){
                     },
 
                     title: { text: currencyCode+' average price history'},
-        			rangeSelector: {enabled: false},
+                    rangeSelector: {
+                        buttons: [{
+                            type: 'day',
+                            count: 1,
+                            text: '1d'
+                            }, {
+                            type: 'week',
+                            count: 1,
+                            text: '1w'
+                            }, {
+                            type: 'all',
+                            count: 1,
+                            text: 'All	'
+                            }],
+                        selected: 2,
+                        inputEnabled: true
+                    },
+
 
                     xAxis:{
+                        type:'datetime',
                         tickPixelInterval: 100
                     },
 
                     yAxis:{
                         tickPixelInterval: 50
+                    },
+
+                    plotOptions:{
+                        series:{
+                            dataGrouping:{
+                                groupPixelWidth:25,
+                                units: [
+                                        ['minute', [1, 2, 5, 10, 15, 22, 30]],
+                                        ['hour', [1, 2, 3, 6, 8, 10, 12]],
+                                        ['day',[1]]
+                                        ]
+                            }
+                        }
                     },
 
                     series : [{
@@ -231,7 +262,7 @@ function renderVolumeChart(currencyCode){
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand logo" href="/">BitcoinAverage</a>
-                <span class="navbar-brand slogan">Open Source Bitcoin Price</span>
+                <span class="navbar-brand slogan">independent weighted average bitcoin price</span>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -281,16 +312,16 @@ function renderVolumeChart(currencyCode){
             </ul>
         </div>
         -->
-        <div class="row text-center">
-            <div style="font-weight: bold;">
-                <ul class="pagination">
-                    <li class="disabled"><a href="#">&laquo;</a></li>
-                    <li class="active"><a href="#">average price</a></li>
-                    <li><a href="#">exhange volume</a></li>
-                    <li><a href="#">&raquo;</a></li>
-                </ul>
-            </div>
-        </div>
+        <!--<div class="row text-center">-->
+            <!--<div style="font-weight: bold;">-->
+                <!--<ul class="pagination">-->
+                    <!--<li class="disabled"><a href="#">&laquo;</a></li>-->
+                    <!--<li class="active"><a href="#">average price</a></li>-->
+                    <!--<li><a href="#">exhange volume</a></li>-->
+                    <!--<li><a href="#">&raquo;</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+        <!--</div>-->
     </div> <!-- container end -->
     
         <div id="currency-sidebar">
