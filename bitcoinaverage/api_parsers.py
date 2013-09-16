@@ -486,7 +486,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': usd_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         eur_volume = Decimal(ticker['EUR']['volume_btc']).quantize(DEC_PLACES)
@@ -503,7 +503,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': eur_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         gbp_volume = Decimal(ticker['GBP']['volume_btc']).quantize(DEC_PLACES)
@@ -520,7 +520,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': gbp_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         cad_volume = Decimal(ticker['CAD']['volume_btc']).quantize(DEC_PLACES)
@@ -537,7 +537,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': cad_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         nok_volume = Decimal(ticker['NOK']['volume_btc']).quantize(DEC_PLACES)
@@ -554,7 +554,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': nok_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         nzd_volume = Decimal(ticker['NZD']['volume_btc']).quantize(DEC_PLACES)
@@ -571,7 +571,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': nzd_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         zar_volume = Decimal(ticker['ZAR']['volume_btc']).quantize(DEC_PLACES)
@@ -588,7 +588,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': zar_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         sek_volume = Decimal(ticker['SEK']['volume_btc']).quantize(DEC_PLACES)
@@ -605,7 +605,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': sek_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     try:
         aud_volume = Decimal(ticker['AUD']['volume_btc']).quantize(DEC_PLACES)
@@ -622,7 +622,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
                         'volume': aud_volume,
                         }
     except KeyError as error:
-        print type(error).__name__
+        pass
 
     return result
 
