@@ -49,6 +49,7 @@ API_QUERY_FREQUENCY = {
                         'bitx': 55,
                         'btctrade': 55,
                         'justcoin': 55,
+                        'kraken': 55,
 }
 
 
@@ -164,6 +165,8 @@ EXCHANGE_LIST = {
                     'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker',
                                     },
                     'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
+                                    },
+                    'kraken':  {'ticker_url': 'https://api.kraken.com/0/public/Ticker?pair=BTCEUR',
                                     },
 
 
