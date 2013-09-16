@@ -40,11 +40,16 @@ if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
 
 var firstRenderDone = false;
 var currencyCode;
+var chartMode;
 
 function parseDate(dateString){
     var parts = dateString.split(' ');
     var dateParts = parts[0].split('-');
-    var timeParts = parts[1].split(':');
+    if (typeof parts[1] != 'undefined') {
+        var timeParts = parts[1].split(':');
+    } else {
+        var timeParts = [0,0,0];
+    }
     var result = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
     return result;
 }
@@ -69,11 +74,22 @@ function ajaxCall(url, callback){
 
 $(function(){
     var currentHash = window.location.hash;
-    currencyCode = currentHash.replace('#', '');
+    currentHash = currentHash.replace('#', '');
+    currentHash = currentHash.split('|');
+    currencyCode = currentHash[0];
+    if (typeof currentHash[1] != 'undefined'){
+        chartMode = currentHash[1];
+    }
     if ($.inArray(currencyCode, config.currencyOrder) == -1){
         currencyCode = 'USD';
         var currentLocation = document.location.href;
         var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
+        window.location.replace(newLocation);
+    }
+    if($.inArray(chartMode, ['averages', 'volumes']) == -1){
+        chartMode = 'averages';
+        var currentLocation = document.location.href;
+        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
         window.location.replace(newLocation);
     }
 
@@ -99,35 +115,60 @@ $(function(){
         });
         slotLegendLink.mouseout(function(event){
             $('#currency-sidebar li').removeClass('active');
-            if (legendClickStatus != false) {
-                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
-            }
         });
         slotLegendLink.click(function(event){
             event.preventDefault();
             event.stopPropagation();
             currencyCode = $(this).data('currencycode');
-            $('#big-chart').html('');
-            renderPriceChart(currencyCode);
+
             var currentLocation = document.location.href;
-            var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
+            var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
             window.location.replace(newLocation);
+
+            $('#'+chartMode+'-chart').click();
         });
     }
+
+    $('#averages-chart').click(function(event){
+        event.stopPropagation();
+        event.preventDefault();
+        $('#averages-chart').addClass('active');
+        $('#volumes-chart').removeClass('active');
+
+        chartMode = 'averages';
+        var currentLocation = document.location.href;
+        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
+        window.location.replace(newLocation);
+
+        renderPriceChart(currencyCode);
+    });
+    $('#volumes-chart').click(function(event){
+        event.stopPropagation();
+        event.preventDefault();
+        $('#averages-chart').removeClass('active');
+        $('#volumes-chart').addClass('active');
+
+        chartMode = 'volumes';
+        var currentLocation = document.location.href;
+        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
+        window.location.replace(newLocation);
+
+        renderVolumeChart(currencyCode);
+    });
+
     $('body').show();
 
+    $('#'+chartMode+'-chart').click();
 
-    renderPriceChart(currencyCode);
-
-    var tickerURL = config.apiIndexUrl+'all';
-    var tickerData = {};
-    ajaxCall(tickerURL, function(data){
-        if (typeof data == 'object'){
-            tickerData = data;
-        } else {
-            tickerData = JSON.parse(data);
-        }
-    });
+//    var tickerURL = config.apiIndexUrl+'all';
+//    var tickerData = {};
+//    ajaxCall(tickerURL, function(data){
+//        if (typeof data == 'object'){
+//            tickerData = data;
+//        } else {
+//            tickerData = JSON.parse(data);
+//        }
+//    });
 
 });
 
@@ -182,9 +223,6 @@ function renderPriceChart(currencyCode){
 
                 $('#big-chart').highcharts('StockChart', {
                     chart : {
-                        animation : {
-                            duration: 10000
-                                        },
                         spacingBottom: 0,
                         spacingLeft: 0,
                         spacingRight: 0,
@@ -234,7 +272,7 @@ function renderPriceChart(currencyCode){
                     },
 
                     series : [{
-                        data : data
+                        data: data
                     }]
                 });
             });
@@ -245,7 +283,104 @@ function renderPriceChart(currencyCode){
 
 function renderVolumeChart(currencyCode){
     var dataVolumesURL = config.apiHistoryIndexUrl + currencyCode + '/volumes.csv';
-    
+
+    var dataSeries = [];
+    var exchangesHeaders = {};
+
+    ajaxCall(dataVolumesURL, function(csv){
+        $.each(csv.split('\n'), function(i, line){
+            var values = line.split(',');
+            if (i == 0){
+                for(var columnNum in values){
+                    var regexp = new RegExp('^[a-zA-Z0-9_]{1,} BTC$');
+                    if (regexp.test(values[columnNum])) {
+                        exchangesHeaders[columnNum] = values[columnNum].replace(' BTC', '');
+                    }
+                }
+                var index = 0;
+                for (var columnNum in exchangesHeaders) {
+                    dataSeries[index] = {type: 'area',
+                                         data: [],
+                                         name: exchangesHeaders[columnNum]};
+                    index++;
+                }
+                return;
+            }
+            if(line.length == 0){
+                return;
+            }
+            for(var columnNum in exchangesHeaders){
+                for(var dataSeriesIndex in dataSeries){
+                    if (dataSeries[dataSeriesIndex].name == exchangesHeaders[columnNum]){
+                        dataSeries[dataSeriesIndex].data.push([parseDate(values[0]).getTime(),
+                                                               parseFloat(values[columnNum])
+                                                                ]);
+                    }
+                }
+            }
+        });
+
+        $('#big-chart').highcharts('StockChart', {
+            chart : {
+                spacingBottom: 0,
+                spacingLeft: 0,
+                spacingRight: 0,
+                spacingTop: 0
+            },
+
+            title: { text: currencyCode+' daily volumes history'},
+            rangeSelector: {
+                buttons: [{
+                    type: 'week',
+                    count: 1,
+                    text: '1w'
+                    }, {
+                    type: 'all',
+                    count: 1,
+                    text: 'All	'
+                    }],
+                selected: 2,
+                inputEnabled: true
+            },
+
+            xAxis:{
+                type:'datetime',
+                tickPixelInterval: 100
+            },
+
+            yAxis:{
+                tickPixelInterval: 50
+            },
+
+            plotOptions:{
+                area:{
+                    stacking: 'normal'
+                },
+                series:{
+                    dataGrouping:{
+                        groupPixelWidth:25,
+                        units: [
+                                ['minute', [1, 2, 5, 10, 15, 22, 30]],
+                                ['hour', [1, 2, 3, 6, 8, 10, 12]],
+                                ['day',[1]]
+                                ]
+                    }
+                }
+            },
+
+            series : dataSeries,
+            tooltip:{
+                valueDecimals: 2,
+                valuePrefix:currencyCode+' '
+            }
+        });
+
+    });
+}
+
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
 }
 
     </script>
@@ -280,48 +415,14 @@ function renderVolumeChart(currencyCode){
         <div class="row" style="margin-top: 25px;" >
             <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
         </div>
-        <div class="row" style="margin-top: 25px;" >
-            <div id="data" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
+        <div class="row text-center">
+            <div style="font-weight: bold;">
+                <ul class="pagination">
+                    <li id="averages-chart"><a href="">average price</a></li>
+                    <li id="volumes-chart"><a href="">trading volumes</a></li>
+                </ul>
+            </div>
         </div>
-
-        <!--
-        <div style="text-align: center; font-weight: bold; padding-top: 20px; margin-bottom: 0px !important;">
-            <ul class="pagination">
-                <li class="disabled"><a href="#">&laquo;</a></li>
-                <li class="active"><a href="#">USD</a></li>
-                <li><a href="#">EUR</a></li>
-                <li><a href="#">GBP</a></li>
-                <li><a href="#">CNY</a></li>
-                <li><a href="#">CAD</a></li>
-                <li><a href="#">PLN</a></li>
-                <li><a href="#">JPY</a></li>
-                <li><a href="#">&raquo;</a></li>
-            </ul>
-        </div>
-        <div style="text-align: center; font-weight: bold; margin-top: 0px !important;">
-            <ul class="pagination pagination-sm">
-                <li class="disabled"><a href="#">&laquo;</a></li>
-                <li class="active"><a href="#">USD</a></li>
-                <li><a href="#">EUR</a></li>
-                <li><a href="#">GBP</a></li>
-                <li><a href="#">CNY</a></li>
-                <li><a href="#">CAD</a></li>
-                <li><a href="#">PLN</a></li>
-                <li><a href="#">JPY</a></li>
-                <li><a href="#">&raquo;</a></li>
-            </ul>
-        </div>
-        -->
-        <!--<div class="row text-center">-->
-            <!--<div style="font-weight: bold;">-->
-                <!--<ul class="pagination">-->
-                    <!--<li class="disabled"><a href="#">&laquo;</a></li>-->
-                    <!--<li class="active"><a href="#">average price</a></li>-->
-                    <!--<li><a href="#">exhange volume</a></li>-->
-                    <!--<li><a href="#">&raquo;</a></li>-->
-                <!--</ul>-->
-            <!--</div>-->
-        <!--</div>-->
     </div> <!-- container end -->
     
         <div id="currency-sidebar">
