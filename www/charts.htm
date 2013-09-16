@@ -257,6 +257,10 @@ function renderPriceChart(currencyCode){
                     yAxis:{
                         tickPixelInterval: 50
                     },
+                    tooltip:{
+                        valueDecimals: 2,
+                        valuePrefix:currencyCode+' '
+                    },
 
                     plotOptions:{
                         series:{
@@ -371,7 +375,7 @@ function renderVolumeChart(currencyCode){
             series : dataSeries,
             tooltip:{
                 valueDecimals: 2,
-                valuePrefix:currencyCode+' '
+                valuePrefix:'BTC '
             }
         });
 
