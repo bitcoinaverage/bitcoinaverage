@@ -15,8 +15,6 @@ import requests
 
 import bitcoinaverage as ba
 from bitcoinaverage import api_parsers
-from bitcoinaverage import bitcoinchart_fallback
-from bitcoinaverage.exceptions import NoApiException, NoVolumeException, CallFailedException
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, FIAT_RATES_QUERY_FREQUENCY
 from bitcoinaverage.helpers import write_config, write_log, write_fiat_rates_config
 from bitcoinaverage.nogox import create_nogox_api
@@ -44,28 +42,7 @@ while True:
 
     start_time = int(time.time())
 
-    active_currency_list = []
-    exchanges_rates = []
-    exchanges_ignored = {}
-
-    for exchange_name in EXCHANGE_LIST:
-        try:
-            if api_parsers.hasAPI(exchange_name):
-                result = api_parsers.callAPI(exchange_name=exchange_name, exchange_params=EXCHANGE_LIST[exchange_name])
-            elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
-                result = bitcoinchart_fallback.getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
-            else:
-                raise NoApiException
-
-
-            if result is not None:
-                result['exchange_name'] = exchange_name
-                exchanges_rates.append(result)
-            else:
-                raise CallFailedException
-        except (NoApiException, NoVolumeException, CallFailedException) as error:
-            exchanges_ignored[exchange_name] = error.text
-
+    exchanges_rates, exchanges_ignored = ba.api_parsers.callAll()
 
     calculated_average_rates = {}
     total_currency_volumes = {}
