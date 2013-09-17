@@ -134,11 +134,15 @@ def callAPI(exchange_name):
                 else :
                     datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
 
-                log_message = ('%s call failed, %s, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
+                last_call_strdate = 'never'
+                if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] != 0:
+                    last_call_strdate = email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
+
+                log_message = ('%s call failed, %s, %s fails in a row, last successful call - %s, cache timeout, exchange ignored'
                                % (exchange_name,
                                   type(error).__name__,
                                   str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                  email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
+                                  last_call_strdate,
                                     ))
                 write_log(log_message, 'ERROR')
                 exception = CacheTimeoutException()
