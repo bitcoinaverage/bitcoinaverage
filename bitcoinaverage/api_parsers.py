@@ -86,66 +86,66 @@ def callAPI(exchange_name):
                                            'call_fail_count': 0,
                                                }
 
-    try:
-        try:
-            if (exchange_name in API_QUERY_FREQUENCY
-                and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
-                result = API_QUERY_CACHE[exchange_name]['result']
-            else:
-                if '_%sApiCall' % exchange_name in globals():
-                    result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
-                    result['data_source'] = 'api'
-                elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
-                    result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
-                    result['data_source'] = 'bitcoincharts'
-                else:
-                    raise NoApiException
+    # try:
+    #     try:
+    if (exchange_name in API_QUERY_FREQUENCY
+        and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
+        result = API_QUERY_CACHE[exchange_name]['result']
+    else:
+        if '_%sApiCall' % exchange_name in globals():
+            result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
+            result['data_source'] = 'api'
+        elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
+            result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
+            result['data_source'] = 'bitcoincharts'
+        else:
+            raise NoApiException
 
-                API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
-                                                   'result':result,
-                                                   'call_fail_count': 0,
-                                                   }
-        except (
-                KeyError,
-                ValueError,
-                socket.error,
-                simplejson.decoder.JSONDecodeError,
-                urllib2.URLError,
-                httplib.BadStatusLine,
-                CallTimeoutException) as error:
-
-            API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
-            if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
-                result = API_QUERY_CACHE[exchange_name]['result']
-                result['data_source'] = 'cache'
-                write_log('%s call failed, %s, %s fails in a row, using cache, cache age %ss'
-                          % (exchange_name,
-                             type(error).__name__,
-                             str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                             str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
-                          'WARNING')
-            else:
-                last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
-                today = datetime.datetime.now()
-                if current_timestamp == 0:
-                    datetime_str = today.strftime('%H:%M')
-                elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
-                    datetime_str = last_call_datetime.strftime('%H:%M')
-                else :
-                    datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
-
-                log_message = ('%s call failed, %s, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
-                               % (exchange_name,
-                                  type(error).__name__,
-                                  str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                  email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
-                                    ))
-                write_log(log_message, 'ERROR')
-                exception = CacheTimeoutException()
-                exception.strerror = exception.strerror % datetime_str
-                raise exception
-    except (NoApiException, NoVolumeException, CacheTimeoutException) as error:
-        exchange_ignore_reason = error.strerror
+        API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': current_timestamp,
+                                           'result':result,
+                                           'call_fail_count': 0,
+                                           }
+    #     except (
+    #             KeyError,
+    #             ValueError,
+    #             socket.error,
+    #             simplejson.decoder.JSONDecodeError,
+    #             urllib2.URLError,
+    #             httplib.BadStatusLine,
+    #             CallTimeoutException) as error:
+    #
+    #         API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
+    #         if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
+    #             result = API_QUERY_CACHE[exchange_name]['result']
+    #             result['data_source'] = 'cache'
+    #             write_log('%s call failed, %s, %s fails in a row, using cache, cache age %ss'
+    #                       % (exchange_name,
+    #                          type(error).__name__,
+    #                          str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+    #                          str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
+    #                       'WARNING')
+    #         else:
+    #             last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
+    #             today = datetime.datetime.now()
+    #             if current_timestamp == 0:
+    #                 datetime_str = today.strftime('%H:%M')
+    #             elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
+    #                 datetime_str = last_call_datetime.strftime('%H:%M')
+    #             else :
+    #                 datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
+    #
+    #             log_message = ('%s call failed, %s, %s fails in a row, last successful call at %s, cache timeout, exchange ignored'
+    #                            % (exchange_name,
+    #                               type(error).__name__,
+    #                               str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+    #                               email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp']),
+    #                                 ))
+    #             write_log(log_message, 'ERROR')
+    #             exception = CacheTimeoutException()
+    #             exception.strerror = exception.strerror % datetime_str
+    #             raise exception
+    # except (NoApiException, NoVolumeException, CacheTimeoutException) as error:
+    #     exchange_ignore_reason = error.strerror
 
     return exchange_name, result, exchange_ignore_reason
 
