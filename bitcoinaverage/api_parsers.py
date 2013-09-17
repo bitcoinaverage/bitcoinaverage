@@ -760,7 +760,8 @@ def _kapitonApiCall(ticker_url, *args, **kwargs):
 
 
 def _rmbtbApiCall(ticker_url, *args, **kwargs):
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+    #with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 

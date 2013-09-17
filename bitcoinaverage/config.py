@@ -148,8 +148,8 @@ EXCHANGE_LIST = {
                     'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/thirdparty/ticker/',
                                 },
 
-                    'btcchina':  {'ticker_url': 'https://data.btcchina.com/data/ticker',
-                                    },
+                    # 'btcchina':  {'ticker_url': 'https://data.btcchina.com/data/ticker',
+                    #                 },
                     # 'fxbtc':  {'ticker_url': 'https://data.fxbtc.com/api?op=query_ticker&symbol=btc_cny',
                     #                 },
                     # 'bter':  {'ticker_url': 'https://bter.com/api/1/ticker/btc_cny',
