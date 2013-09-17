@@ -13,3 +13,7 @@ class CallTimeoutException(Exception):
 class CacheTimeoutException(Exception):
     exchange_name = None
     strerror = u'unreachable since %s UTC'
+
+class CallFailedException(Exception):
+    exchange_name = None
+    text = u'unreachable since %s UTC'
