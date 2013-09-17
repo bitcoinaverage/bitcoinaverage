@@ -145,7 +145,7 @@ EXCHANGE_LIST = {
                     # 'kapiton': {'ticker_url': 'https://kapiton.se/api/0/ticker',
                     #             },
                     #
-                    'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/secure/BTCCNY/ticker',
+                    'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/thirdparty/ticker/',
                                 },
 
                     'btcchina':  {'ticker_url': 'https://data.btcchina.com/data/ticker',
