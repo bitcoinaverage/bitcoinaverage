@@ -1,18 +1,26 @@
 /** Media Styling **/
 
 @media (max-width: 480px){
+    .foot_left,  .foot_right{
+        display: none;
+    }
+    .privacy{
+        padding: 20px 0 30px;
+    }
+
+}
+@media (max-width: 400px){
+    #main-container{
+        padding-top: 70px;
+    }
+}
+@media (max-width: 650px){
     .ignore_btn{
         width:100%!important;
         position:relative!important;
         padding:0px!important;
         margin:0; top:-60px!important;
         right:0px!important;
-    }
-    .foot_left,  .foot_right{
-        display: none;
-    }
-    .privacy{
-        padding: 20px 0 30px;
     }
 }
 @media (min-width: 480px){

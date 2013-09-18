@@ -10,13 +10,40 @@ import requests
 
 URL = "http://api.bitcoinaverage.com/ticker/USD"
 
+change = 0
+oldprice = 0
+perc = 0
+
 while True:
     
     r = requests.get(URL).json()
+    newprice = r['last']
     
-    status = "Average USD Rates - Last: %s / Ask: %s / Bid: %s / 24h: %s" % (r['last'],r['ask'],r['bid'],r['24h_avg'])
+    if oldprice > newprice:
+        change = oldprice - newprice
+        direction = "down"
+        print change
+        print oldprice
+        if oldprice != 0:
+            perc = (change / oldprice)*100
+
+    elif oldprice < newprice:
+        change = newprice - oldprice
+        direction = "up"
+        print change
+        print oldprice
+        if oldprice != 0:
+            perc = str((change / oldprice)*100)
+            
+    if perc != 0 and change != 0:
+        print "Average USD Rate: $%s (%s $%s, %%s) - http://bitcoinaverage.com" % (newprice,direction,change,perc)
+    else:
+        print "Average USD Rate: $%s - http://bitcoinaverage.com" % (newprice)
+        
+    oldprice = newprice
     
-    status = api.PostUpdate(status)
-    print status.text
+    #status = "Average USD Rate: $%s (%s $%s, %%s) - http://bitcoinaverage.com" % (newprice,direction,change,perc)
     
-    time.sleep(60*60*4)
+    #status = api.PostUpdate(status)
+    
+    time.sleep(60)
