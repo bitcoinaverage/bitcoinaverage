@@ -10,34 +10,18 @@ import simplejson
 import socket
 
 from eventlet.green import httplib
-from eventlet.green import ssl
-#
-# class HTTPSConnection(httplib.HTTPConnection):
-#     "This class allows communication via SSL."
-#     default_port = httplib.HTTPS_PORT
-#
-#     def __init__(self, host, port=None, key_file=None, cert_file=None,
-#             strict=None, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
-#             source_address=None):
-#         httplib.HTTPConnection.__init__(self, host, port, strict, timeout,
-#                 source_address)
-#         self.key_file = key_file
-#         self.cert_file = cert_file
-#
-#     def connect(self):
-#         "Connect to a host on a given (SSL) port."
-#         sock = socket.create_connection((self.host, self.port),
-#                 self.timeout, self.source_address)
-#         if self._tunnel_host:
-#             self.sock = sock
-#             self._tunnel()
-#         # this is the only line we modified from the httplib.py file
-#         # we added the ssl_version variable
-#         self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file, ssl_version=ssl.PROTOCOL_TLSv1)
-#
-# #now we override the one in httplib
-# eventlet.green.httplib.HTTPSConnection = HTTPSConnection
-# # ssl_version corrections are done
+
+import functools
+import ssl
+
+old_init = ssl.SSLSocket.__init__
+
+@functools.wraps(old_init)
+def ubuntu_openssl_bug_965371(self, *args, **kwargs):
+  kwargs['ssl_version'] = ssl.PROTOCOL_TLSv1
+  old_init(self, *args, **kwargs)
+
+ssl.SSLSocket.__init__ = ubuntu_openssl_bug_965371
 
 
 from bitcoinaverage.bitcoinchart_fallback import getData
@@ -449,6 +433,7 @@ def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
             },
     }
 
+
 def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=gbp_api_url, headers=API_REQUEST_HEADERS)).read()
@@ -461,12 +446,13 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
         average_btc = DEC_PLACES
         volume_btc = DEC_PLACES
 
-    return {'GBP': {'ask': average_btc.quantize(DEC_PLACES), #bitbargain is an OTC trader, so ask == last
-                    'bid': None, #bitbargain is an OTC trader, so no bids available
+    return {'GBP': {'ask': average_btc.quantize(DEC_PLACES), #bitbargain is an OTC trader, so ask == last == bid
+                    'bid': average_btc.quantize(DEC_PLACES), #bitbargain is an OTC trader, so ask == last == bid
                     'last': average_btc.quantize(DEC_PLACES),
                     'volume': volume_btc.quantize(DEC_PLACES),
                     },
     }
+
 
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
@@ -485,7 +471,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             usd_rate = None
             usd_volume = None
         result['USD']= {'ask': usd_rate,
-                        'bid': None,
+                        'bid': usd_rate,
                         'last': usd_rate,
                         'volume': usd_volume,
                         }
@@ -502,7 +488,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             eur_volume = None
             eur_rate = None
         result['EUR']= {'ask': eur_rate,
-                        'bid': None,
+                        'bid': eur_rate,
                         'last': eur_rate,
                         'volume': eur_volume,
                         }
@@ -519,7 +505,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             gbp_volume = None
             gbp_rate = None
         result['GBP']= {'ask': gbp_rate,
-                        'bid': None,
+                        'bid': gbp_rate,
                         'last': gbp_rate,
                         'volume': gbp_volume,
                         }
@@ -536,7 +522,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             cad_volume = None
             cad_rate = None
         result['CAD']= {'ask': cad_rate,
-                        'bid': None,
+                        'bid': cad_rate,
                         'last': cad_rate,
                         'volume': cad_volume,
                         }
@@ -553,7 +539,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             nok_volume = None
             nok_rate = None
         result['NOK']= {'ask': nok_rate,
-                        'bid': None,
+                        'bid': nok_rate,
                         'last': nok_rate,
                         'volume': nok_volume,
                         }
@@ -570,7 +556,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             nzd_volume = None
             nzd_rate = None
         result['NZD']= {'ask': nzd_rate,
-                        'bid': None,
+                        'bid': nzd_rate,
                         'last': nzd_rate,
                         'volume': nzd_volume,
                         }
@@ -587,7 +573,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             zar_volume = None
             zar_rate = None
         result['ZAR']= {'ask': zar_rate,
-                        'bid': None,
+                        'bid': zar_rate,
                         'last': zar_rate,
                         'volume': zar_volume,
                         }
@@ -604,7 +590,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             sek_volume = None
             sek_rate = None
         result['SEK']= {'ask': sek_rate,
-                        'bid': None,
+                        'bid': sek_rate,
                         'last': sek_rate,
                         'volume': sek_volume,
                         }
@@ -621,7 +607,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
             aud_volume = None
             aud_rate = None
         result['AUD']= {'ask': aud_rate,
-                        'bid': None,
+                        'bid': aud_rate,
                         'last': aud_rate,
                         'volume': aud_volume,
                         }
@@ -629,7 +615,6 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
         pass
 
     return result
-
 
 
 def _cryptotradeApiCall(usd_api_url, #eur_api_url,
@@ -653,6 +638,7 @@ def _cryptotradeApiCall(usd_api_url, #eur_api_url,
             #         'volume': Decimal(eur_result['data']['vol_btc']).quantize(DEC_PLACES),
             #                         },
             }
+
 
 def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
                         eur_ticker_url, eur_trades_url, *args, **kwargs):
@@ -700,6 +686,7 @@ def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
                                     },
             }
 
+
 def _bitcashApiCall(czk_api_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=czk_api_url, headers=API_REQUEST_HEADERS)).read()
@@ -711,6 +698,7 @@ def _bitcashApiCall(czk_api_url, *args, **kwargs):
                     'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
                     },
             }
+
 
 def _intersangoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
@@ -839,6 +827,7 @@ def _okcoinApiCall(ticker_url, *args, **kwargs):
                     },
             }
 
+
 def _mercadoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -850,6 +839,7 @@ def _mercadoApiCall(ticker_url, *args, **kwargs):
                     'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
                     },
             }
+
 
 def _bitxApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
