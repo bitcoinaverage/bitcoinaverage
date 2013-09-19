@@ -109,7 +109,7 @@ while True:
 #	send_email("History")
 
     timestamp = Utils.formatdate(time.time())
-    print timestamp + " - history_daemon.py"
+    print timestamp + " - monitor_daemon.py"
 
     time.sleep(120)
     
