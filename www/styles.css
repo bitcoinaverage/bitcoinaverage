@@ -101,12 +101,10 @@ ul{
 
 
 .bid_ask{font-weight: bold; color: #999;}
-.last{font-size: 22px; font-weight: bold; color: #428BCA; margin-bottom: 10px; margin-top: 10px; }
+.last{font-size: 30px; color: #428BCA; margin-bottom: 10px; margin-top: 10px;}
 .curcode{font-size: 22px; font-weight: bold; color: #4F4F4F; margin-bottom: 10px; margin-top: 10px; }
 .last-main{font-size: 2.3em; font-weight: bold; color: #428BCA; width: 250px; cursor: pointer;}
 .curcode-main{font-size: 2.3em; font-weight: bold; color: #4F4F4F; width: 250px; cursor: pointer;}
-
-.last{font-size: 22px; font-weight: bold; color: #428BCA; margin-bottom: 10px; margin-top: 10px; }
 .arrows{font-size: 2em; }
 
 
@@ -117,7 +115,7 @@ ul{
 .navbar-nav > li > a:hover {text-decoration: underline !important; }
 
 .logo {color: #428BCA !important; }
-.slogan {font-size: small; }
+.slogan {font-size: small; margin: auto !important; margin-left: -15px !important; line-height: auto !important; font-weight: bold !important;}
 
 .legend ul{
     list-style: none outside;

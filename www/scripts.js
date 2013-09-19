@@ -203,7 +203,7 @@ function renderAll(result){
     }
 
     if (legendClickStatus != false){
-        document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' - BitcoinAverage';
+        document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' - BitcoinAverage - independent bitcoin price';
     } else {
         document.title = API_data['USD'].averages.last+' USD - BitcoinAverage';
     }
