@@ -1,10 +1,11 @@
 /.idea/
 /runtime/*.log
 /api/history/*
+/www/cur/*
 *.pyc
 /bitcoinaverage/server.py
-/www/config.js
-/www/fiat_rates.js
+/www/js/config.js
+/www/js/fiat_rates.js
 /api/no-mtgox/all
 /api/no-mtgox/ignored
 /api/no-mtgox/ticker/all

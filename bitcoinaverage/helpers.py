@@ -7,7 +7,17 @@ import requests
 
 import bitcoinaverage as ba
 
-def write_config():
+
+def write_log(log_string, message_type='ERROR'):
+    timestamp = utils.formatdate(time.time())
+
+    with open(ba.server.LOG_PATH, 'a') as log_file:
+        log_string = '%s; %s: %s' % (timestamp, message_type, log_string)
+        print log_string
+        log_file.write(log_string+'\n')
+
+
+def write_js_config():
     global ba
 
     js_config_template = """
@@ -30,15 +40,6 @@ var config = {'apiIndexUrl': $API_INDEX_URL,
 
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'config.js'), 'w') as config_file:
         config_file.write(config_string)
-
-
-def write_log(log_string, message_type='ERROR'):
-    timestamp = utils.formatdate(time.time())
-
-    with open(ba.server.LOG_PATH, 'a') as log_file:
-        log_string = '%s; %s: %s' % (timestamp, message_type, log_string)
-        print log_string
-        log_file.write(log_string+'\n')
 
 
 def write_fiat_rates_config():
@@ -76,3 +77,36 @@ def write_fiat_rates_config():
 
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'fiat_rates.js'), 'w') as fiat_exchange_config_file:
         fiat_exchange_config_file.write(config_string)
+
+
+def write_html_currency_pages():
+    global ba
+
+    template_file_path = os.path.join(ba.server.WWW_DOCUMENT_ROOT, '_currency_page_template.htm')
+    if not os.path.exists(template_file_path):
+        ba.helpers.write_log('currency HTML template file missing', 'ERROR')
+
+    with open(template_file_path, 'r') as template_file:
+        template = template_file.read()
+
+    api_all_url = '%sticker/all' % ba.server.API_INDEX_URL
+    all_rates = requests.get(api_all_url, headers=ba.config.API_REQUEST_HEADERS).json()
+
+    if not os.path.exists(os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME)):
+        os.makedirs(os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME))
+
+    for currency_code in ba.config.CURRENCY_LIST:
+        currency_rate = all_rates[currency_code]['last']
+        currency_page_contents = template
+        currency_page_contents = currency_page_contents.replace('$RATE$', str(Decimal(currency_rate).quantize(ba.config.DEC_PLACES)))
+        currency_page_contents = currency_page_contents.replace('$CURRENCY_NAME$', currency_code)
+
+        with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT,
+                               ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME,
+                               ('%s.htm' % currency_code.lower())), 'w') as currency_page_file:
+            currency_page_file.write(currency_page_contents)
+
+
+
+def write_sitemap():
+    pass

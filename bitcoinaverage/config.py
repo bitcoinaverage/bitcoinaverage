@@ -4,6 +4,8 @@ import bitcoinaverage.server
 
 INDEX_DOCUMENT_NAME = 'default' #directory index document name, needs to match webserver setting
 
+CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME = 'cur' #directory index document name, needs to match webserver setting
+
 API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',
              'ALL_FILE': 'all',
