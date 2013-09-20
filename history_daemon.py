@@ -30,8 +30,6 @@ write_log('script started', 'LOG')
 
 
 while True:
-    start_time = int(time.time())
-
     ticker_url = ba.server.API_INDEX_URL+'all'
     try:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
@@ -42,8 +40,6 @@ while True:
     current_data_datetime = current_data_datetime[:-6] #prior to python 3.2 strptime doesnt work properly with numeric timezone offsets.
     current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%a, %d %b %Y %H:%M:%S')
     current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
-
-
 
     actual_currency_links_list = {}
     for currency_code in current_data_all:
@@ -62,9 +58,11 @@ while True:
     with open(general_default_file_path, 'wb') as default_file:
         default_file.write(json.dumps(actual_currency_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
 
-    timestamp = email.utils.formatdate(time.time())
-    cycle_time = int(time.time())-start_time
-    sleep_time = max(0, HISTORY_QUERY_FREQUENCY-cycle_time)
+    current_time = time.time()
+    timestamp = email.utils.formatdate(current_time)
+    # Note that python's modulus operator handles floating point values
+    sleep_time = HISTORY_QUERY_FREQUENCY - (current_time % HISTORY_QUERY_FREQUENCY)
+    sleep_time = min(HISTORY_QUERY_FREQUENCY, sleep_time)
 
     print '%s, sleeping %ss - history daemon' % (timestamp, str(sleep_time))
 
