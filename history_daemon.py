@@ -41,8 +41,6 @@ while True:
     current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%a, %d %b %Y %H:%M:%S')
     current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
 
-
-
     actual_currency_links_list = {}
     for currency_code in current_data_all:
         if currency_code in CURRENCY_LIST:
