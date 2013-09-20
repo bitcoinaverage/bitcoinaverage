@@ -77,7 +77,7 @@ def history_time_diff():
     return diff
     
 
-def send_email(details):
+def send_email(daemon):
     try:
         ssmtp = subprocess.Popen(('/usr/sbin/ssmtp', recipient), stdin=subprocess.PIPE)
     except OSError:
