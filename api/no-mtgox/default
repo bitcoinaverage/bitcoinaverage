@@ -1,5 +1,0 @@
-{
-  "all": "http://api.ba.localhost/no-mtgox/all",
-  "exchanges": "http://api.ba.localhost/no-mtgox/exchanges/",
-  "tickers": "http://api.ba.localhost/no-mtgox/ticker/"
-}

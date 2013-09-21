@@ -35,15 +35,8 @@ helpers.write_log('script started', 'LOG')
 helpers.write_js_config()
 helpers.write_api_index_files()
 last_fiat_exchange_rate_update = 0
-exit()
 
 while True:
-    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
-        helpers.write_html_currency_pages()
-        helpers.write_sitemap()
-        helpers.write_fiat_rates_config()
-        last_fiat_exchange_rate_update = int(time.time())
-
     start_time = int(time.time())
 
     exchanges_rates, exchanges_ignored = ba.api_parsers.callAll()
@@ -230,6 +223,12 @@ while True:
         raise error
 
     create_nogox_api(timestamp)
+
+    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
+        helpers.write_html_currency_pages()
+        helpers.write_sitemap()
+        helpers.write_fiat_rates_config()
+        last_fiat_exchange_rate_update = int(time.time())
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)

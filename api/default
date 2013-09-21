@@ -1,8 +1,0 @@
-{
-  "all": "http://api.ba.localhost/all",
-  "exchanges": "http://api.ba.localhost/exchanges/",
-  "history": "http://api.ba.localhost/history/",
-  "ignored": "http://api.ba.localhost/ignored",
-  "no-mtgox": "http://api.ba.localhost/no-mtgox/",
-  "tickers": "http://api.ba.localhost/ticker/"
-}
