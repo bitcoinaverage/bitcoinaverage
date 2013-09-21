@@ -9,17 +9,6 @@ import bitcoinaverage as ba
 from bitcoinaverage.config import DEC_PLACES
 
 
-def write_default(currency_code):
-    current_default_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, ba.config.INDEX_DOCUMENT_NAME)
-    with open(current_default_file_path, 'wb') as default_file:
-        default_contents = {}
-        default_contents['24h_sliding'] = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-        default_contents['monthly_sliding'] = '%s%s/per_hour_monthly_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-        default_contents['all_time'] = '%s%s/per_day_all_time_history.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-        default_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-        default_file.write(json.dumps(default_contents, indent=2, sort_keys=True, separators=(',', ': ')))
-
-
 def write_24h_csv(currency_code, current_data, current_timestamp):
     current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
 

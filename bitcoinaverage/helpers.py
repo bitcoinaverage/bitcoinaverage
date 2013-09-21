@@ -11,6 +11,8 @@ import bitcoinaverage as ba
 
 
 def write_log(log_string, message_type='ERROR'):
+    global ba
+
     timestamp = utils.formatdate(time.time())
 
     with open(ba.server.LOG_PATH, 'a') as log_file:
@@ -124,6 +126,8 @@ def write_html_currency_pages():
 
 
 def write_sitemap():
+    global ba
+
     def _sitemap_append_url(url_str, lastmod_date=None, changefreq_str=None, priority_str=None):
         url = etree.Element('url')
         loc = etree.Element('loc')
@@ -170,6 +174,78 @@ def write_sitemap():
         sitemap_file.write(xml_sitemap_contents)
 
 
+def write_api_index_files():
+    def _write_history_index_file(currency_code):
+        global ba
+        current_index_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, ba.config.INDEX_DOCUMENT_NAME)
+        with open(current_index_file_path, 'w') as index_file:
+            index_contents = {}
+            index_contents['24h_sliding'] = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+            index_contents['monthly_sliding'] = '%s%s/per_hour_monthly_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+            index_contents['all_time'] = '%s%s/per_day_all_time_history.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+            index_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+            index_file.write(json.dumps(index_contents, indent=2, sort_keys=True, separators=(',', ': ')))
 
+    global ba
 
+    #api root index
+    api_index = {}
+    api_index['tickers'] = ba.server.API_INDEX_URL+'ticker/'
+    api_index['exchanges'] = ba.server.API_INDEX_URL+'exchanges/'
+    api_index['all'] = ba.server.API_INDEX_URL+'all'
+    api_index['ignored'] = ba.server.API_INDEX_URL+'ignored'
+    api_index['no-mtgox'] = ba.server.API_INDEX_URL_NOGOX
+    api_index['history'] = ba.server.API_INDEX_URL_HISTORY
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+    #api tickers index
+    api_ticker_index = {}
+    api_ticker_index['all'] = ba.server.API_INDEX_URL+'ticker/all'
+    for currency_code in ba.config.CURRENCY_LIST:
+        api_ticker_index[currency_code] = ba.server.API_INDEX_URL+'ticker/'+currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, 'ticker', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+    #api exchanges index
+    api_exchanges_index = {}
+    api_exchanges_index['all'] = ba.server.API_INDEX_URL+'exchanges/all'
+    for currency_code in ba.config.CURRENCY_LIST:
+        api_exchanges_index[currency_code] = ba.server.API_INDEX_URL+'exchanges/'+currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, 'exchanges', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+    #api nogox root index
+    api_nogox_index = {}
+    api_nogox_index['tickers'] = ba.server.API_INDEX_URL_NOGOX+'ticker/'
+    api_nogox_index['exchanges'] = ba.server.API_INDEX_URL_NOGOX+'exchanges/'
+    api_nogox_index['all'] = ba.server.API_INDEX_URL_NOGOX+'all'
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_nogox_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+    #api nogox tickers index
+    api_nogox_ticker_index = {}
+    api_nogox_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX+'ticker/all'
+    for currency_code in ba.config.CURRENCY_LIST:
+        api_nogox_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX+'ticker/'+currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'ticker', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_nogox_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+    #api exchanges index
+    api_nogox_exchanges_index = {}
+    api_nogox_exchanges_index['all'] = ba.server.API_INDEX_URL_NOGOX+'exchanges/all'
+    for currency_code in ba.config.CURRENCY_LIST:
+        api_nogox_exchanges_index[currency_code] = ba.server.API_INDEX_URL_NOGOX+'exchanges/'+currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'exchanges', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_nogox_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+    #api history index files
+    currency_history_links_list = {}
+    for currency_code in ba.config.CURRENCY_LIST:
+        _write_history_index_file(currency_code)
+        currency_history_links_list[currency_code] = '%s%s/' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+
+    general_index_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME)
+    with open(general_index_file_path, 'w') as index_file:
+        index_file.write(json.dumps(currency_history_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
 
