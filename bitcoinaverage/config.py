@@ -167,8 +167,8 @@ EXCHANGE_LIST = {
                                     },
                     'bitx':  {'ticker_url': 'https://bitx.co.za/api/1/BTCZAR/ticker',
                                     },
-                    'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker',
-                                    },
+                    # 'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker', # api deliberately taken down
+                    #                 },                                                 # by owners since 18 Sep 2013
                     'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
                                     },
                     'kraken':  {'ticker_url': 'https://api.kraken.com/0/public/Ticker?pair=BTCEUR',
