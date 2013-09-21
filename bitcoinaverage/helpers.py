@@ -3,7 +3,9 @@ import os
 import time
 import json
 from email import utils
+import datetime
 import requests
+from lxml import etree
 
 import bitcoinaverage as ba
 
@@ -20,25 +22,19 @@ def write_log(log_string, message_type='ERROR'):
 def write_js_config():
     global ba
 
-    js_config_template = """
-var config = {'apiIndexUrl': $API_INDEX_URL,
-              'apiIndexUrlNoGox': $API_INDEX_NOGOX_URL,
-              'apiHistoryIndexUrl': $API_HISTORY_INDEX_URL,
-              'refreshRate': $refreshRate,
-              'currencyOrder': $currencyOrder,
-              'legendSlots': 20,
-              'majorCurrencies': 6
-                };
-                    """
-    config_string = js_config_template
-    config_string = config_string.replace('$API_INDEX_URL', '"%s"' % ba.server.API_INDEX_URL)
-    config_string = config_string.replace('$API_INDEX_NOGOX_URL', '"%s"' % ba.server.API_INDEX_URL_NOGOX)
-    config_string = config_string.replace('$API_HISTORY_INDEX_URL', '"%s"' % ba.server.API_INDEX_URL_HISTORY)
+    js_config_template = 'var config = $CONFIG_DATA;'
 
-    config_string = config_string.replace('$refreshRate', str(ba.config.FRONTEND_QUERY_FREQUENCY*1000)) #JS requires value in milliseconds
-    config_string = config_string.replace('$currencyOrder', json.dumps(ba.config.CURRENCY_LIST))
+    config_data = {}
+    config_data['apiIndexUrl'] = ba.server.API_INDEX_URL
+    config_data['apiIndexUrlNoGox'] = ba.server.API_INDEX_URL_NOGOX
+    config_data['apiHistoryIndexUrl'] = ba.server.API_INDEX_URL_HISTORY
+    config_data['refreshRate'] = str(ba.config.FRONTEND_QUERY_FREQUENCY*1000) #JS requires value in milliseconds
+    config_data['currencyOrder'] = ba.config.CURRENCY_LIST
+    config_data['legendSlots'] = ba.config.FRONTEND_LEGEND_SLOTS
+    config_data['majorCurrencies'] = ba.config.FRONTEND_MAJOR_CURRENCIES
+    config_string = js_config_template.replace('$CONFIG_DATA', json.dumps(config_data))
 
-    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'config.js'), 'w') as config_file:
+    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'config.js'), 'w') as config_file:
         config_file.write(config_string)
 
 
@@ -75,7 +71,7 @@ def write_fiat_rates_config():
     config_string = js_config_template
     config_string = config_string.replace('$FIAT_CURRENCIES_RATES', json.dumps(rate_list))
 
-    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'fiat_rates.js'), 'w') as fiat_exchange_config_file:
+    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'fiat_rates.js'), 'w') as fiat_exchange_config_file:
         fiat_exchange_config_file.write(config_string)
 
 
@@ -83,9 +79,6 @@ def write_html_currency_pages():
     global ba
 
     template_file_path = os.path.join(ba.server.WWW_DOCUMENT_ROOT, '_currency_page_template.htm')
-    if not os.path.exists(template_file_path):
-        ba.helpers.write_log('currency HTML template file missing', 'ERROR')
-
     with open(template_file_path, 'r') as template_file:
         template = template_file.read()
 
@@ -99,14 +92,84 @@ def write_html_currency_pages():
         currency_rate = all_rates[currency_code]['last']
         currency_page_contents = template
         currency_page_contents = currency_page_contents.replace('$RATE$', str(Decimal(currency_rate).quantize(ba.config.DEC_PLACES)))
-        currency_page_contents = currency_page_contents.replace('$CURRENCY_NAME$', currency_code)
+        currency_page_contents = currency_page_contents.replace('$CURRENCY_CODE$', currency_code)
 
         with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT,
                                ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME,
                                ('%s.htm' % currency_code.lower())), 'w') as currency_page_file:
             currency_page_file.write(currency_page_contents)
 
+    template_file_path = os.path.join(ba.server.WWW_DOCUMENT_ROOT, '_charts_page_template.htm')
+    with open(template_file_path, 'r') as template_file:
+        template = template_file.read()
+
+    if not os.path.exists(os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME)):
+        os.makedirs(os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME))
+
+    index = 0
+    for currency_code in ba.config.CURRENCY_LIST:
+        currency_rate = all_rates[currency_code]['last']
+        chart_page_contents = template
+        chart_page_contents = chart_page_contents.replace('$RATE$', str(Decimal(currency_rate).quantize(ba.config.DEC_PLACES)))
+        chart_page_contents = chart_page_contents.replace('$CURRENCY_CODE$', currency_code)
+        with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT,
+                               ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME,
+                               ('%s.htm' % currency_code.lower())), 'w') as chart_page_file:
+            chart_page_file.write(chart_page_contents)
+
+
+        index = index + 1
+        if index == ba.config.FRONTEND_MAJOR_CURRENCIES:
+            break
 
 
 def write_sitemap():
-    pass
+    def _sitemap_append_url(url_str, lastmod_date=None, changefreq_str=None, priority_str=None):
+        url = etree.Element('url')
+        loc = etree.Element('loc')
+        loc.text = url_str
+        url.append(loc)
+        if lastmod_date is not None:
+            lastmod = etree.Element('lastmod')
+            lastmod.text = lastmod_date.strftime('%Y-%m-%d')
+            url.append(lastmod)
+        if changefreq_str is not None:
+            changefreq = etree.Element('changefreq')
+            changefreq.text = changefreq_str
+            url.append(changefreq)
+        if priority_str is not None:
+            priority = etree.Element('priority')
+            priority.text = priority_str
+            url.append(priority)
+        return url
+
+    urlset = etree.Element('urlset', xmlns='http://www.sitemaps.org/schemas/sitemap/0.9')
+
+    index_url = '%s%s' % (ba.server.FRONTEND_INDEX_URL, 'index.htm')
+    today = datetime.datetime.today()
+    urlset.append(_sitemap_append_url('%s%s' % (ba.server.FRONTEND_INDEX_URL, 'index.htm'), today, 'hourly', '1.0'))
+    urlset.append(_sitemap_append_url('%s%s' % (ba.server.FRONTEND_INDEX_URL, 'faq.htm'), today, 'monthly', '0.5'))
+    urlset.append(_sitemap_append_url('%s%s' % (ba.server.FRONTEND_INDEX_URL, 'blog.htm'), today, 'weekly', '1.0'))
+    urlset.append(_sitemap_append_url('%s%s' % (ba.server.FRONTEND_INDEX_URL, 'charts.htm'), today, 'hourly', '0.8'))
+
+    currency_static_seo_pages_dir = os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME)
+    for dirname, dirnames, filenames in os.walk(currency_static_seo_pages_dir):
+        for filename in filenames:
+            urlset.append(_sitemap_append_url('%s%s/%s' % (ba.server.FRONTEND_INDEX_URL,
+                                                        ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME,
+                                                        filename), today, 'hourly', '1.0'))
+    charts_static_seo_pages_dir = os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME)
+    for dirname, dirnames, filenames in os.walk(currency_static_seo_pages_dir):
+        for filename in filenames:
+            urlset.append(_sitemap_append_url('%s%s/%s' % (ba.server.FRONTEND_INDEX_URL,
+                                                        ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME,
+                                                        filename), today, 'hourly', '0.8'))
+
+    xml_sitemap_contents = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(urlset, pretty_print=True)
+    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'sitemap.xml'), 'w') as sitemap_file:
+        sitemap_file.write(xml_sitemap_contents)
+
+
+
+
+

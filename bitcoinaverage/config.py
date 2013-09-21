@@ -3,8 +3,11 @@ from decimal import Decimal
 import bitcoinaverage.server
 
 INDEX_DOCUMENT_NAME = 'default' #directory index document name, needs to match webserver setting
+CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME = 'currencies'
+CHARTS_DUMMY_PAGES_SUBFOLDER_NAME = 'charts'
 
-CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME = 'cur' #directory index document name, needs to match webserver setting
+FRONTEND_LEGEND_SLOTS = 20
+FRONTEND_MAJOR_CURRENCIES = 6
 
 API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',

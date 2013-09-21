@@ -60,7 +60,6 @@ while True:
 
     current_time = time.time()
     timestamp = email.utils.formatdate(current_time)
-    # Note that python's modulus operator handles floating point values
     sleep_time = HISTORY_QUERY_FREQUENCY - (current_time % HISTORY_QUERY_FREQUENCY)
     sleep_time = min(HISTORY_QUERY_FREQUENCY, sleep_time)
 

@@ -8,31 +8,19 @@ from eventlet.green import urllib2
 from eventlet.timeout import Timeout
 import simplejson
 import socket
-
 from eventlet.green import httplib
-
-import functools
-import ssl
-
-old_init = ssl.SSLSocket.__init__
-
-@functools.wraps(old_init)
-def ubuntu_openssl_bug_965371(self, *args, **kwargs):
-  kwargs['ssl_version'] = ssl.PROTOCOL_TLSv1
-  old_init(self, *args, **kwargs)
-
-ssl.SSLSocket.__init__ = ubuntu_openssl_bug_965371
-
 
 from bitcoinaverage.bitcoinchart_fallback import getData
 from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD
 from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException, NoVolumeException
 from bitcoinaverage.helpers import write_log
 
+
 API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
 
 exchanges_rates = []
 exchanges_ignored = {}
+
 
 def callAll(ignore_mtgox=False):
     global EXCHANGE_LIST, exchanges_rates, exchanges_ignored

@@ -33,11 +33,12 @@ if ba.server.HISTORY_DOCUMENT_ROOT == '':
 
 helpers.write_log('script started', 'LOG')
 helpers.write_js_config()
-helpers.write_html_currency_pages()
 last_fiat_exchange_rate_update = 0
 
 while True:
     if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
+        helpers.write_html_currency_pages()
+        helpers.write_sitemap()
         helpers.write_fiat_rates_config()
         last_fiat_exchange_rate_update = int(time.time())
 
