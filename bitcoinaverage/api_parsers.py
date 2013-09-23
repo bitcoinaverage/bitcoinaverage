@@ -891,3 +891,17 @@ def _krakenApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
+def _bitkonanApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['EUR'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
+    return result
+
+

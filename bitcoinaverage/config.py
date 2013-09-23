@@ -55,6 +55,7 @@ API_QUERY_FREQUENCY = {
                         'btctrade': 55,
                         'justcoin': 55,
                         'kraken': 55,
+                        'bitkonan': 55,
 }
 
 
@@ -173,8 +174,10 @@ EXCHANGE_LIST = {
                                     },
                     'kraken':  {'ticker_url': 'https://api.kraken.com/0/public/Ticker?pair=BTCEUR',
                                     },
-
-
+                    'bitkonan': {#'ticker_url': 'https://bitkonan.com/api/ticker',
+                                 'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
+                                                           },
+                                 },
 
 
 
@@ -186,9 +189,6 @@ EXCHANGE_LIST = {
                                  },
                     'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
                                                          },
-                                 },
-                    'bitkonan': {'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
-                                                           },
                                  },
                     'bitcoin_de': {'bitcoincharts_symbols':  {'EUR': 'btcdeEUR',
                                                              },
