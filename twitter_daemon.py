@@ -43,5 +43,5 @@ while True:
         status = api.PostUpdate(status)
         
     oldprice = newprice
-    
+
     time.sleep(60*60*4)
