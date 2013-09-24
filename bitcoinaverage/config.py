@@ -3,6 +3,11 @@ from decimal import Decimal
 import bitcoinaverage.server
 
 INDEX_DOCUMENT_NAME = 'default' #directory index document name, needs to match webserver setting
+CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME = 'currencies'
+CHARTS_DUMMY_PAGES_SUBFOLDER_NAME = 'charts'
+
+FRONTEND_LEGEND_SLOTS = 20
+FRONTEND_MAJOR_CURRENCIES = 6
 
 API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',
@@ -50,6 +55,7 @@ API_QUERY_FREQUENCY = {
                         'btctrade': 55,
                         'justcoin': 55,
                         'kraken': 55,
+                        'bitkonan': 55,
 }
 
 
@@ -162,14 +168,16 @@ EXCHANGE_LIST = {
                                     },
                     'bitx':  {'ticker_url': 'https://bitx.co.za/api/1/BTCZAR/ticker',
                                     },
-                    'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker',
-                                    },
+                    # 'btctrade':  {'ticker_url': 'https://www.btctrade.com/api/ticker', # api deliberately taken down
+                    #                 },                                                 # by owners since 18 Sep 2013
                     'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
                                     },
                     'kraken':  {'ticker_url': 'https://api.kraken.com/0/public/Ticker?pair=BTCEUR',
                                     },
-
-
+                    'bitkonan': {#'ticker_url': 'https://bitkonan.com/api/ticker',
+                                 'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
+                                                           },
+                                 },
 
 
 
@@ -181,9 +189,6 @@ EXCHANGE_LIST = {
                                  },
                     'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
                                                          },
-                                 },
-                    'bitkonan': {'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
-                                                           },
                                  },
                     'bitcoin_de': {'bitcoincharts_symbols':  {'EUR': 'btcdeEUR',
                                                              },

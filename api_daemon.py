@@ -16,7 +16,7 @@ import requests
 import bitcoinaverage as ba
 from bitcoinaverage import api_parsers
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, FIAT_RATES_QUERY_FREQUENCY
-from bitcoinaverage.helpers import write_config, write_log, write_fiat_rates_config
+import bitcoinaverage.helpers as helpers
 from bitcoinaverage.nogox import create_nogox_api
 
 if ba.server.PROJECT_PATH == '':
@@ -31,15 +31,12 @@ if ba.server.WWW_DOCUMENT_ROOT == '':
 if ba.server.HISTORY_DOCUMENT_ROOT == '':
     ba.server.HISTORY_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'api', 'history')
 
-write_log('script started', 'LOG')
-write_config()
+helpers.write_log('script started', 'LOG')
+helpers.write_js_config()
+helpers.write_api_index_files()
 last_fiat_exchange_rate_update = 0
 
 while True:
-    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
-        write_fiat_rates_config()
-        last_fiat_exchange_rate_update = int(time.time())
-
     start_time = int(time.time())
 
     exchanges_rates, exchanges_ignored = ba.api_parsers.callAll()
@@ -221,11 +218,17 @@ while True:
 
     except IOError as error:
         error_text = '%s, %s ' % (sys.exc_info()[0], error)
-        write_log(error_text)
+        helpers.write_log(error_text)
         print 'ERROR: %s ' % (error_text)
         raise error
 
     create_nogox_api(timestamp)
+
+    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
+        helpers.write_html_currency_pages()
+        helpers.write_sitemap()
+        helpers.write_fiat_rates_config()
+        last_fiat_exchange_rate_update = int(time.time())
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)

@@ -41,26 +41,17 @@ while True:
     current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%a, %d %b %Y %H:%M:%S')
     current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
 
-    actual_currency_links_list = {}
     for currency_code in current_data_all:
         if currency_code in CURRENCY_LIST:
-            actual_currency_links_list[currency_code] = '%s%s/' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-
             if not os.path.exists(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code)):
                 os.makedirs(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code))
-            history_writers.write_default(currency_code)
             history_writers.write_24h_csv(currency_code, current_data_all[currency_code]['averages'], current_data_timestamp)
             history_writers.write_1mon_csv(currency_code, current_data_timestamp)
             history_writers.write_forever_csv(currency_code, current_data_all[currency_code]['averages']['total_vol'], current_data_timestamp)
             history_writers.write_volumes_csv(currency_code, current_data_all[currency_code], current_data_timestamp)
 
-    general_default_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME)
-    with open(general_default_file_path, 'wb') as default_file:
-        default_file.write(json.dumps(actual_currency_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
-
     current_time = time.time()
     timestamp = email.utils.formatdate(current_time)
-    # Note that python's modulus operator handles floating point values
     sleep_time = HISTORY_QUERY_FREQUENCY - (current_time % HISTORY_QUERY_FREQUENCY)
     sleep_time = min(HISTORY_QUERY_FREQUENCY, sleep_time)
 

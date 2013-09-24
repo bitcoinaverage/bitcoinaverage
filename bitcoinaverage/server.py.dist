@@ -6,6 +6,7 @@ WWW_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/www used
 LOG_PATH = ''  # if empty - <main.py folder>/runtime used
 PROJECT_PATH = ''  # if empty - <main.py folder> used
 
+FRONTEND_INDEX_URL = '' #should be not empty
 API_INDEX_URL = '' #should be not empty
 API_INDEX_URL_HISTORY = '' #should be not empty
 API_INDEX_URL_NOGOX = '' #should be not empty

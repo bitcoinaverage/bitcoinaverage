@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>   
-    <title>BitcoinAverage - independent bitcoin price</title>
+    <title>$RATE$ $CURRENCY_CODE$ |independent bitcoin price|BitcoinAverage</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
@@ -15,12 +15,20 @@
         
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/highstock.js"></script>
 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="js/config.js"></script>
-    <script type="text/javascript" src="js/fiat_rates.js"></script>
-    <script type="text/javascript" src="js/scripts.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        var curLocation = window.location.pathname;
+        curLocation = curLocation.split('/');
+        var curPage = curLocation[curLocation.length-1];
+        curPage = curPage.split('.');
+        var curCurrency = curPage[0];
+        curCurrency = curCurrency.toUpperCase();
+        var newLocation = window.location.protocol+'//'+window.location.host+'/#'+curCurrency;
+        window.location = newLocation;
+    });
+    </script>
 </head>
 <body>
 
@@ -372,28 +380,29 @@
         <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
             <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
             <li class="divider"></li>
-            <li id="slot0-link"><a href="currencies/usd.htm">USD</a></li>
-            <li id="slot1-link"><a href="currencies/eur.htm">EUR</a></li>
-            <li id="slot2-link"><a href="currencies/gbp.htm">GBP</a></li>
-            <li id="slot3-link"><a href="currencies/cny.htm">CNY</a></li>
-            <li id="slot4-link"><a href="currencies/cad.htm">CAD</a></li>
-            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
+            <li id="slot0-link"><a href=""></a></li>
+            <li id="slot1-link"><a href=""></a></li>
+            <li id="slot2-link"><a href=""></a></li>
+            <li id="slot3-link"><a href=""></a></li>
+            <li id="slot4-link"><a href=""></a></li>
+            <li id="slot5-link"><a href=""></a></li>
+            <!--<li><a href="#" class="link1">More</a></li>-->
         </ul>
         <ul class="dropdown-menu2 ">
-            <li id="slot6-link"><a href="currencies/jpy.htm">JPY</a></li>
-            <li id="slot7-link"><a href="currencies/rub.htm">RUB</a></li>
-            <li id="slot8-link"><a href="currencies/aud.htm">AUD</a></li>
-            <li id="slot9-link"><a href="currencies/sek.htm">SEK</a></li>
-            <li id="slot10-link"><a href="currencies/brl.htm">BRL</a></li>
-            <li id="slot11-link"><a href="currencies/czk.htm">CZK</a></li>
-            <li id="slot12-link"><a href="currencies/nzd.htm">NZD</a></li>
-            <li id="slot13-link"><a href="currencies/sgd.htm">SGD</a></li>
-            <li id="slot14-link"><a href="currencies/zar.htm">ZAR</a></li>
-            <li id="slot15-link"><a href="currencies/nok.htm">NOK</a></li>
-            <li id="slot16-link"><a href="currencies/"></a></li>
-            <li id="slot17-link"><a href="currencies/"></a></li>
-            <li id="slot18-link"><a href="currencies/"></a></li>
-            <li id="slot19-link"><a href="currencies/"></a></li>
+            <li id="slot6-link"><a href=""></a></li>
+            <li id="slot7-link"><a href=""></a></li>
+            <li id="slot8-link"><a href=""></a></li>
+            <li id="slot9-link"><a href=""></a></li>
+            <li id="slot10-link"><a href=""></a></li>
+            <li id="slot11-link"><a href=""></a></li>
+            <li id="slot12-link"><a href=""></a></li>
+            <li id="slot13-link"><a href=""></a></li>
+            <li id="slot14-link"><a href=""></a></li>
+            <li id="slot15-link"><a href=""></a></li>
+            <li id="slot16-link"><a href=""></a></li>
+            <li id="slot17-link"><a href=""></a></li>
+            <li id="slot18-link"><a href=""></a></li>
+            <li id="slot19-link"><a href=""></a></li>
         </ul>
     </div>
     <!-- currency sidebar end -->
