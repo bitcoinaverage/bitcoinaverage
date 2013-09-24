@@ -13,6 +13,7 @@ URL = "http://api.bitcoinaverage.com/ticker/USD"
 change = 0
 oldprice = 0
 perc = 0
+direction = ""
 
 while True:
     
@@ -20,30 +21,27 @@ while True:
     newprice = r['last']
     
     if oldprice > newprice:
-        change = oldprice - newprice
+        b = oldprice - newprice
+        change = round(b, 2)
         direction = "down"
-        print change
-        print oldprice
         if oldprice != 0:
-            perc = (change / oldprice)*100
-
+            a = (change / oldprice)*100
+            perc = round(a, 2)
     elif oldprice < newprice:
-        change = newprice - oldprice
+        b = newprice - oldprice
+        change = round(b, 2)
         direction = "up"
-        print change
-        print oldprice
         if oldprice != 0:
-            perc = str((change / oldprice)*100)
+            a = (change / oldprice)*100
+            perc = round(a, 2)
             
-    if perc != 0 and change != 0:
-        print "Average USD Rate: $%s (%s $%s, %%s) - http://bitcoinaverage.com" % (newprice,direction,change,perc)
+    if perc != 0 and change != 0 and direction != "":
+        status = "Average USD Rate: ${0} ({1} ${2}, %{3}) - http://BitcoinAverage.com".format(newprice,direction,change,perc)
+        status = api.PostUpdate(status)
     else:
-        print "Average USD Rate: $%s - http://bitcoinaverage.com" % (newprice)
+        status = "Average USD Rate: ${0} - http://BitcoinAverage.com".format(newprice)
+        status = api.PostUpdate(status)
         
     oldprice = newprice
     
-    #status = "Average USD Rate: $%s (%s $%s, %%s) - http://bitcoinaverage.com" % (newprice,direction,change,perc)
-    
-    #status = api.PostUpdate(status)
-    
-    time.sleep(60)
+    time.sleep(60*60*4)
