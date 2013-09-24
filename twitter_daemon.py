@@ -8,7 +8,7 @@ import requests
 # requires  http://code.google.com/p/python-twitter/
 # https://github.com/bear/python-twitter.git
 
-URL = "http://api.bitcoinaverage.com/ticker/USD"
+URL = "https://api.bitcoinaverage.com/ticker/USD"
 
 change = 0
 oldprice = 0
@@ -36,10 +36,10 @@ while True:
             perc = round(a, 2)
             
     if perc != 0 and change != 0 and direction != "":
-        status = "Average USD Rate: ${0} ({1} ${2}, %{3}) - http://BitcoinAverage.com".format(newprice,direction,change,perc)
+        status = "Average USD Rate: ${0} ({1} ${2}, %{3}) - https://BitcoinAverage.com".format(newprice,direction,change,perc)
         status = api.PostUpdate(status)
     else:
-        status = "Average USD Rate: ${0} - http://BitcoinAverage.com".format(newprice)
+        status = "Average USD Rate: ${0} - https://BitcoinAverage.com".format(newprice)
         status = api.PostUpdate(status)
         
     oldprice = newprice
