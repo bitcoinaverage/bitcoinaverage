@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+    <title>API | BitcoinAverage - independent bitcoin price</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
+    <meta name="description" content="BitcoinAverage helps provide a more accurate price of a bitcoin using a weighted average for multiple exchanges.">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href="https://bitcoinaverage.com/css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+</head>
+<body>
+    
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
+                <span class="navbar-brand slogan">independent bitcoin price</span>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="submenu" href="charts.htm">CHARTS</a></li>
+                    <li><a class="submenu" href="blog.htm">BLOG</a></li>
+                    <li><a class="submenu" href="faq.htm">FAQ</a></li>
+                    <li><a class="submenu" href="api.htm">API</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="main-container" class="container">      
+        
+            <div class="panel panel-default" style="margin-top: 20px;">
+                <div class="panel-body">
+                    <h1 class="panel-title">BitcoinAverage integration API</h1>
+                </div>
+            </div>
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">API manual</h2>
+                </div>
+                <div class="panel-body">
+
+                    <h3>Basics</h3>
+                    <blockquote>
+                        BitcoinAverage API can be found at <a href="https://api.bitcoinaverage.com/" target="_blank">https://api.bitcoinaverage.com/</a>. <br>
+                        API allows you to access all data available on site and is read only.<br>
+                        API is accessible via HTTP GET in JSON format for current data and in CSV format for historical data.
+                        API doesn't provide JSONP, hovewer is does support cross-origin resource sharing and provides HTTP header
+                        <b>Access-Control-Allow-Origin: *</b> allowing unlimited crossdomain AJAX calls.<br>
+                        API is updated along with the site, normally around every minute.
+                        There is no explicit restriction about how often you can call the API, yet calling it more often
+                        then once a minute makes no sense. Please be good.<br>
+                        Each API level starting from the top provides you with a self-explanatory JSON document containing
+                        links to deeper levels of API up to data endpoints.<br>
+                        Each API endpoint JSON document incudes a timestamp indicating document generation time.<br>
+                        You can use HTTP or HTTPS for API queries, preference is yours, yet we recommend using HTTPS.<br>
+                        This manual assumes that you are familiar with software development in general and understood all of the above.
+                    </blockquote>
+
+                    <h3>Ticker API</h3>
+                    <blockquote>
+                        Ticker API endpoints list is available at
+                        <a href="https://api.bitcoinaverage.com/ticker/">https://api.bitcoinaverage.com/ticker/</a>.
+                        Currencies dedicated endpoints are available at
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>.
+                        Aggregated ticker showing all currencies at once is available at
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/all</b>.
+                        Ticker fields:
+                        <ul>
+                            <li><b>24h_avg</b>: average of weighted averages for last 24 hours</li>
+                            <li><b>ask</b>: weighted average of ask prices</li>
+                            <li><b>bid</b>: weighted average of bid prices</li>
+                            <li><b>last</b>: weighted average of last prices</li>
+                            <li><b>total_vol</b>: total trading volume across all exchanges in last 24 hours</li>
+                        </ul>
+                    </blockquote>
+
+                    <h3>Exchanges volumes API</h3>
+                    <blockquote>
+                        Exchanges volumes API URL list is available at
+                        <a href="https://api.bitcoinaverage.com/exchanges/">https://api.bitcoinaverage.com/exchanges/</a>.
+                        Currencies dedicated exchanges volumes endpoints available at
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>.
+                        Aggregated document showing all currencies volumes at once is available at
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/all</b>.
+                        Each exchanges volumes endpoint document is broken down by exchanges.
+                        Each exchange has these fields:
+                        <ul>
+                            <li><b>rates</b>: subset of current ask, bid and last values for exchange to date</li>
+                            <li><b>source</b>: either 'api' or 'bitcoincharts'. Indicates whether data is retrieved directly
+                                from exchange API, or from bitcoincharts API</li>
+                            <li><b>volume_btc</b>: trading volume for last 24h in BTC</li>
+                            <li><b>volume_percent</b>: percent of trading volume represented at this exchange relative to total volume for this currency</li>
+                        </ul>
+                    </blockquote>
+
+                    <h3>Historical data</h3>
+                    <blockquote>
+                        Historical data URL list is available at <a href="https://api.bitcoinaverage.com/history/">https://api.bitcoinaverage.com/history/</a>.
+                        Currencies dedicated histrical data URL lists available at 
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>. <br>
+
+                        Each currency has four CSV endpoints:
+                        <ul>
+                            <li>
+                                <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;/per_minute_24h_sliding_window.csv</b>
+                                - 24 hours sliding window, per minute prices for last 24 hours.
+                            </li>
+                            <li>
+                                <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;/per_hour_monthly_sliding_window.csv</b>
+                                - monthly sliding window, per hour averaged prices for last 30 days.
+                            </li>
+                            <li>
+                                <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;/per_day_all_time_history.csv</b>
+                                - averaged daily prices, since start of tracking at bitcoinaverage.com, stored forever.
+                            </li>
+                            <li>
+                                <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;/volumes.csv</b>
+                                - 24h trading volumes per exchange, since start of tracking at bitcoinaverage.com, stored forever.
+                            </li>
+                        </ul>
+                        Each history file has selfexplanatory headers for each column. CSV files use comma as separators,
+                        with values are wrapped in quotes.
+                    </blockquote>
+
+                    <h3>'no-mtgox' API subset</h3>
+                    <blockquote>
+                        <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/</a>
+                        provides access to ticker and exchanges volumes data with
+                        MtGox excluded from calculations. This API subset has own ticker endpoints (list available at
+                        <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/ticker/</a>)
+                        and exchanges volumes endpoints (list available at
+                        <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/exchanges/</a>). <br>
+                        Both ticker and exchanges in no-mtgox subset have same structure as the main ticker and exchanges API.
+                        No-mtgox API has no dedicated History endpoints. <br>
+                        <b>NB!</b> MtGox is excluded from calculations only for USD, EUR and GBP where it plays a significant
+                        part yes is not the only option. MtGox is still used for other currencies where it's either has
+                        negligible volumes (eg RUB) or is the only market-making exchange (eg JPY).
+                    </blockquote>
+
+                    <h3>Ignored exchanges</h3>
+                    <blockquote>
+                        List of temporarily ignored exchanges and reasons for ignoring is avaialble at
+                        <a href="https://api.bitcoinaverage.com/ignored">https://api.bitcoinaverage.com/ignored</a>.
+                        Normally it should be empty.
+                    </blockquote>
+                </div>
+            </div>
+    </div>
+    
+    
+    <footer class="footer clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="f_left foot_left">
+                    <section>
+                        <h4><span>Support Us</span></h4>
+                        <span style="font-size: 80%">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</span>
+                    </section>
+                </div>
+                <div class="privacy">
+                    2013 GPLv3 (&#1021;) BITCOINAVERAGE
+                </div>
+                <div class="f_right foot_right" style="text-align: right">
+                    <section id="section-connect">
+                        <h4><span>Connect with us</span></h4>
+                        <a href="https://github.com/bitcoinaverage/bitcoinaverage" target="_blank" title="github"><span class="icon-stack">
+                                <i class="icon-circle icon-stack-base icon-1x"></i>
+                                <i class="icon-github icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="https://bitcointalk.org/index.php?topic=270190.0" target="_blank" title="bitcointalk thread">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-comment icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="https://twitter.com/BitcoinAverage" target="_blank" title="twitter">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-twitter icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="mailto:bitcoinaverage@gmail.com" title="email">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-envelope icon-light"></i>
+                            </span>
+                        </a>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </footer><!-- /footer -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-42688472-1', 'bitcoinaverage.com');
+ga('send', 'pageview');
+</script>
+</body>
+</html>

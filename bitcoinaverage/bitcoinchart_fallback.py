@@ -1,13 +1,12 @@
-import simplejson
+import json
 import time
-import socket
 from decimal import Decimal
-
-import requests
-from requests.exceptions import ConnectionError
+from eventlet.green import urllib2
+from eventlet.timeout import Timeout
 
 import bitcoinaverage as ba
-from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_REQUEST_HEADERS
+from bitcoinaverage.config import BITCOIN_CHARTS_API_URL, DEC_PLACES, API_REQUEST_HEADERS, API_CALL_TIMEOUT_THRESHOLD
+from bitcoinaverage.exceptions import CallTimeoutException
 
 
 def fetchBitcoinChartsData():
@@ -15,21 +14,22 @@ def fetchBitcoinChartsData():
 
     if 'bitcoincharts' not in ba.api_parsers.API_QUERY_CACHE:
         ba.api_parsers.API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': 0,
-                                            'result': None,
-                                            'call_fail_count': 0,
-                                               }
+                                                            'result': None,
+                                                            'call_fail_count': 0,
+                                                               }
 
     current_timestamp = int(time.time())
     if (ba.api_parsers.API_QUERY_CACHE['bitcoincharts']['last_call_timestamp']+ba.api_parsers.API_QUERY_FREQUENCY['bitcoincharts'] > current_timestamp):
         result = ba.api_parsers.API_QUERY_CACHE['bitcoincharts']['result']
     else:
-        #TODO, TODO, TODO-TODO-TODO TODO-TODO TODO-DO-DO-DO
-        result = requests.get(BITCOIN_CHARTS_API_URL, verify=False, headers=API_REQUEST_HEADERS).json()
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            response = urllib2.urlopen(urllib2.Request(url=BITCOIN_CHARTS_API_URL, headers=API_REQUEST_HEADERS)).read()
+            result = json.loads(response)
 
         ba.api_parsers.API_QUERY_CACHE['bitcoincharts'] = {'last_call_timestamp': current_timestamp,
-                                            'result':result,
-                                            'call_fail_count':0,
-                                               }
+                                                           'result':result,
+                                                           'call_fail_count':0,
+                                                               }
 
     return result
 
@@ -48,3 +48,5 @@ def getData(bitcoincharts_symbols):
                                                    }
 
     return return_result
+
+

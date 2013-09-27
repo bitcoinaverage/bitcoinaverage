@@ -65,11 +65,25 @@ def callAPI(exchange_name):
                 result = API_QUERY_CACHE[exchange_name]['result']
             else:
                 if '_%sApiCall' % exchange_name in globals():
-                    result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
-                    result['data_source'] = 'api'
+                    try:
+                        result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
+                        result['data_source'] = 'api'
+                    except (
+                            KeyError,
+                            ValueError,
+                            socket.error,
+                            simplejson.decoder.JSONDecodeError,
+                            urllib2.URLError,
+                            httplib.BadStatusLine,
+                            CallTimeoutException) as error:
+                        if 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
+                            result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
+                            result['data_source'] = 'bitcoincharts'
+                        else:
+                            raise error
                 elif 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
-                    result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
-                    result['data_source'] = 'bitcoincharts'
+                            result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
+                            result['data_source'] = 'bitcoincharts'
                 else:
                     raise NoApiException
 
@@ -443,164 +457,45 @@ def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
 
 
 def _localbitcoinsApiCall(api_url, *args, **kwargs):
+    def _lbcParseCurrency(result, ticker, currency_code):
+        try:
+            volume = Decimal(ticker[currency_code]['volume_btc']).quantize(DEC_PLACES)
+            if ticker[currency_code]['avg_3h'] is not None:
+                rate = Decimal(ticker[currency_code]['avg_3h']).quantize(DEC_PLACES)
+            elif ticker[currency_code]['avg_12h'] is not None:
+                rate = Decimal(ticker[currency_code]['avg_12h']).quantize(DEC_PLACES)
+            elif ticker[currency_code]['avg_24h'] is not None:
+                rate = Decimal(ticker[currency_code]['avg_24h']).quantize(DEC_PLACES)
+            else:
+                rate = None
+                volume = None
+            result[currency_code]= {'ask': rate,
+                                    'bid': rate,
+                                    'last': rate,
+                                    'volume': volume,
+                                    }
+        except KeyError as error:
+            pass
+
+        return result
+
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=api_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
     result = {}
-
-    try:
-        usd_volume = Decimal(ticker['USD']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['USD']['avg_3h'] is not None:
-            usd_rate = Decimal(ticker['USD']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['USD']['avg_12h'] is not None:
-            usd_rate = Decimal(ticker['USD']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            usd_rate = None
-            usd_volume = None
-        result['USD']= {'ask': usd_rate,
-                        'bid': usd_rate,
-                        'last': usd_rate,
-                        'volume': usd_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        eur_volume = Decimal(ticker['EUR']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['EUR']['avg_3h'] is not None:
-            eur_rate = Decimal(ticker['EUR']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['EUR']['avg_12h'] is not None:
-            eur_rate = Decimal(ticker['EUR']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            eur_volume = None
-            eur_rate = None
-        result['EUR']= {'ask': eur_rate,
-                        'bid': eur_rate,
-                        'last': eur_rate,
-                        'volume': eur_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        gbp_volume = Decimal(ticker['GBP']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['GBP']['avg_3h'] is not None:
-            gbp_rate = Decimal(ticker['GBP']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['GBP']['avg_12h'] is not None:
-            gbp_rate = Decimal(ticker['GBP']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            gbp_volume = None
-            gbp_rate = None
-        result['GBP']= {'ask': gbp_rate,
-                        'bid': gbp_rate,
-                        'last': gbp_rate,
-                        'volume': gbp_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        cad_volume = Decimal(ticker['CAD']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['CAD']['avg_3h'] is not None:
-            cad_rate = Decimal(ticker['CAD']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['CAD']['avg_12h'] is not None:
-            cad_rate = Decimal(ticker['CAD']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            cad_volume = None
-            cad_rate = None
-        result['CAD']= {'ask': cad_rate,
-                        'bid': cad_rate,
-                        'last': cad_rate,
-                        'volume': cad_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        nok_volume = Decimal(ticker['NOK']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['NOK']['avg_3h'] is not None:
-            nok_rate = Decimal(ticker['NOK']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['NOK']['avg_12h'] is not None:
-            nok_rate = Decimal(ticker['NOK']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            nok_volume = None
-            nok_rate = None
-        result['NOK']= {'ask': nok_rate,
-                        'bid': nok_rate,
-                        'last': nok_rate,
-                        'volume': nok_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        nzd_volume = Decimal(ticker['NZD']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['NZD']['avg_3h'] is not None:
-            nzd_rate = Decimal(ticker['NZD']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['NZD']['avg_12h'] is not None:
-            nzd_rate = Decimal(ticker['NZD']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            nzd_volume = None
-            nzd_rate = None
-        result['NZD']= {'ask': nzd_rate,
-                        'bid': nzd_rate,
-                        'last': nzd_rate,
-                        'volume': nzd_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        zar_volume = Decimal(ticker['ZAR']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['ZAR']['avg_3h'] is not None:
-            zar_rate = Decimal(ticker['ZAR']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['ZAR']['avg_12h'] is not None:
-            zar_rate = Decimal(ticker['ZAR']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            zar_volume = None
-            zar_rate = None
-        result['ZAR']= {'ask': zar_rate,
-                        'bid': zar_rate,
-                        'last': zar_rate,
-                        'volume': zar_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        sek_volume = Decimal(ticker['SEK']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['SEK']['avg_3h'] is not None:
-            sek_rate = Decimal(ticker['SEK']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['SEK']['avg_12h'] is not None:
-            sek_rate = Decimal(ticker['SEK']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            sek_volume = None
-            sek_rate = None
-        result['SEK']= {'ask': sek_rate,
-                        'bid': sek_rate,
-                        'last': sek_rate,
-                        'volume': sek_volume,
-                        }
-    except KeyError as error:
-        pass
-
-    try:
-        aud_volume = Decimal(ticker['AUD']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['AUD']['avg_3h'] is not None:
-            aud_rate = Decimal(ticker['AUD']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['AUD']['avg_12h'] is not None:
-            aud_rate = Decimal(ticker['AUD']['avg_12h']).quantize(DEC_PLACES)
-        else:
-            aud_volume = None
-            aud_rate = None
-        result['AUD']= {'ask': aud_rate,
-                        'bid': aud_rate,
-                        'last': aud_rate,
-                        'volume': aud_volume,
-                        }
-    except KeyError as error:
-        pass
+    result = _lbcParseCurrency(result, ticker, 'USD')
+    result = _lbcParseCurrency(result, ticker, 'EUR')
+    result = _lbcParseCurrency(result, ticker, 'GBP')
+    result = _lbcParseCurrency(result, ticker, 'CAD')
+    result = _lbcParseCurrency(result, ticker, 'NOK')
+    result = _lbcParseCurrency(result, ticker, 'CZK')
+    result = _lbcParseCurrency(result, ticker, 'NZD')
+    result = _lbcParseCurrency(result, ticker, 'ZAR')
+    result = _lbcParseCurrency(result, ticker, 'SEK')
+    result = _lbcParseCurrency(result, ticker, 'SGD')
+    result = _lbcParseCurrency(result, ticker, 'AUD')
+    result = _lbcParseCurrency(result, ticker, 'BRL')
 
     return result
 
@@ -891,17 +786,17 @@ def _krakenApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
-# def _bitkonanApiCall(ticker_url, *args, **kwargs):
-#     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-#         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
-#         ticker = json.loads(response)
-#
-#     result = {}
-#     result['EUR'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
-#                      'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
-#                      'last': Decimal(ticker['last']).quantize(DEC_PLACES),
-#                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
-#                      }
-#     return result
+def _bitkonanApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['EUR'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
+    return result
 
 

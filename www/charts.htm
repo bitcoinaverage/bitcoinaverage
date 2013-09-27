@@ -10,8 +10,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
     
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href="https://bitcoinaverage.com/css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -42,7 +42,7 @@ var firstRenderDone = false;
 var currencyCode;
 var chartMode;
 
-function parseDate(dateString){
+var parseDate = function(dateString){
     var parts = dateString.split(' ');
     var dateParts = parts[0].split('-');
     if (typeof parts[1] != 'undefined') {
@@ -54,7 +54,7 @@ function parseDate(dateString){
     return result;
 }
 
-function ajaxCall(url, callback){
+var ajaxCall = function(url, callback){
     if (typeof callback == 'undefined'){
         callback = function(data){};
     }
@@ -162,7 +162,9 @@ $(function(){
 
 });
 
-function renderPriceChart(currencyCode){
+var renderPriceChart = function(currencyCode){
+    document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
+
     var data24hURL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
     var dataAllTimeURL = config.apiHistoryIndexUrl + currencyCode + '/per_day_all_time_history.csv';
     var dataMonthlyURL = config.apiHistoryIndexUrl + currencyCode + '/per_hour_monthly_sliding_window.csv';
@@ -275,9 +277,10 @@ function renderPriceChart(currencyCode){
 
 }
 
-function renderVolumeChart(currencyCode){
-    var dataVolumesURL = config.apiHistoryIndexUrl + currencyCode + '/volumes.csv';
+var renderVolumeChart = function(currencyCode){
+    document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
 
+    var dataVolumesURL = config.apiHistoryIndexUrl + currencyCode + '/volumes.csv';
     var dataSeries = [];
     var exchangesHeaders = {};
 
@@ -372,21 +375,10 @@ function renderVolumeChart(currencyCode){
     });
 }
 
-
-function getRandomArbitrary(min, max) {
+var getRandomArbitrary = function(min, max) {
   return Math.random() * (max - min) + min;
 }
-
-
-
-
-
-
-
-
-
     </script>
-    
 </head>
 <body>
     
@@ -406,7 +398,7 @@ function getRandomArbitrary(min, max) {
                     <li><a class="submenu" href="charts.htm">CHARTS</a></li>
                     <li><a class="submenu" href="blog.htm">BLOG</a></li>
                     <li><a class="submenu" href="faq.htm">FAQ</a></li>
-                    <li><a class="submenu" href="https://api.bitcoinaverage.com">API</a></li>
+                    <li><a class="submenu" href="api.htm">API</a></li>
                 </ul>
             </div>
         </div>

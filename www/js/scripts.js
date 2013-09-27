@@ -153,7 +153,7 @@ $(function(){
 
 });
 
-function callAPI(callback){
+var callAPI = function(callback){
     if (typeof callback == 'undefined'){
         callback = renderAll;
     }
@@ -171,7 +171,7 @@ function callAPI(callback){
     }
 }
 
-function renderAll(result){
+var renderAll = function(result){
     API_data = result;
 
     $('#currency-sidebar li[id^="slot"] a').hide();
@@ -203,9 +203,11 @@ function renderAll(result){
     }
 
     if (legendClickStatus != false){
-        document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' - BitcoinAverage - independent bitcoin price';
+        renderLegend(legendClickStatus);
+        document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' | BitcoinAverage - independent bitcoin price';
     } else {
-        document.title = API_data['USD'].averages.last+' USD - BitcoinAverage';
+        renderLegend('USD');
+        document.title = API_data['USD'].averages.last+' USD | BitcoinAverage - independent bitcoin price';
     }
 }
 
@@ -252,7 +254,7 @@ function renderRates(currencyCode, currencyData, slotNum){
     }
 }
 
-function renderLegend(currencyCode){
+var renderLegend = function(currencyCode){
     var exchangeArray = [];
     var currencyData = API_data[currencyCode];
 
@@ -272,7 +274,7 @@ function renderLegend(currencyCode){
     });
 
     if (legendClickStatus == currencyCode){
-        document.title = API_data[currencyCode].averages.last+' '+currencyCode+' - BitcoinAverage';
+        document.title = API_data[currencyCode].averages.last+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
     }
 
     $('.legend-curcode').text(currencyCode);
@@ -338,10 +340,10 @@ function renderLegend(currencyCode){
     }
 
 }
-function renderSmallChart(currencyCode){
+var renderSmallChart = function(currencyCode){
     $('#small-chart').html('');
     $('#charts-link a').show();
-    $('#charts-link a').attr('href', '/charts.htm#'+currencyCode);
+    $('#charts-link a').attr('href', 'charts.htm#'+currencyCode);
 
     if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies || active_API_URL == API_all_url_nogox) {
         $('#charts-link a').hide();
@@ -379,7 +381,7 @@ function renderSmallChart(currencyCode){
                                 },
                 events: {
                     click: function(e){
-                        window.location.href = '/charts.htm#'+currencyCode;
+                        window.location.href = 'charts.htm#'+currencyCode;
                     }
                 },
                 spacingBottom: 0,
@@ -400,7 +402,7 @@ function renderSmallChart(currencyCode){
                 cursor:'pointer',
                 events:{
                     click: function(event){
-                        window.location.href = '/charts.htm#'+currencyCode;
+                        window.location.href = 'charts.htm#'+currencyCode;
                     }
                 }
 			}]
@@ -409,8 +411,7 @@ function renderSmallChart(currencyCode){
     });
 }
 
-
-function renderSecondsSinceUpdate(){
+var renderSecondsSinceUpdate = function(){
     var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
     if (seconds < 120) {
         var timeString = seconds+' sec';
@@ -422,14 +423,14 @@ function renderSecondsSinceUpdate(){
     $('#legend-update-time-ago').html(timeString);
 }
 
-function getTimeGap(timeData){
+var getTimeGap = function(timeData){
     var currentRemoteTimestamp = Math.round(Date.parse(timeData['dateString'])/1000);
     var currentLocalTimestamp = Math.round(new Date().getTime()/1000);
 
     timeGap = currentLocalTimestamp - currentRemoteTimestamp;
 }
 
-function parseDate(dateString){
+var parseDate = function(dateString){
     var parts = dateString.split(' ');
     var dateParts = parts[0].split('-');
     var timeParts = parts[1].split(':');
@@ -437,31 +438,5 @@ function parseDate(dateString){
     return result;
 }
 
-jQuery.fn.selectText = function(){
-    var doc = document
-        , element = this[0]
-        , range, selection
-    ;
-    if (doc.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(element);
-        range.select();
-    } else if (window.getSelection) {
-        selection = window.getSelection();
-        range = document.createRange();
-        range.selectNodeContents(element);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
-};
-
-jQuery.fn.countObj = function(){
-    var count = 0;
-    var obj = this[0];
-    for (i in obj) {
-        if (obj.hasOwnProperty(i)) {
-            count++;
-        }
-    }
-    return count;
-};
+jQuery.fn.selectText=function(){var doc=document,element=this[0],range,selection; if(doc.body.createTextRange){range=document.body.createTextRange();range.moveToElementText(element);range.select();}else if(window.getSelection){selection=window.getSelection();range=document.createRange();range.selectNodeContents(element);selection.removeAllRanges();selection.addRange(range);}};
+jQuery.fn.countObj=function(){var count=0;var obj=this[0];for(i in obj){if(obj.hasOwnProperty(i)){count++;}}return count;};
