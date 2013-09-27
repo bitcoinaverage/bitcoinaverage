@@ -171,7 +171,9 @@ var callAPI = function(callback){
     }
 }
 
-var renderAll = function(result){
+var renderAll = function(result, status, responseObj){
+
+    getTimeGap(responseObj.getAllResponseHeaders());
     API_data = result;
 
     $('#currency-sidebar li[id^="slot"] a').hide();
@@ -423,11 +425,18 @@ var renderSecondsSinceUpdate = function(){
     $('#legend-update-time-ago').html(timeString);
 }
 
-var getTimeGap = function(timeData){
-    var currentRemoteTimestamp = Math.round(Date.parse(timeData['dateString'])/1000);
-    var currentLocalTimestamp = Math.round(new Date().getTime()/1000);
-
-    timeGap = currentLocalTimestamp - currentRemoteTimestamp;
+var getTimeGap = function(headers){
+    headers = headers.trim("\n");
+    var headersList = headers.split("\n");
+    for(var i=0;i<headersList.length;i++){
+        var headerDetails = headersList[i].split(':');
+        if(headerDetails[0] == 'Date'){
+            headerDetails = headerDetails.splice(1,headerDetails.length);
+            var currentRemoteTimestamp = Math.round(Date.parse(headerDetails.join(':'))/1000);
+            var currentLocalTimestamp = Math.round(new Date().getTime()/1000);
+            timeGap = currentLocalTimestamp - currentRemoteTimestamp;
+        }
+    }
 }
 
 var parseDate = function(dateString){

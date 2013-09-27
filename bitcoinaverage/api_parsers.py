@@ -111,13 +111,14 @@ def callAPI(exchange_name):
                              str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
                           'WARNING')
             else:
-                last_call_datetime = datetime.datetime.fromtimestamp(current_timestamp)
+                last_call_datetime = datetime.datetime.fromtimestamp(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
                 today = datetime.datetime.now()
-                if current_timestamp == 0:
+                if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] == 0:
                     datetime_str = today.strftime('%H:%M')
+                    API_QUERY_CACHE[exchange_name]['last_call_timestamp'] = current_timestamp-API_IGNORE_TIMEOUT
                 elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
                     datetime_str = last_call_datetime.strftime('%H:%M')
-                else :
+                else:
                     datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
 
                 last_call_strdate = 'never'
