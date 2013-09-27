@@ -63,14 +63,14 @@
                         BitcoinAverage API can be found at <a href="https://api.bitcoinaverage.com/" target="_blank">https://api.bitcoinaverage.com/</a>. <br>
                         API allows you to access all data available on site and is read only.<br>
                         API is accessible via HTTP GET in JSON format for current data and in CSV format for historical data.
-                        API doesn't provide JSONP, hovewer is does support cross-origin resource sharing and provides HTTP header
+                        API doesn't provide JSONP, however is does support cross-origin resource sharing and provides HTTP header
                         <b>Access-Control-Allow-Origin: *</b> allowing unlimited crossdomain AJAX calls.<br>
                         API is updated along with the site, normally around every minute.
                         There is no explicit restriction about how often you can call the API, yet calling it more often
-                        then once a minute makes no sense. Please be good.<br>
+                        than once a minute makes no sense. Please be good.<br>
                         Each API level starting from the top provides you with a self-explanatory JSON document containing
                         links to deeper levels of API up to data endpoints.<br>
-                        Each API endpoint JSON document incudes a timestamp indicating document generation time.<br>
+                        Each API endpoint JSON document includes a timestamp indicating document generation time.<br>
                         You can use HTTP or HTTPS for API queries, preference is yours, yet we recommend using HTTPS.<br>
                         This manual assumes that you are familiar with software development in general and understood all of the above.
                     </blockquote>
@@ -93,20 +93,20 @@
                         </ul>
                     </blockquote>
 
-                    <h3>Exchanges volumes API</h3>
+                    <h3>Exchange volume API</h3>
                     <blockquote>
-                        Exchanges volumes API URL list is available at
+                        Exchange volume API URL list is available at
                         <a href="https://api.bitcoinaverage.com/exchanges/">https://api.bitcoinaverage.com/exchanges/</a>.
-                        Currencies dedicated exchanges volumes endpoints available at
+                        Currencies dedicated exchange volume endpoints available at
                         <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>.
                         Aggregated document showing all currencies volumes at once is available at
                         <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/all</b>.
-                        Each exchanges volumes endpoint document is broken down by exchanges.
+                        Each exchange volume endpoint document is broken down by exchanges.
                         Each exchange has these fields:
                         <ul>
                             <li><b>rates</b>: subset of current ask, bid and last values for exchange to date</li>
                             <li><b>source</b>: either 'api' or 'bitcoincharts'. Indicates whether data is retrieved directly
-                                from exchange API, or from bitcoincharts API</li>
+                                from the exchange API, or from bitcoincharts API</li>
                             <li><b>volume_btc</b>: trading volume for last 24h in BTC</li>
                             <li><b>volume_percent</b>: percent of trading volume represented at this exchange relative to total volume for this currency</li>
                         </ul>
@@ -137,17 +137,17 @@
                                 - 24h trading volumes per exchange, since start of tracking at bitcoinaverage.com, stored forever.
                             </li>
                         </ul>
-                        Each history file has selfexplanatory headers for each column. CSV files use comma as separators,
-                        with values are wrapped in quotes.
+                        Each history file has self explanatory headers for each column. CSV files use comma as separators,
+                        with values that are wrapped in quotes.
                     </blockquote>
 
                     <h3>'no-mtgox' API subset</h3>
                     <blockquote>
                         <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/</a>
-                        provides access to ticker and exchanges volumes data with
+                        provides access to ticker and exchange volume data with
                         MtGox excluded from calculations. This API subset has own ticker endpoints (list available at
                         <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/ticker/</a>)
-                        and exchanges volumes endpoints (list available at
+                        and exchange volume endpoints (list available at
                         <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/exchanges/</a>). <br>
                         Both ticker and exchanges in no-mtgox subset have same structure as the main ticker and exchanges API.
                         No-mtgox API has no dedicated History endpoints. <br>
@@ -158,7 +158,7 @@
 
                     <h3>Ignored exchanges</h3>
                     <blockquote>
-                        List of temporarily ignored exchanges and reasons for ignoring is avaialble at
+                        List of temporarily ignored exchanges and reasons for ignoring is available at
                         <a href="https://api.bitcoinaverage.com/ignored">https://api.bitcoinaverage.com/ignored</a>.
                         Normally it should be empty.
                     </blockquote>
