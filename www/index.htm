@@ -44,8 +44,12 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a class="submenu" href="charts.htm">CHARTS</a></li>
-                    <li><a class="submenu" href="blog.htm">BLOG</a></li>
-                    <li><a class="submenu" href="faq.htm">FAQ</a></li>
+                    <li itemscope itemtype="http://schema.org/Blog">
+                        <a class="submenu" href="blog.htm" itemprop="url">BLOG</a>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/AboutPage">
+                        <a class="submenu" href="faq.htm" itemprop="url">FAQ</a>
+                    </li>
                     <li><a class="submenu" href="api.htm">API</a></li>
                 </ul>
             </div>
@@ -169,7 +173,7 @@
             </tr>
         </thead>
         <tbody>
-	    <tr style=" border-top:0px solid #fff; background:none; height:10px;">
+    	    <tr style=" border-top:0px solid #fff; background:none; height:10px;">
                 <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 <td class="" width="34%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
@@ -186,7 +190,7 @@
               <td class="legend-name" colspan="2"><span>24h sliding average</span></td>
               <td class="legend-rate text-right" width="33%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
             </tr>
-          </tbody>
+        </tbody>
         </table>
            <div id="small-chart"></div>
            <p id="charts-link"><a href="/charts.htm">price history chart for <span class="legend-curcode"></span></a></p>
@@ -378,6 +382,28 @@
             </tr>
           </tbody>
         </table>
+        <table class="table table-striped table-condensed table-hover">
+          <thead>
+            <tr>
+              <th><span class="legend-curcode"></span> history data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td class="legend-rate text-center">
+                    <a href="https://api.bitcoinaverage.com/history/USD/per_minute_24h_sliding_window.csv" id="24h-sliding-link">24h sliding window</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="https://api.bitcoinaverage.com/history/USD/per_hour_monthly_sliding_window.csv" id="monthly-sliding-link">monthly sliding window</a>
+                    <br>
+                    <a href="https://api.bitcoinaverage.com/history/USD/per_day_all_time_history.csv" id="daily-averages-link">daily averages</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="https://api.bitcoinaverage.com/history/USD/volumes.csv" id="volumes-link">daily exchange volumes</a>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+
+
         <div>
         <small><em>
             <span id="legend-api-unavailable-note">* exchange API unavailable, data retrieved via bitcoincharts<br></span>

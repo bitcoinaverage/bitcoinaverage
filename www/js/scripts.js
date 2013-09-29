@@ -15,6 +15,10 @@ if (config.apiIndexUrlNoGox[config.apiIndexUrlNoGox.length-1] != '/') {
 }
 var API_all_url_nogox = config.apiIndexUrlNoGox+'all';
 
+if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
+    config.apiHistoryIndexUrl = config.apiHistoryIndexUrl + '/';
+}
+
 var active_API_URL = API_all_url;
 
 var legendClickStatus = false;
@@ -214,7 +218,7 @@ var renderAll = function(result, status, responseObj){
 }
 
 var lastusdvalue = 0;
-function renderRates(currencyCode, currencyData, slotNum){
+var renderRates = function(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-link').attr('data-currencycode', currencyCode);
 
     var slotLegendLink_a = $('#slot'+slotNum+'-link a');
@@ -341,7 +345,12 @@ var renderLegend = function(currencyCode){
         $('#legend-slot'+slotNum).toggle(true);
     }
 
+    $('#24h-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_minute_24h_sliding_window.csv');
+    $('#monthly-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_hour_monthly_sliding_window.csv');
+    $('#daily-averages-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_day_all_time_history.csv');
+    $('#volumes-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/volumes.csv');
 }
+
 var renderSmallChart = function(currencyCode){
     $('#small-chart').html('');
     $('#charts-link a').show();
