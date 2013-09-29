@@ -1,6 +1,5 @@
 #!/usr/bin/python2.7
 import os
-import simplejson
 import sys
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
@@ -9,6 +8,7 @@ sys.path.insert(0, include_path)
 
 import time
 import requests
+import simplejson
 import json
 import datetime
 import email
@@ -33,9 +33,10 @@ while True:
     ticker_url = ba.server.API_INDEX_URL+'all'
     try:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
-    except simplejson.decoder.JSONDecodeError:
-        str(2)
+    except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
+        time.sleep(2)
         continue
+
     current_data_datetime = current_data_all['timestamp']
     current_data_datetime = current_data_datetime[:-6] #prior to python 3.2 strptime doesnt work properly with numeric timezone offsets.
     current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%a, %d %b %Y %H:%M:%S')

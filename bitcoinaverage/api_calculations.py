@@ -2,6 +2,7 @@ import csv
 import StringIO
 from decimal import Decimal
 from decimal import InvalidOperation
+import simplejson
 import requests
 
 import bitcoinaverage as ba
@@ -12,7 +13,11 @@ def get24hAverage(currency_code):
     average_price = DEC_PLACES
     history_currency_API_24h_path = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
 
-    csv_result = requests.get(history_currency_API_24h_path).text
+    try:
+        csv_result = requests.get(history_currency_API_24h_path).text
+    except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
+        return 0
+
     csvfile = StringIO.StringIO(csv_result)
     csvreader = csv.reader(csvfile, delimiter=',')
     price_sum = DEC_PLACES

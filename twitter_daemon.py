@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import twitter
-from bitcoinaverage.twitter_config import api
+import simplejson
 import time
 import requests
+
+from bitcoinaverage.twitter_config import api
 
 # requires  http://code.google.com/p/python-twitter/
 # https://github.com/bear/python-twitter.git
@@ -16,8 +18,12 @@ perc = 0
 direction = ""
 
 while True:
-    
-    r = requests.get(URL).json()
+    try:
+        r = requests.get(URL).json()
+    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionErro):
+        time.sleep(2)
+        continue
+
     newprice = r['last']
     
     if oldprice > newprice:

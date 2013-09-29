@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import simplejson
 import subprocess
 import re
 import time
@@ -43,7 +44,11 @@ def process_exists(proc_name):
     return False
 
 def api_time_diff():
-    r = requests.get(ticker_URL).json()
+    try:
+        r = requests.get(ticker_URL).json()
+    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionErro):
+        return None
+
     current_data_datetime = r['timestamp']
     current_time = time.time()
     
@@ -55,8 +60,11 @@ def api_time_diff():
     return diff
 
 def history_time_diff():
+    try:
+        csv_result = requests.get(history_URL).text
+    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionErro):
+        return None
 
-    csv_result = requests.get(history_URL).text
     csvfile = StringIO.StringIO(csv_result)
     csvreader = csv.reader(csvfile, delimiter=',')
     
@@ -88,14 +96,15 @@ def send_email(daemon):
     ssmtp.wait()
 
 while True:
-    
-    if api_time_diff() > float(5*60):
-	print "api_daemon.py - Frozen"
-	send_email("API")
+    api_time_difference = api_time_diff()
+    if api_time_difference is None or api_time_difference > float(5*60):
+        print "api_daemon.py - Frozen"
+        send_email("API")
 	
-    if history_time_diff() > float(5*60):
-	print "history_daemon.py - Frozen"
-	send_email("History")
+    history_time_difference = history_time_diff()
+    if history_time_difference is None or history_time_difference > float(5*60):
+        print "history_daemon.py - Frozen"
+        send_email("History")
 	
 
 #    if process_exists('api_daemon.py') == False:

@@ -11,7 +11,6 @@ import json
 import time
 from email import utils
 from decimal import Decimal
-import requests
 
 import bitcoinaverage as ba
 from bitcoinaverage import api_parsers
