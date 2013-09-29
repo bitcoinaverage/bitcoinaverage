@@ -79,6 +79,7 @@ def write_fiat_rates_config():
 
 def write_html_currency_pages():
     global ba
+    today = datetime.datetime.today()
 
     template_file_path = os.path.join(ba.server.WWW_DOCUMENT_ROOT, '_currency_page_template.htm')
     with open(template_file_path, 'r') as template_file:
@@ -95,6 +96,7 @@ def write_html_currency_pages():
         currency_page_contents = template
         currency_page_contents = currency_page_contents.replace('$RATE$', str(Decimal(currency_rate).quantize(ba.config.DEC_PLACES)))
         currency_page_contents = currency_page_contents.replace('$CURRENCY_CODE$', currency_code)
+        currency_page_contents = currency_page_contents.replace('$GENERATION_DATETIME$', today.strftime('%Y-%m-%dT%H:%M'))
 
         with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT,
                                ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME,
@@ -114,6 +116,7 @@ def write_html_currency_pages():
         chart_page_contents = template
         chart_page_contents = chart_page_contents.replace('$RATE$', str(Decimal(currency_rate).quantize(ba.config.DEC_PLACES)))
         chart_page_contents = chart_page_contents.replace('$CURRENCY_CODE$', currency_code)
+        chart_page_contents = chart_page_contents.replace('$GENERATION_DATETIME$', today.strftime('%Y-%m-%dT%H:%M'))
         with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT,
                                ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME,
                                ('%s.htm' % currency_code.lower())), 'w') as chart_page_file:

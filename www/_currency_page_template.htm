@@ -11,12 +11,12 @@
     
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
-    <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="../css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
-    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="../css/styles.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
     $(function(){
         var curLocation = window.location.pathname;
@@ -30,9 +30,12 @@
     });
     </script>
 </head>
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
+    <meta itemprop="name" content="$RATE$ bitcoin price" />
+    <meta itemprop="lastReviewed" content="$GENERATION_DATETIME$" />
+    <meta itemprop="specialty" content="bitcoin exchange rates" />
 
-    <div class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top" itemscope itemtype="http://schema.org/WPHeader">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -40,15 +43,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
-                <h1 class="navbar-brand slogan">independent bitcoin price</h1>
+                <div itemscope itemtype="http://schema.org/Brand">
+                    <meta itemprop="image" content="https://bitcoinaverage.com/img/logo_full_large.png" />
+                    <meta itemprop="logo" content="https://bitcoinaverage.com/img/logo_full_large.png" />
+                    <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url"><span itemprop="name">BitcoinAverage</span></a>
+                    <h1 class="navbar-brand slogan" itemprop="description">independent bitcoin price</h1>
+                </div>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a class="submenu" href="charts.htm">CHARTS</a></li>
-                    <li><a class="submenu" href="blog.htm">BLOG</a></li>
-                    <li><a class="submenu" href="faq.htm">FAQ</a></li>
-                    <li><a class="submenu" href="api.htm">API</a></li>
+                    <li><a class="submenu" href="https://bitcoinaverage.com/charts.htm">CHARTS</a></li>
+                    <li itemscope itemtype="http://schema.org/Blog">
+                        <a class="submenu" href="https://bitcoinaverage.com/blog.htm" itemprop="url">BLOG</a>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/AboutPage">
+                        <a class="submenu" href="https://bitcoinaverage.com/faq.htm" itemprop="url">FAQ</a>
+                    </li>
+                    <li><a class="submenu" href="https://bitcoinaverage.com/api.htm">API</a></li>
                 </ul>
             </div>
         </div>
@@ -59,179 +70,26 @@
             <div class="col-md-12 text-center">
                 <div class="strip active">
 
-                        <span id="currency-arrowcontainer" class="arrows">
-                            <i id="usd-arrowup" class="icon-caret-up"></i>
-                            <i id="usd-arrowdown" class="icon-caret-down"></i>
-                        </span>
-                        <span id="slot0-box">
-                            <span id="slot0-last" class="last-main"></span>
-                            <span id="slot0-curcode" class="curcode-main"></span>
-                        </span>
-                        </br>
-                        <button type="button" class="btn btn-default btn-xs ignore_btn" id="nogox-button">ignore MTGox for USD/EUR/GBP</button>
-                        
-                    <span class="slot0-bid_ask">
-                        <span class="slot0-bid_ask-titles">bid &nbsp;</span>
-                        <span id="slot0-bid" title="bid"></span>
-                        &nbsp;/&nbsp;
-                        <span id="slot0-ask" title="ask"></span>
-                        <span class="slot0-bid_ask-titles">&nbsp; ask</span>
+                    <span id="slot0-box" itemscope itemtype="http://schema.org/PriceSpecification">
+                        <meta itemprop="name" conten="$CURRENCY_CODE$ bitcoin price" />
+                        <span id="slot0-last" class="last-main" itemprop="price">$RATE$</span>
+                        <span id="slot0-curcode" class="curcode-main" itemprop="priceCurrency">$CURRENCY_CODE$</span>
                     </span>
                 </div>
             </div>
         </div>
-        <div class="row">            
-            <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 text-center">
-                <ul id="currency-navtabs" class="nav nav-tabs">
-                    <li id="slot1-box">
-                        <h2 style="margin-top: 10px !important"><span id="slot1-last" class="last"></span> <span id="slot1-curcode" class="curcode"></span></h2>
-                        <p class="bid_ask">
-                            <span id="slot1-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot1-ask" title="ask"></span>
-                        </p>
-                    </li>
-                    <li id="slot2-box">
-                        <h2 style="margin-top: 10px !important"><span id="slot2-last" class="last"></span> <span id="slot2-curcode" class="curcode"></span></h2>
-                        <p class="bid_ask">
-                            <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span>
-                        </p>
-                    </li>
-                    <li id="slot3-box">
-                        <h2 style="margin-top: 10px !important"><span id="slot3-last" class="last"></span> <span id="slot3-curcode" class="curcode"></span></h2>
-                        <p class="bid_ask">
-                            <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span>
-                        </p>
-                    </li>
-                    <li id="slot4-box">
-                        <h2 style="margin-top: 10px !important"><span id="slot4-last" class="last"></span> <span id="slot4-curcode" class="curcode"></span></h2>
-                        <p class="bid_ask">
-                            <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
-                        </p>
-                    </li>
-                    <li id="slot5-box">
-                        <h2 style="margin-top: 10px !important"><span id="slot5-last" class="last"></span> <span id="slot5-curcode" class="curcode"></span></h2>
-                        <p class="bid_ask">
-                            <span id="slot5-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot5-ask" title="ask"></span>
-                        </p>
-                    </li>
-                </ul>
-            </div>
-        </div>       
         <div class="row">
     <div class="tab_content col-md-offset-3 tab-content" id="legend-block">
-      <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
 <!--new section end -->
-       <div class="col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-0">
-        <table width="100%;" cellpadding="0" cellspacing="0" class="table table-striped table-condensed table-hover" style="font-size:14px;">
-        <thead>
-            <tr>
-                <th width="25%" valign="top" style="padding:0px 0 16px; border-bottom:none;">
-                    <span class="legend-curcode legend-heading"></span>
-                </th>
-                <th width="30%" valign="top" style="padding:0px 0 16px;  border-bottom:none; text-align:center;"><span style="font-size:15px;">
-                    <strong style=" display: block; line-height:9px;">
-                        <small style="color:#999999;">ask</small>
-                        <span id="legend-ask"></span>
-                    </strong>
-                    <strong style=" display: block;">
-                        <small style="color:#999999;">bid</small>
-                        <span id="legend-bid"></span>
-                    </strong></span>
-                </th>
-                <th width="35%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td align="right" valign="top" class="legend-heading" style="padding-right: 0px; margin-right: 0px">
-                                <span id="legend-last"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right" valign="top" style="padding: 0 0 0px; line-height: 0px;">
-                                <small style="font-size:11px; ">
-                                    data <span id="legend-update-time-ago"></span> old
-                                </small>
-                            </td>
-                        </tr>
-                    </table>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-	    <tr style=" border-top:0px solid #fff; background:none; height:10px;">
-                <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
-                <td class="" width="34%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
-                <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
-            </tr>
-            <tr>
-              <td class="legend-name" colspan="2"><span>Total market volume (24h)</span></td>
-              <td class="legend-rate text-right" width="33%"><span class="">&#3647; <span id="legend-total-volume"></span></span></td>
-            </tr>
-            <tr>
-              <td class="legend-name" colspan="2">Average USD price in <span class="legend-curcode"></span></td>
-              <td class="legend-rate text-right" width="33%"><span id="legend-converted-to-USD"></span></td>
-            </tr>
-            <tr id="legend-24h-avg-container">
-              <td class="legend-name" colspan="2"><span>24h sliding average</span></td>
-              <td class="legend-rate text-right" width="33%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-0">
            <div id="small-chart"></div>
-           <p id="charts-link"><a href="/charts.htm">price history chart for <span class="legend-curcode"></span></a></p>
-           <table class="table table-striped table-condensed table-hover" width="100%;" id="legend-ignored-table">
-               <thead>
-               <tr>
-                   <th width="40%" colspan="2">ignored exchange</th>
-                   <th width="60%" style="text-align: right">reason</th>
-               </tr>
-               </thead>
-               <tbody>
-               <tr id="legend-ignored-slot0-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot0-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot0-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot1-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot1-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot1-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot2-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot2-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot2-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot3-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot3-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot3-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot4-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot4-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot4-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot5-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot5-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot5-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot6-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot6-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot6-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot7-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot7-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot7-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot8-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot8-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot8-reason"></td>
-               </tr>
-               <tr id="legend-ignored-slot9-box">
-                   <td class="legend-name" width="30%" id="legend-ignored-slot9-name"></td>
-                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot9-reason"></td>
-               </tr>
-               </tbody>
-           </table>
+           <p id="charts-link"><a href="https://bitcoinaverage.com/charts/$CURRENCY_CODE$.htm">price history chart for $CURRENCY_CODE$</a></p>
        </div>
 <!--new section end -->   
        <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-0">
         <div class="">
-          <h3>Data for <span class="legend-curcode">USD</span> weighted average</h3>
+          <h3>Data for $CURRENCY_CODE$ weighted average</h3>
         </div>
         <table class="table table-striped table-condensed table-hover">
           <thead>
@@ -376,33 +234,28 @@
   </div>
     </div><!-- /container -->
     
-    <div id="currency-sidebar">
+    <div id="currency-sidebar" itemscope itemtype="http://schema.org/WPSideBar">
         <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
             <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
             <li class="divider"></li>
-            <li id="slot0-link"><a href=""></a></li>
-            <li id="slot1-link"><a href=""></a></li>
-            <li id="slot2-link"><a href=""></a></li>
-            <li id="slot3-link"><a href=""></a></li>
-            <li id="slot4-link"><a href=""></a></li>
-            <li id="slot5-link"><a href=""></a></li>
-            <!--<li><a href="#" class="link1">More</a></li>-->
+            <li id="slot0-link"><a href="https://bitcoinaverage.com/currencies/usd.htm">USD</a></li>
+            <li id="slot1-link"><a href="https://bitcoinaverage.com/currencies/eur.htm">EUR</a></li>
+            <li id="slot2-link"><a href="https://bitcoinaverage.com/currencies/gbp.htm">GBP</a></li>
+            <li id="slot3-link"><a href="https://bitcoinaverage.com/currencies/cny.htm">CNY</a></li>
+            <li id="slot4-link"><a href="https://bitcoinaverage.com/currencies/cad.htm">CAD</a></li>
+            <li id="slot5-link"><a href="https://bitcoinaverage.com/currencies/pln.htm">PLN</a></li>
         </ul>
         <ul class="dropdown-menu2 ">
-            <li id="slot6-link"><a href=""></a></li>
-            <li id="slot7-link"><a href=""></a></li>
-            <li id="slot8-link"><a href=""></a></li>
-            <li id="slot9-link"><a href=""></a></li>
-            <li id="slot10-link"><a href=""></a></li>
-            <li id="slot11-link"><a href=""></a></li>
-            <li id="slot12-link"><a href=""></a></li>
-            <li id="slot13-link"><a href=""></a></li>
-            <li id="slot14-link"><a href=""></a></li>
-            <li id="slot15-link"><a href=""></a></li>
-            <li id="slot16-link"><a href=""></a></li>
-            <li id="slot17-link"><a href=""></a></li>
-            <li id="slot18-link"><a href=""></a></li>
-            <li id="slot19-link"><a href=""></a></li>
+            <li id="slot6-link"><a href="https://bitcoinaverage.com/currencies/jpy.htm">JPY</a></li>
+            <li id="slot7-link"><a href="https://bitcoinaverage.com/currencies/rub.htm">RUB</a></li>
+            <li id="slot8-link"><a href="https://bitcoinaverage.com/currencies/aud.htm">AUD</a></li>
+            <li id="slot9-link"><a href="https://bitcoinaverage.com/currencies/sek.htm">SEK</a></li>
+            <li id="slot10-link"><a href="https://bitcoinaverage.com/currencies/brl.htm">BRL</a></li>
+            <li id="slot11-link"><a href="https://bitcoinaverage.com/currencies/czk.htm">CZK</a></li>
+            <li id="slot12-link"><a href="https://bitcoinaverage.com/currencies/nzd.htm">NZD</a></li>
+            <li id="slot13-link"><a href="https://bitcoinaverage.com/currencies/sgd.htm">SGD</a></li>
+            <li id="slot14-link"><a href="https://bitcoinaverage.com/currencies/zar.htm">ZAR</a></li>
+            <li id="slot15-link"><a href="https://bitcoinaverage.com/currencies/nok.htm">NOK</a></li>
         </ul>
     </div>
     <!-- currency sidebar end -->

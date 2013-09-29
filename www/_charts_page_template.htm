@@ -11,12 +11,12 @@
     
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
-    <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="../css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
-    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="../css/styles.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
     $(function(){
         var curLocation = window.location.pathname;
@@ -30,9 +30,12 @@
     });
     </script>
 </head>
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
+    <meta itemprop="name" content="$RATE$ bitcoin price history chart" />
+    <meta itemprop="lastReviewed" content="$GENERATION_DATETIME$" />
+    <meta itemprop="specialty" content="bitcoin exchange rates" />
 
-    <div class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top" itemscope itemtype="http://schema.org/WPHeader">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -40,15 +43,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
-                <h1 class="navbar-brand slogan">independent bitcoin price</h1>
+                <div itemscope itemtype="http://schema.org/Brand">
+                    <meta itemprop="image" content="https://bitcoinaverage.com/img/logo_full.png" />
+                    <meta itemprop="logo" content="https://bitcoinaverage.com/img/logo_full.png" />
+                    <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url"><span itemprop="name">BitcoinAverage</span></a>
+                    <h1 class="navbar-brand slogan" itemprop="description">independent bitcoin price</h1>
+                </div>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a class="submenu" href="charts.htm">CHARTS</a></li>
-                    <li><a class="submenu" href="blog.htm">BLOG</a></li>
-                    <li><a class="submenu" href="faq.htm">FAQ</a></li>
-                    <li><a class="submenu" href="api.htm">API</a></li>
+                    <li><a class="submenu" href="https://bitcoinaverage.com/charts.htm">CHARTS</a></li>
+                    <li itemscope itemtype="http://schema.org/Blog">
+                        <a class="submenu" href="https://bitcoinaverage.com/blog.htm" itemprop="url">BLOG</a>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/AboutPage">
+                        <a class="submenu" href="https://bitcoinaverage.com/faq.htm" itemprop="url">FAQ</a>
+                    </li>
+                    <li><a class="submenu" href="https://bitcoinaverage.com/api.htm">API</a></li>
                 </ul>
             </div>
         </div>
@@ -373,41 +384,40 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
     </div><!-- /container -->
     
-    <div id="currency-sidebar">
+    <div id="currency-sidebar" itemscope itemtype="http://schema.org/WPSideBar">
         <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
             <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
             <li class="divider"></li>
-            <li id="slot0-link"><a href=""></a></li>
-            <li id="slot1-link"><a href=""></a></li>
-            <li id="slot2-link"><a href=""></a></li>
-            <li id="slot3-link"><a href=""></a></li>
-            <li id="slot4-link"><a href=""></a></li>
-            <li id="slot5-link"><a href=""></a></li>
-            <!--<li><a href="#" class="link1">More</a></li>-->
+            <li id="slot0-link"><a href="currencies/usd.htm">USD</a></li>
+            <li id="slot1-link"><a href="currencies/eur.htm">EUR</a></li>
+            <li id="slot2-link"><a href="currencies/gbp.htm">GBP</a></li>
+            <li id="slot3-link"><a href="currencies/cny.htm">CNY</a></li>
+            <li id="slot4-link"><a href="currencies/cad.htm">CAD</a></li>
+            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
         </ul>
         <ul class="dropdown-menu2 ">
-            <li id="slot6-link"><a href=""></a></li>
-            <li id="slot7-link"><a href=""></a></li>
-            <li id="slot8-link"><a href=""></a></li>
-            <li id="slot9-link"><a href=""></a></li>
-            <li id="slot10-link"><a href=""></a></li>
-            <li id="slot11-link"><a href=""></a></li>
-            <li id="slot12-link"><a href=""></a></li>
-            <li id="slot13-link"><a href=""></a></li>
-            <li id="slot14-link"><a href=""></a></li>
-            <li id="slot15-link"><a href=""></a></li>
-            <li id="slot16-link"><a href=""></a></li>
-            <li id="slot17-link"><a href=""></a></li>
-            <li id="slot18-link"><a href=""></a></li>
-            <li id="slot19-link"><a href=""></a></li>
+            <li id="slot6-link"><a href="currencies/jpy.htm">JPY</a></li>
+            <li id="slot7-link"><a href="currencies/rub.htm">RUB</a></li>
+            <li id="slot8-link"><a href="currencies/aud.htm">AUD</a></li>
+            <li id="slot9-link"><a href="currencies/sek.htm">SEK</a></li>
+            <li id="slot10-link"><a href="currencies/brl.htm">BRL</a></li>
+            <li id="slot11-link"><a href="currencies/czk.htm">CZK</a></li>
+            <li id="slot12-link"><a href="currencies/nzd.htm">NZD</a></li>
+            <li id="slot13-link"><a href="currencies/sgd.htm">SGD</a></li>
+            <li id="slot14-link"><a href="currencies/zar.htm">ZAR</a></li>
+            <li id="slot15-link"><a href="currencies/nok.htm">NOK</a></li>
+            <li id="slot16-link"><a href="currencies/"></a></li>
+            <li id="slot17-link"><a href="currencies/"></a></li>
+            <li id="slot18-link"><a href="currencies/"></a></li>
+            <li id="slot19-link"><a href="currencies/"></a></li>
         </ul>
     </div>
     <!-- currency sidebar end -->
 
-    <footer class="footer clearfix">
+    <footer class="footer clearfix" itemscope itemtype="http://schema.org/WPFooter">
         <div class="container">
             <div class="row">
                 <div class="f_left foot_left">
