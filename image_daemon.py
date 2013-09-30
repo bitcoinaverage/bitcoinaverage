@@ -19,7 +19,7 @@ font_loc = FONT_PATH + "arialbd.ttf"
 
 
 def filename():
-    filename = WWW_DOCUMENT_ROOT + "price_small" + ".png"
+    filename = WWW_DOCUMENT_ROOT + "/img/" + "price_small.png"
     return filename
 
 def pil_image(rate):
