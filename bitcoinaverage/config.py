@@ -83,8 +83,8 @@ CURRENCY_LIST = ('USD',
                  'SGD',
                  'ZAR',
                  'NOK',
+                 'ILS',
                  # 'DKK',
-                 # 'ILS',
                  # 'CHF',
                  # 'HKD',
                  # 'THB',
@@ -181,9 +181,7 @@ EXCHANGE_LIST = {
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
                                    },
 
-                    'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/NIS/Ticker.json',
-                              'orders_url' : 'https://www.bit2c.co.il/Exchanges/NIS/orderbook.json',
-                              'trades_url' : 'https://www.bit2c.co.il/Exchanges/NIS/trades.json',
+                    'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/BtcNis/Ticker.json',
                                 },
                     'kapiton': {'ticker_url': 'https://kapiton.se/api/0/ticker',
                                 },
@@ -217,7 +215,6 @@ EXCHANGE_LIST = {
                                  'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
                                                            },
                                  },
-
 
 
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},

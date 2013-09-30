@@ -4,10 +4,16 @@ import time
 import json
 from email import utils
 import datetime
-import requests
+import socket
 from lxml import etree
+from eventlet.green import urllib2
+from eventlet.timeout import Timeout
+from eventlet.green import httplib
+import simplejson
 
 import bitcoinaverage as ba
+from bitcoinaverage.config import API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS
+from bitcoinaverage.exceptions import CallTimeoutException
 
 
 def write_log(log_string, message_type='ERROR'):
@@ -50,7 +56,16 @@ def write_fiat_rates_config():
 
     for currency in ba.config.CURRENCY_LIST:
         api_url = google_api_url_template + currency
-        result = requests.get(api_url, headers=ba.config.API_REQUEST_HEADERS).text
+
+        try:
+            with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+                result = urllib2.urlopen(urllib2.Request(url=api_url, headers=API_REQUEST_HEADERS)).read()
+        except (CallTimeoutException,
+                socket.error,
+                urllib2.URLError,
+                httplib.BadStatusLine):
+            return None
+
         result = result.replace('lhs', '"lhs"')
         result = result.replace('rhs', '"rhs"')
         result = result.replace('error', '"error"')
@@ -86,7 +101,17 @@ def write_html_currency_pages():
         template = template_file.read()
 
     api_all_url = '%sticker/all' % ba.server.API_INDEX_URL
-    all_rates = requests.get(api_all_url, headers=ba.config.API_REQUEST_HEADERS).json()
+
+    try:
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            response = urllib2.urlopen(urllib2.Request(url=api_all_url, headers=API_REQUEST_HEADERS)).read()
+            all_rates = json.loads(response)
+    except (CallTimeoutException,
+            socket.error,
+            urllib2.URLError,
+            httplib.BadStatusLine,
+            simplejson.decoder.JSONDecodeError):
+        return None
 
     if not os.path.exists(os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME)):
         os.makedirs(os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME))

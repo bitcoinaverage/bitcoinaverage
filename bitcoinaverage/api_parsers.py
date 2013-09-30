@@ -71,8 +71,8 @@ def callAPI(exchange_name):
                     except (
                             KeyError,
                             ValueError,
-                            socket.error,
                             simplejson.decoder.JSONDecodeError,
+                            socket.error,
                             urllib2.URLError,
                             httplib.BadStatusLine,
                             CallTimeoutException) as error:
@@ -598,29 +598,23 @@ def _intersangoApiCall(ticker_url, *args, **kwargs):
             }
 
 
-def _bit2cApiCall(ticker_url, orders_url, trades_url, *args, **kwargs):
+def _bit2cApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=orders_url, headers=API_REQUEST_HEADERS)).read()
-        orders = json.loads(response)
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
-        trades = json.loads(response)
 
-    last24h_time = int(time.time())-86400  #86400s in 24h
-    volume = 0
-    for trade in trades:
-        if trade['date'] > last24h_time:
-            volume = volume + float(trade['amount'])
+    result = {}
+    try:
+        result['ILS'] = {'ask': Decimal(ticker['l']).quantize(DEC_PLACES),
+                         'bid': Decimal(ticker['h']).quantize(DEC_PLACES),
+                         'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
+                         'volume': Decimal(ticker['a']).quantize(DEC_PLACES),
+                        }
 
-    return {'ILS': {'ask': Decimal(orders['asks'][0][0]).quantize(DEC_PLACES),
-                    'bid': Decimal(orders['bids'][0][0]).quantize(DEC_PLACES),
-                    'last': Decimal(ticker['ll']).quantize(DEC_PLACES),
-                    'volume': Decimal(volume).quantize(DEC_PLACES),
-                    },
-            }
+    except KeyError as error:
+        pass
+
+    return result
 
 def _kapitonApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
