@@ -13,16 +13,16 @@ except:
 
 
 # config locations
-url = "https://api.bitcoinaverage.com/ticker/USD"
+base_url = "https://api.bitcoinaverage.com/ticker/"
 base = WWW_DOCUMENT_ROOT + "/img/" + "logo_xsmall.png"
 font_loc = FONT_PATH + "arialbd.ttf"
 
 
-def filename():
-    filename = WWW_DOCUMENT_ROOT + "/img/" + "price_small.png"
+def filename(cur):
+    filename = WWW_DOCUMENT_ROOT + "/img/" + "price_small_" + cur + ".png"
     return filename
 
-def pil_image(rate):
+def pil_image(cur):
 
     white = (255,255,255) # colour of background
     grey = (79,79,79)
@@ -34,7 +34,7 @@ def pil_image(rate):
     im = Image.new("RGB", [180,55], light_grey)
     draw = ImageDraw.Draw(im)   # create a drawing object that is used to draw on the new image
 
-    rate_text = rate # text to draw
+    rate_text = get_rate(cur) # text to draw
     domain_text = "BitcoinAverage.com"
 
     # drawing
@@ -43,18 +43,32 @@ def pil_image(rate):
     im.paste(base_im, (2,12))
 
     # save open image as PNG
-    im.save(filename(), 'PNG')
+    im.save(filename(cur), 'PNG')
 
     return filename # and we're done!
 
-def get_rate():
-    r = requests.get(url).json()
-    rate = "$" + str(r['last'])
+def get_rate(cur):
+
+    if cur is "usd":
+        url = base_url + "USD"
+        r = requests.get(url).json()
+        rate = "$" + str(r['last'])
+    elif cur is "eur":
+        url = base_url + "EUR"
+        r = requests.get(url).json()
+        rate = u"\u20AC" + str(r['last'])
+    elif cur is "gbp":
+        url = base_url + "GBP"
+        r = requests.get(url).json()
+        rate = u"\u00A3" + str(r['last'])
+
     return rate
 
 
 while True:
 
-    pil_image(get_rate())
+    pil_image("usd")
+    pil_image("eur")
+    pil_image("gbp")
 
     time.sleep(60*5)
