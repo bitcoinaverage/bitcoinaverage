@@ -176,8 +176,11 @@ var callAPI = function(callback){
 }
 
 var renderAll = function(result, status, responseObj){
+    //responseObj is not available in IE
+    if(typeof responseObj == 'object'){
+        getTimeGap(responseObj.getAllResponseHeaders());
+    }
 
-    getTimeGap(responseObj.getAllResponseHeaders());
     API_data = result;
 
     $('#currency-sidebar li[id^="slot"] a').hide();
