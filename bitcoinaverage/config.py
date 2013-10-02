@@ -215,6 +215,10 @@ EXCHANGE_LIST = {
                                  'bitcoincharts_symbols': {'USD': 'bitkonanUSD',
                                                            },
                                  },
+                    'bittylicious': {'ticker_url': 'https://bittylicious.com/api/v1/ticker',
+                                 },
+
+
 
 
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},

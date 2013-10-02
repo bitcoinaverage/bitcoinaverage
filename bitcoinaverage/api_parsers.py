@@ -794,4 +794,30 @@ def _bitkonanApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
+def _bittyliciousApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    try:
+        volume = Decimal(ticker['GBP']['volume_btc']).quantize(DEC_PLACES)
+        if ticker['GBP']['avg_3h'] is not None:
+            rate = Decimal(ticker['GBP']['avg_3h']).quantize(DEC_PLACES)
+        elif ticker['GBP']['avg_12h'] is not None:
+            rate = Decimal(ticker['GBP']['avg_12h']).quantize(DEC_PLACES)
+        elif ticker['GBP']['avg_24h'] is not None:
+            rate = Decimal(ticker['GBP']['avg_24h']).quantize(DEC_PLACES)
+        else:
+            rate = None
+            volume = None
+        result['GBP']= {'ask': rate,
+                        'bid': rate,
+                        'last': rate,
+                        'volume': volume,
+                        }
+    except KeyError as error:
+        pass
+
+    return result
 
