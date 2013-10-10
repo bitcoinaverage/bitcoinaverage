@@ -1,7 +1,6 @@
 #!/usr/bin/python2.7
 import os
 import sys
-from bitcoinaverage.api_calculations import get24hAverage
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, include_path)
@@ -17,6 +16,7 @@ from bitcoinaverage import api_parsers
 from bitcoinaverage.config import EXCHANGE_LIST, CURRENCY_LIST, DEC_PLACES, API_QUERY_FREQUENCY, API_FILES, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
 from bitcoinaverage.nogox import create_nogox_api
+from bitcoinaverage.api_calculations import get24hAverage
 
 if ba.server.PROJECT_PATH == '':
     ba.server.PROJECT_PATH = include_path

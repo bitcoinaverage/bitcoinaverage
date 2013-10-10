@@ -214,8 +214,6 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
                 new_data_row.append(0)
                 new_data_row.append(0)
 
-        new_data_row.append(currency_data['averages']['total_vol'])
-
         with open(current_volumes_file_path, 'wb') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=',')
             csvwriter.writerow(headers)
