@@ -217,8 +217,8 @@ EXCHANGE_LIST = {
                                  },
                     'bittylicious': {'ticker_url': 'https://bittylicious.com/api/v1/ticker',
                                  },
-                    'ibwt': {'ticker_url': 'https://ibwt.co.uk/API/trades',
-                                 },
+                    # 'ibwt': {'ticker_url': 'https://ibwt.co.uk/API/trades',
+                    #              },
 
 
 
