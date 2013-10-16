@@ -781,18 +781,20 @@ def _krakenApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
+
 def _bitkonanApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
     result = {}
-    result['EUR'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+    result['USD'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                      'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
                      'last': Decimal(ticker['last']).quantize(DEC_PLACES),
                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
                      }
     return result
+
 
 def _bittyliciousApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
@@ -816,6 +818,30 @@ def _bittyliciousApiCall(ticker_url, *args, **kwargs):
                         'last': rate,
                         'volume': volume,
                         }
+    except KeyError as error:
+        pass
+
+    return result
+
+
+def _ibwtApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    try:
+        for currency_index in ticker['result']:
+            currency_data = ticker[currency_index]
+            if currency_data['SecondUnit'] == 'GBP':
+                volume = currency_data['Volume'][0]
+                volume = volume.replace(' BTC', '')
+                volume = Decimal(volume).quantize(DEC_PLACES)
+                result['GBP']= {'ask': currency_data['Last'],
+                                'bid': currency_data['Last'],
+                                'last': currency_data['Last'],
+                                'volume': volume,
+                                }
     except KeyError as error:
         pass
 
