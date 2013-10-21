@@ -48,47 +48,36 @@ def write_js_config():
 
 def write_fiat_rates_config():
     global ba
-    js_config_template = "var fiatCurrencies = $FIAT_CURRENCIES_RATES;"
+    js_config_template = "var fiatCurrencies = $FIAT_CURRENCIES_DATA$;"
 
-    google_api_url_template = 'http://www.google.com/ig/calculator?hl=en&q=1USD%3D%3F'
+    currencies_names_URL = 'http://openexchangerates.org/api/currencies.json'
+    currencies_rates_URL = 'http://openexchangerates.org/api/latest.json?app_id=1eff26eeb4644fc6a77afb6e8ffa19eb'
 
-    rate_list = {}
+    currency_data_list = {}
 
-    for currency in ba.config.CURRENCY_LIST:
-        api_url = google_api_url_template + currency
-
+    for currency_code in ba.config.CURRENCY_LIST:
         try:
             with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-                result = urllib2.urlopen(urllib2.Request(url=api_url, headers=API_REQUEST_HEADERS)).read()
+                response = urllib2.urlopen(urllib2.Request(url=currencies_names_URL, headers=API_REQUEST_HEADERS)).read()
+                currencies_names = json.loads(response)
+
+            with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+                response = urllib2.urlopen(urllib2.Request(url=currencies_rates_URL, headers=API_REQUEST_HEADERS)).read()
+                currencies_rates = json.loads(response)
         except (CallTimeoutException,
                 socket.error,
                 urllib2.URLError,
                 httplib.BadStatusLine):
             return None
 
-        result = result.replace('lhs', '"lhs"')
-        result = result.replace('rhs', '"rhs"')
-        result = result.replace('error', '"error"')
-        result = result.replace('icc', '"icc"')
-        result = json.loads(result)
-        rate_string = result['rhs']
-        rate = ''
-        for c in rate_string:
-            if c == ' ':
-                break
-            else:
-                rate = rate + c
-        try:
-            rate = float(rate)
-        except ValueError:
-            return
-        rate = Decimal(rate).quantize(ba.config.DEC_PLACES)
-        rate_list[currency] = str(rate)
+        currency_data_list[currency_code] = {'name': str(currencies_names[currency_code]),
+                                             'rate': str(currencies_rates['rates'][currency_code]),
+                                             }
 
     config_string = js_config_template
-    config_string = config_string.replace('$FIAT_CURRENCIES_RATES', json.dumps(rate_list))
+    config_string = config_string.replace('$FIAT_CURRENCIES_DATA$', json.dumps(currency_data_list))
 
-    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'fiat_rates.js'), 'w') as fiat_exchange_config_file:
+    with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'fiat_data.js'), 'w') as fiat_exchange_config_file:
         fiat_exchange_config_file.write(config_string)
 
 

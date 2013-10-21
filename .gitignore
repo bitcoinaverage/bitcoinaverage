@@ -6,7 +6,7 @@
 /www/currencies/*
 /www/sitemap.xml
 /www/js/config.js
-/www/js/fiat_rates.js
+/www/js/fiat_data.js
 
 /bitcoinaverage/server.py
 

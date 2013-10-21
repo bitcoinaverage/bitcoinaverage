@@ -227,10 +227,12 @@ var renderRates = function(currencyCode, currencyData, slotNum){
     var slotLegendLink_a = $('#slot'+slotNum+'-link a');
     slotLegendLink_a.text(currencyCode);
     slotLegendLink_a.attr('href', '#'+currencyCode);
+    slotLegendLink_a.attr('title', fiatCurrencies[currencyCode]['name']);
     slotLegendLink_a.show();
 
-    majorCurrencies
+
     $('#slot'+slotNum+'-box').attr('data-currencycode', currencyCode);
+    $('#slot'+slotNum+'-box').attr('title', fiatCurrencies[currencyCode]['name']);
     $('#slot'+slotNum+'-curcode').text(currencyCode);
 
     var dataChanged = false;
@@ -312,8 +314,10 @@ var renderLegend = function(currencyCode){
         }
     }
 
+    $('#legend-currency-name').html(fiatCurrencies[currencyCode]['name']);
+
     if (currencyCode != 'USD') {
-        var USD_BTC_fiat_rate = parseFloat(API_data['USD'].averages.last) * parseFloat(fiatCurrencies[currencyCode]);
+        var USD_BTC_fiat_rate = parseFloat(API_data['USD'].averages.last) * parseFloat(fiatCurrencies[currencyCode]['rate']);
         USD_BTC_fiat_rate = Math.round(USD_BTC_fiat_rate*100)/100;
         USD_BTC_fiat_rate = USD_BTC_fiat_rate + ' ' + currencyCode;
         $('#legend-converted-to-USD').html(USD_BTC_fiat_rate);
