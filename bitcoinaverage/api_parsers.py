@@ -862,3 +862,33 @@ def _ibwtApiCall(ticker_url, *args, **kwargs):
 
     return result
 
+
+def _cavirtexApiCall(ticker_url, orderbook_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=orderbook_url, headers=API_REQUEST_HEADERS)).read()
+        orderbook = json.loads(response)
+
+
+    bid = 0
+    for bid_order in orderbook['bids']:
+        if bid < bid_order[0] or bid == 0:
+            bid = bid_order[0]
+
+    ask = 0
+    for ask_order in orderbook['asks']:
+        if ask > ask_order[0] or ask == 0:
+            ask = ask_order[0]
+
+    bid = Decimal(bid).quantize(DEC_PLACES)
+    ask = Decimal(ask).quantize(DEC_PLACES)
+    result = {}
+    result['CAD']= {'ask': ask,
+                    'bid': bid,
+                    'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                    }
+
+    return result

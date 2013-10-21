@@ -57,8 +57,10 @@ API_QUERY_FREQUENCY = {
                         'justcoin': 55,
                         'kraken': 55,
                         'bitkonan': 55,
-                        'ibwt': 55,
+                        'bittylicious': 55,
                         'bitxf': 55,
+                        'cavirtex': 55,
+                        #'ibwt': 55,
 }
 
 
@@ -222,6 +224,11 @@ EXCHANGE_LIST = {
                                  },
                     'bitxf': {'ticker_url': 'https://bitxf.com/api/v0/CNY/ticker.json',
                                  },
+                    'cavirtex': {'ticker_url': 'https://www.cavirtex.com/api/CAD/ticker.json',
+                                 'orderbook_url': 'https://www.cavirtex.com/api/CAD/orderbook.json',
+                                 'bitcoincharts_symbols': {'CAD': 'virtexCAD',
+                                                           },
+                                 },
                     # 'ibwt': {'ticker_url': 'https://ibwt.co.uk/API/trades',
                     #              },
 
@@ -231,9 +238,6 @@ EXCHANGE_LIST = {
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
                                  },
 
-                    'cavirtex': {'bitcoincharts_symbols': {'CAD': 'virtexCAD',
-                                                           },
-                                 },
                     'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
                                                          },
                                  },
