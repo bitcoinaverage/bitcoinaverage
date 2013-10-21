@@ -824,7 +824,7 @@ def _bittyliciousApiCall(ticker_url, *args, **kwargs):
     return result
 
 
-def _bitfxApiCall(ticker_url, *args, **kwargs):
+def _bitxfApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
