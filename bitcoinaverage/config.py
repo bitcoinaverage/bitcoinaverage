@@ -56,6 +56,8 @@ API_QUERY_FREQUENCY = {
                         'justcoin': 55,
                         'kraken': 55,
                         'bitkonan': 55,
+                        'ibwt': 55,
+                        'bitfx': 55,
 }
 
 
@@ -216,6 +218,8 @@ EXCHANGE_LIST = {
                                                            },
                                  },
                     'bittylicious': {'ticker_url': 'https://bittylicious.com/api/v1/ticker',
+                                 },
+                    'bitfx': {'ticker_url': 'https://bitxf.com/api/v0/CNY/ticker.json',
                                  },
                     # 'ibwt': {'ticker_url': 'https://ibwt.co.uk/API/trades',
                     #              },
