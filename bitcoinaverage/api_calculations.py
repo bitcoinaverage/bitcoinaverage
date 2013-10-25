@@ -1,7 +1,7 @@
 import csv
 import StringIO
-from decimal import Decimal
-from decimal import InvalidOperation
+from decimal import Decimal, InvalidOperation
+import decimal
 import simplejson
 import requests
 
@@ -30,7 +30,7 @@ def get24hAverage(currency_code):
         try:
             price_sum = price_sum + Decimal(row[1])
             index = index + 1
-        except IndexError:
+        except (IndexError, InvalidOperation):
             continue
     try:
         average_price = (price_sum / Decimal(index)).quantize(DEC_PLACES)
@@ -38,4 +38,3 @@ def get24hAverage(currency_code):
         average_price = DEC_PLACES
 
     return average_price
-

@@ -830,11 +830,11 @@ def _bitxfApiCall(ticker_url, *args, **kwargs):
         ticker = json.loads(response)
 
     result = {}
-    result['CNY']= {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
-                    'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
-                    'last': Decimal(ticker['last_trade']['price']).quantize(DEC_PLACES),
-                    'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
-                    }
+    result['CNY'] = {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last_trade']['price']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
 
     return result
 
@@ -852,11 +852,11 @@ def _ibwtApiCall(ticker_url, *args, **kwargs):
                 volume = currency_data['Volume'][0]
                 volume = volume.replace(' BTC', '')
                 volume = Decimal(volume).quantize(DEC_PLACES)
-                result['GBP']= {'ask': currency_data['Last'],
-                                'bid': currency_data['Last'],
-                                'last': currency_data['Last'],
-                                'volume': volume,
-                                }
+                result['GBP'] = {'ask': currency_data['Last'],
+                                 'bid': currency_data['Last'],
+                                 'last': currency_data['Last'],
+                                 'volume': volume,
+                                 }
     except KeyError as error:
         pass
 
@@ -885,10 +885,10 @@ def _cavirtexApiCall(ticker_url, orderbook_url, *args, **kwargs):
     bid = Decimal(bid).quantize(DEC_PLACES)
     ask = Decimal(ask).quantize(DEC_PLACES)
     result = {}
-    result['CAD']= {'ask': ask,
-                    'bid': bid,
-                    'last': Decimal(ticker['last']).quantize(DEC_PLACES),
-                    'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
-                    }
+    result['CAD'] = {'ask': ask,
+                     'bid': bid,
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
 
     return result
