@@ -238,9 +238,9 @@ EXCHANGE_LIST = {
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
                                  },
 
-                    'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
-                                                         },
-                                 },
+                    # 'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
+                    #                                      },
+                    #              },
                     'bitcoin_de': {'bitcoincharts_symbols':  {'EUR': 'btcdeEUR',
                                                              },
                                  },
@@ -251,11 +251,15 @@ EXCHANGE_LIST = {
                     'icbit': {'bitcoincharts_symbols': {'USD': 'icbitUSD',
                                                            },
                                  },
-                    'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
-                                                        #'CAD': 'weexCAD',
-                                                        # 'USD': 'weexUSD',
+                    # 'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
+                    #                                     #'CAD': 'weexCAD',
+                    #                                     # 'USD': 'weexUSD',
+                    #                                        },
+                    #              },
+                    'btcmarkets': {'bitcoincharts_symbols': {'AUD': 'btcmarketsAUD',
                                                            },
                                  },
+
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitnzNZD',
                                                            },
                                  },
@@ -265,4 +269,15 @@ EXCHANGE_LIST = {
                     'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                  },
+
+                    'anx_hk':  {'bitcoincharts_symbols': {'USD': 'anxhkUSD',
+                                                          'HKD': 'anxhkHKD',
+                                                          'CNY': 'anxhkCNY',
+                                                           },
+                                 },
+
+
+                    'bidextreme': {'bitcoincharts_symbols': {'PLN': 'bidxtrmPLN',
+                                                           },
+                                    },
                 }
