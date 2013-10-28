@@ -774,16 +774,24 @@ def _justcoinApiCall(ticker_url, *args, **kwargs):
     return result
 
 
-def _krakenApiCall(ticker_url, *args, **kwargs):
+def _krakenApiCall(usd_ticker_url, eur_ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
-        ticker = json.loads(response)
+        usd_response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        usd_ticker = json.loads(usd_response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        eur_response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        eur_ticker = json.loads(eur_response)
 
     result = {}
-    result['EUR'] = {'ask': Decimal(ticker['result']['XXBTZEUR']['a'][0]).quantize(DEC_PLACES),
-                     'bid': Decimal(ticker['result']['XXBTZEUR']['b'][0]).quantize(DEC_PLACES),
-                     'last': Decimal(ticker['result']['XXBTZEUR']['c'][0]).quantize(DEC_PLACES),
-                     'volume': Decimal(ticker['result']['XXBTZEUR']['v'][0]).quantize(DEC_PLACES),
+    result['USD'] = {'ask': Decimal(usd_ticker['result']['XXBTZUSD']['a'][0]).quantize(DEC_PLACES),
+                     'bid': Decimal(usd_ticker['result']['XXBTZUSD']['b'][0]).quantize(DEC_PLACES),
+                     'last': Decimal(usd_ticker['result']['XXBTZUSD']['c'][0]).quantize(DEC_PLACES),
+                     'volume': Decimal(usd_ticker['result']['XXBTZUSD']['v'][0]).quantize(DEC_PLACES),
+                     }
+    result['EUR'] = {'ask': Decimal(eur_ticker['result']['XXBTZEUR']['a'][0]).quantize(DEC_PLACES),
+                     'bid': Decimal(eur_ticker['result']['XXBTZEUR']['b'][0]).quantize(DEC_PLACES),
+                     'last': Decimal(eur_ticker['result']['XXBTZEUR']['c'][0]).quantize(DEC_PLACES),
+                     'volume': Decimal(eur_ticker['result']['XXBTZEUR']['v'][0]).quantize(DEC_PLACES),
                      }
     return result
 
