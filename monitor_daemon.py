@@ -59,6 +59,7 @@ def api_time_diff():
     diff = current_time - current_data_timestamp
     return diff
 
+
 def history_time_diff():
     try:
         csv_result = requests.get(history_URL).text
@@ -71,9 +72,8 @@ def history_time_diff():
     history_list = []
     
     for row in csvreader:
-	history_list.append(row)
-	
-    last_log = history_list[-1]
+        history_list.append(row)
+        last_log = history_list[-1]
     
     current_data_datetime = last_log[0]
     current_time = time.time()
