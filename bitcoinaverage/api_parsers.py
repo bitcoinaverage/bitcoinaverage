@@ -5,10 +5,10 @@ from decimal import Decimal
 import datetime
 import eventlet
 from eventlet.green import urllib2
+from eventlet.green import httplib
 from eventlet.timeout import Timeout
 import simplejson
 import socket
-from eventlet.green import httplib
 
 from bitcoinaverage.bitcoinchart_fallback import getData
 from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD
@@ -903,6 +903,32 @@ def _cavirtexApiCall(ticker_url, orderbook_url, *args, **kwargs):
                      'bid': bid,
                      'last': Decimal(ticker['last']).quantize(DEC_PLACES),
                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
+
+    return result
+
+
+def _bitfinexApiCall(ticker_url, trades_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
+
+    volume = DEC_PLACES
+    last24h_timestamp = time.time() - 86400
+    for trade in trades:
+        if trade['exchange'] == 'bitfinex' and trade['timestamp'] >= last24h_timestamp:
+            volume = volume + Decimal(trade['amount'])
+
+    volume = volume.quantize(DEC_PLACES)
+
+    result = {}
+    result['USD'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last_price']).quantize(DEC_PLACES),
+                     'volume': volume,
                      }
 
     return result

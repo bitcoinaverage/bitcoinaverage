@@ -230,8 +230,9 @@ EXCHANGE_LIST = {
                                  'bitcoincharts_symbols': {'CAD': 'virtexCAD',
                                                            },
                                  },
-                    # 'ibwt': {'ticker_url': 'https://ibwt.co.uk/API/trades',
-                    #              },
+                    'bitfinex': {'ticker_url': 'https://api.bitfinex.com/v1/ticker/btcusd',
+                                 'trades_url': 'https://api.bitfinex.com/v1/trades/btcusd?limit_trades=9999', # limit_trades might need increase if daily trading will go above it
+                                 },
 
 
 

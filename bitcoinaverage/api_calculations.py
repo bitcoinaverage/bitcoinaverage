@@ -3,10 +3,14 @@ import StringIO
 from decimal import Decimal, InvalidOperation
 import decimal
 import simplejson
-import requests
+from eventlet.green import urllib2
+from eventlet.green import httplib
+from eventlet.timeout import Timeout
+import socket
 
 import bitcoinaverage as ba
-from bitcoinaverage.config import DEC_PLACES
+from bitcoinaverage.config import DEC_PLACES, API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS
+from bitcoinaverage.exceptions import CallTimeoutException
 
 
 def get24hAverage(currency_code):
@@ -14,8 +18,16 @@ def get24hAverage(currency_code):
     history_currency_API_24h_path = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
 
     try:
-        csv_result = requests.get(history_currency_API_24h_path).text
-    except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            csv_result = urllib2.urlopen(urllib2.Request(url=history_currency_API_24h_path, headers=API_REQUEST_HEADERS)).read()
+    except (
+            KeyError,
+            ValueError,
+            socket.error,
+            simplejson.decoder.JSONDecodeError,
+            urllib2.URLError,
+            httplib.BadStatusLine,
+            CallTimeoutException):
         return 0
 
     csvfile = StringIO.StringIO(csv_result)
