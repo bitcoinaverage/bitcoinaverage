@@ -926,8 +926,50 @@ def _bitfinexApiCall(ticker_url, trades_url, *args, **kwargs):
 
     result = {}
     result['USD'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
-                     'bid': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
                      'last': Decimal(ticker['last_price']).quantize(DEC_PLACES),
+                     'volume': volume,
+                     }
+
+    return result
+
+def _bidextremeApiCall(trades_url, orders_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=orders_url, headers=API_REQUEST_HEADERS)).read()
+        orderbook = json.loads(response)
+
+    volume = DEC_PLACES
+    last24h_timestamp = time.time() - 86400
+    last_price = 0
+    last_trade_timestamp = 0
+    for trade in trades:
+        if trade['date'] >= last24h_timestamp:
+            volume = volume + Decimal(trade['amount'])
+        if trade['date'] > last_trade_timestamp:
+            last_trade_timestamp = trade['date']
+            last_price = trade['price']
+    last_price = Decimal(last_price).quantize(DEC_PLACES)
+
+    bid = 0
+    for bid_order in orderbook['bids']:
+        if bid < bid_order[0] or bid == 0:
+            bid = bid_order[0]
+    bid = Decimal(bid).quantize(DEC_PLACES)
+
+    ask = 0
+    for ask_order in orderbook['asks']:
+        if ask > ask_order[0] or ask == 0:
+            ask = ask_order[0]
+    ask = Decimal(ask).quantize(DEC_PLACES)
+
+
+    result = {}
+    result['PLN'] = {'ask': ask,
+                     'bid': bid,
+                     'last': last_price,
                      'volume': volume,
                      }
 

@@ -60,7 +60,8 @@ API_QUERY_FREQUENCY = {
                         'bittylicious': 55,
                         'bitxf': 55,
                         'cavirtex': 55,
-                        #'ibwt': 55,
+                        'bitfinex': 55,
+                        'bidextreme': 55,
 }
 
 
@@ -233,6 +234,11 @@ EXCHANGE_LIST = {
                     'bitfinex': {'ticker_url': 'https://api.bitfinex.com/v1/ticker/btcusd',
                                  'trades_url': 'https://api.bitfinex.com/v1/trades/btcusd?limit_trades=9999', # limit_trades might need increase if daily trading will go above it
                                  },
+                    'bidextreme': {'trades_url': 'https://bidextreme.pl/API/PLN/trades.json',
+                                   'orders_url': 'https://bidextreme.pl/API/PLN/orderbook.json',
+                                   'bitcoincharts_symbols': {'PLN': 'bidxtrmPLN',
+                                                           },
+                                    },
 
 
 
@@ -278,8 +284,4 @@ EXCHANGE_LIST = {
                                                            },
                                  },
 
-
-                    'bidextreme': {'bitcoincharts_symbols': {'PLN': 'bidxtrmPLN',
-                                                           },
-                                    },
                 }
