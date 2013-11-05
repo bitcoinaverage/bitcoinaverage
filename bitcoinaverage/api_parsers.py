@@ -634,12 +634,16 @@ def _rmbtbApiCall(ticker_url, *args, **kwargs):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
-    return {'CNY': {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
-                    'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
-                    'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
-                    'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
-                    },
-            }
+    result = {}
+    try:
+        result['CNY'] = {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                        'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                        'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                        'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                        }
+    except KeyError as e:
+        pass
+    return result
 
 def _btcchinaApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
