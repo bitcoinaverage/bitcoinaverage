@@ -10,6 +10,7 @@ FRONTEND_LEGEND_SLOTS = 20
 FRONTEND_MAJOR_CURRENCIES = 6
 
 API_FILES = {'TICKER_PATH': 'ticker/',
+             'GLOBAL_TICKER_PATH': 'ticker/global/',
              'EXCHANGES_PATH': 'exchanges/',
              'ALL_FILE': 'all',
              'IGNORED_FILE': 'ignored',
@@ -44,8 +45,8 @@ API_IGNORE_TIMEOUT = 1800
 DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = ('USD',
-                 'CNY',
                  'EUR',
+                 'CNY',
                  'GBP',
                  'CAD',
                  'PLN',

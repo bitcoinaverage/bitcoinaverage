@@ -12,6 +12,7 @@ import socket
 import json
 
 import bitcoinaverage as ba
+import bitcoinaverage.server as server
 from bitcoinaverage.config import DEC_PLACES, API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, CURRENCY_LIST, API_FILES, EXCHANGE_LIST
 from bitcoinaverage.exceptions import CallTimeoutException
 import bitcoinaverage.helpers as helpers
@@ -56,6 +57,69 @@ def get24hAverage(currency_code):
     return average_price
 
 
+def calculateGlobalAverages(calculated_average_rates, total_currency_volumes):
+    def getCurrencyCrossRate(currency_from, currency_to):
+        if currency_from == currency_to:
+            return Decimal(1)
+
+        rate_from = Decimal(fiat_exchange_rates[currency_from]['rate'])
+        rate_to = Decimal(fiat_exchange_rates[currency_to]['rate'])
+        return (rate_from / rate_to).quantize(DEC_PLACES)
+
+    fiat_exchange_rates_url = server.API_INDEX_URL + 'fiat_data'
+    try:
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            result = urllib2.urlopen(urllib2.Request(url=fiat_exchange_rates_url, headers=API_REQUEST_HEADERS)).read()
+            fiat_exchange_rates = json.loads(result)
+    except (
+            KeyError,
+            ValueError,
+            socket.error,
+            simplejson.decoder.JSONDecodeError,
+            urllib2.URLError,
+            httplib.BadStatusLine,
+            CallTimeoutException):
+        return {}, {}
+
+
+    global_averages = {}
+    global_volume = DEC_PLACES
+    for currency in CURRENCY_LIST:
+        global_volume = global_volume + total_currency_volumes[currency]
+        global_averages[currency] = {'last': DEC_PLACES,
+                                     'ask': DEC_PLACES,
+                                     'bid': DEC_PLACES,
+                                        }
+    global_volume_percents = {}
+    for currency in CURRENCY_LIST:
+        global_volume_percents[currency] = (total_currency_volumes[currency] / global_volume * Decimal(100)).quantize(DEC_PLACES)
+
+    for currency_local in CURRENCY_LIST:
+        for currency_to_convert in CURRENCY_LIST:
+            global_averages[currency_local]['last'] = ( global_averages[currency_local]['last']
+                                                + (calculated_average_rates[currency_to_convert]['last']
+                                                   * global_volume_percents[currency_to_convert] / Decimal(100)
+                                                   * getCurrencyCrossRate(currency_local, currency_to_convert) )
+                                                        )
+
+            global_averages[currency_local]['bid'] = ( global_averages[currency_local]['bid']
+                                                + (calculated_average_rates[currency_to_convert]['bid']
+                                                   * global_volume_percents[currency_to_convert] / Decimal(100)
+                                                   * getCurrencyCrossRate(currency_local, currency_to_convert) )
+                                                        )
+            global_averages[currency_local]['ask'] = ( global_averages[currency_local]['ask']
+                                                + (calculated_average_rates[currency_to_convert]['ask']
+                                                   * global_volume_percents[currency_to_convert] / Decimal(100)
+                                                   * getCurrencyCrossRate(currency_local, currency_to_convert) )
+                                                        )
+
+            global_averages[currency_local]['last'] = global_averages[currency_local]['last'].quantize(DEC_PLACES)
+            global_averages[currency_local]['bid'] = global_averages[currency_local]['bid'].quantize(DEC_PLACES)
+            global_averages[currency_local]['ask'] = global_averages[currency_local]['ask'].quantize(DEC_PLACES)
+
+    return global_averages, global_volume_percents
+
+
 def calculateTotalVolumes(exchanges_rates):
     total_currency_volumes = {}
     total_currency_volumes_ask = {}
@@ -79,7 +143,13 @@ def calculateTotalVolumes(exchanges_rates):
                     # del exchanges_rates[i][currency]
                     # i think we should not hide exchanges with 0 volume, it should be just zeroed, but still shown. @AlexyKot
 
+    for currency in CURRENCY_LIST:
+        total_currency_volumes[currency] = total_currency_volumes[currency].quantize(DEC_PLACES)
+        total_currency_volumes_ask[currency] = total_currency_volumes_ask[currency].quantize(DEC_PLACES)
+        total_currency_volumes_bid[currency] = total_currency_volumes_bid[currency].quantize(DEC_PLACES)
+
     return total_currency_volumes, total_currency_volumes_ask, total_currency_volumes_bid
+
 
 def calculateRelativeVolumes(exchanges_rates, total_currency_volumes, total_currency_volumes_ask, total_currency_volumes_bid):
     calculated_volumes = {}
@@ -126,6 +196,7 @@ def calculateRelativeVolumes(exchanges_rates, total_currency_volumes, total_curr
 
     return calculated_volumes
 
+
 def calculateAverageRates(exchanges_rates, calculated_volumes):
     calculated_average_rates = {}
     for currency in CURRENCY_LIST:
@@ -153,7 +224,8 @@ def calculateAverageRates(exchanges_rates, calculated_volumes):
 
     return calculated_average_rates
 
-def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currency_volumes):
+
+def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currency_volumes, calculated_global_average_rates, calculated_global_volume_percents):
     for currency in CURRENCY_LIST:
         try:
             calculated_average_rates[currency]['last'] = float(calculated_average_rates[currency]['last'])
@@ -176,6 +248,29 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
                 calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
             except TypeError:
                 calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
+
+
+        try:
+            calculated_global_average_rates[currency]['last'] = float(calculated_global_average_rates[currency]['last'])
+        except TypeError:
+            calculated_global_average_rates[currency]['last'] = str(calculated_global_average_rates[currency]['last'])
+        try:
+            calculated_global_average_rates[currency]['ask'] = float(calculated_global_average_rates[currency]['ask'])
+        except TypeError:
+            calculated_global_average_rates[currency]['ask'] = str(calculated_global_average_rates[currency]['ask'])
+        try:
+            calculated_global_average_rates[currency]['bid'] = float(calculated_global_average_rates[currency]['bid'])
+        except TypeError:
+            calculated_global_average_rates[currency]['bid'] = str(calculated_global_average_rates[currency]['bid'])
+        try:
+            calculated_global_average_rates[currency]['volume_btc'] = float(total_currency_volumes[currency])
+        except TypeError:
+            calculated_global_average_rates[currency]['volume_btc'] = str(total_currency_volumes[currency])
+        try:
+            calculated_global_average_rates[currency]['volume_percent'] = float(calculated_global_volume_percents[currency])
+        except TypeError:
+            calculated_global_average_rates[currency]['volume_percent'] = str(calculated_global_volume_percents[currency])
+
 
         for exchange_name in EXCHANGE_LIST:
             if exchange_name in calculated_volumes[currency]:
@@ -205,10 +300,10 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
                 if 'volume_percent_bid' in calculated_volumes[currency][exchange_name]:
                     del calculated_volumes[currency][exchange_name]['volume_percent_bid']
 
-    return calculated_average_rates, calculated_volumes
+    return calculated_average_rates, calculated_volumes, calculated_global_average_rates
 
 
-def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volumes, exchanges_ignored):
+def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volumes, calculated_global_average_rates_formatted, exchanges_ignored):
     try:
         all_data = {}
         all_data['timestamp'] = timestamp
@@ -216,6 +311,7 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
         for currency in CURRENCY_LIST:
             cur_data = {'exchanges': calculated_volumes[currency],
                         'averages': calculated_average_rates[currency],
+                        'global_averages': calculated_global_average_rates_formatted[currency],
                         }
             all_data[currency] = cur_data
 
@@ -231,6 +327,19 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
             ticker_cur = calculated_average_rates[currency]
             ticker_cur['timestamp'] = timestamp
             api_ticker_file = open(os.path.join(api_path, API_FILES['TICKER_PATH'], currency), 'w+')
+            api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
+            api_ticker_file.close()
+
+
+        rates_all = calculated_global_average_rates_formatted
+        rates_all['timestamp'] = timestamp
+        with open(os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], 'all'), 'w+') as api_global_ticker_all_file:
+            api_global_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
+
+        for currency in CURRENCY_LIST:
+            ticker_cur = calculated_global_average_rates_formatted[currency]
+            ticker_cur['timestamp'] = timestamp
+            api_ticker_file = open(os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], currency), 'w+')
             api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
             api_ticker_file.close()
 
@@ -278,11 +387,19 @@ def createNogoxApi(timestamp, exchanges_rates, exchanges_ignored):
 
     calculated_average_rates = calculateAverageRates(exchanges_rates, calculated_volumes)
 
-    calculated_average_rates_formatted, calculated_volumes_formatted = formatDataForAPI(calculated_average_rates,
-                                                                                        calculated_volumes,
-                                                                                        total_currency_volumes)
+    calculated_global_average_rates, calculated_global_volume_percents = calculateGlobalAverages(calculated_average_rates, total_currency_volumes)
+
+    (calculated_average_rates_formatted,
+     calculated_volumes_formatted,
+     calculated_global_average_rates_formatted) = formatDataForAPI(calculated_average_rates,
+                                                                   calculated_volumes,
+                                                                   total_currency_volumes,
+                                                                   calculated_global_average_rates,
+                                                                   calculated_global_volume_percents)
+
     writeAPIFiles(ba.server.API_DOCUMENT_ROOT_NOGOX,
                   timestamp,
                   calculated_average_rates_formatted,
                   calculated_volumes_formatted,
+                  calculated_global_average_rates_formatted,
                   exchanges_ignored)

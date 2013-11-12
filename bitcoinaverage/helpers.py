@@ -12,7 +12,7 @@ from eventlet.green import httplib
 import simplejson
 
 import bitcoinaverage as ba
-from bitcoinaverage.config import API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS
+from bitcoinaverage.config import API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, API_FILES
 from bitcoinaverage.exceptions import CallTimeoutException
 
 
@@ -80,6 +80,8 @@ def write_fiat_rates_config():
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'fiat_data.js'), 'w') as fiat_exchange_config_file:
         fiat_exchange_config_file.write(config_string)
 
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, 'fiat_data'), 'w') as fiat_exchange_api_file:
+        fiat_exchange_api_file.write(json.dumps(currency_data_list))
 
 def write_html_currency_pages():
     global ba
@@ -216,68 +218,99 @@ def write_api_index_files():
 
     #api root index
     api_index = {}
-    api_index['tickers'] = ba.server.API_INDEX_URL+'ticker/'
-    api_index['exchanges'] = ba.server.API_INDEX_URL+'exchanges/'
-    api_index['all'] = ba.server.API_INDEX_URL+'all'
-    api_index['ignored'] = ba.server.API_INDEX_URL+'ignored'
+    api_index['tickers'] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH']
+    api_index['global_tickers'] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH']
+    api_index['exchanges'] = ba.server.API_INDEX_URL + API_FILES['EXCHANGES_PATH']
+    api_index['all'] = ba.server.API_INDEX_URL + API_FILES['ALL_FILE']
+    api_index['ignored'] = ba.server.API_INDEX_URL + API_FILES['IGNORED_FILE']
     api_index['no-mtgox'] = ba.server.API_INDEX_URL_NOGOX
     api_index['history'] = ba.server.API_INDEX_URL_HISTORY
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
+
     #api tickers index
-    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, 'ticker')):
-        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT, 'ticker'))
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'])):
+        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH']))
 
     api_ticker_index = {}
-    api_ticker_index['all'] = ba.server.API_INDEX_URL+'ticker/all'
+    api_ticker_index['all'] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH'] + API_FILES['ALL_FILE']
     for currency_code in ba.config.CURRENCY_LIST:
-        api_ticker_index[currency_code] = ba.server.API_INDEX_URL+'ticker/'+currency_code
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, 'ticker', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH'] + currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
+
+    #api global tickers index
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'])):
+        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH']))
+
+    api_ticker_index = {}
+    api_ticker_index['all'] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + API_FILES['ALL_FILE']
+    for currency_code in ba.config.CURRENCY_LIST:
+        api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+
     #api exchanges index
-    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, 'exchanges')):
-        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT, 'exchanges'))
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'])):
+        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH']))
 
     api_exchanges_index = {}
-    api_exchanges_index['all'] = ba.server.API_INDEX_URL+'exchanges/all'
+    api_exchanges_index['all'] = ba.server.API_INDEX_URL + API_FILES['EXCHANGES_PATH'] + API_FILES['ALL_FILE']
     for currency_code in ba.config.CURRENCY_LIST:
-        api_exchanges_index[currency_code] = ba.server.API_INDEX_URL+'exchanges/'+currency_code
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, 'exchanges', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        api_exchanges_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['EXCHANGES_PATH'] + currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
 
     #api nogox root index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX)):
         os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX))
 
     api_nogox_index = {}
-    api_nogox_index['tickers'] = ba.server.API_INDEX_URL_NOGOX+'ticker/'
-    api_nogox_index['exchanges'] = ba.server.API_INDEX_URL_NOGOX+'exchanges/'
-    api_nogox_index['all'] = ba.server.API_INDEX_URL_NOGOX+'all'
+    api_nogox_index['tickers'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH']
+    api_nogox_index['exchanges'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH']
+    api_nogox_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['ALL_FILE']
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_nogox_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
+
     #api nogox tickers index
-    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'ticker')):
-        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'ticker'))
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'])):
+        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH']))
 
     api_nogox_ticker_index = {}
-    api_nogox_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX+'ticker/all'
+    api_nogox_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + API_FILES['ALL_FILE']
     for currency_code in ba.config.CURRENCY_LIST:
-        api_nogox_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX+'ticker/'+currency_code
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'ticker', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        api_nogox_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_nogox_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
-    #api nogox exchanges index
-    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'exchanges')):
-        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'exchanges'))
-    api_nogox_exchanges_index = {}
-    api_nogox_exchanges_index['all'] = ba.server.API_INDEX_URL_NOGOX+'exchanges/all'
+
+    #api nogox global tickers index
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])):
+        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH']))
+
+    api_ticker_index = {}
+    api_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + API_FILES['ALL_FILE']
     for currency_code in ba.config.CURRENCY_LIST:
-        api_nogox_exchanges_index[currency_code] = ba.server.API_INDEX_URL_NOGOX+'exchanges/'+currency_code
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, 'exchanges', ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        api_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+        index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+
+    #api nogox exchanges index
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'])):
+        os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH']))
+    api_nogox_exchanges_index = {}
+    api_nogox_exchanges_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH'] + API_FILES['ALL_FILE']
+    for currency_code in ba.config.CURRENCY_LIST:
+        api_nogox_exchanges_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH'] + currency_code
+    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_nogox_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
 
     #api history index files
     if not os.path.exists(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT)):

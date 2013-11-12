@@ -243,20 +243,20 @@ var renderRates = function(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-ask').text(currencyData.averages.ask.toFixed(2));
     $('#slot'+slotNum+'-bid').text(currencyData.averages.bid.toFixed(2));
 
-    if (currencyCode == "USD") {
-        if (lastusdvalue == 0) {
-            lastusdvalue = currencyData.averages.last;
-        } else {
-            if (currencyData.averages.last > lastusdvalue) {
-                $('#usd-arrowup').show();
-                $('#usd-arrowdown').hide();
-            } else if (currencyData.averages.last < lastusdvalue) {
-                $('#usd-arrowup').hide();
-                $('#usd-arrowdown').show();
-            }
-            lastusdvalue = currencyData.averages.last;
-        }
-    }
+//    if (currencyCode == "USD") {
+//        if (lastusdvalue == 0) {
+//            lastusdvalue = currencyData.averages.last;
+//        } else {
+//            if (currencyData.averages.last > lastusdvalue) {
+//                $('#usd-arrowup').show();
+//                $('#usd-arrowdown').hide();
+//            } else if (currencyData.averages.last < lastusdvalue) {
+//                $('#usd-arrowup').hide();
+//                $('#usd-arrowdown').show();
+//            }
+//            lastusdvalue = currencyData.averages.last;
+//        }
+//    }
 
     if (dataChanged) {
         var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
@@ -316,14 +316,9 @@ var renderLegend = function(currencyCode){
 
     $('#legend-currency-name').html(fiatCurrencies[currencyCode]['name']);
 
-    if (currencyCode != 'USD') {
-        var USD_BTC_fiat_rate = parseFloat(API_data['USD'].averages.last) * parseFloat(fiatCurrencies[currencyCode]['rate']);
-        USD_BTC_fiat_rate = Math.round(USD_BTC_fiat_rate*100)/100;
-        USD_BTC_fiat_rate = USD_BTC_fiat_rate + ' ' + currencyCode;
-        $('#legend-converted-to-USD').html(USD_BTC_fiat_rate);
-    } else {
-        $('#legend-converted-to-USD').html('N/A');
-    }
+    $('#legend-global-average').html(currencyData.global_averages.last.toFixed(2))
+    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(2))
+
 
     for(var slotNum=0;slotNum<legendSlots;slotNum++){
         $('#legend-slot'+slotNum).toggle(false);

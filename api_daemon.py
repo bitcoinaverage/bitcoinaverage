@@ -10,10 +10,11 @@ import time
 from email import utils
 
 import bitcoinaverage as ba
+import bitcoinaverage.server
 from bitcoinaverage import api_parsers
 from bitcoinaverage.config import API_QUERY_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
-from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, createNogoxApi
+from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, createNogoxApi, calculateGlobalAverages
 
 if ba.server.PROJECT_PATH == '':
     ba.server.PROJECT_PATH = include_path
@@ -33,6 +34,12 @@ helpers.write_api_index_files()
 last_fiat_exchange_rate_update = 0
 
 while True:
+    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
+        helpers.write_html_currency_pages()
+        helpers.write_sitemap()
+        helpers.write_fiat_rates_config()
+        last_fiat_exchange_rate_update = int(time.time())
+
     start_time = int(time.time())
 
     exchanges_rates, exchanges_ignored = ba.api_parsers.callAll()
@@ -44,26 +51,25 @@ while True:
                                                   total_currency_volumes_bid)
     calculated_average_rates = calculateAverageRates(exchanges_rates, calculated_volumes)
 
-    calculated_average_rates_formatted, calculated_volumes_formatted = formatDataForAPI(calculated_average_rates,
-                                                                                        calculated_volumes,
-                                                                                        total_currency_volumes)
+    calculated_global_average_rates, calculated_global_volume_percents = calculateGlobalAverages(calculated_average_rates, total_currency_volumes)
 
-
+    (calculated_average_rates_formatted,
+     calculated_volumes_formatted,
+     calculated_global_average_rates_formatted) = formatDataForAPI(calculated_average_rates,
+                                                                   calculated_volumes,
+                                                                   total_currency_volumes,
+                                                                   calculated_global_average_rates,
+                                                                   calculated_global_volume_percents)
 
     human_timestamp = utils.formatdate(time.time())
     writeAPIFiles(ba.server.API_DOCUMENT_ROOT,
                   human_timestamp,
                   calculated_average_rates_formatted,
                   calculated_volumes_formatted,
+                  calculated_global_average_rates_formatted,
                   exchanges_ignored)
 
     createNogoxApi(human_timestamp, exchanges_rates, exchanges_ignored)
-
-    if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
-        helpers.write_html_currency_pages()
-        helpers.write_sitemap()
-        helpers.write_fiat_rates_config()
-        last_fiat_exchange_rate_update = int(time.time())
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)

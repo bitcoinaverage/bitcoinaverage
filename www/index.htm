@@ -60,25 +60,39 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <div class="strip active">
-                        <span id="currency-arrowcontainer" class="arrows">
-                            <i id="usd-arrowup" class="icon-caret-up"></i>
-                            <i id="usd-arrowdown" class="icon-caret-down"></i>
+                        <!--<span id="currency-arrowcontainer" class="arrows">-->
+                            <!--<i id="usd-arrowup" class="icon-caret-up"></i>-->
+                            <!--<i id="usd-arrowdown" class="icon-caret-down"></i>-->
+                        <!--</span>-->
+                        <span id="global-box-USD" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="global-last-USD" class="last-main" itemprop="price">385</span>
+                            <span id="global-curcode-USD" class="curcode-main" itemprop="priceCurrency">USD</span>
+                            <span>global average</span>
                         </span>
-                        <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
-                            <span id="global-last" class="last-main" itemprop="price">385</span>
-                            <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
+                        <span id="global-box-CNY" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="global-last-CNY" class="last-main" itemprop="price">385</span>
+                            <span id="global-curcode-CNY" class="curcode-main" itemprop="priceCurrency">CNY</span>
                             <span>global average</span>
                         </span>
                         </br>
                         <button type="button" class="btn btn-default btn-xs ignore_btn" id="nogox-button">ignore MTGox for USD/EUR/GBP</button>
                         
-                    <span class="slot0-bid_ask">
-                        <span class="slot0-bid_ask-titles">bid &nbsp;</span>
-                        <span id="global-bid" title="bid">375</span>
+                    <span class="slot-global-bid_ask">
+                        <span class="slot-global-bid_ask-titles">bid &nbsp;</span>
+                        <span id="global-bid-USD" title="bid">375</span>
                         &nbsp;/&nbsp;
-                        <span id="global-ask" title="ask">395</span>
-                        <span class="slot0-bid_ask-titles">&nbsp; ask</span>
+                        <span id="global-ask-USD" title="ask">395</span>
+                        <span class="slot-global-bid_ask-titles">&nbsp; ask</span>
                     </span>
+
+                    <span class="slot-global-bid_ask">
+                        <span class="slot-global-bid_ask-titles">bid &nbsp;</span>
+                        <span id="global-bid-CNY" title="bid">375</span>
+                        &nbsp;/&nbsp;
+                        <span id="global-ask-CNY" title="ask">395</span>
+                        <span class="slot-global-bid_ask-titles">&nbsp; ask</span>
+                    </span>
+
                 </div>
             </div>
         </div>
@@ -193,12 +207,16 @@
                 <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
             </tr>
             <tr>
-              <td class="legend-name" colspan="2"><span>Total market volume (24h)</span></td>
+              <td class="legend-name" colspan="2"><span>total market volume (24h)</span></td>
               <td class="legend-rate text-right" width="33%"><span class="">&#3647; <span id="legend-total-volume"></span></span></td>
             </tr>
             <tr>
-              <td class="legend-name" colspan="2">Average USD price in <span class="legend-curcode"></span></td>
-              <td class="legend-rate text-right" width="33%"><span id="legend-converted-to-USD"></span></td>
+              <td class="legend-name" colspan="2">global average price</td>
+              <td class="legend-rate text-right" width="33%"><span id="legend-global-average"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr>
+              <td class="legend-name" colspan="2">global trading volume share</td>
+              <td class="legend-rate text-right" width="33%"><span id="legend-global-volume-percent"></span>%</td>
             </tr>
             <tr id="legend-24h-avg-container">
               <td class="legend-name" colspan="2"><span>24h sliding average</span></td>
