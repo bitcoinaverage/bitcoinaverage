@@ -66,7 +66,12 @@ $(function(){
     });
 
     for(var slotNum in config.currencyOrder){
-        $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid').dblclick(function(event){
+        $('#slot'+slotNum+'-last, ' +
+          '#slot'+slotNum+'-ask, ' +
+          '#slot'+slotNum+'-bid, '+
+          '#global-last, '+
+          '#global-bid, '+
+          '#global-ask').dblclick(function(event){
             event.preventDefault();
             $(this).selectText();
         });
@@ -148,12 +153,6 @@ $(function(){
         });
 
     }
-
-    $("#question-mark").tooltip({
-        'trigger':'click',
-        'html': $(this).data('original-title'),
-        'placement': 'left'
-    });
 
 });
 
