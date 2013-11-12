@@ -22,7 +22,7 @@ exchanges_rates = []
 exchanges_ignored = {}
 
 
-def callAll(ignore_mtgox=False):
+def callAll():
     global EXCHANGE_LIST, exchanges_rates, exchanges_ignored
     pool = eventlet.GreenPool()
 
@@ -32,12 +32,6 @@ def callAll(ignore_mtgox=False):
     for exchange_name, exchange_data, exchange_ignore_reason in pool.imap(callAPI, EXCHANGE_LIST):
         if exchange_ignore_reason is None:
             if exchange_data is not None:
-                if ignore_mtgox and exchange_name == 'mtgox':
-                    exchange_data = exchange_data.copy()
-                    del exchange_data['USD']
-                    del exchange_data['GBP']
-                    del exchange_data['EUR']
-
                 exchange_data['exchange_name'] = exchange_name
                 exchanges_rates.append(exchange_data)
         else:
@@ -437,14 +431,17 @@ def _vircurexApiCall(usd_api_url, eur_api_url, *args, **kwargs):
     }
 
 
-def _bitbargainApiCall(gbp_api_url, *args, **kwargs):
+def _bitbargainApiCall(volume_api_url, ticker_api_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=gbp_api_url, headers=API_REQUEST_HEADERS)).read()
-        gbp_result = json.loads(response)
+        response = urllib2.urlopen(urllib2.Request(url=volume_api_url, headers=API_REQUEST_HEADERS)).read()
+        volume_data = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_api_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
-    if gbp_result['response']['avg_24h'] is not None and gbp_result['response']['vol_24h'] is not None :
-        average_btc = Decimal(gbp_result['response']['avg_24h'])
-        volume_btc = (Decimal(gbp_result['response']['vol_24h']) / average_btc)
+    if volume_data['response']['vol_24h'] is not None :
+        average_btc = Decimal(ticker['response']['GBP']['avg_6h'])
+        volume_btc = (Decimal(volume_data['response']['vol_24h']) / average_btc)
     else:
         average_btc = DEC_PLACES
         volume_btc = DEC_PLACES

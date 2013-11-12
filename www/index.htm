@@ -60,23 +60,23 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <div class="strip active">
-
                         <span id="currency-arrowcontainer" class="arrows">
                             <i id="usd-arrowup" class="icon-caret-up"></i>
                             <i id="usd-arrowdown" class="icon-caret-down"></i>
                         </span>
-                        <span id="slot0-box" itemscope itemtype="http://schema.org/PriceSpecification">
-                            <span id="slot0-last" class="last-main" itemprop="price">140</span>
-                            <span id="slot0-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
+                        <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="global-last" class="last-main" itemprop="price">385</span>
+                            <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
+                            <span>global average</span>
                         </span>
                         </br>
                         <button type="button" class="btn btn-default btn-xs ignore_btn" id="nogox-button">ignore MTGox for USD/EUR/GBP</button>
                         
                     <span class="slot0-bid_ask">
                         <span class="slot0-bid_ask-titles">bid &nbsp;</span>
-                        <span id="slot0-bid" title="bid"></span>
+                        <span id="global-bid" title="bid">375</span>
                         &nbsp;/&nbsp;
-                        <span id="slot0-ask" title="ask"></span>
+                        <span id="global-ask" title="ask">395</span>
                         <span class="slot0-bid_ask-titles">&nbsp; ask</span>
                     </span>
                 </div>
@@ -85,6 +85,15 @@
         <div class="row">            
             <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 text-center">
                 <ul id="currency-navtabs" class="nav nav-tabs">
+                    <li id="slot0-box">
+                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="slot0-last" class="last" itemprop="price">395</span>
+                            <span id="slot0-curcode" class="curcode" itemprop="priceCurrency">USD</span>
+                        </h2>
+                        <p class="bid_ask">
+                            <span id="slot0-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot0-ask" title="ask"></span>
+                        </p>
+                    </li>
                     <li id="slot1-box">
                         <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
                             <span id="slot1-last" class="last" itemprop="price">102</span>
@@ -119,15 +128,6 @@
                         </h2>
                         <p class="bid_ask">
                             <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
-                        </p>
-                    </li>
-                    <li id="slot5-box">
-                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
-                            <span id="slot5-last" class="last" itemprop="price">405</span>
-                            <span id="slot5-curcode" class="curcode" itemprop="priceCurrency">PLN</span>
-                        </h2>
-                        <p class="bid_ask">
-                            <span id="slot5-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot5-ask" title="ask"></span>
                         </p>
                     </li>
                 </ul>
@@ -438,9 +438,9 @@
             <li id="slot2-link"><a href="currencies/gbp.htm">GBP</a></li>
             <li id="slot3-link"><a href="currencies/cny.htm">CNY</a></li>
             <li id="slot4-link"><a href="currencies/cad.htm">CAD</a></li>
-            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
         </ul>
-        <ul class="dropdown-menu2 ">
+        <ul class="dropdown-menu2">
+            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
             <li id="slot6-link"><a href="currencies/jpy.htm">JPY</a></li>
             <li id="slot7-link"><a href="currencies/rub.htm">RUB</a></li>
             <li id="slot8-link"><a href="currencies/aud.htm">AUD</a></li>
@@ -465,7 +465,7 @@
                 <div class="f_left foot_left">
                     <section>
                         <h4><span>Support Us</span></h4>
-                        <span style="font-size: 80%">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</span>
+                        <span style="font-size: 80%"><a href="bitcoin:1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</a></span>
                     </section>
                 </div>
                 <div class="privacy">

@@ -32,36 +32,6 @@ API_CALL_TIMEOUT_THRESHOLD = 15 #seconds before exchange API call timeout. excha
 API_QUERY_FREQUENCY = {
                         'default': 60,
                         'bitcoincharts': 900,
-                        'mtgox': 55,
-                        'bitstamp': 55,
-                        'btce': 55,
-                        'bitcurex': 55,
-                        'vircurex': 55,
-                        'bitbargain': 55,
-                        'localbitcoins': 55,
-                        'cryptotrade': 55,
-                        'rocktrading': 55,
-                        'bitcash': 55,
-                        'intersango': 55,
-                        'bit2c': 55,
-                        'kapiton': 55,
-                        'rmbtb': 55,
-                        'btcchina': 55,
-                        'fxbtc': 55,
-                        'bter': 55,
-                        'goxbtc': 55,
-                        'okcoin': 55,
-                        'mercado': 55,
-                        'bitx': 55,
-                        'btctrade': 55,
-                        'justcoin': 55,
-                        'kraken': 55,
-                        'bitkonan': 55,
-                        'bittylicious': 55,
-                        'bitxf': 55,
-                        'cavirtex': 55,
-                        'bitfinex': 55,
-                        'bidextreme': 55,
 }
 
 
@@ -74,9 +44,9 @@ API_IGNORE_TIMEOUT = 1800
 DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = ('USD',
+                 'CNY',
                  'EUR',
                  'GBP',
-                 'CNY',
                  'CAD',
                  'PLN',
                  'JPY',
@@ -151,7 +121,9 @@ EXCHANGE_LIST = {
                                   'eur_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=EUR',
                                     },
 
-                    'bitbargain': {'gbp_api_url': 'https://bitbargain.co.uk/api/bbticker'},
+                    'bitbargain': {'volume_api_url': 'https://bitbargain.co.uk/api/bbticker',
+                                   'ticker_api_url': 'https://bitbargain.co.uk/api/btcavg',
+                                   },
 
                     'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
                                       'bitcoincharts_symbols': {'USD': 'localbtcUSD',
