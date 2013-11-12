@@ -220,7 +220,8 @@ var renderAll = function(result, status, responseObj){
     }
 }
 
-var lastusdvalue = 0;
+
+var lastGlobalUSDValue = 0;
 var renderRates = function(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-link').attr('data-currencycode', currencyCode);
 
@@ -243,21 +244,27 @@ var renderRates = function(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-ask').text(currencyData.averages.ask.toFixed(2));
     $('#slot'+slotNum+'-bid').text(currencyData.averages.bid.toFixed(2));
 
-//    if (currencyCode == "USD") {
-//        if (lastusdvalue == 0) {
-//            lastusdvalue = currencyData.averages.last;
-//        } else {
-//            if (currencyData.averages.last > lastusdvalue) {
-//                $('#usd-arrowup').show();
-//                $('#usd-arrowdown').hide();
-//            } else if (currencyData.averages.last < lastusdvalue) {
-//                $('#usd-arrowup').hide();
-//                $('#usd-arrowdown').show();
-//            }
-//            lastusdvalue = currencyData.averages.last;
-//        }
-//    }
+    if (currencyCode == "USD") {
+        $('#global-last').html(currencyData.global_averages.last);
+        $('#global-curcode').html(currencyCode);
+        $('#global-bid').html(currencyData.global_averages.bid);
+        $('#global-ask').html(currencyData.global_averages.ask);
 
+        if (lastGlobalUSDValue == 0) {
+            lastGlobalUSDValue = currencyData.global_averages.last;
+        } else {
+            if (currencyData.global_averages.last > lastGlobalUSDValue) {
+                $('#usd-arrowup').show();
+                $('#usd-arrowdown').hide();
+            } else if (currencyData.global_averages.last < lastGlobalUSDValue) {
+                $('#usd-arrowup').hide();
+                $('#usd-arrowdown').show();
+            }
+            lastGlobalUSDValue = currencyData.global_averages.last;
+        }
+    }
+    
+    
     if (dataChanged) {
         var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
         flashingFigures.css({ 'opacity' : 0.5});
