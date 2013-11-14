@@ -70,9 +70,13 @@ def write_fiat_rates_config():
                 httplib.BadStatusLine):
             return None
 
-        currency_data_list[currency_code] = {'name': str(currencies_names[currency_code]),
-                                             'rate': str(currencies_rates['rates'][currency_code]),
-                                             }
+        try:
+            currency_data_list[currency_code] = {'name': str(currencies_names[currency_code]),
+                                                 'rate': str(currencies_rates['rates'][currency_code]),
+                                                 }
+        except (KeyError, TypeError):
+            return None
+
 
     config_string = js_config_template
     config_string = config_string.replace('$FIAT_CURRENCIES_DATA$', json.dumps(currency_data_list))
@@ -324,4 +328,5 @@ def write_api_index_files():
     general_index_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME)
     with open(general_index_file_path, 'w') as index_file:
         index_file.write(json.dumps(currency_history_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
+
 
