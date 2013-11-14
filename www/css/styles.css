@@ -13,6 +13,7 @@
     #main-container{
         padding-top: 70px;
     }
+	
 }
 @media (max-width: 650px){
     .ignore_btn{
@@ -23,13 +24,22 @@
         right:0px!important;
     }
 }
-@media (min-width: 480px){
+@media (max-width: 480px){
+	#global-box {
+		padding-left:0;
+	}
+}
+@media (min-width: 481px){	
+	#global-box {
+		padding-left:100px;
+	}
 }
 @media (max-width: 768px){
 }
 @media (min-width: 768px){
 }
 @media (max-width: 991px){
+
     #currency-navtabs > li.active, li.active:hover{
         border-color: #fff !important;
         border-bottom-color: #ddd !important;
@@ -462,6 +472,5 @@ footer .row{
  font-size: 15px;
 }
 .ignore_btn{width:130px; float:left; white-space:normal; line-height:20px; }
-
 
 #small-chart{height:200px;}
