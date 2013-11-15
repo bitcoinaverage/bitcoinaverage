@@ -818,13 +818,13 @@ def _bittyliciousApiCall(ticker_url, *args, **kwargs):
 
     result = {}
     try:
-        volume = Decimal(ticker['GBP']['volume_btc']).quantize(DEC_PLACES)
-        if ticker['GBP']['avg_3h'] is not None:
-            rate = Decimal(ticker['GBP']['avg_3h']).quantize(DEC_PLACES)
-        elif ticker['GBP']['avg_12h'] is not None:
-            rate = Decimal(ticker['GBP']['avg_12h']).quantize(DEC_PLACES)
-        elif ticker['GBP']['avg_24h'] is not None:
-            rate = Decimal(ticker['GBP']['avg_24h']).quantize(DEC_PLACES)
+        volume = Decimal(ticker['GBPBTC']['volume_btc']).quantize(DEC_PLACES)
+        if ticker['GBPBTC']['avg_6h'] is not None:
+            rate = Decimal(ticker['GBPBTC']['avg_6h']).quantize(DEC_PLACES)
+        elif ticker['GBPBTC']['avg_12h'] is not None:
+            rate = Decimal(ticker['GBPBTC']['avg_12h']).quantize(DEC_PLACES)
+        elif ticker['GBPBTC']['avg_24h'] is not None:
+            rate = Decimal(ticker['GBPBTC']['avg_24h']).quantize(DEC_PLACES)
         else:
             rate = None
             volume = None
@@ -850,30 +850,6 @@ def _bitxfApiCall(ticker_url, *args, **kwargs):
                      'last': Decimal(ticker['last_trade']['price']).quantize(DEC_PLACES),
                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
                      }
-
-    return result
-
-
-def _ibwtApiCall(ticker_url, *args, **kwargs):
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
-        ticker = json.loads(response)
-
-    result = {}
-    try:
-        for currency_index in ticker['result']:
-            currency_data = ticker[currency_index]
-            if currency_data['SecondUnit'] == 'GBP':
-                volume = currency_data['Volume'][0]
-                volume = volume.replace(' BTC', '')
-                volume = Decimal(volume).quantize(DEC_PLACES)
-                result['GBP'] = {'ask': currency_data['Last'],
-                                 'bid': currency_data['Last'],
-                                 'last': currency_data['Last'],
-                                 'volume': volume,
-                                 }
-    except KeyError as error:
-        pass
 
     return result
 

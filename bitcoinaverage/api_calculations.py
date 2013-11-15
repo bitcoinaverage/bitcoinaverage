@@ -243,11 +243,10 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
             calculated_average_rates[currency]['total_vol'] = float(total_currency_volumes[currency])
         except TypeError:
             calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
-        if '24h_avg' in calculated_average_rates[currency]: #no present in nogox API
-            try:
-                calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
-            except TypeError:
-                calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
+        try:
+            calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
+        except TypeError:
+            calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
 
 
         try:
@@ -396,6 +395,9 @@ def createNogoxApi(timestamp, exchanges_rates, exchanges_ignored):
                                                                    total_currency_volumes,
                                                                    calculated_global_average_rates,
                                                                    calculated_global_volume_percents)
+
+    for currency in CURRENCY_LIST:
+        del calculated_average_rates[currency]['24h_avg'] #24h average itself includes mtgox so cannot be included here
 
     writeAPIFiles(ba.server.API_DOCUMENT_ROOT_NOGOX,
                   timestamp,
