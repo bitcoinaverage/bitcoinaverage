@@ -14,6 +14,7 @@
     <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/highstock.js"></script>
 
@@ -61,8 +62,8 @@
             <div class="col-md-12 text-center">
                 <div class="strip active">
                         <span id="currency-arrowcontainer" class="arrows">
-                            <i id="usd-arrowup" class="icon-caret-up"></i>
-                            <i id="usd-arrowdown" class="icon-caret-down"></i>
+                            <i id="global-avg-arrowup" class="icon-caret-up"></i>
+                            <i id="global-avg-arrowdown" class="icon-caret-down"></i>
                         </span>
                         <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
                             <span id="global-last" class="last-main" itemprop="price">385</span>
@@ -198,7 +199,10 @@
               <td class="legend-rate text-right" width="33%"><span class="">&#3647; <span id="legend-total-volume"></span></span></td>
             </tr>
             <tr>
-              <td class="legend-name" colspan="2">global average price</td>
+              <td class="legend-name" colspan="2">
+                  <a href="#" id="set-global-average-currency" class="action-link"
+                     title="click to select this as your default global currency">global average price</a>
+              </td>
               <td class="legend-rate text-right" width="33%"><span id="legend-global-average"></span> <span class="legend-curcode"></span></td>
             </tr>
             <tr>

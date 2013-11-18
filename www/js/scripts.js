@@ -65,6 +65,11 @@ $(function(){
         renderSmallChart('USD');
     });
 
+    $('#set-global-average-currency').click(function(event){
+        $.cookie('global-average', legendClickStatus);
+        callAPI();
+    });
+
     for(var slotNum in config.currencyOrder){
         $('#slot'+slotNum+'-last, ' +
           '#slot'+slotNum+'-ask, ' +
@@ -220,7 +225,7 @@ var renderAll = function(result, status, responseObj){
 }
 
 
-var lastGlobalUSDValue = 0;
+var lastGlobalAvgValue = 0;
 var renderRates = function(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-link').attr('data-currencycode', currencyCode);
 
@@ -243,23 +248,27 @@ var renderRates = function(currencyCode, currencyData, slotNum){
     $('#slot'+slotNum+'-ask').text(currencyData.averages.ask.toFixed(2));
     $('#slot'+slotNum+'-bid').text(currencyData.averages.bid.toFixed(2));
 
-    if (currencyCode == "USD") {
+
+    var global_avg_currency = $.cookie('global-average');
+    if ((typeof global_avg_currency != 'undefined' && currencyCode == global_avg_currency) 
+        || (typeof global_avg_currency == 'undefined' || currencyCode == 'USD') ){
+        
         $('#global-last').html(currencyData.global_averages.last);
         $('#global-curcode').html(currencyCode);
         $('#global-bid').html(currencyData.global_averages.bid);
         $('#global-ask').html(currencyData.global_averages.ask);
 
-        if (lastGlobalUSDValue == 0) {
-            lastGlobalUSDValue = currencyData.global_averages.last;
+        if (lastGlobalAvgValue == 0) {
+            lastGlobalAvgValue = currencyData.global_averages.last;
         } else {
-            if (currencyData.global_averages.last > lastGlobalUSDValue) {
-                $('#usd-arrowup').show();
-                $('#usd-arrowdown').hide();
-            } else if (currencyData.global_averages.last < lastGlobalUSDValue) {
-                $('#usd-arrowup').hide();
-                $('#usd-arrowdown').show();
+            if (currencyData.global_averages.last > lastGlobalAvgValue) {
+                $('#global-avg-arrowup').show();
+                $('#global-avg-arrowdown').hide();
+            } else if (currencyData.global_averages.last < lastGlobalAvgValue) {
+                $('#global-avg-arrowup').hide();
+                $('#global-avg-arrowdown').show();
             }
-            lastGlobalUSDValue = currencyData.global_averages.last;
+            lastGlobalAvgValue = currencyData.global_averages.last;
         }
     }
     
@@ -357,6 +366,8 @@ var renderLegend = function(currencyCode){
     $('#monthly-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_hour_monthly_sliding_window.csv');
     $('#daily-averages-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_day_all_time_history.csv');
     $('#volumes-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/volumes.csv');
+
+    $('#set-global-average-currency').attr('title','click to set '+currencyCode+' as your global average default currency');
 }
 
 var renderSmallChart = function(currencyCode){
