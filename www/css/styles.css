@@ -228,6 +228,9 @@ ul{
     left:-20px;
     display:inline;
 }
+#global-avg-arrowup, #global-avg-arrowdown{
+    display: none;
+}
 
 .strip .btn{
     position: absolute;

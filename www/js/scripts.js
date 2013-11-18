@@ -249,7 +249,7 @@ var renderRates = function(currencyCode, currencyData, slotNum){
 
     var global_avg_currency = $.cookie('global-average');
     if ((typeof global_avg_currency != 'undefined' && currencyCode == global_avg_currency) 
-        || (typeof global_avg_currency == 'undefined' || currencyCode == 'USD') ){
+        || (typeof global_avg_currency == 'undefined' && currencyCode == 'USD') ){
         
         $('#global-last').html(currencyData.global_averages.last);
         $('#global-curcode').html(currencyCode);

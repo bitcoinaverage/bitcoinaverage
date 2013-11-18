@@ -821,7 +821,7 @@ def _bittyliciousApiCall(ticker_url, *args, **kwargs):
 
     result = {}
     try:
-        volume = Decimal(ticker['GBPBTC']['volume_btc']).quantize(DEC_PLACES)
+        volume = Decimal(ticker['GBPBTC']['volume_24h']).quantize(DEC_PLACES)
         if ticker['GBPBTC']['avg_6h'] is not None:
             rate = Decimal(ticker['GBPBTC']['avg_6h']).quantize(DEC_PLACES)
         elif ticker['GBPBTC']['avg_12h'] is not None:
