@@ -206,8 +206,11 @@ var renderAll = function(result, status, responseObj){
         currentHash = currentHash[0];
 
 
+        var global_average_default = $.cookie('global-average');
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
             $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
+        } else if (typeof global_average_default != 'undefined') {
+            $('#currency-sidebar li[data-currencycode="'+global_average_default+'"]').click();
         } else {
             $('#slot0-box').click();
         }
@@ -215,13 +218,8 @@ var renderAll = function(result, status, responseObj){
         firstRenderDone = true;
     }
 
-    if (legendClickStatus != false){
-        renderLegend(legendClickStatus);
-        document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' | BitcoinAverage - independent bitcoin price';
-    } else {
-        renderLegend('USD');
-        document.title = API_data['USD'].averages.last+' USD | BitcoinAverage - independent bitcoin price';
-    }
+    renderLegend(legendClickStatus);
+    document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' | BitcoinAverage - independent bitcoin price';
 }
 
 
@@ -368,6 +366,7 @@ var renderLegend = function(currencyCode){
     $('#volumes-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/volumes.csv');
 
     $('#set-global-average-currency').attr('title','click to set '+currencyCode+' as your global average default currency');
+    $('#set-global-average-currency').attr('href','#'+currencyCode);
 }
 
 var renderSmallChart = function(currencyCode){

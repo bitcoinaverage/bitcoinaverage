@@ -64,6 +64,7 @@ def callAPI(exchange_name):
                         result['data_source'] = 'api'
                     except (
                             KeyError,
+                            TypeError,
                             ValueError,
                             simplejson.decoder.JSONDecodeError,
                             socket.error,
@@ -87,6 +88,7 @@ def callAPI(exchange_name):
                                                    }
         except (
                 KeyError,
+                TypeError,
                 ValueError,
                 socket.error,
                 simplejson.decoder.JSONDecodeError,
@@ -439,7 +441,7 @@ def _bitbargainApiCall(volume_api_url, ticker_api_url, *args, **kwargs):
         response = urllib2.urlopen(urllib2.Request(url=ticker_api_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
-    if volume_data['response']['vol_24h'] is not None :
+    if volume_data['response']['vol_24h'] is not None:
         average_btc = Decimal(ticker['response']['GBP']['avg_6h'])
         volume_btc = (Decimal(volume_data['response']['vol_24h']) / average_btc)
     else:
@@ -641,6 +643,7 @@ def _rmbtbApiCall(ticker_url, *args, **kwargs):
     except KeyError as e:
         pass
     return result
+
 
 def _btcchinaApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
@@ -951,3 +954,5 @@ def _bidextremeApiCall(trades_url, orders_url, *args, **kwargs):
                      }
 
     return result
+
+

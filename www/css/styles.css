@@ -25,13 +25,13 @@
     }
 }
 @media (max-width: 480px){
-	#global-box {
+	#currency-arrowcontainer {
 		padding-left:0;
 	}
 }
 @media (min-width: 481px){	
-	#global-box {
-		padding-left:100px;
+	#currency-arrowcontainer {
+		padding-left:70px;
 	}
 }
 @media (max-width: 768px){
