@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import csv
 import StringIO
@@ -366,10 +367,23 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
 
 def createNogoxApi(timestamp, exchanges_rates, exchanges_ignored):
     for i, exchange_data in enumerate(exchanges_rates):
-        if exchanges_rates[i]['exchange_name'] == 'mtgox':
-            del exchanges_rates[i]['USD']
-            del exchanges_rates[i]['GBP']
-            del exchanges_rates[i]['EUR']
+        try:
+            if exchanges_rates[i]['exchange_name'] == 'mtgox':
+                del exchanges_rates[i]['USD']
+                del exchanges_rates[i]['GBP']
+                del exchanges_rates[i]['EUR']
+        except KeyError:
+            try:
+                ssmtp = subprocess.Popen(('/usr/sbin/ssmtp', 'bitcoinaverage@gmail.com'), stdin=subprocess.PIPE)
+            except OSError:
+                print 'could not start sSMTP, email not sent'
+            message = '''To: %s
+From: %s
+Subject: mrgox USD error
+
+%s '''
+            ssmtp.communicate(message % ('bitcoinaverage@gmail.com', 'bitcoinaverage@gmail.com', str(exchanges_rates[i])))
+            ssmtp.wait()
 
     calculated_average_rates = {}
     for currency in CURRENCY_LIST:
