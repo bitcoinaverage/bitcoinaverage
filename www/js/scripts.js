@@ -321,7 +321,7 @@ var renderLegend = function(currencyCode){
         var index = 0;
         for (var exchange_name in API_data.ignored_exchanges) {
             $('#legend-ignored-slot'+index+'-name').text(exchange_name);
-            $('#legend-ignored-slot'+index+'-reason').text(API_data.ignored_exchanges[exchange_name]);
+            $('#legend-ignored-slot'+index+'-reason').html(API_data.ignored_exchanges[exchange_name]);
             $('#legend-ignored-slot'+index+'-box').show();
             index++;
         }
