@@ -2,9 +2,9 @@ import os
 import subprocess
 import sys
 import csv
+from copy import deepcopy
 import StringIO
 from decimal import Decimal, InvalidOperation
-import decimal
 import simplejson
 from eventlet.green import urllib2
 from eventlet.green import httplib
@@ -366,6 +366,7 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
 
 
 def createNogoxApi(timestamp, exchanges_rates, exchanges_ignored):
+    exchanges_rates = deepcopy(exchanges_rates)
     for i, exchange_data in enumerate(exchanges_rates):
         try:
             if exchanges_rates[i]['exchange_name'] == 'mtgox':

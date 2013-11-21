@@ -13,6 +13,7 @@ import simplejson
 
 import bitcoinaverage as ba
 from bitcoinaverage.config import API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, API_FILES
+from bitcoinaverage.server import OPENEXCHANGERATES_APP_ID
 from bitcoinaverage.exceptions import CallTimeoutException
 
 
@@ -51,7 +52,7 @@ def write_fiat_rates_config():
     js_config_template = "var fiatCurrencies = $FIAT_CURRENCIES_DATA$;"
 
     currencies_names_URL = 'http://openexchangerates.org/api/currencies.json'
-    currencies_rates_URL = 'http://openexchangerates.org/api/latest.json?app_id=1eff26eeb4644fc6a77afb6e8ffa19eb'
+    currencies_rates_URL = 'http://openexchangerates.org/api/latest.json?app_id={}'.format(OPENEXCHANGERATES_APP_ID)
 
     currency_data_list = {}
 
