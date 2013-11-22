@@ -216,44 +216,33 @@ EXCHANGE_LIST = {
 
 
                     # ignored until bitcoincharts.com will sort out their internal issues
-                    'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD'},
-                               'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
+                    'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD',
+                                                },
                                  },
 
                     'bitcoin_de': {'bitcoincharts_symbols':  {'EUR': 'btcdeEUR',
                                                              },
                                'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
+                               'ignore_reason': 'abnormal price swings',
                                  },
                     'btcmarkets': {'bitcoincharts_symbols': {'AUD': 'btcmarketsAUD',
                                                            },
-                               'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
                                  },
 
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitnzNZD',
                                                            },
-                               'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
                                  },
                     'fybse':  {'bitcoincharts_symbols': {'SEK': 'fybseSEK',
                                                            },
-                               'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
                                  },
                     'fybsg':  {'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
-                               'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
                                  },
 
                     'anx_hk':  {'bitcoincharts_symbols': {'USD': 'anxhkUSD',
                                                           'HKD': 'anxhkHKD',
                                                           'CNY': 'anxhkCNY',
                                                            },
-                               'ignored': True,
-                               'ignore_reason': 'bitcoincharts.com data failure <a href="https://bitcointalk.org/index.php?topic=270190.msg3664197#msg3664197">&gt;&gt;</a>',
                                  },
 
 
