@@ -3,15 +3,14 @@ this is the source of BitcoinAverage.com website.
 Run instructions.
 1) download sources
 2) copy server.py.dist into server.py in the same folder and setup paths to folders (see comments in the file). 
-3) install python 2.7, no db or other storage engines needed. 
-3) try to run the api_daemon.py - it will tell you what dependencies are missing. Install missing dependencies if needed. 
+3) to run the api_daemon.py you need python 2.7, no db or other storage engines needed. Script itself will tell you what other python libraries dependencies are missing. Install missing dependencies if needed. 
 
 System structure.
 There are several *_daemon.py files in the project root folder - these are parts of the backend that make whole thing work. Despite "daemon" name these are not real system daemons yet (there is an outstanding task in github for that).  
 Daemons are:
 /api_daemon.py - main script, it loads all settings from bitcoinaverage/config.py, queries all external exchanges APIs, creates bitcoinaverage own API and regenerates API files (except for history part). 
 /history_daemon.py - fetches current data from live API and generates history API csv files. It uses HTTP to fetch API data so it can seamlessly run on separate server if needed.
-/twitter_daemon.py - sends updates to twitter
+/twitter_daemon.py - sends updates to twitter.
 /image_daemon.py - generates price images (I wonder if anybody uses these images)
 /monitor_daemon.py - monitors last update timestamps for api and history daemons, triggers email alerts if timestamp is older than 5 min.
 
@@ -20,7 +19,6 @@ This folder must be web accessible as web API.
 
 /www folder - actual website. Static, must be web accessible. Files in /www/charts/* and /www/currencies/* are generated automatically and are not meant to be user viewed. 
 
-Whole frontend is JS-diven, it fetches JSON API via AJAX and renders the page. HTML isn't perfect, because none of us two is good enough at it. 
+Whole frontend is JS-diven, it fetches JSON API via AJAX and renders the page. 
 
-
- bitcoinaverage@gmail.com for details on how to run this.
+Feel free to contact us at bitcoinaverage@gmail.com for with questions on any matters about this system and website.
