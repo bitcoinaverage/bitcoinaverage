@@ -62,7 +62,10 @@ def write_fiat_rates_config():
     # pass the email contents to sSMTP over stdin
     message = '''To: %s
 From: %s
-request to openexchangerates done'''
+Subject: request to openexchangerates
+
+request to openexchangerates done
+'''
 
     ssmtp.communicate(message % ('bitcoinaverage@gmail.com', 'bitcoinaverage@gmail.com'))
     # wait until the email has finished sending
