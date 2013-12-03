@@ -10,7 +10,7 @@ from bitcoinaverage.twitter_config import api
 # requires  http://code.google.com/p/python-twitter/
 # https://github.com/bear/python-twitter.git
 
-URL = "https://api.bitcoinaverage.com/ticker/USD"
+URL = "https://api.bitcoinaverage.com/ticker/global/USD"
 
 change = 0
 oldprice = 0
@@ -42,7 +42,7 @@ while True:
             perc = round(a, 2)
             
     if perc != 0 and change != 0 and direction != "":
-        status = "Average USD Rate: ${0} ({1} ${2}, %{3}) - https://BitcoinAverage.com".format(newprice,direction,change,perc)
+        status = "Average USD Rate: ${0} ({1} ${2}) - https://BitcoinAverage.com".format(newprice,direction,change)
         status = api.PostUpdate(status)
     else:
         status = "Average USD Rate: ${0} - https://BitcoinAverage.com".format(newprice)
@@ -50,4 +50,4 @@ while True:
         
     oldprice = newprice
 
-    time.sleep(60*60*4)
+    time.sleep(60*60*1)
