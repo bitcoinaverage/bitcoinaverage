@@ -133,16 +133,16 @@ EXCHANGE_LIST = {
                                       'bitcoincharts_symbols': {'USD': 'crytrUSD',
                                                                 },
                                    },
-                    'rocktrading':{# 'usd_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCUSD',
-                                   # 'usd_trades_url': 'https://www.therocktrading.com/api/trades/BTCUSD',
+                    'rocktrading':{'usd_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCUSD',
+                                   'usd_trades_url': 'https://www.therocktrading.com/api/trades/BTCUSD',
                                    'eur_ticker_url': 'https://www.therocktrading.com/api/ticker/BTCEUR',
                                    'eur_trades_url': 'https://www.therocktrading.com/api/trades/BTCEUR',
                                     },
 
-                    'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
-                                'bitcoincharts_symbols': {'CZK': 'bitcashCZK',
-                                                           },
-                                  },
+                    # 'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
+                    #             'bitcoincharts_symbols': {'CZK': 'bitcashCZK',
+                    #                                        },
+                    #               },
                     #with intersango only EUR is used, because trader needs to convert to EUR to add/withdraw with it
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
                                    },
@@ -194,12 +194,6 @@ EXCHANGE_LIST = {
                     'bitfinex': {'ticker_url': 'https://api.bitfinex.com/v1/ticker/btcusd',
                                  'trades_url': 'https://api.bitfinex.com/v1/trades/btcusd?limit_trades=9999', # limit_trades might need increase if daily trading will go above it
                                  },
-                    'bidextreme': {'trades_url': 'https://bidextreme.pl/API/PLN/trades.json',
-                                   'orders_url': 'https://bidextreme.pl/API/PLN/orderbook.json',
-                                   'bitcoincharts_symbols': {'PLN': 'bidxtrmPLN',
-                                                           },
-                                    },
-
                     'fybsg': {'ticker_url': 'https://www.fybsg.com/api/SGD/ticker.json',
                               'trades_url': 'https://www.fybsg.com/api/SGD/trades.json', # this URL queries all trades for this exchange since beginning of time, this is not effective, ideally they should allow API to query by date.
                               'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
@@ -242,6 +236,11 @@ EXCHANGE_LIST = {
                                                           'CNY': 'anxhkCNY',
                                                            },
                                  },
+                    'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
+                                                        #'CAD': 'weexCAD',
+                                                        # 'USD': 'weexUSD',
+                                                           },
+                                 },
 
 
                     # these exchanges seem to be dead
@@ -255,10 +254,16 @@ EXCHANGE_LIST = {
                     #'icbit': {'bitcoincharts_symbols': {'USD': 'icbitUSD',
                     #                                       },
                     #             },
-                    # 'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
-                    #                                     #'CAD': 'weexCAD',
-                    #                                     # 'USD': 'weexUSD',
-                    #                                        },
-                    #              },
+
+
+                    ### not integrated
+                    # CNY - btc100.org
+                    # CNY - chbtc.com
+                    # CNY - huobi.com
+                    # CNY - 42BTC.com
+                    #
+                    # EUR bitcoin-central.net recently resumed operation recently and is also not integrated yet
+                    # USD coinbase.com
+
 
                 }

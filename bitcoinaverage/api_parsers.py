@@ -530,22 +530,22 @@ def _cryptotradeApiCall(usd_api_url, #eur_api_url,
             }
 
 
-def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
+def _rocktradingApiCall(usd_ticker_url, usd_trades_url,
                         eur_ticker_url, eur_trades_url, *args, **kwargs):
     last24h_time = int(time.time())-86400  #86400s in 24h
 
-    # with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-    #     response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
-    #     usd_ticker_result = json.loads(response)
-    # with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-    #     response = urllib2.urlopen(urllib2.Request(url=usd_trades_url, headers=API_REQUEST_HEADERS)).read()
-    #     usd_volume_result = json.loads(response)
-    # usd_last = 0.0
-    # usd_vol = 0.0
-    # for trade in usd_volume_result:
-    #     if trade['date'] > last24h_time:
-    #         usd_vol = usd_vol + float(trade['price'])
-    #         usd_last = float(trade['price'])
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        usd_ticker_result = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_trades_url, headers=API_REQUEST_HEADERS)).read()
+        usd_volume_result = json.loads(response)
+    usd_last = 0.0
+    usd_vol = 0.0
+    for trade in usd_volume_result:
+        if trade['date'] > last24h_time:
+            usd_vol = usd_vol + float(trade['amount'])
+            usd_last = float(trade['price'])
 
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -561,14 +561,11 @@ def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
             eur_last = float(trade['price'])
 
     return {
-            # 'USD': {'ask': Decimal(usd_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
-            #         'bid': Decimal(usd_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
-            #         'high': Decimal(usd_high).quantize(DEC_PLACES),
-            #         'low': Decimal(usd_low).quantize(DEC_PLACES),
-            #         'last': Decimal(usd_last).quantize(DEC_PLACES),
-            #         'avg': None,
-            #         'volume': Decimal(usd_vol).quantize(DEC_PLACES),
-            #                         },
+            'USD': {'ask': Decimal(usd_ticker_result['result'][0]['ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(usd_ticker_result['result'][0]['bid']).quantize(DEC_PLACES),
+                    'last': Decimal(usd_last).quantize(DEC_PLACES),
+                    'volume': Decimal(usd_vol).quantize(DEC_PLACES),
+                                    },
             'EUR': {'ask': Decimal(eur_ticker_result['result'][0]['ask']).quantize(DEC_PLACES) if eur_ticker_result['result'][0]['ask'] is not None else None,
                     'bid': Decimal(eur_ticker_result['result'][0]['bid']).quantize(DEC_PLACES) if eur_ticker_result['result'][0]['bid'] is not None else None,
                     'last': Decimal(eur_last).quantize(DEC_PLACES),
@@ -577,17 +574,17 @@ def _rocktradingApiCall(#usd_ticker_url, usd_trades_url,
             }
 
 
-def _bitcashApiCall(czk_api_url, *args, **kwargs):
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=czk_api_url, headers=API_REQUEST_HEADERS)).read()
-        czk_result = json.loads(response)
-
-    return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
-                    },
-            }
+# def _bitcashApiCall(czk_api_url, *args, **kwargs):
+#     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+#         response = urllib2.urlopen(urllib2.Request(url=czk_api_url, headers=API_REQUEST_HEADERS)).read()
+#         czk_result = json.loads(response)
+#
+#     return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
+#                     'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
+#                     'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
+#                     'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
+#                     },
+#             }
 
 
 def _intersangoApiCall(ticker_url, *args, **kwargs):
@@ -915,48 +912,6 @@ def _bitfinexApiCall(ticker_url, trades_url, *args, **kwargs):
     result['USD'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                      'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
                      'last': Decimal(ticker['last_price']).quantize(DEC_PLACES),
-                     'volume': volume,
-                     }
-
-    return result
-
-def _bidextremeApiCall(trades_url, orders_url, *args, **kwargs):
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
-        trades = json.loads(response)
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=orders_url, headers=API_REQUEST_HEADERS)).read()
-        orderbook = json.loads(response)
-
-    volume = DEC_PLACES
-    last24h_timestamp = time.time() - 86400
-    last_price = 0
-    last_trade_timestamp = 0
-    for trade in trades:
-        if trade['date'] >= last24h_timestamp:
-            volume = volume + Decimal(trade['amount'])
-        if trade['date'] > last_trade_timestamp:
-            last_trade_timestamp = trade['date']
-            last_price = trade['price']
-    last_price = Decimal(last_price).quantize(DEC_PLACES)
-
-    bid = 0
-    for bid_order in orderbook['bids']:
-        if bid < bid_order[0] or bid == 0:
-            bid = bid_order[0]
-    bid = Decimal(bid).quantize(DEC_PLACES)
-
-    ask = 0
-    for ask_order in orderbook['asks']:
-        if ask > ask_order[0] or ask == 0:
-            ask = ask_order[0]
-    ask = Decimal(ask).quantize(DEC_PLACES)
-
-
-    result = {}
-    result['PLN'] = {'ask': ask,
-                     'bid': bid,
-                     'last': last_price,
                      'volume': volume,
                      }
 
