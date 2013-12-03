@@ -219,7 +219,6 @@ var renderAll = function(result, status, responseObj){
     }
 
     renderLegend(legendClickStatus);
-    document.title = API_data[legendClickStatus].averages.last+' '+legendClickStatus+' | BitcoinAverage - independent bitcoin price';
 }
 
 
@@ -298,7 +297,7 @@ var renderLegend = function(currencyCode){
     });
 
     if (legendClickStatus == currencyCode){
-        document.title = API_data[currencyCode].averages.last+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
+        document.title = API_data[currencyCode].global_averages.last+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
     }
 
     $('.legend-curcode').text(currencyCode);

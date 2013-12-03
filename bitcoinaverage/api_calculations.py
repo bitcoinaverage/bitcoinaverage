@@ -228,52 +228,54 @@ def calculateAverageRates(exchanges_rates, calculated_volumes):
 
 def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currency_volumes, calculated_global_average_rates, calculated_global_volume_percents):
     for currency in CURRENCY_LIST:
-        try:
-            calculated_average_rates[currency]['last'] = float(calculated_average_rates[currency]['last'])
-        except TypeError:
-            calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
-        try:
-            calculated_average_rates[currency]['ask'] = float(calculated_average_rates[currency]['ask'])
-        except TypeError:
-            calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
-        try:
-            calculated_average_rates[currency]['bid'] = float(calculated_average_rates[currency]['bid'])
-        except TypeError:
-            calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
-        try:
-            calculated_average_rates[currency]['total_vol'] = float(total_currency_volumes[currency])
-        except TypeError:
-            calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
-        try:
-            calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
-        except TypeError:
-            calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
+        if currency in calculated_average_rates:
+            try:
+                calculated_average_rates[currency]['last'] = float(calculated_average_rates[currency]['last'])
+            except TypeError:
+                calculated_average_rates[currency]['last'] = str(calculated_average_rates[currency]['last'])
+            try:
+                calculated_average_rates[currency]['ask'] = float(calculated_average_rates[currency]['ask'])
+            except TypeError:
+                calculated_average_rates[currency]['ask'] = str(calculated_average_rates[currency]['ask'])
+            try:
+                calculated_average_rates[currency]['bid'] = float(calculated_average_rates[currency]['bid'])
+            except TypeError:
+                calculated_average_rates[currency]['bid'] = str(calculated_average_rates[currency]['bid'])
+            try:
+                calculated_average_rates[currency]['total_vol'] = float(total_currency_volumes[currency])
+            except TypeError:
+                calculated_average_rates[currency]['total_vol'] = str(total_currency_volumes[currency])
+            try:
+                calculated_average_rates[currency]['24h_avg'] = float(get24hAverage(currency))
+            except TypeError:
+                calculated_average_rates[currency]['24h_avg'] = str(get24hAverage(currency))
 
 
-        try:
-            calculated_global_average_rates[currency]['last'] = float(calculated_global_average_rates[currency]['last'])
-        except TypeError:
-            calculated_global_average_rates[currency]['last'] = str(calculated_global_average_rates[currency]['last'])
-        try:
-            calculated_global_average_rates[currency]['ask'] = float(calculated_global_average_rates[currency]['ask'])
-        except TypeError:
-            calculated_global_average_rates[currency]['ask'] = str(calculated_global_average_rates[currency]['ask'])
-        try:
-            calculated_global_average_rates[currency]['bid'] = float(calculated_global_average_rates[currency]['bid'])
-        except TypeError:
-            calculated_global_average_rates[currency]['bid'] = str(calculated_global_average_rates[currency]['bid'])
-        try:
-            calculated_global_average_rates[currency]['volume_btc'] = float(total_currency_volumes[currency])
-        except TypeError:
-            calculated_global_average_rates[currency]['volume_btc'] = str(total_currency_volumes[currency])
-        try:
-            calculated_global_average_rates[currency]['volume_percent'] = float(calculated_global_volume_percents[currency])
-        except TypeError:
-            calculated_global_average_rates[currency]['volume_percent'] = str(calculated_global_volume_percents[currency])
+        if currency in calculated_global_average_rates:
+            try:
+                calculated_global_average_rates[currency]['last'] = float(calculated_global_average_rates[currency]['last'])
+            except TypeError:
+                calculated_global_average_rates[currency]['last'] = str(calculated_global_average_rates[currency]['last'])
+            try:
+                calculated_global_average_rates[currency]['ask'] = float(calculated_global_average_rates[currency]['ask'])
+            except TypeError:
+                calculated_global_average_rates[currency]['ask'] = str(calculated_global_average_rates[currency]['ask'])
+            try:
+                calculated_global_average_rates[currency]['bid'] = float(calculated_global_average_rates[currency]['bid'])
+            except TypeError:
+                calculated_global_average_rates[currency]['bid'] = str(calculated_global_average_rates[currency]['bid'])
+            try:
+                calculated_global_average_rates[currency]['volume_btc'] = float(total_currency_volumes[currency])
+            except TypeError:
+                calculated_global_average_rates[currency]['volume_btc'] = str(total_currency_volumes[currency])
+            try:
+                calculated_global_average_rates[currency]['volume_percent'] = float(calculated_global_volume_percents[currency])
+            except TypeError:
+                calculated_global_average_rates[currency]['volume_percent'] = str(calculated_global_volume_percents[currency])
 
 
         for exchange_name in EXCHANGE_LIST:
-            if exchange_name in calculated_volumes[currency]:
+            if currency in calculated_volumes and exchange_name in calculated_volumes[currency]:
                 try:
                     calculated_volumes[currency][exchange_name]['rates']['last'] = float(calculated_volumes[currency][exchange_name]['rates']['last'])
                 except TypeError:

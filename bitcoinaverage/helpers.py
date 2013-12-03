@@ -55,22 +55,6 @@ def write_fiat_rates_config():
     currencies_names_URL = 'http://openexchangerates.org/api/currencies.json'
     currencies_rates_URL = 'http://openexchangerates.org/api/latest.json?app_id={}'.format(OPENEXCHANGERATES_APP_ID)
 
-    try:
-        ssmtp = subprocess.Popen(('/usr/sbin/ssmtp', 'bitcoinaverage@gmail.com'), stdin=subprocess.PIPE)
-    except OSError:
-        print 'could not start sSMTP, email not sent'
-    # pass the email contents to sSMTP over stdin
-    message = '''To: %s
-From: %s
-Subject: request to openexchangerates
-
-request to openexchangerates done
-'''
-
-    ssmtp.communicate(message % ('bitcoinaverage@gmail.com', 'bitcoinaverage@gmail.com'))
-    # wait until the email has finished sending
-    ssmtp.wait()
-
     currency_data_list = {}
 
     for currency_code in ba.config.CURRENCY_LIST:

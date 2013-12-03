@@ -16,3 +16,4 @@ API_INDEX_URL_NOGOX = '' #should be not empty
 
 FONT_PATH = ''
 OPENEXCHANGERATES_APP_ID = '' # for openexchangerates.org integration, for fiat exchange rates
+BITCOIN_DE_API_KEY = '' # for bitcoin.de integration

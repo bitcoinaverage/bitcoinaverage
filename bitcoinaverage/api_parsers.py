@@ -14,6 +14,7 @@ from bitcoinaverage.bitcoinchart_fallback import getData
 from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD
 from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException, NoVolumeException
 from bitcoinaverage.helpers import write_log
+from bitcoinaverage.server import BITCOIN_DE_API_KEY
 
 
 API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
@@ -64,7 +65,7 @@ def callAPI(exchange_name):
                     and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
                     result = API_QUERY_CACHE[exchange_name]['result']
                 else:
-                    if '_%sApiCall' % exchange_name in globals():
+                    if '_{exchange_name}ApiCall'.format(exchange_name=exchange_name) in globals():
                         try:
                             result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
                             result['data_source'] = 'api'
@@ -101,7 +102,6 @@ def callAPI(exchange_name):
                     urllib2.URLError,
                     httplib.BadStatusLine,
                     CallTimeoutException) as error:
-
                 API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
                 if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
                     result = API_QUERY_CACHE[exchange_name]['result']
@@ -502,6 +502,7 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     result = _lbcParseCurrency(result, ticker, 'SGD')
     result = _lbcParseCurrency(result, ticker, 'AUD')
     result = _lbcParseCurrency(result, ticker, 'BRL')
+    result = _lbcParseCurrency(result, ticker, 'CHF')
 
     return result
 
@@ -962,3 +963,134 @@ def _bidextremeApiCall(trades_url, orders_url, *args, **kwargs):
     return result
 
 
+def _fybsgApiCall(ticker_url, trades_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
+
+    ask = Decimal(ticker['ask']).quantize(DEC_PLACES)
+    bid = Decimal(ticker['bid']).quantize(DEC_PLACES)
+
+    volume = DEC_PLACES
+    last24h_timestamp = time.time() - 86400
+    last_price = 0
+    last_trade_timestamp = 0
+    for trade in trades:
+        if trade['date'] >= last24h_timestamp:
+            volume = volume + Decimal(trade['amount'])
+        if trade['date'] > last_trade_timestamp:
+            last_trade_timestamp = trade['date']
+            last_price = trade['price']
+    last_price = Decimal(last_price).quantize(DEC_PLACES)
+
+    result = {}
+    result['SGD'] = {'ask': ask,
+                     'bid': bid,
+                     'last': last_price,
+                     'volume': volume,
+                     }
+
+    return result
+
+
+def _fybseApiCall(ticker_url, trades_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
+
+    ask = Decimal(ticker['ask']).quantize(DEC_PLACES)
+    bid = Decimal(ticker['bid']).quantize(DEC_PLACES)
+
+    volume = DEC_PLACES
+    last24h_timestamp = time.time() - 86400
+    last_price = 0
+    last_trade_timestamp = 0
+    for trade in trades:
+        if trade['date'] >= last24h_timestamp:
+            volume = volume + Decimal(trade['amount'])
+        if trade['date'] > last_trade_timestamp:
+            last_trade_timestamp = trade['date']
+            last_price = trade['price']
+    last_price = Decimal(last_price).quantize(DEC_PLACES)
+
+    result = {}
+    result['SEK'] = {'ask': ask,
+                     'bid': bid,
+                     'last': last_price,
+                     'volume': volume,
+                     }
+    return result
+
+
+def _bitcoin_deApiCall(rates_url, trades_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        rates_url = rates_url.format(api_key=BITCOIN_DE_API_KEY)
+        response = urllib2.urlopen(urllib2.Request(url=rates_url, headers=API_REQUEST_HEADERS)).read()
+        rates = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        trades_url = trades_url.format(api_key=BITCOIN_DE_API_KEY)
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
+
+    result = {}
+    if 'rate_weighted_3h' in rates:
+        last_avg_price = Decimal(rates['rate_weighted_3h']).quantize(DEC_PLACES)
+    elif 'rate_weighted_12h' in rates:
+        last_avg_price = Decimal(rates['rate_weighted_12h']).quantize(DEC_PLACES)
+    else:
+        return result
+
+
+    volume = DEC_PLACES
+    last24h_timestamp = time.time() - 86400
+    for trade in trades:
+        if trade['date'] >= last24h_timestamp:
+            volume = volume + Decimal(trade['amount'])
+
+    result['EUR'] = {'ask': last_avg_price,
+                     'bid': last_avg_price,
+                     'last': last_avg_price,
+                     'volume': volume,
+                     }
+
+    return result
+
+
+def _itbitApiCall(usd_url, eur_url, sgd_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_url, headers=API_REQUEST_HEADERS)).read()
+        usd_rates = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_url, headers=API_REQUEST_HEADERS)).read()
+        eur_trades = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=sgd_url, headers=API_REQUEST_HEADERS)).read()
+        sgd_trades = json.loads(response)
+
+    result = {}
+    if usd_rates['volume'] > 0:
+        result['USD'] = {'ask': Decimal(usd_rates['ask']).quantize(DEC_PLACES),
+                         'bid': Decimal(usd_rates['bid']).quantize(DEC_PLACES),
+                         'last': Decimal(usd_rates['close']).quantize(DEC_PLACES),
+                         'volume': Decimal(usd_rates['volume']).quantize(DEC_PLACES),
+                         }
+    if eur_trades['volume'] > 0:
+        result['EUR'] = {'ask': Decimal(eur_trades['ask']).quantize(DEC_PLACES),
+                         'bid': Decimal(eur_trades['bid']).quantize(DEC_PLACES),
+                         'last': Decimal(eur_trades['close']).quantize(DEC_PLACES),
+                         'volume': Decimal(eur_trades['volume']).quantize(DEC_PLACES),
+                         }
+    if sgd_trades['volume'] > 0:
+        result['SGD'] = {'ask': Decimal(sgd_trades['ask']).quantize(DEC_PLACES),
+                         'bid': Decimal(sgd_trades['bid']).quantize(DEC_PLACES),
+                         'last': Decimal(sgd_trades['close']).quantize(DEC_PLACES),
+                         'volume': Decimal(sgd_trades['volume']).quantize(DEC_PLACES),
+                         }
+
+    return result
