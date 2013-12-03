@@ -209,10 +209,10 @@ EXCHANGE_LIST = {
                                     # 'ignored': True,
                                     # 'ignore_reason': 'abnormal price swings',
                                  },
-                    'itbit':  {'usd_url': 'https://www.itbit.com/api/feeds/ticker/XBTUSD',
-                               'eur_url': 'https://www.itbit.com/api/feeds/ticker/XBTEUR',
-                               'sgd_url': 'https://www.itbit.com/api/feeds/ticker/XBTSGD',
-                                 },
+                    # 'itbit':  {'usd_url': 'https://www.itbit.com/api/feeds/ticker/XBTUSD',
+                    #            'eur_url': 'https://www.itbit.com/api/feeds/ticker/XBTEUR',
+                    #            'sgd_url': 'https://www.itbit.com/api/feeds/ticker/XBTSGD',
+                    #              },
 
 
 
