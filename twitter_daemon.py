@@ -42,10 +42,10 @@ while True:
             perc = round(a, 2)
             
     if perc != 0 and change != 0 and direction != "":
-        status = "Average USD Rate: ${0} ({1} ${2}) - https://BitcoinAverage.com".format(newprice,direction,change)
+        status = "Bitcoin Average Global Rate: ${0} ({1} ${2}) - https://BitcoinAverage.com".format(newprice,direction,change)
         status = api.PostUpdate(status)
     else:
-        status = "Average USD Rate: ${0} - https://BitcoinAverage.com".format(newprice)
+        status = "Bitcoin Average Global Rate: ${0} - https://BitcoinAverage.com".format(newprice)
         status = api.PostUpdate(status)
         
     oldprice = newprice
