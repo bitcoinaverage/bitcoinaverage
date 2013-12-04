@@ -10,11 +10,6 @@ if (config.apiIndexUrl[config.apiIndexUrl.length-1] != '/') {
 }
 var API_all_url = config.apiIndexUrl+'all';
 
-if (config.apiIndexUrlNoGox[config.apiIndexUrlNoGox.length-1] != '/') {
-    config.apiIndexUrlNoGox = config.apiIndexUrlNoGox + '/';
-}
-var API_all_url_nogox = config.apiIndexUrlNoGox+'all';
-
 if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
     config.apiHistoryIndexUrl = config.apiHistoryIndexUrl + '/';
 }
@@ -26,6 +21,24 @@ var firstRenderDone = false;
 var fiatExchangeRates = [];
 var timeGap = 0; //actual time is fetched from remote resource, and user's local time is adjusted by X seconds to be completely exact
 
+var callAPI = function(callback){
+    if (typeof callback == 'undefined'){
+        callback = renderAll;
+    }
+
+    if (window.XDomainRequest) {
+        var xhr = new window.XDomainRequest(); //IE9-10 implements crossdomain AJAX this way only
+        xhr.open('GET', active_API_URL, true);
+        xhr.onload = function() {
+            var result = JSON.parse(xhr.responseText);
+            callback(result);
+        };
+        xhr.send();
+    } else {
+        $.getJSON(active_API_URL, callback);
+    }
+}
+
 $(function(){
     callAPI();
     setInterval(callAPI, config.refreshRate);
@@ -35,23 +48,25 @@ $(function(){
         event.stopPropagation();
     });
 
-    $('#nogox-button').click(function(event){
+    $('#nomillibit-button').click(function(event){
         var button = $(this);
-        if (active_API_URL == API_all_url){
-            active_API_URL = API_all_url_nogox;
+        if (config.scaleDivizer == 1000){
+            config.scaleDivizer = 1;
+            config.precision = 1;
             $(this).removeClass('btn-default');
             $(this).addClass('btn-primary');
-            button.html('MTGox ignored for USD/EUR/GBP');
+            button.html('฿1 base used');
 
             var currentHash = window.location.hash;
             var currentLocation = document.location.href;
-            var newLocation = currentLocation.replace(currentHash, '')+'#USD|nogox';
+            var newLocation = currentLocation.replace(currentHash, '')+'#USD|nomillibit';
             window.location.replace(newLocation);
         } else {
-            active_API_URL = API_all_url;
+            config.scaleDivizer = 1000;
+            config.precision = 3;
             $(this).addClass('btn-default');
             $(this).removeClass('btn-primary');
-            button.html('ignore MTGox for USD/EUR/GBP');
+            button.html('switch to ฿1 base');
 
             var currentHash = window.location.hash;
             var currentLocation = document.location.href;
@@ -112,8 +127,8 @@ $(function(){
                 var currentHash = window.location.hash;
                 var currentLocation = document.location.href;
                 var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-                if (active_API_URL == API_all_url_nogox){
-                    newLocation = newLocation + '|nogox';
+                if (config.scaleDivizer == 1){
+                    newLocation = newLocation + '|nomillibit';
                 }
                 window.location.replace(newLocation);
             }
@@ -150,8 +165,8 @@ $(function(){
                 var currentHash = window.location.hash;
                 var currentLocation = document.location.href;
                 var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-                if (active_API_URL == API_all_url_nogox){
-                    newLocation = newLocation + '|nogox';
+                if (config.scaleDivizer == 1){
+                    newLocation = newLocation + '|nomillibit';
                 }
                 window.location.replace(newLocation);
             }
@@ -161,25 +176,9 @@ $(function(){
 
 });
 
-var callAPI = function(callback){
-    if (typeof callback == 'undefined'){
-        callback = renderAll;
-    }
-
-    if (window.XDomainRequest) {
-        var xhr = new window.XDomainRequest(); //IE9-10 implements crossdomain AJAX this way only
-        xhr.open('GET', active_API_URL, true);
-        xhr.onload = function() {
-            var result = JSON.parse(xhr.responseText);
-            callback(result);
-        };
-        xhr.send();
-    } else {
-        $.getJSON(active_API_URL, callback);
-    }
-}
-
 var renderAll = function(result, status, responseObj){
+    result = adjustScale(result);
+
     //responseObj is not available in IE
     if(typeof responseObj == 'object'){
         getTimeGap(responseObj.getAllResponseHeaders());
@@ -200,11 +199,10 @@ var renderAll = function(result, status, responseObj){
         var currentHash = window.location.hash;
         currentHash = currentHash.replace('#', '');
         currentHash = currentHash.split('|');
-        if (currentHash.length == 2 && currentHash[1] == 'nogox'){
-            $('#nogox-button').click();
+        if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
+            $('#nomillibit-button').click();
         }
         currentHash = currentHash[0];
-
 
         var global_average_default = $.cookie('global-average');
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
@@ -241,19 +239,19 @@ var renderRates = function(currencyCode, currencyData, slotNum){
     dataChanged = (dataChanged || $('#slot'+slotNum+'-last').text() != currencyData.averages.last);
     dataChanged = (dataChanged || $('#slot'+slotNum+'-ask').text() != currencyData.averages.ask);
     dataChanged = (dataChanged || $('#slot'+slotNum+'-bid').text() != currencyData.averages.bid);
-    $('#slot'+slotNum+'-last').text(currencyData.averages.last.toFixed(2));
-    $('#slot'+slotNum+'-ask').text(currencyData.averages.ask.toFixed(2));
-    $('#slot'+slotNum+'-bid').text(currencyData.averages.bid.toFixed(2));
+    $('#slot'+slotNum+'-last').text(currencyData.averages.last.toFixed(config.precision));
+    $('#slot'+slotNum+'-ask').text(currencyData.averages.ask.toFixed(config.precision));
+    $('#slot'+slotNum+'-bid').text(currencyData.averages.bid.toFixed(config.precision));
 
 
     var global_avg_currency = $.cookie('global-average');
     if ((typeof global_avg_currency != 'undefined' && currencyCode == global_avg_currency) 
         || (typeof global_avg_currency == 'undefined' && currencyCode == 'USD') ){
         
-        $('#global-last').html(currencyData.global_averages.last);
+        $('#global-last').html(currencyData.global_averages.last.toFixed(config.precision));
         $('#global-curcode').html(currencyCode);
-        $('#global-bid').html(currencyData.global_averages.bid);
-        $('#global-ask').html(currencyData.global_averages.ask);
+        $('#global-bid').html(currencyData.global_averages.bid.toFixed(config.precision));
+        $('#global-ask').html(currencyData.global_averages.ask.toFixed(config.precision));
 
         if (lastGlobalAvgValue == 0) {
             lastGlobalAvgValue = currencyData.global_averages.last;
@@ -297,16 +295,16 @@ var renderLegend = function(currencyCode){
     });
 
     if (legendClickStatus == currencyCode){
-        document.title = API_data[currencyCode].global_averages.last+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
+        document.title = API_data[currencyCode].global_averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
     }
 
     $('.legend-curcode').text(currencyCode);
-    $('#legend-last').html(currencyData.averages.last.toFixed(2));
-    $('#legend-bid').html(currencyData.averages.bid.toFixed(2));
-    $('#legend-ask').html(currencyData.averages.ask.toFixed(2));
-    $('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(2));
+    $('#legend-last').html(currencyData.averages.last.toFixed(config.precision));
+    $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
+    $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));
+    $('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(config.precision));
     if (typeof currencyData.averages['24h_avg'] != 'undefined') {
-        $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(2));
+        $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(config.precision));
         $('#legend-24h-avg-container').show();
     } else {
         $('#legend-24h-avg-container').hide();
@@ -328,8 +326,8 @@ var renderLegend = function(currencyCode){
 
     $('#legend-currency-name').html(fiatCurrencies[currencyCode]['name']);
 
-    $('#legend-global-average').html(currencyData.global_averages.last.toFixed(2))
-    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(2))
+    $('#legend-global-average').html(currencyData.global_averages.last.toFixed(config.precision))
+    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(config.precision))
 
 
     for(var slotNum=0;slotNum<legendSlots;slotNum++){
@@ -353,9 +351,9 @@ var renderLegend = function(currencyCode){
         }
 
         $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
-        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(2));
-        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(2));
-        $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last'].toFixed(2));
+        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(config.precision));
+        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(config.precision));
+        $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last'].toFixed(config.precision));
         $('#legend-slot'+slotNum).toggle(true);
     }
 
@@ -373,7 +371,7 @@ var renderSmallChart = function(currencyCode){
     $('#charts-link a').show();
     $('#charts-link a').attr('href', 'charts.htm#'+currencyCode);
 
-    if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies || active_API_URL == API_all_url_nogox) {
+    if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies) {
         $('#charts-link a').hide();
         return;
     }
@@ -473,5 +471,28 @@ var parseDate = function(dateString){
     return result;
 }
 
+var adjustScale = function(apiResult){
+    if (config.scaleDivizer == 1) {
+        return apiResult;
+    }
+
+    var adjustedApiResult = {};
+    for (var i in apiResult){
+        if (typeof apiResult[i] == 'array' || typeof apiResult[i] == 'object') {
+            adjustedApiResult[i] = adjustScale(apiResult[i])
+        } else if (i == '24h_avg'
+                || i == 'ask'
+                || i == 'bid'
+                || i == 'last') {
+            adjustedApiResult[i] = parseFloat(apiResult[i]) / config.scaleDivizer;
+        } else {
+            adjustedApiResult[i] = apiResult[i];
+        }
+     }
+
+    return adjustedApiResult;
+}
+
+var print_r=function(arr, do_alert, level) { var print_red_text = ""; if(!level) {level = 0;} var level_padding = ""; for(var j=0; j<level+1; j++) {level_padding += "    ";} if(typeof(arr) == 'object') { for(var item in arr) { var value = arr[item]; if(typeof(value) == 'object') { print_red_text += level_padding + "'" + item + "' :\n"; print_red_text += print_r(value,level+1); } else {print_red_text += level_padding + "'" + item + "' => \"" + value + "\"\n";} } } else {print_red_text = "===>"+arr+"<===("+typeof(arr)+")";} if(typeof do_alert == 'undefined'){alert(print_red_text);} return print_red_text;}
 jQuery.fn.selectText=function(){var doc=document,element=this[0],range,selection; if(doc.body.createTextRange){range=document.body.createTextRange();range.moveToElementText(element);range.select();}else if(window.getSelection){selection=window.getSelection();range=document.createRange();range.selectNodeContents(element);selection.removeAllRanges();selection.addRange(range);}};
 jQuery.fn.countObj=function(){var count=0;var obj=this[0];for(i in obj){if(obj.hasOwnProperty(i)){count++;}}return count;};

@@ -36,12 +36,13 @@ def write_js_config():
 
     config_data = {}
     config_data['apiIndexUrl'] = ba.server.API_INDEX_URL
-    config_data['apiIndexUrlNoGox'] = ba.server.API_INDEX_URL_NOGOX
     config_data['apiHistoryIndexUrl'] = ba.server.API_INDEX_URL_HISTORY
     config_data['refreshRate'] = str(ba.config.FRONTEND_QUERY_FREQUENCY*1000) #JS requires value in milliseconds
     config_data['currencyOrder'] = ba.config.CURRENCY_LIST
     config_data['legendSlots'] = ba.config.FRONTEND_LEGEND_SLOTS
     config_data['majorCurrencies'] = ba.config.FRONTEND_MAJOR_CURRENCIES
+    config_data['scaleDivizer'] = ba.config.FRONTEND_SCALE_DIVIZER
+    config_data['precision'] = ba.config.FRONTEND_PRECISION
     config_string = js_config_template.replace('$CONFIG_DATA', json.dumps(config_data))
 
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'config.js'), 'w') as config_file:

@@ -8,6 +8,8 @@ CHARTS_DUMMY_PAGES_SUBFOLDER_NAME = 'charts'
 
 FRONTEND_LEGEND_SLOTS = 20
 FRONTEND_MAJOR_CURRENCIES = 6
+FRONTEND_SCALE_DIVIZER = 1000 #millibits
+FRONTEND_PRECISION = 3 #digits after dot
 
 API_FILES = {'TICKER_PATH': 'ticker/',
              'GLOBAL_TICKER_PATH': 'ticker/global/',
@@ -215,6 +217,10 @@ EXCHANGE_LIST = {
                                'ignored': True,
                                'ignore_reason': 'API period problem',
                                  },
+
+                    'bitcoin_central': {'ticker_url': 'https://bitcoin-central.net/api/data/eur/ticker',
+                                        'depth_url': 'https://bitcoin-central.net/api/data/eur/depth',
+                                         },
 
 
 
