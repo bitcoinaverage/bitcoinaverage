@@ -77,6 +77,7 @@ def callAPI(exchange_name):
                                 socket.error,
                                 urllib2.URLError,
                                 httplib.BadStatusLine,
+                                httplib.IncompleteRead,
                                 CallTimeoutException) as error:
                             if 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
                                 result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
@@ -100,6 +101,7 @@ def callAPI(exchange_name):
                     socket.error,
                     simplejson.decoder.JSONDecodeError,
                     urllib2.URLError,
+                    httplib.IncompleteRead,
                     httplib.BadStatusLine,
                     CallTimeoutException) as error:
                 API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
