@@ -77,6 +77,7 @@ def callAPI(exchange_name):
                                 socket.error,
                                 urllib2.URLError,
                                 httplib.BadStatusLine,
+                                httplib.IncompleteRead,
                                 CallTimeoutException) as error:
                             if 'bitcoincharts_symbols' in EXCHANGE_LIST[exchange_name]:
                                 result = getData(EXCHANGE_LIST[exchange_name]['bitcoincharts_symbols'])
@@ -100,6 +101,7 @@ def callAPI(exchange_name):
                     socket.error,
                     simplejson.decoder.JSONDecodeError,
                     urllib2.URLError,
+                    httplib.IncompleteRead,
                     httplib.BadStatusLine,
                     CallTimeoutException) as error:
                 API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
@@ -1049,3 +1051,21 @@ def _itbitApiCall(usd_url, eur_url, sgd_url, *args, **kwargs):
                          }
 
     return result
+
+
+def _bitcoin_centralApiCall(ticker_url, depth_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['EUR'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['price']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
+    return result
+
+
+
+

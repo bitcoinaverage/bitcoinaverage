@@ -311,11 +311,14 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
         all_data['timestamp'] = timestamp
         all_data['ignored_exchanges'] = exchanges_ignored
         for currency in CURRENCY_LIST:
-            cur_data = {'exchanges': calculated_volumes[currency],
-                        'averages': calculated_average_rates[currency],
-                        'global_averages': calculated_global_average_rates_formatted[currency],
-                        }
-            all_data[currency] = cur_data
+            if (currency in calculated_volumes
+            and currency in calculated_average_rates
+            and currency in calculated_global_average_rates_formatted):
+                cur_data = {'exchanges': calculated_volumes[currency],
+                            'averages': calculated_average_rates[currency],
+                            'global_averages': calculated_global_average_rates_formatted[currency],
+                            }
+                all_data[currency] = cur_data
 
         with open(os.path.join(api_path, API_FILES['ALL_FILE']), 'w+') as api_all_data_file:
             api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
