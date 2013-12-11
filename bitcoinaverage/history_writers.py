@@ -76,6 +76,7 @@ def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  
 
         row = []
         timestamp = datetime.datetime.strftime(datetime.datetime.fromtimestamp(current_timestamp-60), '%Y-%m-%d %H:%M:%S')
+        currency_global_average   =  currency_data_all[currency_code]['global_averages']['last']
         row.append(timestamp)
 
         cross_rate_divisor = float(fiat_data_all[currency_code]['rate']);
@@ -86,13 +87,12 @@ def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  
             currency_volume  =  currency_data_all[currency]['averages']['total_vol']
             currency_average =  currency_data_all[currency]['averages']['last']
             currency_rate    =   cross_rate_dividend / cross_rate_divisor #this is cross rate in USD
-            currency_global_average   =  currency_data_all[currency]['global_averages']['last']
-
             row.append(currency_volume)
             row.append(currency_average)
             row.append(currency_rate)
             row.append(currency_global_average)
 
+        row.append(currency_global_average)
         current_24h_sliding_data.append(row)
 
     csv_currency_titles = []
@@ -103,8 +103,8 @@ def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  
         csv_currency_titles.append(currency + ' ' + 'volume')
         csv_currency_titles.append(currency + ' ' + 'average')
         csv_currency_titles.append(currency + ' ' + 'rate')
-        csv_currency_titles.append(currency + ' ' + 'total')
 
+    csv_currency_titles.append(currency_code + ' ' + 'global average')
 
     with open(current_24h_sliding_file_path, 'wb') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
