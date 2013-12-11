@@ -90,7 +90,6 @@ def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  
             row.append(currency_volume)
             row.append(currency_average)
             row.append(currency_rate)
-            row.append(currency_global_average)
 
         row.append(currency_global_average)
         current_24h_sliding_data.append(row)
