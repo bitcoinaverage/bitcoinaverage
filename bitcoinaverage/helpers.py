@@ -98,7 +98,7 @@ def write_html_currency_pages():
     with open(template_file_path, 'r') as template_file:
         template = template_file.read()
 
-    api_all_url = '%sticker/all' % ba.server.API_INDEX_URL
+    api_all_url = '{}ticker/all'.format(ba.server.API_INDEX_URL)
 
     try:
         with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):

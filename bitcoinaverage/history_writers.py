@@ -13,9 +13,12 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
     current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
 
     current_24h_sliding_data = []
-    with open(current_24h_sliding_file_path, 'a') as csvfile: #to create file if not exists
+
+    #to create file if not exists
+    with open(current_24h_sliding_file_path, 'a') as csvfile:
         pass
 
+    #read file
     with open(current_24h_sliding_file_path, 'rb') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         header_passed = False
@@ -40,6 +43,71 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
     with open(current_24h_sliding_file_path, 'wb') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         csvwriter.writerow(['datetime','average'])
+        for row in current_24h_sliding_data:
+            csvwriter.writerow(row)
+
+
+def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  current_timestamp):
+
+    current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '24h_global_average_sliding_window.csv')
+    current_24h_sliding_data = []
+
+    #to create file if not exists
+    with open(current_24h_sliding_file_path, 'a') as csvfile:
+        pass
+
+    with open(current_24h_sliding_file_path, 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+        header_passed = False
+        for row in csvreader:
+            if not header_passed:
+                header_passed = True
+                continue
+            last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
+            if current_timestamp - last_recorded_timestamp < 86400: #60*60*24
+                current_24h_sliding_data.append(row)
+
+    last_recorded_timestamp = 0
+    if len(current_24h_sliding_data) > 0:
+        last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_24h_sliding_data[len(current_24h_sliding_data)-1][0],
+                                                          '%Y-%m-%d %H:%M:%S').timetuple())
+
+    if current_timestamp - last_recorded_timestamp > 60*2:
+
+        row = []
+        timestamp = datetime.datetime.strftime(datetime.datetime.fromtimestamp(current_timestamp-60), '%Y-%m-%d %H:%M:%S')
+        currency_global_average   =  currency_data_all[currency_code]['global_averages']['last']
+        row.append(timestamp)
+
+        cross_rate_divisor = float(fiat_data_all[currency_code]['rate']);
+
+        for currency in currency_data_all:
+            cross_rate_dividend = float(fiat_data_all[currency]['rate'])
+        #-60 added because otherwise the timestamp will point to the the beginning of next period and not current
+            currency_volume  =  currency_data_all[currency]['averages']['total_vol']
+            currency_average =  currency_data_all[currency]['averages']['last']
+            currency_rate    =   cross_rate_dividend / cross_rate_divisor #this is cross rate in USD
+            row.append(currency_volume)
+            row.append(currency_average)
+            row.append(currency_rate)
+
+        row.append(currency_global_average)
+        current_24h_sliding_data.append(row)
+
+    csv_currency_titles = []
+
+    csv_currency_titles.append('datetime')
+
+    for currency in currency_data_all:
+        csv_currency_titles.append(currency + ' ' + 'volume')
+        csv_currency_titles.append(currency + ' ' + 'average')
+        csv_currency_titles.append(currency + ' ' + 'rate')
+
+    csv_currency_titles.append(currency_code + ' ' + 'global average')
+
+    with open(current_24h_sliding_file_path, 'wb') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',')
+        csvwriter.writerow( csv_currency_titles )
         for row in current_24h_sliding_data:
             csvwriter.writerow(row)
 

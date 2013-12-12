@@ -20,20 +20,11 @@
         width:100%!important;
         position:relative!important;
         padding:0px!important;
-        margin:0; top:-60px!important;
+        margin:0; top:0!important;
         right:0px!important;
     }
 }
-@media (max-width: 480px){
-	#currency-arrowcontainer {
-		padding-left:0;
-	}
-}
-@media (min-width: 481px){	
-	#currency-arrowcontainer {
-		padding-left:70px;
-	}
-}
+
 @media (max-width: 768px){
 }
 @media (min-width: 768px){
@@ -78,6 +69,24 @@
     }
 }
 
+@media (min-width: 960px) {
+    .primary-currency-switch {
+       width: 380px;
+       float: left;
+        margin-left: 15px;
+    }
+    .secondary-currency-switch {
+        width: 315px;
+        float: left;
+        margin-left: 18%;
+    }
+}
+@media (min-width: 400px) and (max-width: 959px){
+    .more-currencies {
+        width: 100%;
+    }
+}
+
 /** Main CSS **/
 
 body {
@@ -113,8 +122,19 @@ ul{
 .bid_ask{font-weight: bold; color: #999;}
 .last{font-size: 27px; color: #428BCA; margin-bottom: 10px; margin-top: 0px !important; padding-top: 0px !important; }
 .curcode{font-size: 22px; font-weight: bold; color: #4F4F4F; margin-bottom: 10px; margin-top: 0px; padding-top: 0px !important; }
-.last-main{font-size: 2.3em; font-weight: bold; color: #428BCA; width: 250px;}
-.curcode-main{font-size: 2.3em; font-weight: bold; color: #4F4F4F; width: 250px;}
+.last-main{
+    font-size: 4.3em;
+    font-weight: 600;
+    color: #428BCA;
+    width: 250px;
+
+}
+.curcode-main{
+    font-size: 4.3em;
+    font-weight: 600;
+    color: #4F4F4F;
+    width: 250px;
+}
 .arrows{font-size: 2em; }
 .legend-heading{font-size: 2.3em; font-weight: bold; color: #4F4F4F;}
 
@@ -190,21 +210,6 @@ ul{
     margin: 0 auto -89px;
     padding-bottom: 89px;
 }
-#currency-navtabs h2 {
-    font-size: 1.4em;
-}
-
-#currency-navtabs > li.active{
-    color: #555;
-    cursor: pointer;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-}
-
-#currency-navtabs > li.active:hover{
-    background: none;
-}
 
 .tab_content{
     width: 100%;
@@ -237,7 +242,83 @@ ul{
     right: 10px;
     top: 39px;
 }
-.strip .btn:focus{outline:none;}
+.strip .btn:focus{
+    outline:none;
+}
+
+
+
+
+.currency-box {
+    border-bottom: 1px solid #dadada;
+    background: #f7f7f7;
+    overflow: hidden;
+    margin: 0 !important;
+}
+
+.currency-box .primary-currency-switch,
+.currency-box .secondary-currency-switch {
+
+}
+.currency-box .secondary-currency-switch ul {
+    padding: 0;
+    margin-bottom: 0;
+}
+.currency-box .primary-currency-switch{
+    padding: 0.6% 0 0 0;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.currency-box .secondary-currency-switch{
+}
+.currency-box .primary-currency-switch li:hover,
+.currency-box .secondary-currency-switch li:hover {
+    cursor: pointer;
+}
+.currency-box .primary-currency-switch li.active {
+    background: #428bca;
+    color: #fff;
+    font-size: 1.4em;
+    font-weight: normal;
+}
+.currency-box .primary-currency-switch li.active a{
+    color: #fff;
+    text-decoration: none;
+}
+.currency-box .primary-currency-switch li{
+    font-size: 1.4em;
+    padding: 0 3% 0;
+}
+.currency-box .secondary-currency-switch {
+    text-align: left;
+}
+.currency-box .secondary-currency-switch li {
+    display: inline-block;
+    text-transform: uppercase;
+    padding-right: 7%;
+    width: 45px;
+}
+
+
+.currency-box .primary-currency-switch li{
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+
+.currency-box .more-currencies {
+    text-decoration: none;
+    float: right;
+    display: block;
+    margin-right: 1%;
+    padding-top: 1.02%;
+}
+
+.currency-box .more-currencies:hover {
+    text-decoration: underline;
+    cursor: pointer
+}
 
 /**Footer**/
 .footer{
@@ -312,12 +393,15 @@ footer .row{
     color: inherit;
 }
 
+.indent {
+    margin-top: 75px;
+    margin-bottom: 5px;
+}
 /**Generic Classes**/
 .strip {
-    margin: 1.5% 0;
     position: relative;
     z-index: 3;
-    padding: .75% 0;
+    padding: 0.9% 0 .5%;
     background: #f7f7f7;
     border-top: 1px solid #dadada;
     border-bottom: 1px solid #dadada;
