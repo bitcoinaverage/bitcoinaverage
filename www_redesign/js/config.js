@@ -1,0 +1,1 @@
+var config = {"refreshRate": "15000", "currencyOrder": ["USD", "EUR", "CNY", "GBP", "CAD", "PLN", "JPY", "RUB", "AUD", "SEK", "BRL", "CZK", "NZD", "SGD", "ZAR", "NOK", "ILS", "CHF"], "scaleDivizer": 1000, "majorCurrencies": 6, "legendSlots": 20, "precision": 3, "apiIndexUrl": "https://api.bitcoinaverage.com/", "apiHistoryIndexUrl": "https://api.bitcoinaverage.com/history/"};

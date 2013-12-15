@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+    <title>BitcoinAverage - independent bitcoin price</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
+    <meta name="description" content="BitcoinAverage provides a more accurate price of bitcoin using weighted average for multiple exchanges.">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/highstock.js"></script>
+
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/fiat_data.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage">
+    <meta itemprop="name" content="BitcoinAverage - independent bitcoin price" />
+    <meta itemprop="specialty" content="bitcoin exchange rates" />
+
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div itemscope itemtype="http://schema.org/Brand">
+                    <meta itemprop="image" content="https://bitcoinaverage.com/img/logo_full_large.png" />
+                    <meta itemprop="logo" content="https://bitcoinaverage.com/img/logo_full_large.png" />
+                    <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url"><span itemprop="name">BitcoinAverage</span></a>
+                    <h1 class="navbar-brand slogan" itemprop="description">independent bitcoin price</h1>
+                </div>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="submenu" href="charts.htm">CHARTS</a></li>
+                    <!--<li itemscope itemtype="http://schema.org/Blog">-->
+                        <!--<a class="submenu" href="blog.htm" itemprop="url">BLOG</a>-->
+                    <!--</li>-->
+                    <li itemscope itemtype="http://schema.org/AboutPage">
+                        <a class="submenu" href="faq.htm" itemprop="url">FAQ</a>
+                    </li>
+                    <li><a class="submenu" href="api.htm">API</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="main-container" class="container">      
+        <div class="row indent">
+            <div class="col-md-12 text-left">
+               <span class="milli-bitcoin">
+                    millibitcoin to United States Dollar, <a href="faq.htm#global-average">global weighted average </a>
+               </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="strip active">
+                        <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="global-last" class="last-main" itemprop="price">385</span>
+                            <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
+
+                        </span>
+                        <br/>
+                        <button type="button" class="btn btn-default btn-xs ignore_btn" id="nomillibit-button">switch to ฿1 base</button>
+
+                </div>
+
+
+                <div class="row show-grid currency-box">
+                    <ul class="primary-currency-switch" id="currency-navtabs">
+                        <li id="slot0-link"><a href="currencies/usd.htm">USD</a></li>
+                        <li id="slot1-link"><a href="currencies/eur.htm">EUR</a></li>
+                        <li id="slot2-link"><a href="currencies/gbp.htm">GBP</a></li>
+                        <li id="slot3-link"><a href="currencies/cny.htm">CNY</a></li>
+                        <li id="slot4-link"><a href="currencies/cad.htm">CAD</a></li>
+                    </ul>
+                    <div class="secondary-currency-switch">
+                        <ul>
+                            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
+                            <li id="slot6-link"><a href="currencies/jpy.htm">JPY</a></li>
+                            <li id="slot7-link"><a href="currencies/rub.htm">RUB</a></li>
+                            <li id="slot8-link"><a href="currencies/aud.htm">AUD</a></li>
+                            <li id="slot9-link"><a href="currencies/sek.htm">SEK</a></li>
+                            <li id="slot10-link"><a href="currencies/brl.htm">BRL</a></li>
+                        </ul>
+                        <ul>
+                            <li id="slot11-link"><a href="currencies/czk.htm">CZK</a></li>
+                            <li id="slot12-link"><a href="currencies/nzd.htm">NZD</a></li>
+                            <li id="slot13-link"><a href="currencies/sgd.htm">SGD</a></li>
+                            <li id="slot14-link"><a href="currencies/zar.htm">ZAR</a></li>
+                            <li id="slot15-link"><a href="currencies/nok.htm">NOK</a></li>
+                            <li id="slot16-link"><a href="currencies/ils.htm">ILS</a></li>
+                        </ul>
+                    </div>
+                    <div class="more-currencies">
+                        <a>more currencies</a>
+                    </div>
+                </div>
+                <div class="">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 text-center">
+                <!--ul class="nav nav-tabs">
+                    <li id="slot0-box">
+                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="slot0-last" class="last" itemprop="price">395</span>
+                            <span id="slot0-curcode" class="curcode" itemprop="priceCurrency">USD</span>
+                        </h2>
+                        <p class="bid_ask">
+                            <span id="slot0-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot0-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot1-box">
+                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="slot1-last" class="last" itemprop="price">102</span>
+                            <span id="slot1-curcode" class="curcode" itemprop="priceCurrency">EUR</span>
+                        </h2>
+                        <p class="bid_ask">
+                            <span id="slot1-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot1-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot2-box">
+                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="slot2-last" class="last" itemprop="price">87</span>
+                            <span id="slot2-curcode" class="curcode" itemprop="priceCurrency">GBP</span>
+                        </h2>
+                        <p class="bid_ask">
+                            <span id="slot2-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot2-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot3-box">
+                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="slot3-last" class="last" itemprop="price">782</span>
+                            <span id="slot3-curcode" class="curcode" itemprop="priceCurrency">CNY</span>
+                        </h2>
+                        <p class="bid_ask">
+                            <span id="slot3-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot3-ask" title="ask"></span>
+                        </p>
+                    </li>
+                    <li id="slot4-box">
+                        <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
+                            <span id="slot4-last" class="last" itemprop="price">136</span>
+                            <span id="slot4-curcode" class="curcode" itemprop="priceCurrency">CAD</span>
+                        </h2>
+                        <p class="bid_ask">
+                            <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
+                        </p>
+                    </li>
+                </ul-->
+            </div>
+        </div>
+        <div class="row">
+    <div class="tab_content col-md-offset-3 tab-content" id="legend-block">
+      <div class="col-md-2"></div>
+<!--new section end -->
+       <div class="col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-0">
+        <table width="100%;" cellpadding="0" cellspacing="0" class="table table-striped table-condensed table-hover" style="font-size:14px;">
+        <thead>
+            <tr>
+                <th width="40%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td valign="top" class="legend-heading" style="padding-left: 0px; margin-left: 0px">
+                                <span class="legend-curcode"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top" style="padding: 0 0 0px; line-height: 0px;">
+                                <small style="font-size:11px; ">
+                                    <span id="legend-currency-name"></span>
+                                </small>
+                            </td>
+                        </tr>
+                    </table>
+
+                </th>
+                <th width="25%" valign="top" style="padding:0px 0 16px;  border-bottom:none; text-align:center;"><span style="font-size:15px;">
+                    <strong style=" display: block; line-height:9px;">
+                        <small style="color:#999999;">ask</small>
+                        <span id="legend-ask"></span>
+                    </strong>
+                    <strong style=" display: block;">
+                        <small style="color:#999999;">bid</small>
+                        <span id="legend-bid"></span>
+                    </strong></span>
+                </th>
+                <th width="35%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="right" valign="top" class="legend-heading" style="padding-right: 0px; margin-right: 0px">
+                                <span id="legend-last"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" valign="top" style="padding: 0 0 0px; line-height: 0px;">
+                                <small style="font-size:11px; ">
+                                    data <span id="legend-update-time-ago"></span> old
+                                </small>
+                            </td>
+                        </tr>
+                    </table>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+    	    <tr style=" border-top:0px solid #fff; background:none; height:10px;">
+                <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
+                <td class="" width="34%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
+                <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
+            </tr>
+            <tr>
+              <td class="legend-name" colspan="2"><span>total market volume (24h)</span></td>
+              <td class="legend-rate text-right" width="33%"><span class="">&#3647; <span id="legend-total-volume"></span></span></td>
+            </tr>
+            <tr>
+              <td class="legend-name" colspan="2">
+                  <a href="#" id="set-global-average-currency" class="action-link"
+                     title="click to select this as your default global currency">global average price</a>
+              </td>
+              <td class="legend-rate text-right" width="33%"><span id="legend-global-average"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr>
+              <td class="legend-name" colspan="2">global trading volume share</td>
+              <td class="legend-rate text-right" width="33%"><span id="legend-global-volume-percent"></span>%</td>
+            </tr>
+            <tr id="legend-24h-avg-container">
+              <td class="legend-name" colspan="2"><span>24h sliding average</span></td>
+              <td class="legend-rate text-right" width="33%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
+            </tr>
+        </tbody>
+        </table>
+           <div id="small-chart"></div>
+           <p id="charts-link"><a href="/charts.htm">price history chart for <span class="legend-curcode"></span></a></p>
+           <table class="table table-striped table-condensed table-hover" width="100%;" id="legend-ignored-table">
+               <thead>
+               <tr>
+                   <th width="40%" colspan="2">ignored exchange</th>
+                   <th width="60%" style="text-align: right">reason</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr id="legend-ignored-slot0-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot0-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot0-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot1-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot1-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot1-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot2-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot2-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot2-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot3-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot3-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot3-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot4-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot4-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot4-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot5-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot5-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot5-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot6-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot6-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot6-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot7-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot7-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot7-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot8-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot8-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot8-reason"></td>
+               </tr>
+               <tr id="legend-ignored-slot9-box">
+                   <td class="legend-name" width="30%" id="legend-ignored-slot9-name"></td>
+                   <td class="legend-rate text-right" colspan="2" id="legend-ignored-slot9-reason"></td>
+               </tr>
+               </tbody>
+           </table>
+       </div>
+<!--new section end -->   
+       <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-0">
+        <div class="">
+          <!--h3>Data for <span class="legend-curcode">USD</span> global average average</h3-->
+          <h3>Global average average</h3>
+        </div>
+        <table class="table table-striped table-condensed table-hover" id="global-average-data-table">
+             <thead>
+            <tr>
+              <th style="width: 20%">currency</th>
+              <th style="width: 20%">volume %</th>
+              <th style="width: 20%">volume &#3647;</th>
+              <th style="width: 20%;">last price</th>
+              <th style="width: 20%;">cross price</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr id="global-average-data-template">
+              <td class="legend-currency"><span></span></td>
+              <td class="legend-volume_percent"><span></span>%</td>
+              <td class="legend-volume_btc"><span></span></td>
+              <td class="legend-price text-right"><span></span> <ins class="legend-curcode"></ins></td>
+              <td class="legend-last-cross-price  text-right"><span></span> <ins class="legend-curcode"></ins></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!--table class="table table-striped table-condensed table-hover">
+          <thead>
+            <tr>
+              <th style="width: 25%">exchange</th>
+              <th style="width: 20%">volume %</th>
+              <th style="width: 25%">volume &#3647;</th>
+              <th style="width: 30%; text-align: right">last price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="legend-slot0">
+              <td class="legend-name"><span id="legend-slot0-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot0-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot0-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot0-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot1">
+              <td class="legend-name"><span id="legend-slot1-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot1-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot1-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot1-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot2">
+              <td class="legend-name"><span id="legend-slot2-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot2-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot2-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot2-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot3">
+              <td class="legend-name"><span id="legend-slot3-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot3-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot3-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot3-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot4">
+              <td class="legend-name"><span id="legend-slot4-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot4-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot4-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot4-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot5">
+              <td class="legend-name"><span id="legend-slot5-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot5-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot5-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot5-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot6">
+              <td class="legend-name"><span id="legend-slot6-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot6-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot6-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot6-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot7">
+              <td class="legend-name"><span id="legend-slot7-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot7-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot7-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot7-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot8">
+              <td class="legend-name"><span id="legend-slot8-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot8-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot8-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot8-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot9">
+              <td class="legend-name"><span id="legend-slot9-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot9-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot9-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot9-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot10">
+              <td class="legend-name"><span id="legend-slot10-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot10-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot10-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot10-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot11">
+              <td class="legend-name"><span id="legend-slot11-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot11-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot11-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot11-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot12">
+              <td class="legend-name"><span id="legend-slot12-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot12-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot12-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot12-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot13">
+              <td class="legend-name"><span id="legend-slot13-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot13-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot13-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot13-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot14">
+              <td class="legend-name"><span id="legend-slot14-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot14-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot14-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot14-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot15">
+              <td class="legend-name"><span id="legend-slot15-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot15-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot15-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot15-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot16">
+              <td class="legend-name"><span id="legend-slot16-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot16-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot16-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot16-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot17">
+              <td class="legend-name"><span id="legend-slot17-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot17-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot17-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot17-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot18">
+              <td class="legend-name"><span id="legend-slot18-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot18-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot18-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot18-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+            <tr id="legend-slot19">
+              <td class="legend-name"><span id="legend-slot19-name"></span></td>
+              <td class="legend-volume_percent"><span id="legend-slot19-volume_percent"></span>%</td>
+              <td class="legend-volume_btc"><span id="legend-slot19-volume_btc"></span></td>
+              <td class="legend-rate text-right"><span id="legend-slot19-rate"></span> <span class="legend-curcode"></span></td>
+            </tr>
+          </tbody>
+        </table>
+        <!--table class="table table-striped table-condensed table-hover">
+          <thead>
+            <tr>
+              <th><span class="legend-curcode"></span> history data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td class="legend-rate text-center">
+                    <a href="https://api.bitcoinaverage.com/history/USD/per_minute_24h_sliding_window.csv" id="24h-sliding-link">24h sliding window</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="https://api.bitcoinaverage.com/history/USD/per_hour_monthly_sliding_window.csv" id="monthly-sliding-link">monthly sliding window</a>
+                    <br>
+                    <a href="https://api.bitcoinaverage.com/history/USD/per_day_all_time_history.csv" id="daily-averages-link">daily averages</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="https://api.bitcoinaverage.com/history/USD/volumes.csv" id="volumes-link">daily exchange volumes</a>
+                </td>
+            </tr>
+          </tbody>
+        </table-->
+
+
+        <!--div>
+        <small><em>
+            <span id="legend-api-unavailable-note">* exchange API unavailable, data retrieved via bitcoincharts<br></span>
+            <span id="legend-api-down-note">** exchange API unavailable, data retrieved from local cache</span>
+        </em></small><br><br>
+        </div-->
+      </div>
+    </div>
+  </div>
+    </div><!-- /container -->
+
+
+
+    <footer class="footer clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="f_left foot_left">
+                    <section>
+                        <h4><span>Support Us</span></h4>
+                        <span style="font-size: 80%"><a href="bitcoin:1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</a></span>
+                    </section>
+                </div>
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- Main -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:320px;height:50px"
+                     data-ad-client="ca-pub-9795175343560011"
+                     data-ad-slot="6369133284"></ins>
+                <script>
+//                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <div class="privacy">
+                    2013 AGPLv3 (&#1021;) BITCOINAVERAGE
+                </div>
+                <div class="f_right foot_right" style="text-align: right">
+                    <section id="section-connect">
+                        <h4><span>Connect with us</span></h4>
+                        <a href="https://github.com/bitcoinaverage/bitcoinaverage" target="_blank" title="github"><span class="icon-stack">
+                                <i class="icon-circle icon-stack-base icon-1x"></i>
+                                <i class="icon-github icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="https://bitcointalk.org/index.php?topic=270190.0" target="_blank" title="bitcointalk thread">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-comment icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="https://twitter.com/BitcoinAverage" target="_blank" title="twitter">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-twitter icon-light"></i>
+                            </span>
+                        </a>
+                        <a href="mailto:bitcoinaverage@gmail.com" title="email">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-envelope icon-light"></i>
+                            </span>
+                        </a>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </footer><!-- /footer -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-42688472-1', 'bitcoinaverage.com');
+ga('send', 'pageview');
+</script>
+</body>
+</html>
