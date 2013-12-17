@@ -19,6 +19,7 @@
     <script type="text/javascript" src="js/highstock.js"></script>
 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/fiat_data.js"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
@@ -58,42 +59,62 @@
     </div>
     
     <div id="main-container" class="container">      
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <br><strong>
-                Bitcoin has not fallen to $1! We have however, switched to millibitcoin (m฿) as the default unit.
-                You can still return to a full ฿ base if you prefer, just use the button.</strong>
+        <div class="row indent">
+            <div class="col-md-12 text-left">
+               <span class="milli-bitcoin">
+                    millibitcoin to United States Dollar, <a href="faq.htm#global-average">global weighted average </a>
+               </span>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
                 <div class="strip active">
-                        <span id="currency-arrowcontainer" class="arrows">
-                            <i id="global-avg-arrowup" class="icon-caret-up"></i>
-                            <i id="global-avg-arrowdown" class="icon-caret-down"></i>
-                        </span>
                         <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
                             <span id="global-last" class="last-main" itemprop="price">385</span>
                             <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
-                            <span><a href="faq.htm#global-average">global average</a></span>
+
                         </span>
-                        </br>
+                        <br/>
                         <button type="button" class="btn btn-default btn-xs ignore_btn" id="nomillibit-button">switch to ฿1 base</button>
-                        
-                    <span class="slot-global-bid_ask">
-                        <span class="slot-global-bid_ask-titles">bid &nbsp;</span>
-                        <span id="global-bid" title="bid">375</span>
-                        &nbsp;/&nbsp;
-                        <span id="global-ask" title="ask">395</span>
-                        <span class="slot-global-bid_ask-titles">&nbsp; ask</span>
-                    </span>
+                </div>
+                <div class="row show-grid currency-box">
+                    <ul class="primary-currency-switch" id="currency-navtabs">
+                        <!--li id="slot0-link"><a href="currencies/usd.htm">USD</a></li>
+                        <li id="slot1-link"><a href="currencies/eur.htm">EUR</a></li>
+                        <li id="slot2-link"><a href="currencies/gbp.htm">GBP</a></li>
+                        <li id="slot3-link"><a href="currencies/cny.htm">CNY</a></li>
+                        <li id="slot4-link"><a href="currencies/cad.htm">CAD</a></li-->
+                    </ul>
+                    <ul class="secondary-currency-switch">
+                        <!--ul>
+                            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
+                            <li id="slot6-link"><a href="currencies/jpy.htm">JPY</a></li>
+                            <li id="slot7-link"><a href="currencies/rub.htm">RUB</a></li>
+                            <li id="slot8-link"><a href="currencies/aud.htm">AUD</a></li>
+                            <li id="slot9-link"><a href="currencies/sek.htm">SEK</a></li>
+                            <li id="slot10-link"><a href="currencies/brl.htm">BRL</a></li>
+                        </ul>
+                        <ul>
+                            <li id="slot11-link"><a href="currencies/czk.htm">CZK</a></li>
+                            <li id="slot12-link"><a href="currencies/nzd.htm">NZD</a></li>
+                            <li id="slot13-link"><a href="currencies/sgd.htm">SGD</a></li>
+                            <li id="slot14-link"><a href="currencies/zar.htm">ZAR</a></li>
+                            <li id="slot15-link"><a href="currencies/nok.htm">NOK</a></li>
+                            <li id="slot16-link"><a href="currencies/ils.htm">ILS</a></li>
+                        </ul-->
+                    </ul>
+                    <div class="more-currencies">
+                        <a>more currencies</a>
+                    </div>
+                </div>
+                <div class="">
 
                 </div>
             </div>
         </div>
-        <div class="row">            
+        <div class="row">
             <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 text-center">
-                <ul id="currency-navtabs" class="nav nav-tabs">
+                <!--ul class="nav nav-tabs">
                     <li id="slot0-box">
                         <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
                             <span id="slot0-last" class="last" itemprop="price">395</span>
@@ -139,9 +160,9 @@
                             <span id="slot4-bid" title="bid"></span>&nbsp;/&nbsp;<span id="slot4-ask" title="ask"></span>
                         </p>
                     </li>
-                </ul>
+                </ul-->
             </div>
-        </div>       
+        </div>
         <div class="row">
     <div class="tab_content col-md-offset-3 tab-content" id="legend-block">
       <div class="col-md-2"></div>
@@ -276,11 +297,42 @@
            </table>
        </div>
 <!--new section end -->   
-       <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-0">
+       <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-6 col-lg-offset-0">
         <div class="">
-          <h3>Data for <span class="legend-curcode">USD</span> weighted average</h3>
+          <!--h3>Data for <span class="legend-curcode">USD</span> global average average</h3-->
+          <h3>Global average data</h3>
         </div>
-        <table class="table table-striped table-condensed table-hover">
+        <table class="table table-striped table-condensed table-hover" id="global-average-data-table">
+             <thead>
+            <tr>
+              <th style="width: 20%">currency</th>
+              <th style="width: 20%">volume %</th>
+              <th style="width: 15%">volume &#3647;</th>
+              <th style="width: 20%;">last price</th>
+              <th style="width: 25%;">cross price</th>
+            </tr>
+          </thead>
+          <tbody>
+             <!--tr id="global-average-data-template">
+              <td class="legend-currency"><span></span></td>
+              <td class="legend-volume_percent"><span></span>%</td>
+              <td class="legend-volume_btc"><span></span></td>
+              <td class="legend-price"><span></span> <ins class="legend-curcode"></ins></td>
+              <td class="legend-last-cross-price text-right"><span></span> <ins class="legend-curcode"></ins></td>
+            </tr-->
+          </tbody>
+        </table>
+        <a id="show-more-currencies-in-global-avg-table">Show more currencies</a>
+           <script type="text/javascript">
+               $('#show-more-currencies-in-global-avg-table').click(function(){
+                   if ($('.secondary-global-avg-row').is(':hidden')){
+                        $('.secondary-global-avg-row').removeClass('hidden');
+                   } else {
+                       $('.secondary-global-avg-row').addClass('hidden');
+                   }
+               });
+           </script>
+        <!--table class="table table-striped table-condensed table-hover">
           <thead>
             <tr>
               <th style="width: 25%">exchange</th>
@@ -412,7 +464,7 @@
             </tr>
           </tbody>
         </table>
-        <table class="table table-striped table-condensed table-hover">
+        <!--table class="table table-striped table-condensed table-hover">
           <thead>
             <tr>
               <th><span class="legend-curcode"></span> history data</th>
@@ -431,50 +483,19 @@
                 </td>
             </tr>
           </tbody>
-        </table>
+        </table-->
 
 
-        <div>
+        <!--div>
         <small><em>
             <span id="legend-api-unavailable-note">* exchange API unavailable, data retrieved via bitcoincharts<br></span>
             <span id="legend-api-down-note">** exchange API unavailable, data retrieved from local cache</span>
         </em></small><br><br>
-        </div>
+        </div-->
       </div>
     </div>
   </div>
-    </div><!-- /container -->
-    
-    <div id="currency-sidebar" itemscope itemtype="http://schema.org/WPSideBar">
-        <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
-            <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
-            <li class="divider"></li>
-            <li id="slot0-link"><a href="currencies/usd.htm">USD</a></li>
-            <li id="slot1-link"><a href="currencies/eur.htm">EUR</a></li>
-            <li id="slot2-link"><a href="currencies/gbp.htm">GBP</a></li>
-            <li id="slot3-link"><a href="currencies/cny.htm">CNY</a></li>
-            <li id="slot4-link"><a href="currencies/cad.htm">CAD</a></li>
-        </ul>
-        <ul class="dropdown-menu2">
-            <li id="slot5-link"><a href="currencies/pln.htm">PLN</a></li>
-            <li id="slot6-link"><a href="currencies/jpy.htm">JPY</a></li>
-            <li id="slot7-link"><a href="currencies/rub.htm">RUB</a></li>
-            <li id="slot8-link"><a href="currencies/aud.htm">AUD</a></li>
-            <li id="slot9-link"><a href="currencies/sek.htm">SEK</a></li>
-            <li id="slot10-link"><a href="currencies/brl.htm">BRL</a></li>
-            <li id="slot11-link"><a href="currencies/czk.htm">CZK</a></li>
-            <li id="slot12-link"><a href="currencies/nzd.htm">NZD</a></li>
-            <li id="slot13-link"><a href="currencies/sgd.htm">SGD</a></li>
-            <li id="slot14-link"><a href="currencies/zar.htm">ZAR</a></li>
-            <li id="slot15-link"><a href="currencies/nok.htm">NOK</a></li>
-            <li id="slot16-link"><a href="currencies/ils.htm">ILS</a></li>
-            <li id="slot17-link"><a href="currencies/"></a></li>
-            <li id="slot18-link"><a href="currencies/"></a></li>
-            <li id="slot19-link"><a href="currencies/"></a></li>
-        </ul>
-    </div>
-    <!-- currency sidebar end -->
-
+  </div><!-- /container -->
     <footer class="footer clearfix">
         <div class="container">
             <div class="row">
