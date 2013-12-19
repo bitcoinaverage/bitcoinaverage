@@ -376,9 +376,9 @@ var renderGlobalAverageData = function(apiData, currency)
        var currencyCode   = item['currency'];
        var volumeBtc      = item['global_averages']['volume_btc'];
        var volumePercent  = item['global_averages']['volume_percent'];
-       var lastPrice      = item['global_averages']['last'].toFixed(2);
+       var lastPrice      = item['global_averages']['last'].toFixed(config.precision);
        var crossPrice     = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
-       crossPrice = crossPrice.toFixed(2);
+       crossPrice = crossPrice.toFixed(config.precision);
 
        var oneRow = $('<tr></tr>');
        if (i > majorCurrency) {
@@ -416,7 +416,7 @@ var renderGlobalAverageData = function(apiData, currency)
        var spanLastPrice = $('<span></span>');
        var tdLastPrice = $('<td></td>');
        spanLastPrice.text(volumeBtc);
-       tdLastPrice.attr('class', 'legend-price');
+       tdLastPrice.attr('class', 'legend-price text-right');
        tdLastPrice.append(lastPrice);
        oneRow.append(tdLastPrice);
 
@@ -425,7 +425,7 @@ var renderGlobalAverageData = function(apiData, currency)
        var tdCrossPrice = $('<td></td>');
        var insLegendCurcode = $('<ins></ins>');
 
-       spanCrossPrice.text(crossPrice);
+       spanCrossPrice.text(crossPrice+' ');
        insLegendCurcode.text(currency);
        insLegendCurcode.attr('class', 'legend-curcode');
        tdCrossPrice.attr('class', 'legend-last-cross-price text-right');
