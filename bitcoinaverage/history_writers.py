@@ -49,7 +49,7 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
 
 def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  current_timestamp):
 
-    current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '24h_global_average_sliding_window.csv')
+    current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_global_average_sliding_window.csv')
     current_24h_sliding_data = []
 
     #to create file if not exists

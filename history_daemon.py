@@ -14,6 +14,7 @@ import datetime
 import email
 
 import bitcoinaverage as ba
+import bitcoinaverage.server
 from bitcoinaverage.config import HISTORY_QUERY_FREQUENCY, CURRENCY_LIST
 from bitcoinaverage.helpers import write_log
 from bitcoinaverage import history_writers
@@ -29,12 +30,16 @@ if ba.server.HISTORY_DOCUMENT_ROOT == '':
 write_log('script started', 'LOG')
 
 
+for currency_code in CURRENCY_LIST:
+    if not os.path.exists(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code)):
+        os.makedirs(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code))
+
 while True:
-    ticker_url     = ba.server.API_INDEX_URL+'all'
-    fiat_data_url  = ba.server.API_FIAT_DATA_URL
+    ticker_url = ba.server.API_INDEX_URL+'all'
+    fiat_data_url = ba.server.API_INDEX_URL+'fiat_data'
     try:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
-        fiat_data_all    = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
+        fiat_data_all = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
     except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
         time.sleep(2)
         continue
@@ -47,21 +52,15 @@ while True:
     #do we need to check and create folder only when history demon started firstly?
     actual_currency_list = {}
 
-    for currency_code in current_data_all:
-        if currency_code in CURRENCY_LIST:
-            actual_currency_list[currency_code] = current_data_all[currency_code]; # add currency code if it's represent in CURRENCY LIST
-            if not os.path.exists(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code)):
-                os.makedirs(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code))
-
-
     for currency_code in actual_currency_list:
-        history_writers.write_24h_csv(currency_code, actual_currency_list[currency_code]['averages'], current_data_timestamp)
-        history_writers.write_1mon_csv(currency_code, current_data_timestamp)
-        history_writers.write_forever_csv(currency_code, actual_currency_list[currency_code]['averages']['total_vol'], current_data_timestamp)
-        history_writers.write_volumes_csv(currency_code, actual_currency_list[currency_code], current_data_timestamp)
+        if currency_code in CURRENCY_LIST:
+            history_writers.write_24h_csv(currency_code, actual_currency_list[currency_code]['averages'], current_data_timestamp)
+            history_writers.write_1mon_csv(currency_code, current_data_timestamp)
+            history_writers.write_forever_csv(currency_code, actual_currency_list[currency_code]['averages']['total_vol'], current_data_timestamp)
+            history_writers.write_volumes_csv(currency_code, actual_currency_list[currency_code], current_data_timestamp)
 
-        #write global average 24th sliding window
-        history_writers.write_24h_global_average(fiat_data_all, actual_currency_list,  currency_code, current_data_timestamp)
+            #write global average 24th sliding window
+            history_writers.write_24h_global_average(fiat_data_all, actual_currency_list,  currency_code, current_data_timestamp)
 
 
     current_time = time.time()
