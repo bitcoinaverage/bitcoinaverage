@@ -38,6 +38,8 @@ var callAPI = function(callback){
         $.getJSON(active_API_URL, callback);
     }
 }
+
+// Render Major currencies menu
 var renderMajorCurrencies = function(){
     var majorCurrencies = config.currencyOrder.slice(0, config.majorCurrencies);
 
@@ -67,7 +69,6 @@ var renderSecondaryCurrencies = function (){
 
         var currencyCode = majorCurrencies[secondaryCurrency];
         var li = $('<li></li>');
-
         var link = $('<a></a>');
         link.attr('href', '#'+currencyCode);
         li.attr('id', 'slot'+ currencyIndex +'-link');
@@ -144,58 +145,7 @@ $(function(){
             $(this).selectText();
         });
 
-        var slotLegendBox = $('#slot'+slotNum+'-box');
-        slotLegendBox.mouseover(function(event){
-            var curCode = $(this).data('currencycode');
-            renderLegend(curCode);
-            $('#currency-navtabs').children('li').removeClass('active');
-            $(this).addClass('active');
-        });
-        slotLegendBox.mouseout(function(event){
-            $('#currency-navtabs').children('li').removeClass('active');
-            if (legendClickStatus != false) {
-                renderLegend(legendClickStatus);
-                $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
-            }
-        });
-        slotLegendBox.click(function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            var curCode = $(this).data('currencycode');
-            if (legendClickStatus == false || legendClickStatus != curCode) {
-                renderLegend(curCode);
-                renderSmallChart(curCode);
-                legendClickStatus = curCode;
-
-                $('#currency-navtabs').children('li').removeClass('active');
-                $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
-                $('#currency-sidebar li').removeClass('active');
-                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
-
-                var currentHash = window.location.hash;
-                var currentLocation = document.location.href;
-                var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-                if (config.scaleDivizer == 1){
-                    newLocation = newLocation + '|nomillibit';
-                }
-                window.location.replace(newLocation);
-            }
-        });
-
         var slotLegendLink = $('#slot'+slotNum+'-link');
-        /*slotLegendLink.mouseover(function(event){
-            var curCode = $(this).data('currencycode');
-            renderLegend(curCode);
-            $('#currency-sidebar li').removeClass('active');
-            $(this).addClass('active');
-        });
-        slotLegendLink.mouseout(function(event){
-            $('#currency-sidebar li').removeClass('active');
-            if (legendClickStatus != false) {
-                renderLegend(legendClickStatus);
-                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
-            }
-        });*/
         slotLegendLink.click(function(event){
             event.preventDefault();
             event.stopPropagation();
@@ -205,10 +155,11 @@ $(function(){
                 renderLegend(curCode);
                 renderSmallChart(curCode);
 
-                $('#currency-navtabs').children('li').removeClass('active');
-                $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
-                $('#currency-sidebar li').removeClass('active');
-                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+
+                // add active class to selected currency
+                $('.primary-currency-switch li').removeClass('active');
+                $('.secondary-currency-switch li').removeClass('active');
+                $(this).addClass('active');
 
                 var currentHash = window.location.hash;
                 var currentLocation = document.location.href;
@@ -216,12 +167,13 @@ $(function(){
                 if (config.scaleDivizer == 1){
                     newLocation = newLocation + '|nomillibit';
                 }
+
                 window.location.replace(newLocation);
+
             }
+            return false;
         });
-
     }
-
 });
 
 var renderAll = function(result, status, responseObj){
@@ -388,7 +340,7 @@ var renderGlobalAverageData = function(apiData, currency)
        var spanLegendCurrency = $('<span></span>');
        var tdLegendCurrency = $('<td></td>');
 
-       oneRow.attr('id' , currencyCode);
+       oneRow.attr('id' , 'global-average-data' + currencyCode);
 
         /* Currency NAME */
        spanLegendCurrency.text(currencyCode);
@@ -437,14 +389,6 @@ var renderGlobalAverageData = function(apiData, currency)
    });
 
    var table    = $('#global-average-data-table');
-
-//   var ShowMoreRow = $('<tr></tr>');
-//   var ShowMoreCol = $('<td colspan="5"></td>');
-//   ShowMoreRow.append(ShowMoreCol);
-//   ShowMoreCol.text('show more currencies');
-//   var showMore = ShowMoreRow.outerHTML();
-//   html+=showMore;
-
    table.children('tbody').html(html);
 }
 
@@ -463,8 +407,9 @@ $.fn.outerHTML = function(){
 
 var renderLegend = function(currencyCode){
     renderGlobalAverageData(API_data, currencyCode);
-    var exchangeArray = [];
 
+    $('#global-curcode').text(currencyCode);
+    var exchangeArray = [];
     var currencyData = API_data[currencyCode];
 
     var index = 0;
@@ -531,22 +476,6 @@ var renderLegend = function(currencyCode){
     $('#legend-api-unavailable-note').hide();
     $('#legend-api-down-note').hide();
 
-//    for(var slotNum in exchangeArray){
-//        if (exchangeArray[slotNum]['source'] == 'cache') {
-//            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '**';
-//            $('#legend-api-down-note').show();
-//        } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
-//            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '*';
-//            $('#legend-api-unavailable-note').show();
-//        }
-//
-//        $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
-//        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(config.precision));
-//        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(config.precision));
-//        $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last'].toFixed(config.precision));
-//        $('#legend-slot'+slotNum).toggle(true);
-//    }
-
     // gettting url for different sliding windows
     $('#24h-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_minute_24h_sliding_window.csv');
     $('#monthly-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_hour_monthly_sliding_window.csv');
@@ -568,7 +497,6 @@ var renderSmallChart = function(currencyCode){
     }
 
      var  global_avg_url   = config.apiHistoryIndexUrl;
-
      var data_24h_URL = global_avg_url + currencyCode + '/24h_global_average_sliding_window.csv';
 
 	$.get(data_24h_URL, function(csv){
@@ -578,8 +506,7 @@ var renderSmallChart = function(currencyCode){
             if (i == 0 || line.length == 0){
                 return;
             }
-            data.push([parseDate(values[0]).getTime(), parseFloat(values.slice(-1)[0])
-                        ]);
+            data.push([parseDate(values[0]).getTime(), parseFloat(values.slice(-1)[0])]);
         });
         data.sort(function(a,b){
             if (a[0] > b[0]){
