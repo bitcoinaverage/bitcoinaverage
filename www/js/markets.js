@@ -39,58 +39,10 @@ var callAPI = function(callback){
     }
 }
 
-// Render Major currencies menu
-var renderMajorCurrencies = function(){
-    var majorCurrencies = config.currencyOrder.slice(0, config.majorCurrencies);
-
-    var currencyIndex = 0;
-    var primaryCurrencyList = '';
-    for (var majorCurrency in majorCurrencies) {
-        var currencyCode = majorCurrencies[majorCurrency];
-        var li = $('<li></li>');
-        var link = $('<a></a>');
-        link.attr('href', '#'+currencyCode);
-        li.attr('id', 'slot'+ currencyIndex +'-link');
-        li.attr('data-currencycode', majorCurrency);
-        link.text(currencyCode);
-        li.append(link);
-        currencyIndex++;
-        primaryCurrencyList += li.outerHTML();
-    }
-    $('.primary-currency-switch').html(primaryCurrencyList);
-}
-
-var renderSecondaryCurrencies = function (){
-    var secondaryCurrencies = config.currencyOrder.slice(config.majorCurrencies+1);
-
-    var currencyIndex = config.majorCurrencies+1;
-    var secondaryCurrenciesList = '';
-    for (var secondaryCurrency in secondaryCurrencies) {
-
-        var currencyCode = majorCurrencies[secondaryCurrency];
-        var li = $('<li></li>');
-        var link = $('<a></a>');
-        link.attr('href', '#'+currencyCode);
-        li.attr('id', 'slot'+ currencyIndex +'-link');
-        li.attr('data-currencycode', secondaryCurrency);
-        link.text(currencyCode);
-        li.append(link);
-        currencyIndex++;
-        secondaryCurrenciesList += li.outerHTML();
-       if( (currencyIndex-6) % 6 == 0) {
-            secondaryCurrenciesList += '<br/>';
-        }
-    }
-    $('.secondary-currency-switch').html(secondaryCurrenciesList);
-}
 $(function(){
     callAPI();
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
-
-
-    renderMajorCurrencies();
-    renderSecondaryCurrencies();
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
@@ -124,7 +76,6 @@ $(function(){
         callAPI(function(result){
             renderAll(result);
             renderLegend('USD');
-
         });
         renderSmallChart('USD');
     });
@@ -136,16 +87,67 @@ $(function(){
 
     for(var slotNum in config.currencyOrder){
         $('#slot'+slotNum+'-last, ' +
-          '#slot'+slotNum+'-ask, ' +
-          '#slot'+slotNum+'-bid, '+
-          '#global-last, '+
-          '#global-bid, '+
-          '#global-ask').dblclick(function(event){
+            '#slot'+slotNum+'-ask, ' +
+            '#slot'+slotNum+'-bid, '+
+            '#global-last, '+
+            '#global-bid, '+
+            '#global-ask').dblclick(function(event){
+                event.preventDefault();
+                $(this).selectText();
+            });
+
+        var slotLegendBox = $('#slot'+slotNum+'-box');
+        slotLegendBox.mouseover(function(event){
+            var curCode = $(this).data('currencycode');
+            renderLegend(curCode);
+            $('#currency-navtabs').children('li').removeClass('active');
+            $(this).addClass('active');
+        });
+        slotLegendBox.mouseout(function(event){
+            $('#currency-navtabs').children('li').removeClass('active');
+            if (legendClickStatus != false) {
+                renderLegend(legendClickStatus);
+                $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+            }
+        });
+        slotLegendBox.click(function(event){
             event.preventDefault();
-            $(this).selectText();
+            event.stopPropagation();
+            var curCode = $(this).data('currencycode');
+            if (legendClickStatus == false || legendClickStatus != curCode) {
+                renderLegend(curCode);
+                renderSmallChart(curCode);
+                legendClickStatus = curCode;
+
+                $('#currency-navtabs').children('li').removeClass('active');
+                $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+                $('#currency-sidebar li').removeClass('active');
+                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+
+                var currentHash = window.location.hash;
+                var currentLocation = document.location.href;
+                var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
+                if (config.scaleDivizer == 1){
+                    newLocation = newLocation + '|nomillibit';
+                }
+                window.location.replace(newLocation);
+            }
         });
 
         var slotLegendLink = $('#slot'+slotNum+'-link');
+        slotLegendLink.mouseover(function(event){
+            var curCode = $(this).data('currencycode');
+            renderLegend(curCode);
+            $('#currency-sidebar li').removeClass('active');
+            $(this).addClass('active');
+        });
+        slotLegendLink.mouseout(function(event){
+            $('#currency-sidebar li').removeClass('active');
+            if (legendClickStatus != false) {
+                renderLegend(legendClickStatus);
+                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+            }
+        });
         slotLegendLink.click(function(event){
             event.preventDefault();
             event.stopPropagation();
@@ -155,11 +157,10 @@ $(function(){
                 renderLegend(curCode);
                 renderSmallChart(curCode);
 
-
-                // add active class to selected currency
-                $('.primary-currency-switch li').removeClass('active');
-                $('.secondary-currency-switch li').removeClass('active');
-                $(this).addClass('active');
+                $('#currency-navtabs').children('li').removeClass('active');
+                $('#currency-navtabs').children('li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
+                $('#currency-sidebar li').removeClass('active');
+                $('#currency-sidebar li[data-currencycode="'+legendClickStatus+'"]').addClass('active');
 
                 var currentHash = window.location.hash;
                 var currentLocation = document.location.href;
@@ -167,17 +168,15 @@ $(function(){
                 if (config.scaleDivizer == 1){
                     newLocation = newLocation + '|nomillibit';
                 }
-
                 window.location.replace(newLocation);
-
             }
-            return false;
         });
+
     }
+
 });
 
 var renderAll = function(result, status, responseObj){
-
     result = adjustScale(result);
 
     //responseObj is not available in IE
@@ -187,11 +186,7 @@ var renderAll = function(result, status, responseObj){
 
     API_data = result;
 
-    renderGlobalAverageData(API_data, 'USD');
-
     $('#currency-sidebar li[id^="slot"] a').hide();
-
-
 
     for(var slotNum in config.currencyOrder){
         var currencyCode = config.currencyOrder[slotNum];
@@ -215,7 +210,7 @@ var renderAll = function(result, status, responseObj){
         } else if (typeof global_average_default != 'undefined') {
             $('#currency-sidebar li[data-currencycode="'+global_average_default+'"]').click();
         } else {
-            $('#slot0-link').click();
+            $('#slot0-box').click();
         }
 
         firstRenderDone = true;
@@ -279,136 +274,8 @@ var renderRates = function(currencyCode, currencyData, slotNum){
         flashingFigures.animate({ 'opacity' : 1 }, 500);
     }
 }
-var sort = function (list) {
-
-    var comparisons = 0,
-        swaps = 0;
-
-    for (var i = 0, swapping; i < list.length - 1; i++) {
-        comparisons++;
-        if (list[i] > list[i + 1]) {
-            // swap
-            swapping = list[i + 1];
-
-            list[i + 1] = list[i];
-            list[i] = swapping;
-            swaps++;
-        };
-    };
-
-    return list;
-};
-
-function orderByVolume(a, b) {
-    if (a['global_averages']['volume_percent'] == b['global_averages']['volume_percent'] ) {
-        return 0;
-    } else if (a['global_averages']['volume_percent'] < b['global_averages']['volume_percent']) {
-        return 1;
-    }
-    return -1;
-}
-
-
-var renderGlobalAverageData = function(apiData, currency)
-{
-
-   var globalAverageData = $.map(apiData, function(value, index) {
-    value['currency'] = index;
-    return [value];
-   });
-
-   globalAverageData.splice(-2,2); // delete timestamp and ignored_exchanges from data
-   globalAverageData.sort(orderByVolume);
-
-
-   var html='';
-   var majorCurrency = config.majorCurrencies;
-   $.each(globalAverageData, function(i, item) {
-
-       var currencyCode   = item['currency'];
-       var volumeBtc      = item['global_averages']['volume_btc'];
-       var volumePercent  = item['global_averages']['volume_percent'];
-       var lastPrice      = item['global_averages']['last'].toFixed(config.precision);
-       var crossPrice     = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
-       crossPrice = crossPrice.toFixed(config.precision);
-
-       var oneRow = $('<tr></tr>');
-       if (i > majorCurrency) {
-           oneRow.addClass('secondary-global-avg-row hidden');
-       }
-       oneRow.attr('id', 'currency-name-'+currencyCode);
-       var spanLegendCurrency = $('<span></span>');
-       var tdLegendCurrency = $('<td></td>');
-
-       oneRow.attr('id' , 'global-average-data' + currencyCode);
-
-        /* Currency NAME */
-       spanLegendCurrency.text(currencyCode);
-       tdLegendCurrency.attr('class', 'legend-currency');
-       tdLegendCurrency.append(spanLegendCurrency);
-       oneRow.append(tdLegendCurrency);
-
-       /* Volume Percent */
-       var spanVolumePercent = $('<span></span>');
-       var tdVolumePercent = $('<td></td>');
-       spanVolumePercent.text(volumePercent);
-       tdVolumePercent.attr('class', 'legend-volume_percent');
-       tdVolumePercent.append(spanVolumePercent);
-       oneRow.append(tdVolumePercent);
-
-        /* Volume BTC */
-       var spanVolumeBtc = $('<span></span>');
-       var tdVolumeBtc = $('<td></td>');
-       spanVolumeBtc.text(volumeBtc);
-       tdVolumeBtc.attr('class', 'legend-volume_btc');
-       tdVolumeBtc.append(spanVolumeBtc);
-       oneRow.append(tdVolumeBtc);
-
-        /* Last Price */
-       var spanLastPrice = $('<span></span>');
-       var tdLastPrice = $('<td></td>');
-       spanLastPrice.text(volumeBtc);
-       tdLastPrice.attr('class', 'legend-price text-right');
-       tdLastPrice.append(lastPrice);
-       oneRow.append(tdLastPrice);
-
-       /* Cross Price */
-       var spanCrossPrice = $('<span></span>');
-       var tdCrossPrice = $('<td></td>');
-       var insLegendCurcode = $('<ins></ins>');
-
-       spanCrossPrice.text(crossPrice+' ');
-       insLegendCurcode.text(currency);
-       insLegendCurcode.attr('class', 'legend-curcode');
-       tdCrossPrice.attr('class', 'legend-last-cross-price text-right');
-       tdCrossPrice.append(spanCrossPrice);
-       tdCrossPrice.append(insLegendCurcode);
-       oneRow.append(tdCrossPrice);
-
-       html += oneRow.outerHTML();
-   });
-
-   var table    = $('#global-average-data-table');
-   table.children('tbody').html(html);
-}
-
-$.fn.outerHTML = function(){
-    // IE, Chrome & Safari will comply with the non-standard outerHTML, all others (FF) will have a fall-back for cloning
-    return (!this.length) ? this : (this[0].outerHTML || (
-      function(el){
-          var div = document.createElement('div');
-          div.appendChild(el.cloneNode(true));
-          var contents = div.innerHTML;
-          div = null;
-          return contents;
-    })(this[0]));
-
-}
 
 var renderLegend = function(currencyCode){
-    renderGlobalAverageData(API_data, currencyCode);
-
-    $('#global-curcode').text(currencyCode);
     var exchangeArray = [];
     var currencyData = API_data[currencyCode];
 
@@ -431,9 +298,8 @@ var renderLegend = function(currencyCode){
         document.title = API_data[currencyCode].global_averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
     }
 
-    //$('.legend-curcode').text(currencyCode);
+    $('.legend-curcode').text(currencyCode);
     $('#legend-last').html(currencyData.averages.last.toFixed(config.precision));
-    $('#global-last').html(currencyData.averages.last.toFixed(config.precision));
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));
     $('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(config.precision));
@@ -475,8 +341,22 @@ var renderLegend = function(currencyCode){
 
     $('#legend-api-unavailable-note').hide();
     $('#legend-api-down-note').hide();
+    for(var slotNum in exchangeArray){
+        if (exchangeArray[slotNum]['source'] == 'cache') {
+            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '**';
+            $('#legend-api-down-note').show();
+        } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
+            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '*';
+            $('#legend-api-unavailable-note').show();
+        }
 
-    // gettting url for different sliding windows
+        $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
+        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(config.precision));
+        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(config.precision));
+        $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last'].toFixed(config.precision));
+        $('#legend-slot'+slotNum).toggle(true);
+    }
+
     $('#24h-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_minute_24h_sliding_window.csv');
     $('#monthly-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_hour_monthly_sliding_window.csv');
     $('#daily-averages-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_day_all_time_history.csv');
@@ -496,18 +376,20 @@ var renderSmallChart = function(currencyCode){
         return;
     }
 
-     var  global_avg_url   = config.apiHistoryIndexUrl;
-     var data_24h_URL = global_avg_url + currencyCode + '/24h_global_average_sliding_window.csv';
 
-	$.get(data_24h_URL, function(csv){
+    var data_24h_URL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
+    $.get(data_24h_URL, function(csv){
         var data = [];
         $.each(csv.split('\n'), function(i, line){
             var values = line.split(',');
-            if (i == 0 || line.length == 0){
+            if (i == 0 || line.length == 0 || values.length != 2){
                 return;
             }
-            data.push([parseDate(values[0]).getTime(), parseFloat(values.slice(-1)[0])]);
+            data.push([parseDate(values[0]).getTime(),
+                parseFloat(values[1])
+            ]);
         });
+
         data.sort(function(a,b){
             if (a[0] > b[0]){
                 return 1;
@@ -518,11 +400,11 @@ var renderSmallChart = function(currencyCode){
             }
         });
 
-		$('#small-chart').highcharts('StockChart', {
-			chart : {
+        $('#small-chart').highcharts('StockChart', {
+            chart : {
                 animation : {
                     duration: 10000
-                                },
+                },
                 events: {
                     click: function(e){
                         window.location.href = 'charts.htm#'+currencyCode;
@@ -532,26 +414,26 @@ var renderSmallChart = function(currencyCode){
                 spacingLeft: 0,
                 spacingRight: 0,
                 spacingTop: 0
-			},
-			rangeSelector: {enabled: false},
-			title: {text: '24h price '+currencyCode+' movement'},
-			scrollbar: {enabled: false},
-			navigator: {enabled: false},
-			exporting: {enabled: false},
-			tooltip: {enabled : false},
-			credits: {enabled : false},
+            },
+            rangeSelector: {enabled: false},
+            title: {text: '24h price '+currencyCode+' movement'},
+            scrollbar: {enabled: false},
+            navigator: {enabled: false},
+            exporting: {enabled: false},
+            tooltip: {enabled : false},
+            credits: {enabled : false},
 
-			series : [{
-				data : data,
+            series : [{
+                data : data,
                 cursor:'pointer',
                 events:{
                     click: function(event){
                         window.location.href = 'charts.htm#'+currencyCode;
                     }
                 }
-			}]
+            }]
 
-		});
+        });
     });
 }
 
@@ -599,14 +481,14 @@ var adjustScale = function(apiResult){
         if (typeof apiResult[i] == 'array' || typeof apiResult[i] == 'object') {
             adjustedApiResult[i] = adjustScale(apiResult[i])
         } else if (i == '24h_avg'
-                || i == 'ask'
-                || i == 'bid'
-                || i == 'last') {
+            || i == 'ask'
+            || i == 'bid'
+            || i == 'last') {
             adjustedApiResult[i] = parseFloat(apiResult[i]) / config.scaleDivizer;
         } else {
             adjustedApiResult[i] = apiResult[i];
         }
-     }
+    }
 
     return adjustedApiResult;
 }

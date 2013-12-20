@@ -215,6 +215,7 @@ ul{
     width: 100%;
     margin: 0 auto;
     overflow: hidden;
+    margin-bottom: 50px;
 }
 /*Currency Arrows*/
 #usd-arrowup, #usd-arrowdown{
@@ -266,7 +267,7 @@ ul{
     margin-bottom: 0;
 }
 .currency-box .primary-currency-switch{
-    padding: 10px 0;
+    padding: 15px 0;
     text-align: center;
     margin-bottom: 0;
 }
@@ -329,8 +330,9 @@ ul{
     text-decoration: none;
     float: right;
     display: block;
-    margin-right: 1%;
-    padding-top: 1.02%;
+    right: 28px;
+    bottom: 8px;
+    position: absolute;
 }
 
 .currency-box .more-currencies:hover {
