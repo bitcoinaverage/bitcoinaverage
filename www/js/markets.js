@@ -128,7 +128,7 @@ $(function(){
                 var currentLocation = document.location.href;
                 var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
                 if (config.scaleDivizer == 1){
-                    newLocation = newLocation + '|nomillibit';
+                    newLocation = newLocation + '-nomillibit';
                 }
                 window.location.replace(newLocation);
             }

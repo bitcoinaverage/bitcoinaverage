@@ -164,21 +164,21 @@
         </thead>
         <tbody>
     	    <tr style=" border-top:0px solid #fff; background:none; height:10px;">
-                <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
-                <td class="" width="34%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
+                <td class="" width="25%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
+                <td class="" width="25%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
             </tr>
             <tr>
               <td class="legend-name" colspan="2"><span>total market volume (24h)</span></td>
-              <td class="legend-rate text-right" width="33%"><span class="">&#3647; <span id="legend-total-volume"></span></span></td>
+              <td class="legend-rate text-right" width="44%"><span class="">&#3647;</span> <span id="legend-total-volume"></span></td>
             </tr>
             <tr>
               <td class="legend-name" colspan="2"><span class="legend-curcode">USD</span> trading volume share</td>
-              <td class="legend-rate text-right" width="33%"><span id="legend-global-volume-percent"></span>%</td>
+              <td class="legend-rate text-right" width="44%"><span id="legend-global-volume-percent"></span>%</td>
             </tr>
             <tr id="legend-24h-avg-container">
               <td class="legend-name" colspan="2"><span>24h global sliding average</span></td>
-              <td class="legend-rate text-right" width="33%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
+              <td class="legend-rate text-right" width="44%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
             </tr>
         </tbody>
         </table>
@@ -351,6 +351,9 @@ ga('send', 'pageview');
                             default: $(this).formatCurrency({ symbol: '', colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true });
                         }
                         var bitCoins = $(this).toNumber().val();
+                        var globalLastPrice = $('#global-last').text();
+                        var calculateCurrency = globalLastPrice * bitCoins;
+                        $('#currency-input').val(calculateCurrency);
                     }
                 });
 
@@ -379,6 +382,10 @@ ga('send', 'pageview');
                             default: $(this).formatCurrency({ symbol: '', colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true });
                         }
                         var currencyVal = $(this).toNumber().val();
+                        var globalLastPrice = $('#global-last').text();
+                        var calculateBitCoins =   currencyVal / globalLastPrice;
+
+                        $('#bitcoin-input').val(calculateBitCoins);
                     }
                 });
 

@@ -109,6 +109,7 @@ $(function(){
             var currentLocation = document.location.href;
             var newLocation = currentLocation.replace(currentHash, '')+'#USD-nomillibit';
             window.location.replace(newLocation);
+            $('.bitcon-label').text('฿');
         } else {
             config.scaleDivizer = 1000;
             config.precision = 3;
@@ -121,6 +122,7 @@ $(function(){
 
             var newLocation = currentLocation.replace(currentHash, '')+'#USD';
             window.location.replace(newLocation);
+            $('.bitcon-label').text('m฿');
         }
         callAPI(function(result){
             renderAll(result);
@@ -328,8 +330,8 @@ var renderGlobalAverageData = function(apiData, currency)
    $.each(globalAverageData, function(i, item) {
 
        var currencyCode   = item['currency'];
-       var volumeBtc      = item['global_averages']['volume_btc'];
-       var volumePercent  = item['global_averages']['volume_percent'];
+       var volumeBtc      = item['global_averages']['volume_btc'].toFixed(config.precision);
+       var volumePercent  = item['global_averages']['volume_percent'].toFixed(config.precision);
        var lastPrice      = item['global_averages']['last'].toFixed(config.precision);
        var crossPrice     = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
        crossPrice = crossPrice.toFixed(config.precision);
