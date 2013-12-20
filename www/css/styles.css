@@ -634,7 +634,7 @@ footer .row{
     padding: 0 12px;
     display: block;
     float: left;
-    width: 200px;
+    width: 150px;
     font-size: 25px;
     box-shadow: inset 1px 1px 6px #d0d0d0;
 }
@@ -647,6 +647,6 @@ footer .row{
     border-top-right-radius: 5px;
 }
 
-.bitcon-calc__wrapper {
+.bitcoin-calc__wrapper {
     padding-bottom: 75px;
 }

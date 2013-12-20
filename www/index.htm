@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>   
+<head>
     <title>BitcoinAverage - independent bitcoin price</title>
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
     <meta name="description" content="BitcoinAverage provides a more accurate price of bitcoin using weighted average for multiple exchanges.">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
@@ -22,6 +22,7 @@
 
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/fiat_data.js"></script>
+    <script type="text/javascript" src="js/global_render.js"></script>
     <script type="text/javascript" src="js/homepage.js"></script>
     <script type="text/javascript" src="js/format-currency/jquery.formatCurrency-1.4.0.pack.js"></script>
 
@@ -59,8 +60,8 @@
             </div>
         </div>
     </div>
-    
-    <div id="main-container" class="container">      
+
+    <div id="main-container" class="container">
         <div class="row indent">
             <div class="col-md-12 text-left">
                <span class="milli-bitcoin">
@@ -86,20 +87,17 @@
                         <a>more currencies</a>
                     </div>
                 </div>
-                <div class="">
-
-                </div>
-            </div>
+               </div>
         </div>
         <div class="row">
             <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 text-center"></div>
         </div>
-    <div class="row  bitcon-calc__wrapper">
+    <div class="row  bitcoin-calc__wrapper">
 
     <div class="bitcoin-calc">
         <div class="bitcoin-field__wrapper">
             <input type="text" value="1.000" id="bitcoin-input" style="color: black;">
-            <div class="label bitcon-label">m฿</div>
+            <div class="label bitcoin-label">m฿</div>
         </div>
 
         <div class="equals">=</div>
@@ -235,7 +233,7 @@
                </tbody>
            </table>
        </div>
-<!--new section end -->   
+<!--new section end -->
        <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-6 col-lg-offset-0">
         <div class="">
           <!--h3>Data for <span class="legend-curcode">USD</span> global average average</h3-->
@@ -321,77 +319,6 @@ ga('create', 'UA-42688472-1', 'bitcoinaverage.com');
 ga('send', 'pageview');
 </script>
 
-<script>
-    $(function() {
-        // jQuery formatCurrency plugin: http://plugins.jquery.com/project/formatCurrency
-
-        // Format while typing & warn on decimals entered, 2 decimal places
-        $('#bitcoin-input').blur(function() {
-            $('#bitcoin-input').html(null);
-            $(this).formatCurrency({ symbol: '', colorize: true, positiveFormat: '%n', negativeFormat: '-%s%n', roundToDecimalPlace: 2 });
-        })
-                .keyup(function(e) {
-                    var e = window.event || e;
-                    var keyUnicode = e.charCode || e.keyCode;
-                    if (e !== undefined) {
-                        switch (keyUnicode) {
-                            case 16: break; // Shift
-                            case 17: break; // Ctrl
-                            case 18: break; // Alt
-                            case 27: this.value = ''; break; // Esc: clear entry
-                            case 35: break; // End
-                            case 36: break; // Home
-                            case 37: break; // cursor left
-                            case 38: break; // cursor up
-                            case 39: break; // cursor right
-                            case 40: break; // cursor down
-                            case 78: break; // N (Opera 9.63+ maps the "." from the number key section to the "N" key too!) (See: http://unixpapa.com/js/key.html search for ". Del")
-                            case 110: break; // . number block (Opera 9.63+ maps the "." from the number block to the "N" key (78) !!!)
-                            case 190: break; // .
-                            default: $(this).formatCurrency({ symbol: '', colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true });
-                        }
-                        var bitCoins = $(this).toNumber().val();
-                        var globalLastPrice = $('#global-last').text();
-                        var calculateCurrency = globalLastPrice * bitCoins;
-                        $('#currency-input').val(calculateCurrency);
-                    }
-                });
-
-        $('#currency-input').blur(function() {
-            $('#currency-inputt').html(null);
-            $(this).formatCurrency({ symbol: '', colorize: true, positiveFormat: '%n', negativeFormat: '-%s%n', roundToDecimalPlace: 2 });
-        })
-                .keyup(function(e) {
-                    var e = window.event || e;
-                    var keyUnicode = e.charCode || e.keyCode;
-                    if (e !== undefined) {
-                        switch (keyUnicode) {
-                            case 16: break; // Shift
-                            case 17: break; // Ctrl
-                            case 18: break; // Alt
-                            case 27: this.value = ''; break; // Esc: clear entry
-                            case 35: break; // End
-                            case 36: break; // Home
-                            case 37: break; // cursor left
-                            case 38: break; // cursor up
-                            case 39: break; // cursor right
-                            case 40: break; // cursor down
-                            case 78: break; // N (Opera 9.63+ maps the "." from the number key section to the "N" key too!) (See: http://unixpapa.com/js/key.html search for ". Del")
-                            case 110: break; // . number block (Opera 9.63+ maps the "." from the number block to the "N" key (78) !!!)
-                            case 190: break; // .
-                            default: $(this).formatCurrency({ symbol: '', colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true });
-                        }
-                        var currencyVal = $(this).toNumber().val();
-                        var globalLastPrice = $('#global-last').text();
-                        var calculateBitCoins =   currencyVal / globalLastPrice;
-
-                        $('#bitcoin-input').val(calculateBitCoins);
-                    }
-                });
-
-
-    });
-</script>
 </body>
 </html>
 
