@@ -184,7 +184,7 @@ $(function(){
 
 
 // currency navigation (primary currency, secondary currency, currency tabs on markets page
-$(document).on('click', '.currency-navigation li',  function(){
+$(document).on('click', '.currency-navigation li', function(event){
     event.preventDefault();
     event.stopPropagation();
     var curCode = $(this).data('currencycode');

@@ -197,10 +197,10 @@ var renderGlobalAverageData = function(apiData, currency)
        if (i > majorCurrency) {
            if ( cookieHideLink == 'hidden'){
                 oneRow.addClass('secondary-global-avg-row hidden');
-                $('#show-more-currencies-in-global-avg-table').text('all currencies');
+                $('#show-more-currencies-in-global-avg-table').text('more');
            } else if(cookieHideLink =='collapsed'){
                oneRow.addClass('secondary-global-avg-row');
-               $('#show-more-currencies-in-global-avg-table').text('only primary currencies');
+               $('#show-more-currencies-in-global-avg-table').text('less');
            }
        }
        oneRow.attr('id', 'currency-name-'+currencyCode);
@@ -417,11 +417,11 @@ $(function(){
         if ($('.secondary-global-avg-row').is(':hidden')){
             $('.secondary-global-avg-row').removeClass('hidden');
             $.cookie("global-average-table", 'collapsed');
-            $('#show-more-currencies-in-global-avg-table').text('only primary currencies');
+            $('#show-more-currencies-in-global-avg-table').text('less');
         } else {
             $('.secondary-global-avg-row').addClass('hidden');
             $.cookie("global-average-table", 'hidden');
-            $('#show-more-currencies-in-global-avg-table').text('all currencies');
+            $('#show-more-currencies-in-global-avg-table').text('more');
 
         }
         return false;
