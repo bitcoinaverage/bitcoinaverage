@@ -306,6 +306,7 @@ ul{
 .currency-box .secondary-currency-switch li.active {
     background: #428bca;
     color: #fff;
+    text-align: center;
 }
 .currency-box .secondary-currency-switch li.active a{
     color: #fff;

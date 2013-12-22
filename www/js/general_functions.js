@@ -141,7 +141,6 @@ $(function(){
             var currentHash = window.location.hash;
             var currentLocation = document.location.href;
             var newLocation = currentLocation.replace(currentHash, '')+'#USD-nomillibit';
-            console.log(newLocation);
             window.location.replace(newLocation);
             $('.bitcoin-label').text('฿');
         } else {
@@ -264,7 +263,9 @@ $('#bitcoin-input').blur(function() {
             }
             var bitCoins = $(this).toNumber().val();
             var globalLastPrice = $('#legend-last').text();
-            var calculateCurrency = globalLastPrice * bitCoins;
+
+            var calculateCurrency = (globalLastPrice * bitCoins).toFixed(config.precision);
+
             $('#currency-input').val(calculateCurrency);
         }
     });
@@ -295,8 +296,8 @@ $('#currency-input').blur(function() {
             }
             var currencyVal = $(this).toNumber().val();
             var globalLastPrice = $('#legend-last').text();
-            var calculateBitCoins =   currencyVal / globalLastPrice;
 
+            var calculateBitCoins =   (currencyVal / globalLastPrice).toFixed(config.precision);
             $('#bitcoin-input').val(calculateBitCoins);
         }
     });
