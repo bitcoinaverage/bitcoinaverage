@@ -101,13 +101,15 @@ var renderCurrencyTabs = function(){
         slotBid.text(bid);
         slotBid.attr('title', 'bid');
 
+
+
         var slotAsk = $('<span></span>');
         slotAsk.attr('id', 'slot'+currencyIndex+'-ask');
         slotAsk.text(ask);
         slotAsk.attr('title', 'ask');
 
         bidAsk.append(slotBid);
-
+        bidAsk.append('<span>&nbsp;&nbsp; / &nbsp;&nbsp;</span>');
         bidAsk.append(slotAsk);
 
         li.append(h2);
