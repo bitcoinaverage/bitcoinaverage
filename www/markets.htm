@@ -21,7 +21,7 @@
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/fiat_data.js"></script>
-    <script type="text/javascript" src="js/global_render.js"></script>
+    <script type="text/javascript" src="js/general_functions.js"></script>
     <script type="text/javascript" src="js/markets.js"></script>
     <script type="text/javascript" src="js/format-currency/jquery.formatCurrency-1.4.0.pack.js"></script>
 
@@ -63,7 +63,7 @@
     <div id="main-container" class="container">
         <div class="row">
             <div class="col-md-12 col-md-offset-0 col-sm-8 col-sm-offset-2 text-center">
-                <ul id="currency-navtabs" class="nav nav-tabs">
+                <ul id="currency-navtabs" class="currency-navigation currency-navtabs nav nav-tabs">
                     <li id="slot0-box">
                         <h2 style="margin-top: 10px !important" itemscope itemtype="http://schema.org/PriceSpecification">
                             <span id="slot0-last" class="last" itemprop="price">395</span>
@@ -116,9 +116,9 @@
             </div>
 
         </div>
-        <div class="row show-grid currency-box">
-            <ul class="primary-currency-switch" id="currency-navtabs"></ul>
-            <ul class="secondary-currency-switch"></ul>
+        <div class="row show-grid currency-box market-page">
+            <ul class="currency-navigation primary-currency-switch"></ul>
+            <ul class="currency-navigation secondary-currency-switch"></ul>
         </div>
         <div class="row  bitcoin-calc__wrapper">
 

@@ -38,6 +38,89 @@ var callAPI = function(callback){
         $.getJSON(active_API_URL, callback);
     }
 }
+var renderCurrencyTabs = function(){
+
+    var majorCurrencies = config.currencyOrder.slice(0, config.majorCurrencies);
+
+    var currencyIndex = 0;
+    var primaryCurrencyTabs = '';
+
+     var currentHash = window.location.hash;
+        currentHash = currentHash.replace('#', '');
+        currentHash = currentHash.split('-');
+
+
+
+    for (var majorCurrency in majorCurrencies) {
+
+        var currentCurrency  = majorCurrencies[majorCurrency];
+        var data = API_data[currentCurrency];
+
+
+        var last = (data['averages']['last']).toFixed(config.precision);
+        var ask  = (data['averages']['ask']).toFixed(config.precision);
+        var bid  = (data['averages']['bid']).toFixed(config.precision);
+
+
+        var currencyCode = majorCurrencies[majorCurrency];
+        var li = $('<li></li>');
+        console.log(currencyCode + '{}' + currentHash[0]);
+        if(currencyCode  == currentHash[0]) {
+            li.attr('class','active');
+        }
+
+        li.attr('data-currencycode', currencyCode);
+        li.attr('id','slot'+currencyIndex+'-box');
+        li.attr('title', fiatCurrencies[currencyCode]['name']);
+
+        var h2 = $('<h2></h2>');
+        h2.attr('itemsscope', '');
+        h2.attr('itemtype', 'http://schema.org/PriceSpecification');
+
+        // last price
+        var slotLast = $('<span></span>');
+        slotLast.attr('id', 'slot'+currencyIndex+'-last');
+        slotLast.text(last);
+        slotLast.attr('class', 'last');
+        slotLast.attr('itemprop','price');
+
+        //currency code
+        var slotCurCode = $('<span></span>');
+        slotCurCode.attr('id', 'slot'+currencyIndex+'-curcode');
+        slotCurCode.attr('class', 'curcode');
+        slotCurCode.text(currentCurrency);
+        slotCurCode.attr('itemprop','priceCurrency');
+
+        h2.append(slotLast);
+        h2.append(slotCurCode);
+
+        var bidAsk = $('<p class="bid_ask"></p>');
+
+        var slotBid = $('<span></span>');
+        slotBid.attr('id', 'slot'+currencyIndex+'-bid');
+        slotBid.text(bid);
+        slotBid.attr('title', 'bid');
+
+        var slotAsk = $('<span></span>');
+        slotAsk.attr('id', 'slot'+currencyIndex+'-ask');
+        slotAsk.text(ask);
+        slotAsk.attr('title', 'ask');
+
+        bidAsk.append(slotBid);
+
+        bidAsk.append(slotAsk);
+
+        li.append(h2);
+        li.append(bidAsk);
+
+        primaryCurrencyTabs += li.outerHTML();
+        currencyIndex++;
+    }
+
+   $('#currency-navtabs').html(primaryCurrencyTabs);
+
+}
+
 
 
 var renderAll = function(result, status, responseObj){
@@ -49,6 +132,8 @@ var renderAll = function(result, status, responseObj){
     }
 
     API_data = result;
+
+    renderCurrencyTabs();
 
     $('#currency-sidebar li[id^="slot"] a').hide();
 

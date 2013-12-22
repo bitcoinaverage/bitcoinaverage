@@ -162,7 +162,7 @@ $(function(){
             renderLegend('USD');
 
         });
-        $('.primary-currency-switch li:first-child').click();
+        //$('.primary-currency-switch li:first-child').click();
     });
 
     $('#set-global-average-currency').click(function(event){
@@ -180,61 +180,34 @@ $(function(){
                 event.preventDefault();
                 $(this).selectText();
             });
-
-        var slotLegendLink = $('#slot'+slotNum+'-link');
-        var slotBox = $('#slot'+slotNum+'-box');
-
-         slotBox.click(function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            var curCode = $(this).data('currencycode');
-            if (legendClickStatus == false || legendClickStatus != curCode) {
-                legendClickStatus = curCode;
-                renderLegend(curCode);
-                renderSmallChart(curCode);
-
-
-                // add active class to selected currency
-                $('.primary-currency-switch li').removeClass('active');
-                $('.secondary-currency-switch li').removeClass('active');
-                $(this).addClass('active');
-
-                var currentHash = window.location.hash;
-                var currentLocation = document.location.href;
-                var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-                if (config.scaleDivizer == 1){
-                    newLocation = newLocation + '-nomillibit';
-                }
-                window.location.replace(newLocation);
-            }
-        });
-
-        slotLegendLink.click(function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            var curCode = $(this).data('currencycode');
-            if (legendClickStatus == false || legendClickStatus != curCode) {
-                legendClickStatus = curCode;
-                renderLegend(curCode);
-                renderSmallChart(curCode);
-
-
-                // add active class to selected currency
-                $('.primary-currency-switch li').removeClass('active');
-                $('.secondary-currency-switch li').removeClass('active');
-                $(this).addClass('active');
-
-                var currentHash = window.location.hash;
-                var currentLocation = document.location.href;
-                var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-                if (config.scaleDivizer == 1){
-                    newLocation = newLocation + '-nomillibit';
-                }
-                window.location.replace(newLocation);
-            }
-        });
-
     }
+
+
+// currency navigation (primary currency, secondary currency, currency tabs on markets page
+$(document).on('click', '.currency-navigation li',  function(){
+    event.preventDefault();
+    event.stopPropagation();
+    var curCode = $(this).data('currencycode');
+    if (legendClickStatus == false || legendClickStatus != curCode) {
+        legendClickStatus = curCode;
+        renderLegend(curCode);
+        renderSmallChart(curCode);
+
+
+        // add active class to selected currency
+        $('.currency-navigation li').removeClass('active');
+        $('.currency-navigation').find("[data-currencycode='" + curCode + "']").addClass('active');
+
+
+        var currentHash = window.location.hash;
+        var currentLocation = document.location.href;
+        var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
+        if (config.scaleDivizer == 1){
+            newLocation = newLocation + '-nomillibit';
+        }
+        window.location.replace(newLocation);
+    }
+});
 
 // Format while typing & warn on decimals entered, 2 decimal places
 $('#bitcoin-input').blur(function() {

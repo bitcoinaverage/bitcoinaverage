@@ -257,7 +257,9 @@ ul{
     overflow: hidden;
     margin: 0 !important;
 }
-
+.currency-box.market-page{
+    border-top: 1px solid #dadada;
+}
 .currency-box .primary-currency-switch,
 .currency-box .secondary-currency-switch {
 
@@ -650,4 +652,15 @@ footer .row{
 
 .bitcoin-calc__wrapper {
     padding-bottom: 75px;
+}
+
+.currency-navtabs {
+    background: #f7f7f7;
+    border-bottom: 6px solid #fff;
+    padding-top: 18px;
+}
+.currency-navtabs li.active {
+    background: #fff;
+    border: 1px solid #dddddd;
+    border-bottom: 0;
 }

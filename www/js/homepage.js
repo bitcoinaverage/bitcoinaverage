@@ -61,13 +61,15 @@ var renderAll = function(result, status, responseObj){
         $('body').show();
         var currentHash = window.location.hash;
         currentHash = currentHash.replace('#', '');
-        currentHash = currentHash.split('|');
+        currentHash = currentHash.split('-');
         if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
             $('#.legend-curcode').click();
         }
         currentHash = currentHash[0];
 
         var global_average_default = $.cookie('global-average');
+
+
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
             $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
         } else if (typeof global_average_default != 'undefined') {
