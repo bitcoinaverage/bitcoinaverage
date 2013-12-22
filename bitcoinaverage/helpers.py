@@ -70,7 +70,8 @@ def write_fiat_rates_config():
         except (CallTimeoutException,
                 socket.error,
                 urllib2.URLError,
-                httplib.BadStatusLine):
+                httplib.BadStatusLine,
+                ValueError):
             return None
 
         try:
