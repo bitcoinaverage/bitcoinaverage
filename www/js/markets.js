@@ -250,7 +250,12 @@ var renderLegend = function(currencyCode){
     }
 
     $('.legend-curcode').text(currencyCode);
-    $('#legend-last').html(currencyData.averages.last.toFixed(config.precision));
+    $('.bitcoin-calc .currency-label').text(currencyCode);
+
+    var last = currencyData.averages.last.toFixed(config.precision);
+    $('#legend-last').html(last);
+    $('#currency-input').val(last);
+
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));
     $('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(config.precision));
@@ -275,7 +280,8 @@ var renderLegend = function(currencyCode){
         }
     }
 
-    $('#legend-currency-name').html(fiatCurrencies[currencyCode]['name']);
+    // full currency name update on description block and in the info block
+    $('.legend-currency-code-update').html(fiatCurrencies[currencyCode]['name']);
 
     $('#legend-global-average').html(currencyData.global_averages.last.toFixed(config.precision))
     $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(config.precision))

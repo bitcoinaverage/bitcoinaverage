@@ -143,6 +143,7 @@ $(function(){
             var newLocation = currentLocation.replace(currentHash, '')+'#USD-nomillibit';
             window.location.replace(newLocation);
             $('.bitcoin-label').text('฿');
+            $('.market-page-description .base').text('bitcoin');
         } else {
             config.scaleDivizer = 1000;
             config.precision = 3;
@@ -156,6 +157,7 @@ $(function(){
             var newLocation = currentLocation.replace(currentHash, '')+'#USD';
             window.location.replace(newLocation);
             $('.bitcoin-label').text('m฿');
+            $('.market-page-description .base').text('millibitcoin');
         }
         callAPI(function(result){
             renderAll(result);
