@@ -207,9 +207,7 @@ var renderPriceChart = function(currencyCode){
             if (i == 0 || line.length == 0 || values.length != 2){
                 return;
             }
-            data.push([parseDate(values[0]).getTime(),
-                       parseFloat(values[1])
-                        ]);
+            data.push([parseDate(values[0]).getTime(),  parseFloat(values[1]) ]);
         });
 
         ajaxCall(dataMonthlyURL, function(csv){
@@ -218,9 +216,7 @@ var renderPriceChart = function(currencyCode){
                 if (i == 0 || line.length == 0 || values.length != 4){
                     return;
                 }
-                data.push([parseDate(values[0]).getTime(),
-                           parseFloat(values[3])
-                            ]);
+                data.push([parseDate(values[0]).getTime(), parseFloat(values[3]) ]);
             });
 
             ajaxCall(dataAllTimeURL, function(csv){
@@ -229,9 +225,7 @@ var renderPriceChart = function(currencyCode){
                     if (i == 0 || line.length == 0 || values.length != 5){
                         return;
                     }
-                    data.push([parseDate(values[0]).getTime(),
-                               parseFloat(values[3])
-                                ]);
+                    data.push([parseDate(values[0]).getTime(), parseFloat(values[3]) ]);
                 });
 
                 data.sort(function(a,b){

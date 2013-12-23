@@ -154,6 +154,7 @@ var renderAll = function(result, status, responseObj){
         }
         currentHash = currentHash[0];
 
+        //@TODO : what did this peace of code do?
         var global_average_default = $.cookie('global-average');
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
             $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
@@ -166,7 +167,8 @@ var renderAll = function(result, status, responseObj){
         firstRenderDone = true;
     }
 
-    renderLegend(legendClickStatus);
+     $('.primary-currency-switch li:first-child').click();
+    //renderLegend(legendClickStatus);
 }
 
 
@@ -342,9 +344,8 @@ var renderSmallChart = function(currencyCode){
             if (i == 0 || line.length == 0 || values.length != 2){
                 return;
             }
-            data.push([parseDate(values[0]).getTime(),
-                parseFloat(values[1])
-            ]);
+            var dailyChartValue =  parseFloat(values[1]) /config.scaleDivizer
+            data.push([ parseDate(values[0]).getTime(), dailyChartValue ]);
         });
 
         data.sort(function(a,b){

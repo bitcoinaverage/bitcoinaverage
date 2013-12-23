@@ -289,14 +289,16 @@ ul{
         text-align: right;
         padding: 0;
     }
-
 }
 
 
 @media (min-width: 1200px){
     .currency-box .secondary-currency-switch {
         text-align: left;
-        padding-left: 130px;
+        padding-left: 75px;
+    }
+    .primary-currency-switch {
+        text-align: left;
     }
 }
 
@@ -320,8 +322,14 @@ ul{
 }
 .currency-box .primary-currency-switch{
     padding: 15px 0;
-    text-align: center;
+    text-align: left;
     margin-bottom: 0;
+}
+@media (max-width: 970px){
+    .currency-box  .primary-currency-switch {
+        text-align: center;
+    }
+
 }
 
 .currency-box .secondary-currency-switch{

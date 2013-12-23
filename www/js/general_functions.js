@@ -17,7 +17,6 @@ $.fn.outerHTML = function(){
 // Render Major currencies menu
 var renderMajorCurrencies = function(){
     var majorCurrencies = config.currencyOrder.slice(0, config.majorCurrencies);
-
     var currencyIndex = 0;
     var primaryCurrencyList = '';
     for (var majorCurrency in majorCurrencies) {
@@ -38,8 +37,7 @@ var renderMajorCurrencies = function(){
 // Render secondary currencies menu
 var renderSecondaryCurrencies = function (){
     var secondaryCurrencies = config.currencyOrder.slice(config.majorCurrencies+1);
-
-    var currencyIndex = config.majorCurrencies+1;
+    var currencyIndex = config.majorCurrencies + 1;
     var secondaryCurrenciesList = '';
     for (var secondaryCurrency in secondaryCurrencies) {
 
@@ -117,6 +115,12 @@ var adjustScale = function(apiResult){
 }
 
 $(function(){
+
+    // set base if in
+    if ($.cookie('base') == null ||  $.cookie('token') == ""){
+        $.cookie('base', 'millibitcoin');
+    }
+
     callAPI();
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
@@ -132,7 +136,7 @@ $(function(){
         var button = $(this);
 
         if (config.scaleDivizer == 1000){
-
+            $.cookie('base', 'bitcoin');
             config.scaleDivizer = 1;
             config.precision = 1;
             $(this).removeClass('btn-default');
@@ -145,6 +149,7 @@ $(function(){
             $('.bitcoin-label').text('฿');
             $('.market-page-description .base').text('bitcoin');
         } else {
+            $.cookie('base', 'millibitcoin');
             config.scaleDivizer = 1000;
             config.precision = 3;
             $(this).addClass('btn-default');
@@ -161,6 +166,7 @@ $(function(){
         }
         callAPI(function(result){
             renderAll(result);
+
             renderLegend('USD');
 
         });
@@ -192,6 +198,7 @@ $(document).on('click', '.currency-navigation li', function(event){
     var curCode = $(this).data('currencycode');
     if (legendClickStatus == false || legendClickStatus != curCode) {
         legendClickStatus = curCode;
+
         renderLegend(curCode);
         renderSmallChart(curCode);
 

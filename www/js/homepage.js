@@ -63,13 +63,13 @@ var renderAll = function(result, status, responseObj){
         currentHash = currentHash.replace('#', '');
         currentHash = currentHash.split('-');
         if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
-            $('#.legend-curcode').click();
+            $('.legend-curcode').click();
         }
         currentHash = currentHash[0];
 
         var global_average_default = $.cookie('global-average');
 
-
+        //@TODO What this peace of code doing?
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
             $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
         } else if (typeof global_average_default != 'undefined') {
@@ -367,7 +367,9 @@ var renderSmallChart = function(currencyCode){
             if (i == 0 || line.length == 0){
                 return;
             }
-            data.push([parseDate(values[0]).getTime(), parseFloat(values.slice(-1)[0])]);
+
+            var chartDailyValue = parseFloat(values.slice(-1)[0]) / config.scaleDivizer;
+            data.push([parseDate(values[0]).getTime(), chartDailyValue] );
         });
         data.sort(function(a,b){
             if (a[0] > b[0]){
