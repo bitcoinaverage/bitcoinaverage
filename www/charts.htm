@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <title>BitcoinAverage - independent bitcoin price</title>
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
     <meta name="description" content="BitcoinAverage helps provide a more accurate price of a bitcoin using a weighted average for multiple exchanges.">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
@@ -40,6 +40,7 @@ if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
 var firstRenderDone = false;
 var currencyCode;
 var chartMode;
+var rangesArray = { '1d' : 0 , '1w' : 1 , 'all' : 2 };
 
 var parseDate = function(dateString){
     var parts = dateString.split(' ');
@@ -70,29 +71,44 @@ var ajaxCall = function(url, callback){
     }
 }
 
+var getNewLocation = function(currentLocation){
+    return currentLocation.replace(window.location.hash, '') + '#' + currencyCode+'-' + chartMode + '-' + selectedRange;
+}
 
 $(function(){
     var currentHash = window.location.hash;
     currentHash = currentHash.replace('#', '');
-    currentHash = currentHash.split('|');
+    currentHash = currentHash.split('-');
+
     currencyCode = currentHash[0];
     if (typeof currentHash[1] != 'undefined'){
         chartMode = currentHash[1];
     }
+
+   selectedRange = currentHash[2];
+
+   if (typeof currentHash[2] != 'undefined'){
+        selectedRangeValue = rangesArray[selectedRange];
+   } else {
+       selectedRangeValue = 0;
+       selectedRange = searchKeyByVal(selectedRangeValue);
+   }
+
     if ($.inArray(currencyCode, config.currencyOrder) == -1){
         currencyCode = 'USD';
         var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode;
+        var newLocation = getNewLocation(currentLocation);
         window.location.replace(newLocation);
     }
     if($.inArray(chartMode, ['averages', 'volumes']) == -1){
         chartMode = 'averages';
         var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
+        var newLocation = getNewLocation(currentLocation);
         window.location.replace(newLocation);
     }
 
-    for(var slotNum=0;slotNum<legendSlots;slotNum++){
+
+    for(var slotNum = 0 ;slotNum < legendSlots; slotNum++){
         $('#slot'+slotNum+'-link').hide();
     }
 
@@ -119,9 +135,8 @@ $(function(){
             event.preventDefault();
             event.stopPropagation();
             currencyCode = $(this).data('currencycode');
-
             var currentLocation = document.location.href;
-            var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
+             var newLocation = getNewLocation(currentLocation);
             window.location.replace(newLocation);
 
             $('#'+chartMode+'-chart').click();
@@ -136,7 +151,7 @@ $(function(){
 
         chartMode = 'averages';
         var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
+        var newLocation = getNewLocation(currentLocation);
         window.location.replace(newLocation);
 
         renderPriceChart(currencyCode);
@@ -149,7 +164,7 @@ $(function(){
 
         chartMode = 'volumes';
         var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(window.location.hash, '')+'#'+currencyCode+'|'+chartMode;
+        var newLocation = getNewLocation(currentLocation);
         window.location.replace(newLocation);
 
         renderVolumeChart(currencyCode);
@@ -161,6 +176,23 @@ $(function(){
 
 });
 
+var searchKeyByVal = function(val){
+    var needle = false;
+    var keys = $.map(rangesArray, function(item, key) {
+        if(item == val){
+            needle = key;
+        }
+    });
+    return needle;
+}
+var setNewRangeUrl = function(){
+    var bigChart = $('#big-chart').highcharts();
+    selectedRangeValue = bigChart.rangeSelector.selected;
+    selectedRange = searchKeyByVal(selectedRangeValue);
+    var currentLocation = document.location.href;
+    var newLocation = getNewLocation(currentLocation);
+    window.location.replace(newLocation);
+}
 var renderPriceChart = function(currencyCode){
     document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
 
@@ -217,7 +249,12 @@ var renderPriceChart = function(currencyCode){
                         spacingBottom: 0,
                         spacingLeft: 0,
                         spacingRight: 0,
-                        spacingTop: 0
+                        spacingTop: 0,
+                        events: {
+                            redraw: function(event) {
+                                setTimeout( 'setNewRangeUrl()', 1000);
+                            }
+                        }
                     },
 
                     title: { text: currencyCode+' average price history'},
@@ -235,7 +272,7 @@ var renderPriceChart = function(currencyCode){
                             count: 1,
                             text: 'All	'
                             }],
-                        selected: 2,
+                        selected: selectedRangeValue,
                         inputEnabled: true
                     },
 
@@ -382,7 +419,7 @@ var getRandomArbitrary = function(min, max) {
     </script>
 </head>
 <body>
-    
+
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -404,9 +441,9 @@ var getRandomArbitrary = function(min, max) {
             </div>
         </div>
     </div>
-    
-    <div id="main-container" class="container">      
-        
+
+    <div id="main-container" class="container">
+
         <div class="row" style="margin-top: 25px;" >
             <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
         </div>
@@ -419,7 +456,7 @@ var getRandomArbitrary = function(min, max) {
             </div>
         </div>
     </div> <!-- container end -->
-    
+
         <div id="currency-sidebar">
             <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
                 <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
