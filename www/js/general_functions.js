@@ -239,14 +239,14 @@ $('#bitcoin-input').blur(function() {
             var bitCoins = $(this).toNumber().val();
             var globalLastPrice = $('#legend-last').text();
 
-            var calculateCurrency = (globalLastPrice * bitCoins).toFixed(config.precision);
+            var calculateCurrency = (globalLastPrice * bitCoins).toFixed(2);
 
             $('#currency-input').val(calculateCurrency);
         }
     });
 
 $('#currency-input').blur(function() {
-    $('#currency-inputt').html(null);
+    $('#currency-input').html(null);
     $(this).formatCurrency({ symbol: '', colorize: true, positiveFormat: '%n', negativeFormat: '-%s%n', roundToDecimalPlace: 2 });
 })
     .keyup(function(e) {

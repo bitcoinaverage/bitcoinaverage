@@ -64,7 +64,6 @@ var renderCurrencyTabs = function(){
 
         var currencyCode = majorCurrencies[majorCurrency];
         var li = $('<li></li>');
-        console.log(currencyCode + '{}' + currentHash[0]);
         if(currencyCode  == currentHash[0]) {
             li.attr('class','active');
         }
@@ -253,8 +252,9 @@ var renderLegend = function(currencyCode){
     $('.bitcoin-calc .currency-label').text(currencyCode);
 
     var last = currencyData.averages.last.toFixed(config.precision);
+    var lastCurrency = currencyData.averages.last.toFixed(2);
     $('#legend-last').html(last);
-    $('#currency-input').val(last);
+    $('#currency-input').val(lastCurrency);
 
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));

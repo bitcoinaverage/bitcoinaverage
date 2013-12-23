@@ -15,6 +15,15 @@
     }
 	
 }
+@media (max-width: 1150px){
+    .market-page.ignore_btn{
+        width:100%!important;
+        position:relative!important;
+        padding:0px!important;
+        margin:0; top:0!important;
+        right:0px!important;
+    }
+}
 @media (max-width: 650px){
     .ignore_btn{
         width:100%!important;
@@ -257,10 +266,13 @@ ul{
     display: none;
 }
 
-.strip .btn{
-    position: absolute;
+#nomillibit-button{
+     position: absolute;
     right: 10px;
     top: 39px;
+}
+#nomillibit-button.market-page{
+    top: 55px
 }
 .strip .btn:focus{
     outline:none;
