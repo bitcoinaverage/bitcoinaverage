@@ -154,12 +154,13 @@ var renderAll = function(result, status, responseObj){
         }
         currentHash = currentHash[0];
 
-        //@TODO : what did this peace of code do?
+
         var global_average_default = $.cookie('global-average');
+
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
-            $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
+            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
         } else if (typeof global_average_default != 'undefined') {
-            $('#currency-sidebar li[data-currencycode="'+global_average_default+'"]').click();
+            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
         } else {
             $('#slot0-link').click();
         }
@@ -167,8 +168,8 @@ var renderAll = function(result, status, responseObj){
         firstRenderDone = true;
     }
 
-     $('.primary-currency-switch li:first-child').click();
-    //renderLegend(legendClickStatus);
+
+    renderLegend(legendClickStatus);
 }
 
 
@@ -286,7 +287,7 @@ var renderLegend = function(currencyCode){
     $('.legend-currency-code-update').html(fiatCurrencies[currencyCode]['name']);
 
     $('#legend-global-average').html(currencyData.global_averages.last.toFixed(config.precision))
-    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(config.precision))
+    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(2))
 
 
     for(var slotNum=0;slotNum<legendSlots;slotNum++){
@@ -310,8 +311,8 @@ var renderLegend = function(currencyCode){
         }
 
         $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
-        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(config.precision));
-        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(config.precision));
+        $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'].toFixed(2));
+        $('#legend-slot'+slotNum+'-volume_percent').text(exchangeArray[slotNum]['volume_percent'].toFixed(2));
         $('#legend-slot'+slotNum+'-rate').text(exchangeArray[slotNum]['rates']['last'].toFixed(config.precision));
         $('#legend-slot'+slotNum).toggle(true);
     }

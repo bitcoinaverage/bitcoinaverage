@@ -69,11 +69,10 @@ var renderAll = function(result, status, responseObj){
 
         var global_average_default = $.cookie('global-average');
 
-        //@TODO What this peace of code doing?
         if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
-            $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').click();
+            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
         } else if (typeof global_average_default != 'undefined') {
-            $('#currency-sidebar li[data-currencycode="'+global_average_default+'"]').click();
+            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
         } else {
             $('#slot0-link').click();
         }
@@ -81,7 +80,8 @@ var renderAll = function(result, status, responseObj){
         firstRenderDone = true;
     }
 
-    renderLegend(legendClickStatus);
+
+   renderLegend(legendClickStatus);
 }
 
 
@@ -323,7 +323,7 @@ var renderLegend = function(currencyCode){
     $('.legend-currency-code-update').html(fiatCurrencies[currencyCode]['name']);
 
     $('#legend-global-average').html(currencyData.global_averages.last.toFixed(config.precision))
-    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(config.precision))
+    $('#legend-global-volume-percent').html(currencyData.global_averages.volume_percent.toFixed(2))
 
 
     for(var slotNum=0;slotNum<legendSlots;slotNum++){
