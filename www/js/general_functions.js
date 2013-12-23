@@ -136,7 +136,7 @@ $(function(){
 
     $('#nomillibit-button').click(function(event){
         var button = $(this);
-
+        $('#bitcoin-input').val('1.000');
         if (config.scaleDivizer == 1000){
             $.cookie('base', 'bitcoin');
             config.scaleDivizer = 1;
@@ -146,7 +146,7 @@ $(function(){
             button.html('฿1 base used');
             var currentHash = window.location.hash;
             var currentLocation = document.location.href;
-            var newLocation = currentLocation.replace(currentHash, '')+'#USD-nomillibit';
+            var newLocation = currentLocation.replace(currentHash, '') + '#USD-nomillibit';
             window.location.replace(newLocation);
             $('.bitcoin-label').text('฿');
             $('.market-page-description .base').text('bitcoin');

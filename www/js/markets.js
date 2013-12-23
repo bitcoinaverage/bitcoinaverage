@@ -255,9 +255,11 @@ var renderLegend = function(currencyCode){
     $('.bitcoin-calc .currency-label').text(currencyCode);
 
     var last = currencyData.averages.last.toFixed(config.precision);
-    var lastCurrency = currencyData.averages.last.toFixed(2);
     $('#legend-last').html(last);
-    $('#currency-input').val(lastCurrency);
+
+    var bitCoinInputVal  = $('#bitcoin-input').toNumber().val();
+    var fiatCalcVaule = (last * bitCoinInputVal).toFixed(2);
+    $('#currency-input').val(fiatCalcVaule);
 
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));

@@ -27,6 +27,7 @@ var callAPI = function(callback){
     }
 
     if (window.XDomainRequest) {
+
         var xhr = new window.XDomainRequest(); //IE9-10 implements crossdomain AJAX this way only
         xhr.open('GET', active_API_URL, true);
         xhr.onload = function() {
@@ -293,7 +294,11 @@ var renderLegend = function(currencyCode){
 
     var last = currencyData.averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
-    $('#currency-input').val(last);
+
+    var bitCoinInputVal  = $('#bitcoin-input').toNumber().val();
+    var fiatCalcVaule = (last * bitCoinInputVal).toFixed(2);
+    $('#currency-input').val(fiatCalcVaule);
+
     $('#global-last').html(currencyData.averages.last.toFixed(config.precision));
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));
