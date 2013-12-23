@@ -119,6 +119,8 @@ $(function(){
     // set base if in
     if ($.cookie('base') == null ||  $.cookie('token') == ""){
         $.cookie('base', 'millibitcoin');
+    } else {
+
     }
 
     callAPI();
@@ -172,6 +174,11 @@ $(function(){
         });
         $('.primary-currency-switch li:first-child').click();
     });
+
+    // change base if it been stored in cookies
+    if($.cookie('base') != null &&  $.cookie('token') != "" && $.cookie('base')  == 'bitcoin'){
+        $('#nomillibit-button').click();
+    }
 
     $('#set-global-average-currency').click(function(event){
         $.cookie('global-average', legendClickStatus);
