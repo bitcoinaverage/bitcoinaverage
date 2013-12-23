@@ -159,18 +159,18 @@ $(function(){
             var currentHash = window.location.hash;
             var currentLocation = document.location.href;
 
-            var newLocation = currentLocation.replace(currentHash, '')+'#USD';
+            var newLocation = currentLocation.replace(currentHash, '') + '#USD';
             window.location.replace(newLocation);
             $('.bitcoin-label').text('m฿');
             $('.market-page-description .base').text('millibitcoin');
         }
         callAPI(function(result){
             renderAll(result);
-
             renderLegend('USD');
+            renderSmallChart('USD');
 
         });
-        //$('.primary-currency-switch li:first-child').click();
+        $('.primary-currency-switch li:first-child').click();
     });
 
     $('#set-global-average-currency').click(function(event){
@@ -221,7 +221,7 @@ $(document).on('click', '.currency-navigation li', function(event){
 // Format while typing & warn on decimals entered, 2 decimal places
 $('#bitcoin-input').blur(function() {
     $('#bitcoin-input').html(null);
-    $(this).formatCurrency({ symbol: '', colorize: true, positiveFormat: '%n', negativeFormat: '-%s%n', roundToDecimalPlace: 2 });
+    $(this).formatCurrency({ symbol: '', colorize: true, positiveFormat: '%n', negativeFormat: '-%s%n', roundToDecimalPlace: config.precision });
 })
     .keyup(function(e) {
         var e = window.event || e;
