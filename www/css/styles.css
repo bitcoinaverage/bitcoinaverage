@@ -722,7 +722,7 @@ footer .row{
 
 .currency-navtabs {
     background: #f7f7f7;
-    padding-top: 0;
+    padding-top: 8px;
 }
 .currency-navtabs li.active {
     background: #fff;
