@@ -655,6 +655,9 @@ footer .row{
     float: right;
     padding: 20px 15px 0;
 }
+.bitcoin-calc.markets-page{
+    padding-top: 21px;
+}
 .bitcoin-calc .equals {
     float: left;
     line-height: 1;
@@ -720,7 +723,7 @@ footer .row{
 
 .currency-navtabs {
     background: #f7f7f7;
-    padding-top: 13px;
+    padding-top: 12px;
 }
 .currency-navtabs li.active {
     background: #fff;
