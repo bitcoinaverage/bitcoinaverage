@@ -116,14 +116,20 @@ var adjustScale = function(apiResult){
 
 $(function(){
 
-    // set base if in
+    // set base if it change base button have been pressed
     if ($.cookie('base') == null ||  $.cookie('token') == ""){
         $.cookie('base', 'millibitcoin');
-    } else {
+    }
 
+    //if location hash is empty
+    var currentHash = window.location.hash;
+    var hashData = currentHash.split('-');
+    if ( hashData[1] == 'nomillibit') {
+        $.cookie('base', 'nomillibit');
     }
 
     callAPI();
+
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
 

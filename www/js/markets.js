@@ -146,25 +146,27 @@ var renderAll = function(result, status, responseObj){
     renderSecondsSinceUpdate();
     if (!firstRenderDone) {
         $('body').show();
-        var currentHash = window.location.hash;
-        currentHash = currentHash.replace('#', '');
-        currentHash = currentHash.split('|');
-        if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
-            $('#nomillibit-button').click();
-        }
-        currentHash = currentHash[0];
-
-
-        var global_average_default = $.cookie('global-average');
-
-        if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
-            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
-        } else if (typeof global_average_default != 'undefined') {
-            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
-        } else {
-            $('#slot0-link').click();
-        }
-
+        //@TODO: what this peace of code is doing?
+//        var currentHash = window.location.hash;
+//        currentHash = currentHash.replace('#', '');
+//        currentHash = currentHash.split('|');
+//        if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
+//            $('#nomillibit-button').click();
+//        }
+//        currentHash = currentHash[0];
+//
+//
+//        var global_average_default = $.cookie('global-average');
+//
+//        if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
+//            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
+//        } else if (typeof global_average_default != 'undefined') {
+//            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
+//        } else {
+//            $('#slot0-link').click();
+//        }
+        $('#s' +
+            'lot0-link').click();
         firstRenderDone = true;
     }
 

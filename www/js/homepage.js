@@ -29,18 +29,22 @@ var callAPI = function(callback){
     if (window.XDomainRequest) {
 
         var xhr = new window.XDomainRequest(); //IE9-10 implements crossdomain AJAX this way only
+
         xhr.open('GET', active_API_URL, true);
+
         xhr.onload = function() {
             var result = JSON.parse(xhr.responseText);
             callback(result);
         };
         xhr.send();
     } else {
+
         $.getJSON(active_API_URL, callback);
     }
 }
 
 var renderAll = function(result, status, responseObj){
+
     result = adjustScale(result);
 
     //responseObj is not available in IE
@@ -60,28 +64,29 @@ var renderAll = function(result, status, responseObj){
     renderSecondsSinceUpdate();
     if (!firstRenderDone) {
         $('body').show();
-        var currentHash = window.location.hash;
-        currentHash = currentHash.replace('#', '');
-        currentHash = currentHash.split('-');
-        if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
-            $('.legend-curcode').click();
-        }
-        currentHash = currentHash[0];
-
-        var global_average_default = $.cookie('global-average');
-
-        if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
-            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
-        } else if (typeof global_average_default != 'undefined') {
-            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
-        } else {
-            $('#slot0-link').click();
-        }
-
+        //@TODO: what this peace of code is doing?
+//        var currentHash = window.location.hash;
+//        currentHash = currentHash.replace('#', '');
+//        currentHash = currentHash.split('|');
+//
+//        if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
+//            $('.legend-curcode').click();
+//        }
+//
+//        currentHash = currentHash[0];
+//
+//        var global_average_default = $.cookie('global-average');
+//
+//        if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
+//            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
+//        } else if (typeof global_average_default != 'undefined') {
+//            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
+//        } else {
+//            $('#slot0-link').click();
+//        }
+        $('#slot0-link').click();
         firstRenderDone = true;
     }
-
-
    renderLegend(legendClickStatus);
 }
 
@@ -159,8 +164,7 @@ var sort = function (list) {
 
     return list;
 };
-
-function orderByVolume(a, b) {
+var orderByVolume = function(a, b) {
     if (a['global_averages']['volume_percent'] == b['global_averages']['volume_percent'] ) {
         return 0;
     } else if (a['global_averages']['volume_percent'] < b['global_averages']['volume_percent']) {
@@ -168,7 +172,6 @@ function orderByVolume(a, b) {
     }
     return -1;
 }
-
 
 var renderGlobalAverageData = function(apiData, currency)
 {
