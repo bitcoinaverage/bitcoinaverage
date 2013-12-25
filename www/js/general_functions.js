@@ -121,12 +121,6 @@ $(function(){
         $.cookie('base', 'millibitcoin');
     }
 
-    //if location hash is empty
-    var currentHash = window.location.hash;
-    var hashData = currentHash.split('-');
-    if ( hashData[1] == 'nomillibit') {
-        $.cookie('base', 'nomillibit');
-    }
 
     callAPI();
 
