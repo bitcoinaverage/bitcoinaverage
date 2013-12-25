@@ -187,10 +187,12 @@ var renderGlobalAverageData = function(apiData, currency)
 
    var html='';
    var majorCurrency = config.majorCurrencies;
+   var allVolumeBtc = 0;
    $.each(globalAverageData, function(i, item) {
-
        var currencyCode   = item['currency'];
        var volumeBtc      = item['global_averages']['volume_btc'].toFixed(config.precision);
+
+       allVolumeBtc += parseFloat(volumeBtc);
        var volumePercent  = item['global_averages']['volume_percent'].toFixed(2);
        var lastPrice      = item['global_averages']['last'].toFixed(config.precision);
        var crossPrice     = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
@@ -261,6 +263,9 @@ var renderGlobalAverageData = function(apiData, currency)
 
    var table    = $('#global-average-data-table');
    table.children('tbody').html(html);
+
+   $('#legend-total-volume').text(allVolumeBtc.toFixed(2));
+
 }
 
 
@@ -305,7 +310,7 @@ var renderLegend = function(currencyCode){
     $('#global-last').html(currencyData.averages.last.toFixed(config.precision));
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));
-    $('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(2));
+    //$('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(2));
 
     if (typeof currencyData.averages['24h_avg'] != 'undefined') {
         $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(config.precision));
