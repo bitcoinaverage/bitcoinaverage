@@ -131,6 +131,7 @@ ul{
 .bid_ask{
     font-weight: bold;
     color: #999;
+    margin-bottom: 0;
 }
 
 .last{
@@ -721,14 +722,16 @@ footer .row{
 
 .currency-navtabs {
     background: #f7f7f7;
-    padding-top: 18px;
+    padding-top: 0;
 }
 .currency-navtabs li.active {
     background: #fff;
     border: 1px solid #dddddd;
     border-bottom: 0;
 }
-
+.currency-navtabs li h2 {
+    margin-top: 10px;
+}
 .market-page-description {
     padding: 19px 0 13px;
 }
