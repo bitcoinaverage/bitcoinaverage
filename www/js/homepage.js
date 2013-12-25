@@ -195,10 +195,10 @@ var renderGlobalAverageData = function(apiData, currency)
        var lastPrice      = item['global_averages']['last'].toFixed(config.precision);
        var crossPrice     = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
        crossPrice = crossPrice.toFixed(config.precision);
-       var cookieHideLink = $.cookie("global-average-table")
+       var cookieHideLink = $.cookie("global-average-table");
        var oneRow = $('<tr></tr>');
-
        if (i > majorCurrency) {
+           if(cookieHideLink == null) cookieHideLink = 'collapsed';
            if ( cookieHideLink == 'hidden'){
                 oneRow.addClass('secondary-global-avg-row hidden');
                 $('#show-more-currencies-in-global-avg-table').text('more');
