@@ -1,3 +1,0 @@
-Copyright to the finished assembled work produced by the pull request sender shall be vested with the project repository maintainers upon final payment for the project. This ownership is to include, design, photos, graphics, source code, work-up files, text, and any program(s) specifically designed or purchased on behalf of the project repository maintainers for completion of this project.
-
-All materials developed within this pull request become the property of project repository maintainers at the moment of pull request commit and may be used by them, as desired

@@ -305,7 +305,8 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
     return calculated_average_rates, calculated_volumes, calculated_global_average_rates
 
 
-def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volumes, calculated_global_average_rates_formatted, exchanges_ignored):
+def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volumes,
+                  calculated_global_average_rates_formatted, exchanges_ignored):
     try:
         all_data = {}
         all_data['timestamp'] = timestamp

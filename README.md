@@ -3,8 +3,9 @@
 run instructions
 ---------------------
 - download sources
-- copy server.py.dist into server.py in the same folder and setup paths to folders (see comments in the file). 
-- to run the api_daemon.py you need python 2.7, no db or other storage engines needed. Script itself will tell you what other python libraries dependencies are missing. Install missing dependencies if needed. 
+- copy server.py.dist into server.py in the same folder and setup paths to folders (see comments in the file).
+- install dependencies with `sudo apt-get install python-dev libevent-dev libxml2-dev python-pip && sudo apt-get build-dep libxml2 && sudo pip install SQLObject eventlet requests libxslt-dev lxml`
+- to run the api_daemon.py you need python 2.7, no db or other storage engines needed. Install any other missing dependencies if needed.
 
 system structure
 --------------------

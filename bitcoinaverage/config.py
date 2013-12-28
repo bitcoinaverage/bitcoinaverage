@@ -64,6 +64,7 @@ CURRENCY_LIST = ('USD',
                  'NOK',
                  'ILS',
                  'CHF',
+                 'TRY',
                  # 'DKK',
                  # 'HKD',
                  # 'THB',
@@ -207,20 +208,14 @@ EXCHANGE_LIST = {
                                                            },
                                  },
                     'bitcoin_de': {'rates_url': 'https://bitcoinapi.de/v1/{api_key}/rate.json',
-                                   'trades_url': 'https://bitcoinapi.de/v1/{api_key}/trades.json?since=555555', #since=555555 shows trades starting Sun, 01 Dec 2013, this should be updated from time to time to not query too much at once
-                                    # 'ignored': True,
-                                    # 'ignore_reason': 'abnormal price swings',
+                                   'trades_url': 'https://bitcoinapi.de/v1/{api_key}/trades.json',
                                  },
-                    'itbit':  {'usd_url': 'https://www.itbit.com/api/feeds/ticker/XBTUSD',
-                               'eur_url': 'https://www.itbit.com/api/feeds/ticker/XBTEUR',
-                               'sgd_url': 'https://www.itbit.com/api/feeds/ticker/XBTSGD',
-                               'ignored': True,
-                               'ignore_reason': 'API period problem',
-                                 },
-
                     'bitcoin_central': {'ticker_url': 'https://bitcoin-central.net/api/data/eur/ticker',
                                         'depth_url': 'https://bitcoin-central.net/api/data/eur/depth',
                                          },
+                    'btcturk': {'ticker_url': 'https://www.btcturk.com/api/ticker',
+                                         },
+
 
 
 
@@ -251,8 +246,33 @@ EXCHANGE_LIST = {
                                  },
 
 
+
+
+
+
+                    'itbit':  {'usd_url': 'https://www.itbit.com/api/feeds/ticker/XBTUSD',
+                               'eur_url': 'https://www.itbit.com/api/feeds/ticker/XBTEUR',
+                               'sgd_url': 'https://www.itbit.com/api/feeds/ticker/XBTSGD',
+                               'ignored': True,
+                               'ignore_reason': 'API period problem',
+                                 },
+                    'coinmkt':  {'ignored': True,
+                                 'ignore_reason': 'no API',
+                                 },
+                    'coinbase':  {'ignored': True,
+                                  'ignore_reason': 'volume data not published',
+                                  },
+
+                    ### not integrated
+                    # CNY - btc100.org
+                    # CNY - chbtc.com
+                    # CNY - huobi.com
+                    # CNY - 42BTC.com
+
+
+
                     # these exchanges seem to be dead
-                    # 'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
+                    #'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
                     #                                      },
                     #              },
                     #'fbtc': {'bitcoincharts_symbols':  {'EUR': 'fbtcEUR',
@@ -262,16 +282,6 @@ EXCHANGE_LIST = {
                     #'icbit': {'bitcoincharts_symbols': {'USD': 'icbitUSD',
                     #                                       },
                     #             },
-
-
-                    ### not integrated
-                    # CNY - btc100.org
-                    # CNY - chbtc.com
-                    # CNY - huobi.com
-                    # CNY - 42BTC.com
-                    #
-                    # EUR bitcoin-central.net recently resumed operation recently and is also not integrated yet
-                    # USD coinbase.com
 
 
                 }
