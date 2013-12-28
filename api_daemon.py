@@ -66,7 +66,7 @@ while True:
                   calculated_global_average_rates_formatted,
                   exchanges_ignored)
 
-    createNogoxApi(human_timestamp, exchanges_rates, exchanges_ignored)
+    # createNogoxApi(human_timestamp, exchanges_rates, exchanges_ignored)
 
 
     if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:

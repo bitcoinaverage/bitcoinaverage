@@ -27,18 +27,14 @@ var callAPI = function(callback){
     }
 
     if (window.XDomainRequest) {
-
         var xhr = new window.XDomainRequest(); //IE9-10 implements crossdomain AJAX this way only
-
         xhr.open('GET', active_API_URL, true);
-
         xhr.onload = function() {
             var result = JSON.parse(xhr.responseText);
             callback(result);
         };
         xhr.send();
     } else {
-
         $.getJSON(active_API_URL, callback);
     }
 }

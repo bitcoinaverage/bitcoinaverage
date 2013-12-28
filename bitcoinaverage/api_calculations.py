@@ -14,7 +14,7 @@ import json
 
 import bitcoinaverage as ba
 import bitcoinaverage.server as server
-from bitcoinaverage.config import DEC_PLACES, API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, CURRENCY_LIST, API_FILES, EXCHANGE_LIST
+from bitcoinaverage.config import DEC_PLACES, API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, CURRENCY_LIST, API_FILES, EXCHANGE_LIST, INDEX_DOCUMENT_NAME
 from bitcoinaverage.exceptions import CallTimeoutException
 import bitcoinaverage.helpers as helpers
 
@@ -226,7 +226,8 @@ def calculateAverageRates(exchanges_rates, calculated_volumes):
     return calculated_average_rates
 
 
-def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currency_volumes, calculated_global_average_rates, calculated_global_volume_percents):
+def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currency_volumes,
+                     calculated_global_average_rates, calculated_global_volume_percents):
     for currency in CURRENCY_LIST:
         if currency in calculated_average_rates:
             try:
@@ -334,9 +335,12 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
             and currency in calculated_global_average_rates_formatted):
                 ticker_cur = calculated_average_rates[currency]
                 ticker_cur['timestamp'] = timestamp
-                api_ticker_file = open(os.path.join(api_path, API_FILES['TICKER_PATH'], currency), 'w+')
-                api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
-                api_ticker_file.close()
+                ticker_currency_path = os.path.join(api_path, API_FILES['TICKER_PATH'], currency)
+                with open(os.path.join(ticker_currency_path, INDEX_DOCUMENT_NAME), 'w+') as api_ticker_file:
+                    api_ticker_file.write(json.dumps(ticker_cur, indent=2, sort_keys=True, separators=(',', ': ')))
+                for key in ticker_cur:
+                    with open(os.path.join(ticker_currency_path, key), 'w+') as api_ticker_file:
+                        api_ticker_file.write(str(ticker_cur[key]))
 
 
         rates_all = calculated_global_average_rates_formatted
@@ -349,9 +353,12 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
             and currency in calculated_global_average_rates_formatted):
                 ticker_cur = calculated_global_average_rates_formatted[currency]
                 ticker_cur['timestamp'] = timestamp
-                api_ticker_file = open(os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], currency), 'w+')
-                api_ticker_file.write(json.dumps(ticker_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
-                api_ticker_file.close()
+                ticker_currency_path = os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], currency)
+                with open(os.path.join(ticker_currency_path, INDEX_DOCUMENT_NAME), 'w+') as api_ticker_file:
+                    api_ticker_file.write(json.dumps(ticker_cur, indent=2, sort_keys=True, separators=(',', ': ')))
+                for key in ticker_cur:
+                    with open(os.path.join(ticker_currency_path, key), 'w+') as api_ticker_file:
+                        api_ticker_file.write(str(ticker_cur[key]))
 
         volumes_all = calculated_volumes
         volumes_all['timestamp'] = timestamp
@@ -366,6 +373,8 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates, calculated_volu
                 api_ticker_file = open(os.path.join(api_path, API_FILES['EXCHANGES_PATH'], currency), 'w+')
                 api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
                 api_ticker_file.close()
+
+
 
         with open(os.path.join(api_path, API_FILES['IGNORED_FILE']), 'w+') as api_ignored_file:
             api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))

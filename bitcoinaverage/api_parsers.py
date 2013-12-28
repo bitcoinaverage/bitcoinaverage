@@ -1075,7 +1075,7 @@ def _btcturkApiCall(ticker_url, *args, **kwargs):
     result = {}
     result['TRY'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                      'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
-                     'last': Decimal(ticker['price']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
                      }
     return result

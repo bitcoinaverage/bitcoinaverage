@@ -1,5 +1,6 @@
 from decimal import Decimal
 import os
+from shutil import copyfile
 import time
 import json
 from email import utils
@@ -54,26 +55,26 @@ def write_fiat_rates_config():
     js_config_template = "var fiatCurrencies = $FIAT_CURRENCIES_DATA$;"
 
     currencies_names_URL = 'http://openexchangerates.org/api/currencies.json'
-    currencies_rates_URL = 'http://openexchangerates.org/api/latest.json?app_id={}'.format(OPENEXCHANGERATES_APP_ID)
+    currencies_rates_URL = 'http://openexchangerates.org/api/latest.json?app_id={app_id}'.format(app_id=OPENEXCHANGERATES_APP_ID)
 
     currency_data_list = {}
 
+    try:
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            response = urllib2.urlopen(urllib2.Request(url=currencies_names_URL, headers=API_REQUEST_HEADERS)).read()
+            currencies_names = json.loads(response)
+
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            response = urllib2.urlopen(urllib2.Request(url=currencies_rates_URL, headers=API_REQUEST_HEADERS)).read()
+            currencies_rates = json.loads(response)
+    except (CallTimeoutException,
+            socket.error,
+            urllib2.URLError,
+            httplib.BadStatusLine,
+            ValueError):
+        return None
+
     for currency_code in ba.config.CURRENCY_LIST:
-        try:
-            with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-                response = urllib2.urlopen(urllib2.Request(url=currencies_names_URL, headers=API_REQUEST_HEADERS)).read()
-                currencies_names = json.loads(response)
-
-            with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-                response = urllib2.urlopen(urllib2.Request(url=currencies_rates_URL, headers=API_REQUEST_HEADERS)).read()
-                currencies_rates = json.loads(response)
-        except (CallTimeoutException,
-                socket.error,
-                urllib2.URLError,
-                httplib.BadStatusLine,
-                ValueError):
-            return None
-
         try:
             currency_data_list[currency_code] = {'name': str(currencies_names[currency_code]),
                                                  'rate': str(currencies_rates['rates'][currency_code]),
@@ -90,6 +91,7 @@ def write_fiat_rates_config():
 
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT, 'fiat_data'), 'w') as fiat_exchange_api_file:
         fiat_exchange_api_file.write(json.dumps(currency_data_list))
+
 
 def write_html_currency_pages():
     global ba
@@ -224,6 +226,10 @@ def write_api_index_files():
 
     global ba
 
+    if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, 'favicon.ico')):
+        copyfile(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'favicon.ico'),
+                 os.path.join(ba.server.API_DOCUMENT_ROOT, 'favicon.ico'))
+
     #api root index
     api_index = {}
     api_index['tickers'] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH']
@@ -243,8 +249,11 @@ def write_api_index_files():
 
     api_ticker_index = {}
     api_ticker_index['all'] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH'] + API_FILES['ALL_FILE']
+    api_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'])
     for currency_code in ba.config.CURRENCY_LIST:
         api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH'] + currency_code
+        if not os.path.exists(os.path.join(api_ticker_folder_path, currency_code)):
+            os.makedirs(os.path.join(api_ticker_folder_path, currency_code))
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
@@ -255,8 +264,11 @@ def write_api_index_files():
 
     api_ticker_index = {}
     api_ticker_index['all'] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + API_FILES['ALL_FILE']
+    api_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'])
     for currency_code in ba.config.CURRENCY_LIST:
         api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
+        if not os.path.exists(os.path.join(api_ticker_folder_path, currency_code)):
+            os.makedirs(os.path.join(api_ticker_folder_path, currency_code))
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
@@ -277,6 +289,7 @@ def write_api_index_files():
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX)):
         os.makedirs(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX))
 
+
     api_nogox_index = {}
     api_nogox_index['tickers'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH']
     api_nogox_index['exchanges'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH']
@@ -291,11 +304,13 @@ def write_api_index_files():
 
     api_nogox_ticker_index = {}
     api_nogox_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + API_FILES['ALL_FILE']
+    api_nogox_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])
     for currency_code in ba.config.CURRENCY_LIST:
         api_nogox_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + currency_code
+        if not os.path.exists(os.path.join(api_nogox_ticker_folder_path, currency_code)):
+            os.makedirs(os.path.join(api_nogox_ticker_folder_path, currency_code))
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_nogox_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
 
     #api nogox global tickers index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])):
@@ -303,8 +318,11 @@ def write_api_index_files():
 
     api_ticker_index = {}
     api_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + API_FILES['ALL_FILE']
+    api_nogox_global_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])
     for currency_code in ba.config.CURRENCY_LIST:
         api_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
+        if not os.path.exists(os.path.join(api_nogox_global_ticker_folder_path, currency_code)):
+            os.makedirs(os.path.join(api_nogox_global_ticker_folder_path, currency_code))
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
