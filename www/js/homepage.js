@@ -16,10 +16,10 @@ if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
 
 var active_API_URL = API_all_url;
 
-var legendClickStatus = false;
+var selectedFiatCurrency = false;
 var firstRenderDone = false;
 var fiatExchangeRates = [];
-var timeGap = 0; //actual time is fetched from remote resource, and user's local time is adjusted by X seconds to be completely exact
+var timeGap = 0; //actual time is fetched from server, and user's local time is adjusted by X seconds to be completely exact
 
 var callAPI = function(callback){
     if (typeof callback == 'undefined'){
@@ -40,12 +40,11 @@ var callAPI = function(callback){
 }
 
 var renderAll = function(result, status, responseObj){
-
-    result = adjustScale(result);
+    result = adjustScale(result, config.scaleDivizer);
 
     //responseObj is not available in IE
     if(typeof responseObj == 'object'){
-        getTimeGap(responseObj.getAllResponseHeaders());
+        timeGap = getTimeGap(responseObj.getAllResponseHeaders());
     }
 
     API_data = result;
@@ -58,33 +57,35 @@ var renderAll = function(result, status, responseObj){
     }
 
     renderSecondsSinceUpdate();
+
     if (!firstRenderDone) {
+        var currencyHash = window.location.hash;
+        currencyHash = currencyHash.slice(1);
+        currencyHash = currencyHash.split('-')[0];
+        var selectedSlotNum = 0;
+        for(var slotNum in config.currencyOrder){
+            if(currencyHash == config.currencyOrder[slotNum]){
+                selectedSlotNum = slotNum;
+            }
+        }
+        $('#slot'+selectedSlotNum+'-link').click();
+
+        var baseCookie = $.cookie('base');
+        if(baseCookie == 'bitcoin'){
+            $('#nomillibit-button').click();
+        } else if(baseCookie == null){
+            $.cookie('base', 'millibitcoin');
+        }
+
         $('body').show();
-        //@TODO: what this peace of code is doing?
-//        var currentHash = window.location.hash;
-//        currentHash = currentHash.replace('#', '');
-//        currentHash = currentHash.split('|');
-//
-//        if (currentHash.length == 2 && currentHash[1] == 'nomillibit'){
-//            $('.legend-curcode').click();
-//        }
-//
-//        currentHash = currentHash[0];
-//
-//        var global_average_default = $.cookie('global-average');
-//
-//        if (currentHash != '' && $('#currency-sidebar li[data-currencycode="'+currentHash+'"]').size() > 0) {
-//            $('#currency-navtabs li[data-currencycode="'+currentHash+'"]').click();
-//        } else if (typeof global_average_default != 'undefined') {
-//            $('#currency-navtabs li[data-currencycode="'+global_average_default+'"]').click();
-//        } else {
-//            $('#slot0-link').click();
-//        }
-        $('#slot0-link').click();
+
+        $('#currency-input').focus();
         firstRenderDone = true;
+    } else {
+        renderLegend(selectedFiatCurrency);
+        renderSmallChart(selectedFiatCurrency);
     }
-   renderLegend(legendClickStatus);
-}
+};
 
 
 var lastGlobalAvgValue = 0;
@@ -134,32 +135,13 @@ var renderRates = function(currencyCode, currencyData, slotNum){
         }
     }
 
-
     if (dataChanged) {
         var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
         flashingFigures.css({ 'opacity' : 0.5});
         flashingFigures.animate({ 'opacity' : 1 }, 500);
     }
 }
-var sort = function (list) {
 
-    var comparisons = 0,
-        swaps = 0;
-
-    for (var i = 0, swapping; i < list.length - 1; i++) {
-        comparisons++;
-        if (list[i] > list[i + 1]) {
-            // swap
-            swapping = list[i + 1];
-
-            list[i + 1] = list[i];
-            list[i] = swapping;
-            swaps++;
-        };
-    };
-
-    return list;
-};
 var orderByVolume = function(a, b) {
     if (a['global_averages']['volume_percent'] == b['global_averages']['volume_percent'] ) {
         return 0;
@@ -167,103 +149,131 @@ var orderByVolume = function(a, b) {
         return 1;
     }
     return -1;
-}
+};
 
-var renderGlobalAverageData = function(apiData, currency)
-{
+var renderGlobalAverageData = function(apiData, currency){
+    var globalAverageData = JSON.parse(JSON.stringify(apiData));
+    globalAverageData = $.map(globalAverageData, function(value, index) {
+        value['currency'] = index;
+        return [value];
+    });
+    globalAverageData.splice(-2, 2); // delete timestamp and ignored_exchanges from data
+    globalAverageData.sort(orderByVolume);
 
-   var globalAverageData = $.map(apiData, function(value, index) {
-    value['currency'] = index;
-    return [value];
-   });
+    var html='';
+    var allVolumeBtc = 0;
+    $.each(globalAverageData, function (i, item) {
+        var currencyCode = item['currency'];
+        var volumeBtc = item['global_averages']['volume_btc'];
+        allVolumeBtc += parseFloat(volumeBtc);
 
-   globalAverageData.splice(-2,2); // delete timestamp and ignored_exchanges from data
-   globalAverageData.sort(orderByVolume);
+        if (currencyCode == currency){
+            $('#legend-currency-trading-volume').html(volumeBtc)
+                                                .formatCurrency({   symbol: '',
+                                                    colorize: true,
+                                                    positiveFormat: '%n',
+                                                    negativeFormat: '-%s%n',
+                                                    roundToDecimalPlace: 2
+                                                    });
+        }
 
+        var volumePercent = item['global_averages']['volume_percent'].toFixed(2);
+        var pad = "00000";
+        volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
 
-   var html='';
-   var majorCurrency = config.majorCurrencies;
-   var allVolumeBtc = 0;
-   $.each(globalAverageData, function(i, item) {
-       var currencyCode   = item['currency'];
-       var volumeBtc      = item['global_averages']['volume_btc'].toFixed(config.precision);
-
-       allVolumeBtc += parseFloat(volumeBtc);
-       var volumePercent  = item['global_averages']['volume_percent'].toFixed(2);
-       var lastPrice      = item['global_averages']['last'].toFixed(config.precision);
-       var crossPrice     = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
-       crossPrice = crossPrice.toFixed(config.precision);
-       var cookieHideLink = $.cookie("global-average-table");
-       var oneRow = $('<tr></tr>');
-       if (i > majorCurrency) {
-           if(cookieHideLink == null) cookieHideLink = 'hidden';
-           if ( cookieHideLink == 'hidden'){
+        var lastPrice = item['global_averages']['last'].toFixed(config.precision);
+        var crossPrice = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
+        crossPrice = crossPrice.toFixed(config.precision);
+        var cookieHideLink = $.cookie("global-average-table");
+        var oneRow = $('<tr></tr>');
+        if (i > config.majorCurrencies) {
+            if (cookieHideLink == null) cookieHideLink = 'hidden';
+            if (cookieHideLink == 'hidden') {
                 oneRow.addClass('secondary-global-avg-row hidden');
                 $('#show-more-currencies-in-global-avg-table').text('more');
-           } else if(cookieHideLink =='collapsed'){
-               oneRow.addClass('secondary-global-avg-row');
-               $('#show-more-currencies-in-global-avg-table').text('less');
-           }
-       }
-       oneRow.attr('id', 'currency-name-'+currencyCode);
-       var spanLegendCurrency = $('<span></span>');
-       var tdLegendCurrency = $('<td></td>');
+            } else if (cookieHideLink == 'collapsed') {
+                oneRow.addClass('secondary-global-avg-row');
+                $('#show-more-currencies-in-global-avg-table').text('less');
+            }
+        }
+        oneRow.attr('id', 'currency-name-' + currencyCode);
+        var spanLegendCurrency = $('<span></span>');
+        var tdLegendCurrency = $('<td></td>');
 
-       oneRow.attr('id' , 'global-average-data' + currencyCode);
+        oneRow.attr('id', 'global-average-data' + currencyCode);
 
         /* Currency NAME */
-       spanLegendCurrency.text(currencyCode);
-       tdLegendCurrency.attr('class', 'legend-currency');
-       tdLegendCurrency.append(spanLegendCurrency);
-       oneRow.append(tdLegendCurrency);
+        spanLegendCurrency.text(currencyCode);
+        tdLegendCurrency.attr('class', 'legend-currency');
+        tdLegendCurrency.append(spanLegendCurrency);
+        oneRow.append(tdLegendCurrency);
 
-       /* Volume Percent */
-       var spanVolumePercent = $('<span></span>');
-       var tdVolumePercent = $('<td></td>');
-       spanVolumePercent.text(volumePercent);
-       tdVolumePercent.attr('class', 'legend-volume_percent');
-       tdVolumePercent.append(spanVolumePercent);
-       oneRow.append(tdVolumePercent);
+        /* Volume Percent */
+        var spanVolumePercent = $('<span></span>');
+        var tdVolumePercent = $('<td></td>');
+        spanVolumePercent.text(volumePercent);
+        tdVolumePercent.attr('class', 'legend-volume_percent');
+        tdVolumePercent.append(spanVolumePercent);
+        oneRow.append(tdVolumePercent);
 
         /* Volume BTC */
-       var spanVolumeBtc = $('<span></span>');
-       var tdVolumeBtc = $('<td></td>');
-       spanVolumeBtc.text(volumeBtc);
-       tdVolumeBtc.attr('class', 'legend-volume_btc');
-       tdVolumeBtc.append(spanVolumeBtc);
-       oneRow.append(tdVolumeBtc);
+        var spanVolumeBtc = $('<span></span>');
+        var tdVolumeBtc = $('<td></td>');
+        spanVolumeBtc.text(volumeBtc);
+        spanVolumeBtc.formatCurrency({   symbol: '',
+                            colorize: true,
+                            positiveFormat: '%n',
+                            negativeFormat: '-%s%n',
+                            roundToDecimalPlace: 2
+                            });
+        tdVolumeBtc.attr('class', 'legend-volume_btc text-right');
+        tdVolumeBtc.append(spanVolumeBtc);
+        oneRow.append(tdVolumeBtc);
 
         /* Last Price */
-       var spanLastPrice = $('<span></span>');
-       var tdLastPrice = $('<td></td>');
-       spanLastPrice.text(volumeBtc);
-       tdLastPrice.attr('class', 'legend-price text-right');
-       tdLastPrice.append(lastPrice + ' ' + currency);
-       oneRow.append(tdLastPrice);
+        var spanLastPrice = $('<span></span>');
+        var tdLastPrice = $('<td></td>');
+        spanLastPrice.text(lastPrice);
+        tdLastPrice.attr('class', 'legend-price text-right');
+        tdLastPrice.append(spanLastPrice);
+        oneRow.append(tdLastPrice);
 
-       /* Cross Price */
-       var spanCrossPrice = $('<span></span>');
-       var tdCrossPrice = $('<td></td>');
-       var insLegendCurcode = $('<ins></ins>');
+        /* Last Price Currency Code*/
+        var spanCurCode = $('<span></span>');
+        var tdCurCode = $('<td></td>');
+        spanCurCode.text(currencyCode);
+        tdCurCode.attr('class', 'legend-price');
+        tdCurCode.append(spanCurCode);
+        oneRow.append(tdCurCode);
 
-       spanCrossPrice.text(crossPrice+' ');
-       insLegendCurcode.text(currency);
-       insLegendCurcode.attr('class', 'legend-curcode');
-       tdCrossPrice.attr('class', 'legend-last-cross-price text-right');
-       tdCrossPrice.append(spanCrossPrice);
-       tdCrossPrice.append(insLegendCurcode);
-       oneRow.append(tdCrossPrice);
+        /* Cross Price */
+        var spanCrossPrice = $('<span></span>');
+        var tdCrossPrice = $('<td></td>');
+        var insLegendCurcode = $('<ins></ins>');
 
-       html += oneRow.outerHTML();
-   });
+        spanCrossPrice.text(crossPrice + ' ');
+        insLegendCurcode.text(currency);
+        insLegendCurcode.attr('class', 'legend-curcode');
+        tdCrossPrice.attr('class', 'legend-last-cross-price text-right');
+        tdCrossPrice.append(spanCrossPrice);
+        tdCrossPrice.append(insLegendCurcode);
+        oneRow.append(tdCrossPrice);
 
-   var table    = $('#global-average-data-table');
-   table.children('tbody').html(html);
+        html += oneRow.outerHTML();
+    });
 
-   $('#legend-total-volume').text(allVolumeBtc.toFixed(2));
+    var table = $('#global-average-data-table');
+    table.children('tbody').html(html);
 
-}
 
+    $('#legend-global-trading-volume').text(allVolumeBtc)
+        .formatCurrency({   symbol: 'USD',
+                            colorize: true,
+                            positiveFormat: '%n',
+                            negativeFormat: '-%s%n',
+                            roundToDecimalPlace: 2
+                            });
+};
 
 
 var renderLegend = function(currencyCode){
@@ -289,7 +299,7 @@ var renderLegend = function(currencyCode){
         }
     });
 
-    if (legendClickStatus == currencyCode){
+    if (selectedFiatCurrency == currencyCode){
         document.title = API_data[currencyCode].global_averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
     }
 
@@ -299,9 +309,9 @@ var renderLegend = function(currencyCode){
     var last = currencyData.averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
 
-    var bitCoinInputVal  = $('#bitcoin-input').toNumber().val();
-    var fiatCalcVaule = (last * bitCoinInputVal).toFixed(2);
-    $('#currency-input').val(fiatCalcVaule);
+    var bitCoinInputValue = $('#bitcoin-input').toNumber().val();
+    calc_renderBitcoin(bitCoinInputValue, $.cookie('base'));
+    calc_renderFiat(last * bitCoinInputValue);
 
     $('#global-last').html(currencyData.averages.last.toFixed(config.precision));
     $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
@@ -316,10 +326,11 @@ var renderLegend = function(currencyCode){
     }
 
 
-    $('#legend-ignored-table').hide();
-    if ($(API_data.ignored_exchanges).countObj() > 0) {
-        $('#legend-ignored-table').show();
+    if ($(API_data.ignored_exchanges).countObj() == 0) {
+        $('#show-ignored').hide();
+    } else {
         $('#legend-ignored-table tr[id^="legend-ignored-slot"]').hide();
+
         var index = 0;
         for (var exchange_name in API_data.ignored_exchanges) {
             $('#legend-ignored-slot'+index+'-name').text(exchange_name);
@@ -327,6 +338,7 @@ var renderLegend = function(currencyCode){
             $('#legend-ignored-slot'+index+'-box').show();
             index++;
         }
+        $('#ignored_count').text(index);
     }
 
     $('.legend-currency-code-update').html(fiatCurrencies[currencyCode]['name']);
@@ -354,7 +366,7 @@ var renderLegend = function(currencyCode){
 
     $('#set-global-average-currency').attr('title','click to set '+currencyCode+' as your global average default currency');
     $('#set-global-average-currency').attr('href','#'+currencyCode);
-}
+};
 
 var renderSmallChart = function(currencyCode){
     $('#small-chart').html('');
@@ -366,8 +378,8 @@ var renderSmallChart = function(currencyCode){
         return;
     }
 
-     var  global_avg_url   = config.apiHistoryIndexUrl;
-     var data_24h_URL = global_avg_url + currencyCode + '/24h_global_average_sliding_window.csv';
+    var global_avg_url = config.apiHistoryIndexUrl;
+    var data_24h_URL = global_avg_url + currencyCode + '/24h_global_average_sliding_window.csv';
 
 	$.get(data_24h_URL, function(csv){
         var data = [];
@@ -394,7 +406,7 @@ var renderSmallChart = function(currencyCode){
 			chart : {
                 animation : {
                     duration: 10000
-                                },
+                },
                 events: {
                     click: function(e){
                         window.location.href = 'charts.htm#'+currencyCode;
@@ -425,7 +437,7 @@ var renderSmallChart = function(currencyCode){
 
 		});
     });
-}
+};
 
 $(function(){
     $('#show-more-currencies-in-global-avg-table').click(function(e){
@@ -438,10 +450,47 @@ $(function(){
             $('.secondary-global-avg-row').addClass('hidden');
             $.cookie("global-average-table", 'hidden');
             $('#show-more-currencies-in-global-avg-table').text('more');
-
         }
         return false;
     });
 
-})
+    $('#show-ignored').click(function(e){
+        e.preventDefault();
+        $('#legend-ignored-table').show();
+        $(this).hide();
+        return false;
+    });
 
+    callAPI();
+
+    setInterval(callAPI, config.refreshRate);
+    setInterval(renderSecondsSinceUpdate, 5000);
+
+    renderMajorCurrencies();
+    renderSecondaryCurrencies();
+
+    $('#legend-block').click(function(event){
+        event.stopPropagation();
+    });
+
+    $('.currency-navigation li').click(currencyNavigation);
+
+    $('#nomillibit-button').click(changeBaseButtonClick);
+
+    $('#currency-input').blur(function() {
+        calc_renderFiat($(this).toNumber().val());
+    });
+    $('#currency-input').focus(function() {
+        $('#currency-input').val($(this).toNumber().val());
+    });
+    $('#currency-input').keyup(calc_fiatInputKeyup);
+
+    $('#bitcoin-input').blur(function() {
+        calc_renderBitcoin($(this).toNumber().val(), $.cookie('base'));
+    });
+    $('#bitcoin-input').focus(function() {
+        $('#bitcoin-input').val($(this).toNumber().val());
+    });
+    $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
+
+});

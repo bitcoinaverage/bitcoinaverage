@@ -708,13 +708,8 @@ footer .row{
     font-size: 25px;
     box-shadow: inset 1px 1px 6px #d0d0d0;
 }
-.bitcoin-calc #bitcoin-input{
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 5px;
-}
-.bitcoin-calc #currency-input{
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
+.bitcoin-calc #bitcoin-input, .bitcoin-calc #currency-input{
+    border-radius: 5px;
 }
 
 .bitcoin-calc__wrapper {
@@ -739,4 +734,8 @@ footer .row{
 
 .currency-header {
     padding: 0;
+}
+
+#legend-ignored-table{
+    display: none;
 }

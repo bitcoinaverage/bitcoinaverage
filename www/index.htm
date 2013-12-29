@@ -12,22 +12,23 @@
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="css/lightbox.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/jquery.cookie.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/highstock.js"></script>
+    <script type="text/javascript" src="js/lib/highstock.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.formatCurrency.js"></script>
+    <script type="text/javascript" src="js/lib/lightbox.js"></script>
+
 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/fiat_data.js"></script>
-    <script type="text/javascript" src="js/general_functions.js"></script>
+    <script type="text/javascript" src="js/helpers.js"></script>
+    <script type="text/javascript" src="js/currency_shared_render.js"></script>
     <script type="text/javascript" src="js/homepage.js"></script>
-    <script type="text/javascript" src="js/format-currency/jquery.formatCurrency-1.4.0.pack.js"></script>
-
-    <script src="js/lightbox-2.6.min.js"></script>
-    <link href="css/lightbox.css" rel="stylesheet" />
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -91,8 +92,8 @@
             <button type="button" class="btn btn-default btn-xs ignore_btn" id="nomillibit-button">switch to ฿1 base</button>
         </div>
         <div class="row show-grid currency-box col-md-12">
-            <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12" id="currency-navtabs"></ul>
-            <ul class="currency-navigation secondary-currency-switch col-md-4  col-sm-12 col-xs-12"></ul>
+            <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
+            <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-12 col-xs-12"></ul>
             <div class="more-currencies col-md-3 col-xs-12 col-sm-12">
                 <a>more currencies</a>
             </div>
@@ -109,24 +110,25 @@
         <div class="bitcoin-calc">
 
             <div class="bitcoin-field__wrapper">
-                <input type="text" value="1.000" id="bitcoin-input" style="color: black;">
-                <div class="label bitcoin-label">m฿</div>
+                <input type="text" value="1" id="currency-input">
+                <div id="bitcoin-calc-currency-label"class="label currency-label">USD</div>
             </div>
 
             <div class="equals visible-lg">=</div>
 
             <div class="bitcoin-field__wrapper">
-                <input type="text" value="1" id="currency-input">
-                <div id="bitcoin-calc-currency-label"class="label currency-label">USD</div>
+                <input type="text" value="1" id="bitcoin-input" style="color: black;">
+                <div class="label bitcoin-label">m฿</div>
             </div>
+
         </div>
     </div>
      <!-- bitcoin calc [end]-->
 
     <!--new section start -->
     <div class="tab_content col-md-offset-3 tab-content" id="legend-block">
-        <div class="col-md-2"></div>
-        <div class="col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-0">
+        <div class="col-md-1"></div>
+        <div class="col-sm-9 col-sm-offset-1 col-md-5 col-md-offset-0">
             <table width="100%;" cellpadding="0" cellspacing="0" class="table table-striped table-condensed table-hover" style="font-size:14px;">
                 <thead>
                 <tr>
@@ -180,22 +182,50 @@
                     <td class="" width="25%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                     <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 </tr>
+                <tr id="legend-24h-avg-container">
+                    <td class="legend-name" colspan="2"><span class="legend-curcode">USD</span> 24h global sliding average</td>
+                    <td class="legend-rate text-right" width="44%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
+                </tr>
                 <tr>
-                    <td class="legend-name" colspan="2"><span>total market volume (24h)</span></td>
-                    <td class="legend-rate text-right" width="44%"><span class="">&#3647;</span> <span id="legend-total-volume"></span></td>
+                    <td class="legend-name" colspan="2"><span class="legend-curcode">USD</span> trading volume (24h)</td>
+                    <td class="legend-rate text-right" width="44%"><span class="">&#3647;</span> <span id="legend-currency-trading-volume"></span></td>
                 </tr>
                 <tr>
                     <td class="legend-name" colspan="2"><span class="legend-curcode">USD</span> trading volume share</td>
                     <td class="legend-rate text-right" width="44%"><span id="legend-global-volume-percent"></span>%</td>
                 </tr>
-                <tr id="legend-24h-avg-container">
-                    <td class="legend-name" colspan="2"><span>24h global sliding average</span></td>
-                    <td class="legend-rate text-right" width="44%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
+                <tr>
+                    <td class="legend-name" colspan="2">total market volume (24h)</td>
+                    <td class="legend-rate text-right" width="44%"><span class="">&#3647;</span> <span id="legend-global-trading-volume"></span></td>
                 </tr>
                 </tbody>
             </table>
+
             <div id="small-chart"></div>
-            <p id="charts-link"><a href="/charts.htm">price history chart for <span class="legend-curcode"></span></a></p>
+        </div>
+
+
+        <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-6 col-lg-offset-0">
+            <div>
+                <h3>Currency markets</h3>
+            </div>
+            <table class="table table-striped table-condensed table-hover" id="global-average-data-table">
+                <thead>
+                <tr>
+                    <th style="width: 25%;">currency</th>
+                    <th style="width: 15%;">volume %</th>
+                    <th style="width: 15%;" class="text-right">volume &#3647;</th>
+                    <th style="width: 25%;" class="text-center" colspan="2">last price</th>
+                    <th style="width: 20%;" class="text-right">cross price</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <a href="#" id="show-more-currencies-in-global-avg-table">all currencies</a>
+
+            <a href="#" id="show-ignored" class="text-right"><span id="ignored_count"></span> exchange(s) ignored</a>
+
             <table class="table table-striped table-condensed table-hover" width="100%;" id="legend-ignored-table">
                 <thead>
                 <tr>
@@ -247,26 +277,6 @@
                 </tbody>
             </table>
         </div>
-
-
-        <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0 col-lg-6 col-lg-offset-0">
-            <div>
-                <h3>Markets</h3>
-            </div>
-            <table class="table table-striped table-condensed table-hover" id="global-average-data-table">
-                <thead>
-                <tr>
-                    <th style="width: 20%">currency</th>
-                    <th style="width: 20%">volume %</th>
-                    <th style="width: 15%">volume &#3647;</th>
-                    <th style="width: 20%;" class="text-right">last price</th>
-                    <th style="width: 25%;" class="text-right">cross price</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <a href="#" id="show-more-currencies-in-global-avg-table">all currencies</a>
-        </div>
     </div>
 </div><!-- /container -->
 
@@ -277,7 +287,9 @@
                 <section>
                     <h4><span>Support Us</span></h4>
                         <span style="font-size: 80%">
-                            <a href="bitcoin:1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T?label=Donation%20to%20BitcoinAverage.com">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</a> &nbsp;&nbsp;&nbsp;<a href="img/donation_url_qrcode.png" data-lightbox="image-1" title="BitcoinAverage.com donation address">qr code</a>
+                            <a href="bitcoin:1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T?label=Donation%20to%20BitcoinAverage.com">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a href="img/donation_url_qrcode.png" data-lightbox="image-1" title="BitcoinAverage.com donation address">qr code</a>
                         </span>
                 </section>
             </div>
@@ -324,7 +336,10 @@
         </div>
     </div>
 </footer><!-- /footer -->
-<script src="js/google-analytics.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-42688472-1', 'bitcoinaverage.com');ga('send', 'pageview');
+</script>
 </body>
 </html>
 
