@@ -3,13 +3,13 @@ var renderMajorCurrencies = function(){
     var majorCurrencies = config.currencyOrder.slice(0, config.majorCurrencies);
     var currencyIndex = 0;
     var primaryCurrencyList = '';
-    for (var majorCurrency in majorCurrencies) {
-        var currencyCode = majorCurrencies[majorCurrency];
+    for (var majorCurrencyIndex in majorCurrencies) {
+        var currencyCode = majorCurrencies[majorCurrencyIndex];
         var li = $('<li></li>');
         var link = $('<a></a>');
         link.attr('href', '#'+currencyCode);
         li.attr('id', 'slot'+ currencyIndex +'-link');
-        li.attr('data-currencycode', majorCurrency);
+        li.attr('data-currencycode', currencyCode);
         link.text(currencyCode);
         li.append(link);
         currencyIndex++;
@@ -23,13 +23,13 @@ var renderSecondaryCurrencies = function (){
     var secondaryCurrencies = config.currencyOrder.slice(config.majorCurrencies+1);
     var currencyIndex = config.majorCurrencies + 1;
     var secondaryCurrenciesList = '';
-    for (var secondaryCurrency in secondaryCurrencies) {
-        var currencyCode = majorCurrencies[secondaryCurrency];
+    for (var secondaryCurrencyIndex in secondaryCurrencies) {
+        var currencyCode = secondaryCurrencies[secondaryCurrencyIndex];
         var li = $('<li></li>');
         var link = $('<a></a>');
         link.attr('href', '#'+currencyCode);
         li.attr('id', 'slot'+ currencyIndex +'-link');
-        li.attr('data-currencycode', secondaryCurrency);
+        li.attr('data-currencycode', currencyCode);
         link.text(currencyCode);
         li.append(link);
         currencyIndex++;
@@ -63,6 +63,8 @@ var currencyNavigation = function(event){
 
         renderLegend(curCode);
         renderSmallChart(curCode);
+
+        $('#global-last').html(API_data[curCode].global_averages.bid.toFixed(config.precision));
 
         // add active class to selected currency
         $('.currency-navigation li').removeClass('active');

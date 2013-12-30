@@ -6,7 +6,8 @@ import csv
 import json
 
 import bitcoinaverage as ba
-from bitcoinaverage.config import DEC_PLACES
+import bitcoinaverage.server
+from bitcoinaverage.config import DEC_PLACES, CURRENCY_LIST
 
 
 def write_24h_csv(currency_code, current_data, current_timestamp):
@@ -47,7 +48,7 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
             csvwriter.writerow(row)
 
 
-def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  current_timestamp):
+def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_code,  current_timestamp):
 
     current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, '24h_global_average_sliding_window.csv')
     current_24h_sliding_data = []
@@ -73,20 +74,19 @@ def write_24h_global_average(fiat_data_all , currency_data_all, currency_code,  
                                                           '%Y-%m-%d %H:%M:%S').timetuple())
 
     if current_timestamp - last_recorded_timestamp > 60*2:
-
         row = []
+        #-60 added because otherwise the timestamp will point to the the beginning of next period and not current
         timestamp = datetime.datetime.strftime(datetime.datetime.fromtimestamp(current_timestamp-60), '%Y-%m-%d %H:%M:%S')
-        currency_global_average   =  currency_data_all[currency_code]['global_averages']['last']
+        currency_global_average = currency_data_all[currency_code]['global_averages']['last']
         row.append(timestamp)
 
-        cross_rate_divisor = float(fiat_data_all[currency_code]['rate']);
+        cross_rate_divisor = float(fiat_data_all[currency_code]['rate'])
 
-        for currency in currency_data_all:
+        for currency in CURRENCY_LIST:
             cross_rate_dividend = float(fiat_data_all[currency]['rate'])
-        #-60 added because otherwise the timestamp will point to the the beginning of next period and not current
-            currency_volume  =  currency_data_all[currency]['averages']['total_vol']
-            currency_average =  currency_data_all[currency]['averages']['last']
-            currency_rate    =   cross_rate_dividend / cross_rate_divisor #this is cross rate in USD
+            currency_volume = currency_data_all[currency]['averages']['total_vol']
+            currency_average = currency_data_all[currency]['averages']['last']
+            currency_rate = cross_rate_dividend / cross_rate_divisor #this is cross rate in USD
             row.append(currency_volume)
             row.append(currency_average)
             row.append(currency_rate)
@@ -193,7 +193,9 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
                 continue
             last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
 
-    if current_timestamp - last_recorded_timestamp > 86400*2: #60*60*24
+    current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
+    last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
+    if current_timestamp_date != last_recorded_timestamp_date:
         current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
         price_high = 0.0
         price_low = 0.0
@@ -263,7 +265,10 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
     if len(current_volumes_data) > 0:
         last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
                                                            '%Y-%m-%d %H:%M:%S').timetuple())
-    if current_timestamp - last_recorded_timestamp > 86400*2: #60*60*24; *2 because we check since start of yesterday till end of today
+
+    current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
+    last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
+    if current_timestamp_date != last_recorded_timestamp_date:
         for exchange in currency_data['exchanges']:
             if exchange not in exchanges_order:
                 exchanges_order.append(exchange)

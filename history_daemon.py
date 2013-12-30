@@ -34,11 +34,11 @@ for currency_code in CURRENCY_LIST:
         os.makedirs(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code))
 
 while True:
-    ticker_url     = ba.server.API_INDEX_URL+'all'
-    fiat_data_url  = ba.server.API_INDEX_URL+'fiat_data'
+    ticker_url = ba.server.API_INDEX_URL+'all'
+    fiat_data_url = ba.server.API_INDEX_URL+'fiat_data'
     try:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
-        fiat_data_all    = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
+        fiat_data_all = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
     except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
         time.sleep(2)
         continue
@@ -48,15 +48,13 @@ while True:
     current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%a, %d %b %Y %H:%M:%S')
     current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
 
-    for currency_code in current_data_all:
+    for currency_code in CURRENCY_LIST:
         history_writers.write_24h_csv(currency_code, current_data_all[currency_code]['averages'], current_data_timestamp)
         history_writers.write_1mon_csv(currency_code, current_data_timestamp)
         history_writers.write_forever_csv(currency_code, current_data_all[currency_code]['averages']['total_vol'], current_data_timestamp)
         history_writers.write_volumes_csv(currency_code, current_data_all[currency_code], current_data_timestamp)
 
-        #write global average 24th sliding window
-        history_writers.write_24h_global_average(fiat_data_all, current_data_all,  currency_code, current_data_timestamp)
-
+        history_writers.write_24h_global_average_csv(fiat_data_all, current_data_all,  currency_code, current_data_timestamp)
 
     current_time = time.time()
     timestamp = email.utils.formatdate(current_time)

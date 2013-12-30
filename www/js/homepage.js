@@ -49,13 +49,6 @@ var renderAll = function(result, status, responseObj){
 
     API_data = result;
 
-    $('#currency-sidebar li[id^="slot"] a').hide();
-
-    for(var slotNum in config.currencyOrder){
-        var currencyCode = config.currencyOrder[slotNum];
-        renderRates(currencyCode, result[currencyCode], slotNum);
-    }
-
     renderSecondsSinceUpdate();
 
     if (!firstRenderDone) {
@@ -87,70 +80,6 @@ var renderAll = function(result, status, responseObj){
     }
 };
 
-
-var lastGlobalAvgValue = 0;
-var renderRates = function(currencyCode, currencyData, slotNum){
-    $('#slot'+slotNum+'-link').attr('data-currencycode', currencyCode);
-
-    var slotLegendLink_a = $('#slot'+slotNum+'-link a');
-    slotLegendLink_a.text(currencyCode);
-    slotLegendLink_a.attr('href', '#'+currencyCode);
-    slotLegendLink_a.attr('title', fiatCurrencies[currencyCode]['name']);
-    slotLegendLink_a.show();
-
-
-    $('#slot'+slotNum+'-box').attr('data-currencycode', currencyCode);
-    $('#slot'+slotNum+'-box').attr('title', fiatCurrencies[currencyCode]['name']);
-    $('#slot'+slotNum+'-curcode').text(currencyCode);
-
-    var dataChanged = false;
-    dataChanged = (dataChanged || $('#slot'+slotNum+'-last').text() != currencyData.averages.last);
-    dataChanged = (dataChanged || $('#slot'+slotNum+'-ask').text() != currencyData.averages.ask);
-    dataChanged = (dataChanged || $('#slot'+slotNum+'-bid').text() != currencyData.averages.bid);
-    $('#slot'+slotNum+'-last').text(currencyData.averages.last.toFixed(config.precision));
-    $('#slot'+slotNum+'-ask').text(currencyData.averages.ask.toFixed(config.precision));
-    $('#slot'+slotNum+'-bid').text(currencyData.averages.bid.toFixed(config.precision));
-
-
-    var global_avg_currency = $.cookie('global-average');
-    if ((typeof global_avg_currency != 'undefined' && currencyCode == global_avg_currency)
-        || (typeof global_avg_currency == 'undefined' && currencyCode == 'USD') ){
-
-        $('#global-last').html(currencyData.global_averages.last.toFixed(config.precision));
-        $('#global-curcode').html(currencyCode);
-        $('#global-bid').html(currencyData.global_averages.bid.toFixed(config.precision));
-        $('#global-ask').html(currencyData.global_averages.ask.toFixed(config.precision));
-
-        if (lastGlobalAvgValue == 0) {
-            lastGlobalAvgValue = currencyData.global_averages.last;
-        } else {
-            if (currencyData.global_averages.last > lastGlobalAvgValue) {
-                $('#global-avg-arrowup').show();
-                $('#global-avg-arrowdown').hide();
-            } else if (currencyData.global_averages.last < lastGlobalAvgValue) {
-                $('#global-avg-arrowup').hide();
-                $('#global-avg-arrowdown').show();
-            }
-            lastGlobalAvgValue = currencyData.global_averages.last;
-        }
-    }
-
-    if (dataChanged) {
-        var flashingFigures = $('#slot'+slotNum+'-last, #slot'+slotNum+'-ask, #slot'+slotNum+'-bid');
-        flashingFigures.css({ 'opacity' : 0.5});
-        flashingFigures.animate({ 'opacity' : 1 }, 500);
-    }
-}
-
-var orderByVolume = function(a, b) {
-    if (a['global_averages']['volume_percent'] == b['global_averages']['volume_percent'] ) {
-        return 0;
-    } else if (a['global_averages']['volume_percent'] < b['global_averages']['volume_percent']) {
-        return 1;
-    }
-    return -1;
-};
-
 var renderMarketsData = function(apiData, currency){
     var globalAverageData = JSON.parse(JSON.stringify(apiData));
     globalAverageData = $.map(globalAverageData, function(value, index) {
@@ -158,7 +87,14 @@ var renderMarketsData = function(apiData, currency){
         return [value];
     });
     globalAverageData.splice(-2, 2); // delete timestamp and ignored_exchanges from data
-    globalAverageData.sort(orderByVolume);
+    globalAverageData.sort(function(a, b) {
+        if (a['global_averages']['volume_percent'] == b['global_averages']['volume_percent'] ) {
+            return 0;
+        } else if (a['global_averages']['volume_percent'] < b['global_averages']['volume_percent']) {
+            return 1;
+        }
+        return -1;
+    });
 
     var html='';
     var allVolumeBtc = 0;
