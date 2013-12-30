@@ -74,14 +74,13 @@ def write_fiat_rates_config():
             ValueError):
         return None
 
-    for currency_code in ba.config.CURRENCY_LIST:
+    for currency_code in currencies_names:
         try:
-            currency_data_list[currency_code] = {'name': str(currencies_names[currency_code]),
+            currency_data_list[currency_code] = {'name': currencies_names[currency_code],
                                                  'rate': str(currencies_rates['rates'][currency_code]),
                                                  }
         except (KeyError, TypeError):
             return None
-
 
     config_string = js_config_template
     config_string = config_string.replace('$FIAT_CURRENCIES_DATA$', json.dumps(currency_data_list))
@@ -265,13 +264,21 @@ def write_api_index_files():
     api_ticker_index = {}
     api_ticker_index['all'] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + API_FILES['ALL_FILE']
     api_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'])
-    for currency_code in ba.config.CURRENCY_LIST:
-        api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
-        if not os.path.exists(os.path.join(api_ticker_folder_path, currency_code)):
-            os.makedirs(os.path.join(api_ticker_folder_path, currency_code))
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
+    try:
+        fiat_exchange_rates_url = ba.server.API_INDEX_URL + 'fiat_data'
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            result = urllib2.urlopen(urllib2.Request(url=fiat_exchange_rates_url, headers=API_REQUEST_HEADERS)).read()
+            fiat_currencies_list = json.loads(result)
+
+        for currency_code in fiat_currencies_list:
+            api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
+            if not os.path.exists(os.path.join(api_ticker_folder_path, currency_code)):
+                os.makedirs(os.path.join(api_ticker_folder_path, currency_code))
+        with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
+            index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+    except (KeyError,ValueError,socket.error,simplejson.decoder.JSONDecodeError,urllib2.URLError,httplib.BadStatusLine,CallTimeoutException):
+        pass
 
     #api exchanges index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'])):

@@ -11,7 +11,7 @@ import simplejson
 import socket
 
 from bitcoinaverage.bitcoinchart_fallback import getData
-from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD
+from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD, CURRENCY_LIST
 from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException, NoVolumeException
 from bitcoinaverage.helpers import write_log
 from bitcoinaverage.server import BITCOIN_DE_API_KEY
@@ -492,19 +492,8 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
         ticker = json.loads(response)
 
     result = {}
-    result = _lbcParseCurrency(result, ticker, 'USD')
-    result = _lbcParseCurrency(result, ticker, 'EUR')
-    result = _lbcParseCurrency(result, ticker, 'GBP')
-    result = _lbcParseCurrency(result, ticker, 'CAD')
-    result = _lbcParseCurrency(result, ticker, 'NOK')
-    result = _lbcParseCurrency(result, ticker, 'CZK')
-    result = _lbcParseCurrency(result, ticker, 'NZD')
-    result = _lbcParseCurrency(result, ticker, 'ZAR')
-    result = _lbcParseCurrency(result, ticker, 'SEK')
-    result = _lbcParseCurrency(result, ticker, 'SGD')
-    result = _lbcParseCurrency(result, ticker, 'AUD')
-    result = _lbcParseCurrency(result, ticker, 'BRL')
-    result = _lbcParseCurrency(result, ticker, 'CHF')
+    for currencyCode in CURRENCY_LIST:
+        result = _lbcParseCurrency(result, ticker, currencyCode)
 
     return result
 

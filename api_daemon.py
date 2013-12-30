@@ -14,7 +14,7 @@ import bitcoinaverage.server
 from bitcoinaverage import api_parsers
 from bitcoinaverage.config import API_QUERY_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
-from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, createNogoxApi, calculateGlobalAverages
+from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, createNogoxApi, calculateAllGlobalAverages
 
 if ba.server.PROJECT_PATH == '':
     ba.server.PROJECT_PATH = include_path
@@ -48,7 +48,8 @@ while True:
                                                   total_currency_volumes_bid)
     calculated_average_rates = calculateAverageRates(exchanges_rates, calculated_volumes)
 
-    calculated_global_average_rates, calculated_global_volume_percents = calculateGlobalAverages(calculated_average_rates, total_currency_volumes)
+    calculated_global_average_rates, calculated_global_volume_percents = calculateAllGlobalAverages(calculated_average_rates,
+                                                                                                    total_currency_volumes)
 
     (calculated_average_rates_formatted,
      calculated_volumes_formatted,
