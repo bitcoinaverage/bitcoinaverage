@@ -65,15 +65,14 @@ def calculateGlobalAverages(calculated_average_rates, total_currency_volumes):
 
         rate_from = Decimal(fiat_exchange_rates[currency_from]['rate'])
         rate_to = Decimal(fiat_exchange_rates[currency_to]['rate'])
-        return (rate_from / rate_to).quantize(DEC_PLACES)
+        return (rate_from / rate_to)
 
     fiat_exchange_rates_url = server.API_INDEX_URL + 'fiat_data'
     try:
         with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
             result = urllib2.urlopen(urllib2.Request(url=fiat_exchange_rates_url, headers=API_REQUEST_HEADERS)).read()
             fiat_exchange_rates = json.loads(result)
-    except (
-            KeyError,
+    except (KeyError,
             ValueError,
             socket.error,
             simplejson.decoder.JSONDecodeError,
@@ -81,7 +80,6 @@ def calculateGlobalAverages(calculated_average_rates, total_currency_volumes):
             httplib.BadStatusLine,
             CallTimeoutException):
         return {}, {}
-
 
     global_averages = {}
     global_volume = DEC_PLACES
@@ -93,7 +91,7 @@ def calculateGlobalAverages(calculated_average_rates, total_currency_volumes):
                                         }
     global_volume_percents = {}
     for currency in CURRENCY_LIST:
-        global_volume_percents[currency] = (total_currency_volumes[currency] / global_volume * Decimal(100)).quantize(DEC_PLACES)
+        global_volume_percents[currency] = (total_currency_volumes[currency] / global_volume * Decimal(100))
 
     for currency_local in CURRENCY_LIST:
         for currency_to_convert in CURRENCY_LIST:
@@ -102,7 +100,6 @@ def calculateGlobalAverages(calculated_average_rates, total_currency_volumes):
                                                    * global_volume_percents[currency_to_convert] / Decimal(100)
                                                    * getCurrencyCrossRate(currency_local, currency_to_convert) )
                                                         )
-
             global_averages[currency_local]['bid'] = ( global_averages[currency_local]['bid']
                                                 + (calculated_average_rates[currency_to_convert]['bid']
                                                    * global_volume_percents[currency_to_convert] / Decimal(100)
@@ -113,10 +110,9 @@ def calculateGlobalAverages(calculated_average_rates, total_currency_volumes):
                                                    * global_volume_percents[currency_to_convert] / Decimal(100)
                                                    * getCurrencyCrossRate(currency_local, currency_to_convert) )
                                                         )
-
-            global_averages[currency_local]['last'] = global_averages[currency_local]['last'].quantize(DEC_PLACES)
-            global_averages[currency_local]['bid'] = global_averages[currency_local]['bid'].quantize(DEC_PLACES)
-            global_averages[currency_local]['ask'] = global_averages[currency_local]['ask'].quantize(DEC_PLACES)
+        global_averages[currency]['last'] = global_averages[currency]['last'].quantize(DEC_PLACES)
+        global_averages[currency]['bid'] = global_averages[currency]['bid'].quantize(DEC_PLACES)
+        global_averages[currency]['ask'] = global_averages[currency]['ask'].quantize(DEC_PLACES)
 
     return global_averages, global_volume_percents
 

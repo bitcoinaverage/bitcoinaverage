@@ -151,7 +151,7 @@ var orderByVolume = function(a, b) {
     return -1;
 };
 
-var renderGlobalAverageData = function(apiData, currency){
+var renderMarketsData = function(apiData, currency){
     var globalAverageData = JSON.parse(JSON.stringify(apiData));
     globalAverageData = $.map(globalAverageData, function(value, index) {
         value['currency'] = index;
@@ -181,7 +181,7 @@ var renderGlobalAverageData = function(apiData, currency){
         var pad = "00000";
         volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
 
-        var lastPrice = item['global_averages']['last'].toFixed(config.precision);
+        var lastPrice = item['averages']['last'].toFixed(config.precision);
         var crossPrice = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
         crossPrice = crossPrice.toFixed(config.precision);
         var cookieHideLink = $.cookie("global-average-table");
@@ -277,7 +277,7 @@ var renderGlobalAverageData = function(apiData, currency){
 
 
 var renderLegend = function(currencyCode){
-    renderGlobalAverageData(API_data, currencyCode);
+    renderMarketsData(API_data, currencyCode);
 
     $('#global-curcode').text(currencyCode);
 
@@ -306,17 +306,15 @@ var renderLegend = function(currencyCode){
     $('.legend-curcode').text(currencyCode);
     $('.bitcoin-calc .currency-label').text(currencyCode);
 
-    var last = currencyData.averages.last.toFixed(config.precision);
+    var last = currencyData.global_averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
 
     var bitCoinInputValue = $('#bitcoin-input').toNumber().val();
     calc_renderBitcoin(bitCoinInputValue, $.cookie('base'));
     calc_renderFiat(last * bitCoinInputValue);
 
-    $('#global-last').html(currencyData.averages.last.toFixed(config.precision));
-    $('#legend-bid').html(currencyData.averages.bid.toFixed(config.precision));
-    $('#legend-ask').html(currencyData.averages.ask.toFixed(config.precision));
-    //$('#legend-total-volume').html(currencyData.averages.total_vol.toFixed(2));
+    $('#legend-bid').html(currencyData.global_averages.bid.toFixed(config.precision));
+    $('#legend-ask').html(currencyData.global_averages.ask.toFixed(config.precision));
 
     if (typeof currencyData.averages['24h_avg'] != 'undefined') {
         $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(config.precision));
