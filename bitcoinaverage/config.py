@@ -215,7 +215,8 @@ EXCHANGE_LIST = {
                                          },
                     'btcturk': {'ticker_url': 'https://www.btcturk.com/api/ticker',
                                          },
-
+                    'bitonic': {'ticker_url': 'https://bitonic.nl/api/price',
+                                         },
 
 
 
