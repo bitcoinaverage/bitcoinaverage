@@ -401,18 +401,20 @@ $(function(){
 
     renderMajorCurrencies();
     renderSecondaryCurrencies();
+    renderCalcCurrencySwitch();
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
     });
 
-    $('.currency-navigation li').click(currencyNavigation);
-
+    // currency navigation (primary currency, secondary currency, currency tabs on markets page
+    $(document).on('click', '.currency-navigation li', currencyNavigation );
     $('#nomillibit-button').click(changeBaseButtonClick);
 
     $('#currency-input').blur(function() {
         calc_renderFiat($(this).toNumber().val());
     });
+
     $('#currency-input').focus(function() {
         $('#currency-input').val($(this).toNumber().val());
     });
@@ -425,5 +427,14 @@ $(function(){
         $('#bitcoin-input').val($(this).toNumber().val());
     });
     $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
+
+    $('#bitcoin-calc-currency-label').click(function(){
+        $('.calculator-currency-switch').show();
+        return false;
+    });
+
+    $('.calculator-currency-switch li').click(function(){
+        $(this).parent().hide();
+    });
 
 });

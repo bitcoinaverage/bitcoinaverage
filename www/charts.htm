@@ -25,6 +25,8 @@
 
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/fiat_data.js"></script>
+    <script type="text/javascript" src="js/helpers.js"></script>
+    <script type="text/javascript" src="js/currency_shared_render.js"></script>
 
     <script type="text/javascript">
 
@@ -80,6 +82,10 @@ var getNewLocation = function(currentLocation){
 }
 
 $(function(){
+    renderMajorCurrencies();
+    renderSecondaryCurrencies();
+
+
     var currentHash = window.location.hash;
     currentHash = currentHash.replace('#', '');
     currentHash = currentHash.split('-');
@@ -127,25 +133,22 @@ $(function(){
             slotLegendLink.addClass('active');
         }
         slotLegendLink.show();
-        slotLegendLink.mouseover(function(event){
-            var curCode = $(this).data('currencycode');
-            $('#currency-sidebar li').removeClass('active');
-            $(this).addClass('active');
-        });
-        slotLegendLink.mouseout(function(event){
-            $('#currency-sidebar li').removeClass('active');
-        });
-        slotLegendLink.click(function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            currencyCode = $(this).data('currencycode');
-            var currentLocation = document.location.href;
-             var newLocation = getNewLocation(currentLocation);
-            window.location.replace(newLocation);
-
-            $('#'+chartMode+'-chart').click();
-        });
     }
+
+    $('.currency-navigation li').click(function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        $('.currency-navigation li').removeClass('active');
+        $(this).addClass('active');
+
+        currencyCode = $(this).data('currencycode');
+        var currentLocation = document.location.href;
+        var newLocation = getNewLocation(currentLocation);
+        window.location.replace(newLocation);
+
+        $('#'+chartMode+'-chart').click();
+    });
+
 
     $('#averages-chart').click(function(event){
         event.stopPropagation();
@@ -444,7 +447,16 @@ var getRandomArbitrary = function(min, max) {
     <div id="main-container" class="container">
 
         <div class="row" style="margin-top: 25px;" >
-            <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0"></div>
+
+            <div style="border-top: 1px solid #dadada" class="row show-grid currency-box col-md-12">
+                <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
+                <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
+                <div class="more-currencies col-md-3 col-xs-12 col-sm-12">
+                    <a>more currencies</a>
+                </div>
+            </div>
+
+            <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0 v-offset4"></div>
         </div>
         <div class="row text-center">
             <div style="font-weight: bold;">
@@ -455,19 +467,6 @@ var getRandomArbitrary = function(min, max) {
             </div>
         </div>
     </div> <!-- container end -->
-
-        <div id="currency-sidebar">
-            <ul class="dropdown-menu" role="menu" data-spy="affix" data-offset-top="200">
-                <li class="menu_title">&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-bitcoin"></i>&nbsp;to</li>
-                <li class="divider"></li>
-                <li id="slot0-link"><a href=""></a></li>
-                <li id="slot1-link"><a href=""></a></li>
-                <li id="slot2-link"><a href=""></a></li>
-                <li id="slot3-link"><a href=""></a></li>
-                <li id="slot4-link"><a href=""></a></li>
-                <li id="slot5-link"><a href=""></a></li>
-            </ul>
-         </div>
 
     <footer class="footer clearfix">
         <div class="container">

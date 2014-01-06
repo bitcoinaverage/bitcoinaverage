@@ -85,7 +85,7 @@
     <div class="col-md-12 text-center currency-header">
         <div class="strip active">
             <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
-                <span id="global-last" class="last-main" itemprop="price">385</span>
+                <span id="global-last" class="last-main" itemprop="price">385</span><span class="price-gap">&nbsp;</span>
                 <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
             </span>
             <br/>
@@ -93,7 +93,7 @@
         </div>
         <div class="row show-grid currency-box col-md-12">
             <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
-            <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-12 col-xs-12"></ul>
+            <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
             <div class="more-currencies col-md-3 col-xs-12 col-sm-12">
                 <a>more currencies</a>
             </div>
@@ -111,7 +111,8 @@
 
             <div class="bitcoin-field__wrapper">
                 <input type="text" value="1" id="currency-input">
-                <div id="bitcoin-calc-currency-label"class="label currency-label">USD</div>
+                <div id="bitcoin-calc-currency-label" class="label currency-label">USD</div>
+                <ul class="calculator-currency-switch currency-navigation col-md-8 col-sm-8 col-xs-8"></ul>
             </div>
 
             <div class="equals visible-lg">=</div>
@@ -224,7 +225,7 @@
 
             <a href="#" id="show-more-currencies-in-global-avg-table">all currencies</a>
 
-            <a href="#" id="show-ignored" class="text-right"><span id="ignored_count"></span> exchange(s) ignored</a>
+            <a href="#" id="show-ignored" class="text-right pull-right"><span id="ignored_count"></span> exchange(s) ignored</a>
 
             <table class="table table-striped table-condensed table-hover" width="100%;" id="legend-ignored-table">
                 <thead>

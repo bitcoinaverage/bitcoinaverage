@@ -1,3 +1,84 @@
+
+.v-offset  {
+    margin-top: 2px !important
+}
+.v-offset1 {
+    margin-top: 5px !important;
+}
+.v-offset2 {
+    margin-top: 10px !important;
+}
+.v-offset3 {
+    margin-top: 15px !important;
+}
+.v-offset4 {
+    margin-top: 30px !important;
+}
+.v-offset5 {
+    margin-top: 40px !important;
+}
+.v-offset6 {
+    margin-top: 60px !important;
+}
+.v-offset7 {
+    margin-top: 80px !important;
+}
+.v-offset8 {
+    margin-top: 100px !important;
+}
+.v-offset9 {
+    margin-top: 150px !important;
+}
+
+.calculator-currency-switch {
+    overflow: hidden;
+    position: absolute;
+    z-index: 999;
+    padding: 0;
+    top: 75px;
+    right: 32px;
+    border-radius: 2px;
+    border-left: 1px solid #cccccc;
+
+    display: none;
+}
+.calculator-currency-switch li {
+    width: 112px;
+    cursor: pointer;
+    background: #d0d0d0;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #ECECEC),
+        color-stop(1, #DEDEDE)
+    );
+    background-image: -o-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: -moz-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: -webkit-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: -ms-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: linear-gradient(to bottom, #ECECEC 0%, #DEDEDE 100%);
+
+    height: 47px;
+    color: #4F4F4F;
+    line-height: 44px;
+    border-right: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+    border-top: 1px solid #cccccc;
+
+    font-size: 30px;
+
+    font-weight: normal;
+    text-align: center;
+    float: left;
+}
+
+.calculator-currency-switch li:hover,
+.calculator-currency-switch li.active{
+    background: #428bca;
+    color: #fff;
+}
+
 /** Media Styling **/
 
 @media (max-width: 480px){
@@ -34,67 +115,7 @@
     }
 }
 
-/*@media (max-width: 768px){*/
-/*}*/
-/*@media (min-width: 768px){*/
-/*}*/
-/*@media (max-width: 991px){*/
 
-    /*#currency-navtabs > li.active, li.active:hover{*/
-        /*border-color: #fff !important;*/
-        /*border-bottom-color: #ddd !important;*/
-    /*}*/
-    /*#currency-sidebar, #currency-sidebar>ul{*/
-        /*display: block !important;*/
-        /*position: relative !important;*/
-        /*top: auto !important;*/
-        /*bottom: auto !important;*/
-        /*left: auto !important;*/
-        /*right: auto !important;*/
-        /*margin: auto !important;*/
-        /*height: auto !important;*/
-        /*border-radius: 0;*/
-        /*z-index: -1 !important;*/
-    /*}*/
-    /*#currency-sidebar>ul{*/
-        /*display: block !important;*/
-        /*min-width: auto;*/
-        /*float: none;*/
-        /*text-align: center;*/
-    /*}*/
-    /*#currency-sidebar>ul li{*/
-        /*display: inline-block;*/
-    /*}*/
-    /*.footer {*/
-        /*height: 89px !important;*/
-    /*}*/
-    /*#main-container{*/
-        /*margin: 0 auto 0 !important;*/
-    /*}*/
-/*}*/
-/*@media (min-width: 1200px){*/
-    /*.dropdown-menu2 {*/
-        /*top:95px !important;*/
-    /*}*/
-/*}*/
-
-/*@media (min-width: 960px) {*/
-    /*.primary-currency-switch {*/
-       /*width: 380px;*/
-       /*float: left;*/
-        /*margin-left: 15px;*/
-    /*}*/
-    /*.secondary-currency-switch {*/
-        /*width: 315px;*/
-        /*float: left;*/
-        /*margin-left: 18%;*/
-    /*}*/
-/*}*/
-/*@media (min-width: 400px) and (max-width: 959px){*/
-    /*.more-currencies {*/
-        /*width: 100%;*/
-    /*}*/
-/*}*/
 
 /** Main CSS **/
 
@@ -150,6 +171,10 @@ ul{
     color: #428BCA;
     width: 250px;
 
+}
+.price-gap {
+    font-size: 4.3em;
+    font-weight: 600;
 }
 .curcode-main{
     font-size: 4.3em;
@@ -310,19 +335,14 @@ ul{
     background: #f7f7f7;
     overflow: hidden;
     margin: 0 !important;
-
+    text-align: center;
 }
+
 .currency-box.market-page{
     border-top: 1px solid #dadada;
 }
-.currency-box .primary-currency-switch,
-.currency-box .secondary-currency-switch {
 
-}
-.currency-box .secondary-currency-switch ul {
-    padding: 0;
-    margin-bottom: 0;
-}
+
 .currency-box .primary-currency-switch{
     padding: 15px 0;
     text-align: left;
@@ -332,11 +352,8 @@ ul{
     .currency-box  .primary-currency-switch {
         text-align: center;
     }
-
 }
 
-.currency-box .secondary-currency-switch{
-}
 .currency-box .primary-currency-switch li:hover,
 .currency-box .secondary-currency-switch li:hover {
     cursor: pointer;
@@ -355,12 +372,20 @@ ul{
     font-size: 1.4em;
     padding: 0 3% 0;
 }
+
 .currency-box .secondary-currency-switch {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 5px;
     height: 50px;
     overflow: hidden;
+}
+
+@media (max-width: 970px){
+    .secondary-currency-switch {
+        float: none !important;
+        display: inline-block !important;
+    }
 }
 .currency-box .secondary-currency-switch li {
     display: inline-block;
@@ -651,7 +676,7 @@ footer .row{
 
 
 .bitcoin-calc {
-    overflow: hidden;
+    position: relative;
     float: right;
     padding: 20px 15px 0;
 }
@@ -698,6 +723,11 @@ footer .row{
     border-top-right-radius: 4px;
     margin-left: 5px
 }
+
+.bitcoin-calc .bitcoin-field__wrapper .label:hover {
+    cursor: pointer;
+}
+
 .bitcoin-calc .bitcoin-field__wrapper input {
     border: 1px solid #cccccc;
     height: 47px;
@@ -714,6 +744,7 @@ footer .row{
 
 .bitcoin-calc__wrapper {
     padding-bottom: 75px;
+
 }
 
 .currency-navtabs {

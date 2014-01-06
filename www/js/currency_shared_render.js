@@ -18,6 +18,25 @@ var renderMajorCurrencies = function(){
     $('.primary-currency-switch').html(primaryCurrencyList);
 };
 
+var renderCalcCurrencySwitch = function() {
+    var allCurrencies  = config.currencyOrder;
+    var currencyIndex;
+    var allCurrenciesLength = allCurrencies.length;
+
+    var currencySwitchTable = '';
+
+    for( currencyIndex = 0; currencyIndex < allCurrenciesLength; currencyIndex++) {
+        var currentCurrency = allCurrencies[currencyIndex];
+        var currencyInner = $('<li></li>');
+
+        currencyInner.attr('data-currencycode', currentCurrency );
+        currencyInner.text(currentCurrency);
+        currencySwitchTable += currencyInner.outerHTML();
+    }
+
+    $('.calculator-currency-switch').html(currencySwitchTable);
+}
+
 // Render secondary currencies menu
 var renderSecondaryCurrencies = function (){
     var secondaryCurrencies = config.currencyOrder.slice(config.majorCurrencies+1);
@@ -34,9 +53,8 @@ var renderSecondaryCurrencies = function (){
         li.append(link);
         currencyIndex++;
         secondaryCurrenciesList += li.outerHTML();
-        if( (currencyIndex-6) % 6 == 0) {
-            secondaryCurrenciesList += '<br/>';
-        }
+
+
     }
     $('.secondary-currency-switch').html(secondaryCurrenciesList);
 };
@@ -68,6 +86,7 @@ var currencyNavigation = function(event){
 
         // add active class to selected currency
         $('.currency-navigation li').removeClass('active');
+
         $('.currency-navigation').find("[data-currencycode='" + curCode + "']").addClass('active');
 
 

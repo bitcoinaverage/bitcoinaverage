@@ -28,6 +28,7 @@
     <script type="text/javascript" src="js/fiat_data.js"></script>
     <script type="text/javascript" src="js/helpers.js"></script>
     <script type="text/javascript" src="js/markets.js"></script>
+
     <script type="text/javascript" src="js/currency_shared_render.js"></script>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -123,13 +124,13 @@
                     </li>
 
                 </ul>
-                <button type="button" class="btn btn-default btn-xs ignore_btn market-page" id="nomillibit-button">switch to ฿1 base</button>
+                <button type="button" class="btn btn-default btn-xs ignore_btn market-page" id="nomillibit-button">switch to ?1 base</button>
             </div>
 
         </div>
             <div class="row show-grid currency-box col-md-12">
                 <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
-                <ul class="currency-navigation secondary-currency-switch col-md-4  col-sm-12 col-xs-12"></ul>
+                <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
                 <div class="more-currencies col-md-3 col-xs-12 col-sm-12">
                     <a>more currencies</a>
                 </div>
@@ -138,8 +139,9 @@
 
             <div class="bitcoin-calc markets-page">
                 <div class="bitcoin-field__wrapper">
-                    <input type="text" value="1.000" id="currency-input">
-                    <div class="label currency-label">USD</div>
+                    <input type="text" value="1" id="currency-input">
+                    <div id="bitcoin-calc-currency-label" class="label currency-label">USD</div>
+                    <ul class="calculator-currency-switch currency-navigation col-md-8 col-sm-8 col-xs-8"></ul>
                 </div>
 
                 <div class="equals visible-lg">=</div>
