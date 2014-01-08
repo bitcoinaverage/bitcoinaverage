@@ -355,7 +355,7 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
             with open(os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], 'all'), 'w+') as api_global_ticker_all_file:
                 api_global_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
         except IOError as error:
-            #pass on Windows if there is currency with code ALL and  
+            #pass on Windows if there is currency with code ALL and
             pass
 
         # /exchanges/all
