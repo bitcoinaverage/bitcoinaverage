@@ -106,7 +106,6 @@ var renderMarketsData = function(apiData, currency){
         if (currencyCode == currency){
             $('#legend-currency-trading-volume').html(volumeBtc)
                                                 .formatCurrency({   symbol: '',
-                                                    colorize: true,
                                                     positiveFormat: '%n',
                                                     negativeFormat: '-%s%n',
                                                     roundToDecimalPlace: 2
@@ -156,7 +155,6 @@ var renderMarketsData = function(apiData, currency){
         var tdVolumeBtc = $('<td></td>');
         spanVolumeBtc.text(volumeBtc);
         spanVolumeBtc.formatCurrency({   symbol: '',
-                            colorize: true,
                             positiveFormat: '%n',
                             negativeFormat: '-%s%n',
                             roundToDecimalPlace: 2
@@ -212,6 +210,7 @@ var renderMarketsData = function(apiData, currency){
 
 
 var renderLegend = function(currencyCode){
+    $('.highcharts-container').show();
     renderMarketsData(API_data, currencyCode);
 
     $('#global-curcode').text(currencyCode);
@@ -373,6 +372,7 @@ var renderSmallChart = function(currencyCode){
 };
 
 $(function(){
+
     $('#show-more-currencies-in-global-avg-table').click(function(e){
         e.preventDefault();
         if ($('.secondary-global-avg-row').is(':hidden')){
@@ -401,15 +401,13 @@ $(function(){
 
     renderMajorCurrencies();
     renderSecondaryCurrencies();
-    renderCalcCurrencySwitch();
+    renderAllCurrencies();
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
     });
 
-    // currency navigation (primary currency, secondary currency, currency tabs on markets page
-    $(document).on('click', '.currency-navigation li', currencyNavigation );
-    $('#nomillibit-button').click(changeBaseButtonClick);
+
 
     $('#currency-input').blur(function() {
         calc_renderFiat($(this).toNumber().val());
@@ -426,15 +424,54 @@ $(function(){
     $('#bitcoin-input').focus(function() {
         $('#bitcoin-input').val($(this).toNumber().val());
     });
+
     $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
 
-    $('#bitcoin-calc-currency-label').click(function(){
-        $('.calculator-currency-switch').show();
+
+    // currency navigation (primary currency, secondary currency, currency tabs on markets page
+    $(document).on('click', '.currency-navigation li', currencyNavigation );
+    $('#nomillibit-button').click(changeBaseButtonClick);
+
+    $(document).on('click', '.all-currency-navigation li', currencyNavigation );
+
+    // hide calc currency list by esc
+    $(document).keyup( function(e){
+        if(e.which == 27){
+            $('.calculator-currency-switch').slideUp();
+        }
+    } );
+
+
+    // hide calc currency list by document click
+    $(document).click(function(){
+         $('.calculator-currency-switch').slideUp();
+    });
+
+    // hide or show calc currency list by calc currency label click
+    $('#bitcoin-calc-currency-label').click(function(e){
+        e.stopPropagation();
+        if ($('.calculator-currency-switch').is(':visible')){
+            $('.calculator-currency-switch').slideUp();
+        } else {
+            $('.calculator-currency-switch').slideDown();
+        }
+    });
+
+    // collapsing or expanding extended currencies list
+    $('.more-currencies').click(function(){
+        var extendedCurrencyNavList = $('.all-currency-navigation');
+        var moreCurrenciesBtn = $(this);
+        if( extendedCurrencyNavList.is(':visible')) {
+            extendedCurrencyNavList.slideUp( "slow", function() {
+                moreCurrenciesBtn.text('more currencies');
+            });
+        } else {
+            extendedCurrencyNavList.slideDown( "slow", function() {
+                moreCurrenciesBtn.text('less currencies');
+            });
+        }
         return false;
     });
 
-    $('.calculator-currency-switch li').click(function(){
-        $(this).parent().hide();
-    });
 
 });

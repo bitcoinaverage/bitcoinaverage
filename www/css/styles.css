@@ -1,3 +1,40 @@
+@font-face {
+    font-family: 'TitilliumWeb SemiBold';
+    src: url('fonts/TitilliumWeb-SemiBold.eot');
+    src: local('?'), url('fonts/TitilliumWeb-SemiBold.woff') format('woff'), url('fonts/TitilliumWeb-SemiBold.ttf') format('truetype'), url('fonts/TitilliumWeb-SemiBold.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TitilliumWeb Regular';
+    src: url('fonts/TitilliumWeb-Regular.eot');
+    src: local('?'), url('fonts/TitilliumWeb-Regular.woff') format('woff'), url('fonts/TitilliumWeb-Regular.ttf') format('truetype'), url('fonts/TitilliumWeb-Regular.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TitilliumWeb Bold';
+    src: url('fonts/TitilliumWeb-Bold.eot');
+    src: local('?'), url('fonts/TitilliumWeb-Bold.woff') format('woff'), url('fonts/TitilliumWeb-Bold.ttf') format('truetype'), url('fonts/TitilliumWeb-Bold.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Titillium Web Thin';
+    src: url('fonts/TitilliumWeb-Thin.eot');
+    src: local('?'), url('fonts/TitilliumWeb-Thin.woff') format('woff'), url('fonts/TitilliumWeb-Thin.ttf') format('truetype'), url('fonts/TitilliumWeb-Thin.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Titillium Web Light';
+    src: url('fonts/TitilliumWeb-Light.eot');
+    src: local('?'), url('fonts/TitilliumWeb-Light.woff') format('woff'), url('fonts/TitilliumWeb-Light.ttf') format('truetype'), url('fonts/TitilliumWeb-Light.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
 .v-offset  {
     margin-top: 2px !important
@@ -29,6 +66,11 @@
 .v-offset9 {
     margin-top: 150px !important;
 }
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
 
 .calculator-currency-switch {
     overflow: hidden;
@@ -36,13 +78,18 @@
     z-index: 999;
     padding: 0;
     top: 75px;
-    right: 32px;
+    left: 170px;
     border-radius: 2px;
-    border-left: 1px solid #cccccc;
-
     display: none;
 }
-.calculator-currency-switch li {
+
+.primary-currency-switch-calc {
+    width: 110px;
+    overflow: hidden;
+    padding: 0;
+    float: left;
+}
+.primary-currency-switch-calc li {
     width: 112px;
     cursor: pointer;
     background: #d0d0d0;
@@ -59,8 +106,8 @@
     background-image: -ms-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
     background-image: linear-gradient(to bottom, #ECECEC 0%, #DEDEDE 100%);
 
-    height: 47px;
-    color: #4F4F4F;
+    height: 48px;
+
     line-height: 44px;
     border-right: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc;
@@ -70,11 +117,66 @@
 
     font-weight: normal;
     text-align: center;
-    float: left;
 }
 
-.calculator-currency-switch li:hover,
-.calculator-currency-switch li.active{
+.primary-currency-switch-calc li a {
+    color: #4F4F4F;
+}
+.primary-currency-switch-calc li:hover a ,
+.primary-currency-switch-calc li.active a{
+    color: #fff;
+    text-decoration: none;
+}
+
+.primary-currency-switch-calc li:hover,
+.primary-currency-switch-calc li.active{
+    background: #428bca;
+    color: #fff;
+}
+
+.secondary-currency-switch-calc  {
+    overflow: hidden;
+    padding: 0;
+    float: left;
+    border-top: 1px solid #cccccc;
+}
+.secondary-currency-switch-calc  li {
+    cursor: pointer;
+    width: 50px;
+    height: 24px;
+    background: #d0d0d0;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #ECECEC),
+        color-stop(1, #DEDEDE)
+    );
+    background-image: -o-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: -moz-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: -webkit-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: -ms-linear-gradient(bottom, #ECECEC 0%, #DEDEDE 100%);
+    background-image: linear-gradient(to bottom, #ECECEC 0%, #DEDEDE 100%);
+
+    border: 1px solid #cccccc;
+    border-top: 0;
+    font-size: 14px;
+
+    font-weight: normal;
+    text-align: center;
+}
+
+.secondary-currency-switch-calc  li a {
+    color: #4F4F4F;
+}
+.secondary-currency-switch-calc  li:hover a ,
+.secondary-currency-switch-calc  li.active a{
+    color: #fff;
+    text-decoration: none;
+}
+
+.secondary-currency-switch-calc  li:hover,
+.secondary-currency-switch-calc  li.active{
     background: #428bca;
     color: #fff;
 }
@@ -155,7 +257,7 @@ ul{
     margin-bottom: 0;
 }
 
-.last{
+.currency-navtabs .last-price{
     font-size: 27px;
     color: #428BCA;
     margin-bottom: 10px;
@@ -189,16 +291,24 @@ ul{
 .slot-global-bid_ask{font-size: 1.5em; font-weight: bold; }
 .slot-global-bid_ask-titles, .other_values{ color: #999; }
 
-.submenu {color: #428BCA !important; }
+.submenu {
+    color: #428BCA !important;
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 15px;
+}
 .navbar-nav > li > a:hover {text-decoration: underline !important; }
 
-.logo {color: #428BCA !important; }
+.logo {
+    color: #428BCA !important;
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 19px;
+}
 
 .slogan {
-    font-size: small;
     margin: auto !important;
     line-height: auto !important;
-    font-weight: bold !important;
+    font-family: "Titillium Web Thin", sans-serif;
+    font-size: 14px;
 }
 
 .legend ul{
@@ -270,6 +380,10 @@ ul{
     overflow: hidden;
     margin-bottom: 50px;
 }
+
+.legend-currency-code-update {
+    line-height: 1;
+}
 /*Currency Arrows*/
 #usd-arrowup, #usd-arrowdown{
     font-size:0.8em;
@@ -303,19 +417,27 @@ ul{
 }
 .more-currencies {
     display: none;
+    color: #428bca;
 }
+
 @media (max-width: 969px) and (min-width: 320px) {
     .more-currencies {
-       padding: 10px 0;
+        margin-top: 20px;
+        float: right;
         text-align: center;
+        padding: 0;
+        padding-bottom: 10px;
+        display: block;
     }
 }
 @media (min-width: 970px){
     .more-currencies {
-        margin-top: 34px;
+        margin-top: 20px;
         float: right;
-        text-align: right;
+        text-align: center;
         padding: 0;
+        padding-bottom: 10px;
+        display: block;
     }
 }
 
@@ -347,6 +469,24 @@ ul{
     padding: 15px 0;
     text-align: left;
     margin-bottom: 0;
+}
+.all-currencies {
+    background: #f7f7f7;
+    padding: 10px;
+}
+.all-currencies li {
+    display: inline-block;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    width: 45px;
+}
+.all-currencies li.active {
+    background: #428bca;
+    color: #fff;
+    text-align: center;
+}
+.all-currencies li.active a{
+    color: #fff;
 }
 @media (max-width: 970px){
     .currency-box  .primary-currency-switch {
@@ -449,10 +589,10 @@ footer .row{
     top: 0;
     bottom: 0;
     padding-top: 35px;
-    font-size: 10px;
     text-align: center;
-    vertical-align: middle;
     position: absolute;
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 14px;
     z-index: -1;
 }
 
@@ -493,9 +633,14 @@ footer .row{
 }
 
 .footer h4 span {
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 15px;
     border-bottom: 3px solid #DADADA /*3399F3*/;
 }
-
+.footer h4 span a{
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 15px;
+}
 #section-connect a:hover{
     text-decoration: none;
 }
@@ -768,5 +913,264 @@ footer .row{
 }
 
 #legend-ignored-table{
+    display: none;
+}
+
+.cloud {
+    background: url('../img/cloud.png') no-repeat;
+    width: 490px;
+    margin: 0 auto 0;
+    height: 187px;
+}
+.cloud h1 {
+    font-weight: normal;
+    text-align: left;
+    padding-top: 88px;
+    padding-right: 15px;
+    margin: 0 auto;
+    width: 215px;
+    font-family: 'TitilliumWeb Bold', sans-serif;
+    font-size: 22px;
+    color: #fff;
+}
+
+.brackets-list {
+    overflow: hidden;
+    padding: 0;
+    margin: 72px 0 72px 12px;
+}
+
+.brackets-list li.ellipsis {
+    margin-left: 37px;
+    margin-right: 15px;
+}
+
+.brackets-list li {
+    width: 41px;
+    height: 22px;
+    display: block;
+    float: left;
+    margin-left: 55px;
+    text-align: center;
+}
+.brackets-list li:last-child {
+    margin: 0;
+}
+.brackets-list li:first-child {
+    margin-left: 0;
+}
+
+.brackets-list .bracket {
+    width: 147px;
+    background: url('../img/bracer.png');
+}
+
+.exchanges-list {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+.exchanges-list li {
+    font-size: 27px;
+    font-family: 'Titillium Web Thin', sans-serif;
+    float: left;
+    line-height: 1;
+    margin-left: 25px;
+}
+.exchanges-list li.first {
+    color: #428bca;
+    margin-left: 0;
+}
+.exchanges-list.dotted li {
+    width: 171px;
+
+}
+.exchanges-list li.second {
+    color: #10b114;
+}
+.exchanges-list li.last {
+    color: #a09e9a;
+}
+
+.exchanges-list li span{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 23px;
+    padding-left: 10px;
+}
+
+.insane-circles {
+    overflow: hidden;
+    padding: 0;
+    margin: 55px 0;
+}
+
+.insane-circles .circle:first-child,
+.insane-circles .circle:last-child {
+    margin-left: 0;
+}
+
+.insane-circles .circle {
+    float: left;
+    margin-left: 67px;
+}
+
+.insane-circles .circle:last-child {
+    margin: 0;
+}
+.insane-circles .circle.ellipsis {
+    margin-right: 38px;
+    margin-left: 0;
+}
+.insane-circles .circle .insane-circle{
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 32px;
+    text-align: center;
+    line-height: 38px;
+}
+.insane-circles .insane-circle {
+    background: url('../img/insane-circles.png') no-repeat;
+    width:  42px;
+    height: 42px;
+}
+.insane-circle__wrapper {
+    overflow: hidden;
+    float: left;
+}
+.insane-circles .insane-circle,
+.insane-circles .circle-amount {
+    float: left;
+}
+
+.insane-circles .circle-amount {
+    font-size: 24px;
+    font-family: 'Titillium Web', sans-serif;
+    margin-left: 10px;
+}
+.insane-circles .insane-arrow {
+    background: url('../img/insane-arrow.png') no-repeat 0 50%;
+    width: 27px;
+    height: 42px;
+    float: left;
+    margin:0 8px;
+}
+.insane-circles .circle-amount.blue {
+    color: #428bca;
+}
+.insane-circles .circle-amount.green {
+    color: #10b114;
+}
+.insane-circles .circle-amount.gray {
+    color: #a09e9a;
+}
+
+.insane-circles .insane-circle.blue {
+    background-position: 0 0;
+    color: #428bca;
+}
+.insane-circles .insane-circle.green {
+    background-position: -42px 0;
+    color: #10b114;
+}
+.insane-circles .insane-circle.gray {
+    background-position: -84px 0;
+    color: #a09e9a;
+}
+.big-awesome-bracket {
+    background: url('../img/big-bracket.png') no-repeat;
+    width: 602px;
+    height: 22px;
+    margin: 35px 0;
+}
+
+.double-insane-circle {
+    overflow: hidden;
+    width: 130px;
+    margin: 30px auto;
+    padding-left: 10px;
+}
+
+.double-insane-circle .double-circle,
+.double-insane-circle .double-circle-amount {
+    font-size: 32px;
+    color: #428bca;
+    font-family: 'Titillium Web', sans-serif;
+    float: left;
+}
+
+.double-circle {
+    background: url('../img/double-insane-circle.png') no-repeat;
+    width: 58px;
+    line-height: 54px;
+    height: 58px;
+    text-align: center;
+}
+.double-insane-circle .double-circle-amount {
+    line-height: 54px;
+    padding-left: 10px;
+}
+.content .section:first-child {
+    padding-bottom: 25px;
+    border-top: 0;
+}
+.content .section {
+    border-top: 1px dotted #989496;
+    padding-bottom: 10px;
+}
+.content .section p {
+    color: #565656;
+    font-size: 14px;
+    font-family: 'Tahoma', sans-serif;
+    padding-top: 8px;
+    line-height: 17px;
+    padding-bottom: 2px;
+    margin: 0;
+}
+.world-currency {
+    margin-bottom: 290px;
+}
+.world-currency p {
+    margin: 35px 0;
+}
+
+.content .currency-box.explain-page {
+    border: 1px solid #dadada;
+    margin-bottom: 290px !important;
+}
+.content .currency-box.explain-page .currency-navigation li a{
+    color: #000;
+}
+.content .currency-box.explain-page .currency-navigation li.active a{
+    color: #fff;
+}
+
+.content .currency-box.explain-page .currency-navigation{
+    margin: 0;
+}
+
+.content .currency-box.explain-page .primary-currency-switch{
+    padding: 10px 0;
+}
+.section {
+    overflow: hidden;
+}
+.section .section__left-col {
+    width: 640px;
+    float: left;
+    padding-left: 16px;
+
+}
+
+.section .section__right-col {
+    width: 390px;
+    float: right;
+}
+.content.explain-page {
+    width: 1050px;
+    margin-top: 40px;
+}
+.section__left-col.exchanges{
+    margin-top: 35px;
+}
+.all-currency-navigation {
     display: none;
 }

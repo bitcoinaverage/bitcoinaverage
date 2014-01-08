@@ -83,6 +83,7 @@
 
 
     <div class="col-md-12 text-center currency-header">
+
         <div class="strip active">
             <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
                 <span id="global-last" class="last-main" itemprop="price">385</span><span class="price-gap">&nbsp;</span>
@@ -95,9 +96,12 @@
             <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
             <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
             <div class="more-currencies col-md-3 col-xs-12 col-sm-12">
-                <a>more currencies</a>
+                more currencies
             </div>
+            <div class="clear"></div>
         </div>
+
+        <ul class="all-currency-navigation all-currencies currency-navigation"></ul>
     </div>
 
 
@@ -112,7 +116,12 @@
             <div class="bitcoin-field__wrapper">
                 <input type="text" value="1" id="currency-input">
                 <div id="bitcoin-calc-currency-label" class="label currency-label">USD</div>
-                <ul class="calculator-currency-switch currency-navigation col-md-8 col-sm-8 col-xs-8"></ul>
+
+                 <div class="calculator-currency-switch  col-md-4 col-sm-4 col-xs-4">
+                     <ul class="primary-currency-switch-calc currency-navigation"></ul>
+                     <ul class="secondary-currency-switch-calc currency-navigation"></ul>
+                 </div>
+
             </div>
 
             <div class="equals visible-lg">=</div>
@@ -128,12 +137,12 @@
 
     <!--new section start -->
     <div class="tab_content col-md-offset-3 tab-content" id="legend-block">
-        <div class="col-md-1"></div>
+        <!--div class="col-md-1"></div-->
         <div class="col-sm-9 col-sm-offset-1 col-md-5 col-md-offset-0">
             <table width="100%;" cellpadding="0" cellspacing="0" class="table table-striped table-condensed table-hover" style="font-size:14px;">
                 <thead>
                 <tr>
-                    <th width="40%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
+                    <th width="25%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td valign="top" class="legend-heading" style="padding-left: 0px; margin-left: 0px">
@@ -149,7 +158,7 @@
                             </tr>
                         </table>
                     </th>
-                    <th width="25%" valign="top" style="padding:0px 0 16px;  border-bottom:none; text-align:center;"><span style="font-size:15px;">
+                    <th width="40%" valign="top" style="padding:0px 0 16px 20px;  border-bottom:none; text-align:left;"><span style="font-size:15px;">
                     <strong style=" display: block; line-height:9px;">
                         <small style="color:#999999;">ask</small>
                         <span id="legend-ask"></span>

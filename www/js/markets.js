@@ -77,7 +77,7 @@ var renderCurrencyTabs = function(){
         var slotLast = $('<span></span>');
         slotLast.attr('id', 'slot'+currencyIndex+'-last');
         slotLast.text(last);
-        slotLast.attr('class', 'last');
+        slotLast.attr('class', 'last-price');
         slotLast.attr('itemprop','price');
 
         //currency code
@@ -105,7 +105,7 @@ var renderCurrencyTabs = function(){
         slotAsk.attr('title', 'ask');
 
         bidAsk.append(slotBid);
-        bidAsk.append('<span>&nbsp;&nbsp; / &nbsp;&nbsp;</span>');
+        bidAsk.append('<span>&nbsp;/&nbsp;</span>');
         bidAsk.append(slotAsk);
 
         li.append(h2);
@@ -253,6 +253,9 @@ var renderLegend = function(currencyCode){
 
 
     $('#legend-ignored-table').hide();
+
+
+
     if ($(API_data.ignored_exchanges).countObj() > 0) {
         $('#legend-ignored-table').show();
         $('#legend-ignored-table tr[id^="legend-ignored-slot"]').hide();
@@ -299,7 +302,6 @@ var renderLegend = function(currencyCode){
         $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
         $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'])
                                                .formatCurrency({symbol: '',
-                                                                colorize: true,
                                                                 positiveFormat: '%n',
                                                                 negativeFormat: '-%s%n',
                                                                 roundToDecimalPlace: 2
@@ -422,7 +424,7 @@ $(function(){
 
     renderMajorCurrencies();
     renderSecondaryCurrencies();
-    renderCalcCurrencySwitch();
+    renderAllCurrencies();
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
@@ -448,13 +450,50 @@ $(function(){
     });
     $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
 
-    $('#bitcoin-calc-currency-label').click(function(){
-        $('.calculator-currency-switch').show();
-        return false;
+
+    // currency navigation (primary currency, secondary currency, currency tabs on markets page
+    $(document).on('click', '.currency-navigation li', currencyNavigation );
+    $('#nomillibit-button').click(changeBaseButtonClick);
+
+    $(document).on('click', '.all-currency-navigation li', currencyNavigation );
+
+    // hide calc currency list by esc
+    $(document).keyup( function(e){
+        if(e.which == 27){
+            $('.calculator-currency-switch').slideUp();
+        }
+    } );
+
+
+    // hide calc currency list by document click
+    $(document).click(function(){
+        $('.calculator-currency-switch').slideUp();
     });
 
-    $('.calculator-currency-switch li').click(function(){
-        $(this).parent().hide();
+    // hide or show calc currency list by calc currency label click
+    $('#bitcoin-calc-currency-label').click(function(e){
+        e.stopPropagation();
+        if ($('.calculator-currency-switch').is(':visible')){
+            $('.calculator-currency-switch').slideUp();
+        } else {
+            $('.calculator-currency-switch').slideDown();
+        }
+    });
+
+    // collapsing or expanding extended currencies list
+    $('.more-currencies').click(function(){
+        var extendedCurrencyNavList = $('.all-currency-navigation');
+        var moreCurrenciesBtn = $(this);
+        if( extendedCurrencyNavList.is(':visible')) {
+            extendedCurrencyNavList.slideUp( "slow", function() {
+                moreCurrenciesBtn.text('more currencies');
+            });
+        } else {
+            extendedCurrencyNavList.slideDown( "slow", function() {
+                moreCurrenciesBtn.text('less currencies');
+            });
+        }
+        return false;
     });
 
 });

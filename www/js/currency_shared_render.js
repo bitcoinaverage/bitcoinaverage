@@ -16,26 +16,41 @@ var renderMajorCurrencies = function(){
         primaryCurrencyList += li.outerHTML();
     }
     $('.primary-currency-switch').html(primaryCurrencyList);
+    $('.primary-currency-switch-calc').html(primaryCurrencyList);
 };
 
-var renderCalcCurrencySwitch = function() {
-    var allCurrencies  = config.currencyOrder;
-    var currencyIndex;
-    var allCurrenciesLength = allCurrencies.length;
+var renderAllCurrencies = function() {
 
-    var currencySwitchTable = '';
+    var generalCurrencies = config.currencyOrder;
 
-    for( currencyIndex = 0; currencyIndex < allCurrenciesLength; currencyIndex++) {
-        var currentCurrency = allCurrencies[currencyIndex];
-        var currencyInner = $('<li></li>');
+    var generalCurrenciesLength = generalCurrencies.length;
+    var currencyIndex = generalCurrenciesLength;
+    var allCurrenciesList = '';
+    $.getJSON(config.apiIndexUrl+'ticker/global/all', function(data){
+        var items = [];
+        $.each(data, function(key, val){
+            if ( $.inArray(key, generalCurrencies) == -1 && key != 'timestamp'){
+                var currencyInner = $('<li></li>');
+                currencyInner.attr('id', 'slot' + currencyIndex + '-link');
+                currencyInner.attr('data-currencycode', key );
 
-        currencyInner.attr('data-currencycode', currentCurrency );
-        currencyInner.text(currentCurrency);
-        currencySwitchTable += currencyInner.outerHTML();
-    }
 
-    $('.calculator-currency-switch').html(currencySwitchTable);
+                var currencyLink = $('<a></a>')
+                currencyLink.attr('href', '#'+key);
+                currencyLink.text(key);
+
+                currencyInner.append(currencyLink);
+                allCurrenciesList += currencyInner.outerHTML();
+                currencyIndex++;
+
+            }
+        });
+        $('.all-currencies').html(allCurrenciesList);
+    });
 }
+
+
+
 
 // Render secondary currencies menu
 var renderSecondaryCurrencies = function (){
@@ -57,8 +72,21 @@ var renderSecondaryCurrencies = function (){
 
     }
     $('.secondary-currency-switch').html(secondaryCurrenciesList);
-};
+    $('.secondary-currency-switch-calc').html(secondaryCurrenciesList);
 
+};
+var isCurrencyBelongsToPrimaryList = function() {
+{
+    // if currency belongs to primary curreny list
+    if( $.inArray(selectedFiatCurrency, config.currencyOrder) != -1 ){
+        return true;
+    }
+    // if currency belongs to extended currency list
+    else {
+        return false;
+    }
+}
+}
 var renderSecondsSinceUpdate = function(){
     var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
     if (seconds < 120) {
@@ -79,12 +107,20 @@ var currencyNavigation = function(event){
     if (selectedFiatCurrency == false || selectedFiatCurrency != curCode) {
         selectedFiatCurrency = curCode;
 
-        renderLegend(curCode);
-        renderSmallChart(curCode);
-
-        $('#global-last').html(API_data[curCode].global_averages.bid.toFixed(config.precision));
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+        if ( isPrimaryCurrency ){
+            $('.highcharts-container').show();
+            renderLegend(curCode);
+            renderSmallChart(curCode);
+            $('.calculator-currency-switch').slideUp();
+            $('#global-last').html(API_data[curCode].global_averages.bid.toFixed(config.precision));
+        }
+        else {
+            renderLegendForExtendedCurrencyList(curCode);
+        }
 
         // add active class to selected currency
+        $('.all-currency-navigation li').removeClass('active');
         $('.currency-navigation li').removeClass('active');
 
         $('.currency-navigation').find("[data-currencycode='" + curCode + "']").addClass('active');
@@ -99,6 +135,7 @@ var currencyNavigation = function(event){
         window.location.replace(newLocation);
     }
 };
+
 
 var changeBaseButtonClick = function(event){
     var button = $(this);
@@ -140,8 +177,14 @@ var changeBaseButtonClick = function(event){
 
     callAPI(function(result){
         renderAll(result);
-        renderLegend(selectedFiatCurrency);
-        renderSmallChart(selectedFiatCurrency);
+
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+        if(isPrimaryCurrency){
+            renderLegend(selectedFiatCurrency);
+            renderSmallChart(selectedFiatCurrency);
+        } else {
+            renderLegendForExtendedCurrencyList(selectedFiatCurrency);
+        }
     });
 
     var selectedSlotNum = 0;
@@ -206,6 +249,49 @@ var calc_bitcoinInputKeyup = function(e){
     }
 };
 
+var renderLegendForExtendedCurrencyList = function(currencyCode){
+    $('.highcharts-container').hide();
+    $.getJSON(config.apiIndexUrl+'ticker/global/all', function(data){
+        var currencyCodeData =  data[currencyCode];
+
+        $('.legend-curcode').text(currencyCode);
+        $('.bitcoin-calc .currency-label').text(currencyCode);
+
+        var last = currencyCodeData.last.toFixed(config.precision);
+        var bid = currencyCodeData.bid.toFixed(config.precision);
+        var ask = currencyCodeData.ask.toFixed(config.precision);
+
+        $('#legend-last').html(last);
+
+        var bitCoinInputValue = $('#bitcoin-input').toNumber().val();
+
+        calc_renderBitcoin(bitCoinInputValue, $.cookie('base'));
+        calc_renderFiat(last * bitCoinInputValue);
+
+        $('#legend-bid').html(bid);
+        $('#legend-bid').html(ask);
+        $('#global-last').html(last);
+
+        $('#legend-bid, #legend-ask, #legend-last').formatCurrency({symbol: '',
+            positiveFormat: '%n',
+            negativeFormat: '-%s%n',
+            roundToDecimalPlace: 2 //always 2 dec places for fiat
+        });
+
+
+
+        $('#legend-curcode').text(currencyCode);
+        $('.curcode-main').text(currencyCode);
+
+    });
+
+
+    $('.legend-currency-code-update').text(fiatCurrencies[currencyCode]['name']);
+
+    $('#legend-global-volume-percent').text(0);
+    $('#legend-24h-avg').text(0);
+    $('#legend-currency-trading-volume').text(0);
+}
 var calc_renderFiat = function(fiat_value){
     $('#currency-input').val(fiat_value).formatCurrency({symbol: '',
                                                           colorize: true,

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FAQ | BitcoinAverage - independent bitcoin price</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
+    <meta name="description" content="BitcoinAverage helps provide a more accurate price of a bitcoin using a weighted average for multiple exchanges.">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href="https://bitcoinaverage.com/css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="css/lightbox.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="js/lib/lightbox.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
+
+
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<script>
+    $(function(){
+        $('body').show();
+    })
+</script>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
+            <span class="navbar-brand slogan">independent bitcoin price</span>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="submenu" href="markets.htm">MARKETS</a></li>
+                <li><a class="submenu" href="charts.htm">CHARTS</a></li>
+                <!--<li><a class="submenu" href="blog.htm">BLOG</a></li>-->
+                <li><a class="submenu" href="faq.htm">FAQ</a></li>
+                <li><a class="submenu" href="api.htm">API</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="main-container" class="container">
+
+
+    <div class="content explain-page">
+        <div class="section exchanges-box">
+            <div class="section__left-col">
+                <div class="cloud">
+                    <h1>Exchanges <br/> on the Interned</h1>
+                </div>
+            </div>
+
+            <div class="section__left-col exchanges">
+                <ul class="exchanges-list">
+                    <li class="first">obmenka1 <span>$0.8</span></li>
+                    <li class="second">obmenka1 <span>€0.8</span></li>
+                    <li>...</li>
+                    <li class="last">obmenka1 <span>¥12</span></li>
+                </ul>
+                <ul class="exchanges-list">
+                    <li class="first">obmenka1 <span>$0.8</span></li>
+                    <li class="second">obmenka1 <span>€0.8</span></li>
+                     <li>...</li>
+                    <li class="last">obmenka1 <span>¥12</span></li>
+                </ul>
+                <ul class="exchanges-list dotted">
+                    <li class="first">...</li>
+                    <li class="second">...</li>
+                    <li style="width: 16px; margin-left: 41px">...</li>
+                    <li class="last">... </li>
+                </ul>
+                <ul class="exchanges-list">
+                    <li class="first">obmenkaX <span>$0.8</span></li>
+                    <li class="second">obmenkaX <span>€0.8</span></li>
+                     <li>...</li>
+                    <li class="last">obmenkaX <span>¥12</span></li>
+                </ul>
+            </div>
+
+            <div class="section__right-col">
+                <p>
+                    First we collect data from all available exchanges over the Internet. Data consists of
+                    a) nominated currency b) last trade price, c) current lowest ask,
+                    d) current highest bid, e) 24h sliding window trading volume.
+                    For multicurrency exchanges like mtgox we collect multiple such sets, separately for each currency. <br/>
+                    This data is collected approximately every minute, which may slightly vary depending on the load time for various exchanges
+                </p>
+            </div>
+        </div>
+
+        <div class="section brackets">
+            <div class="section__left-col">
+                <ul class="brackets-list">
+                    <li class="bracket"></li>
+                    <li class="bracket"></li>
+                    <li class="ellipsis">...</li>
+                    <li class="bracket"></li>
+                </ul>
+            </div>
+            <div class="section__right-col">
+                <p>
+                    When data is collected we calculate weighted averages within each currency using trading volumes as
+                    weights. Weighted averages are calculated for last price, bid and ask separately.
+                </p>
+
+                <p>
+                    These weighted averages are shown on site as currency markets data.
+                </p>
+
+                <p>
+                    Of all globally recognized currencies only around a dozen are shown in the market area.
+                    This is because we recognize as markets only currencies that are directly traded to BTC
+                    anywhere in the world.
+                </p>
+            </div>
+        </div>
+
+        <div class="section awesome-circles">
+            <div class="section__left-col">
+                <ul class="insane-circles">
+                    <li class="circle">
+                        <div class="blue insane-circle">$</div>
+                        <div class="circle-amount blue">0.6</div>
+                    </li>
+                    <li class="circle">
+                        <div class="insane-circle__wrapper">
+                            <div class="green insane-circle">€</div>
+                            <div class="circle-amount green">0.6</div>
+                        </div>
+
+                        <div class="insane-arrow"></div>
+
+                        <div class="insane-circle__wrapper">
+                            <div class="blue insane-circle">$</div>
+                            <div class="circle-amount blue">0.6</div>
+                        </div>
+                    </li>
+
+                     <li class="circle ellipsis">
+                         <div class="insane-circle__wrapper">
+                             <div class="circle-amount">...</div>
+                         </div>
+                     </li>
+                    <li class="circle">
+                        <div class="insane-circle__wrapper">
+                            <div class="gray insane-circle">¥</div>
+                        </div>
+
+                        <div class="insane-arrow"></div>
+
+                        <div class="insane-circle__wrapper">
+                            <div class="blue insane-circle">$</div>
+                        </div>
+                     </li>
+
+
+                </ul>
+            </div>
+            <div class="section__right-col">
+                <p>
+                    Global average is calculated using fiat exchange rates, so it can be shown in nearly any fiat
+                    currency. To calculate global average we choose a target currency (USD as example).
+                    Then we convert each market's weighted average into target currency using fiat exchange rates
+                    provided by openexchangerates.org.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="section finally-calculate">
+            <div class="section__left-col">
+                <div class="big-awesome-bracket"></div>
+            </div>
+            <div class="section__right-col">
+               <p>
+                    Finally global weighted average is calculated using all market's averages together,
+                    converted into target currency. Each market's total trading volume is used as weight
+                    for calculation.
+                </p>
+            </div>
+         </div>
+
+        <div class="section world-currency">
+            <div class="section__left-col">
+                <div class="double-insane-circle col-centered">
+                    <div class="double-circle">$</div>
+                    <div class="double-circle-amount">0.8</div>
+                </div>
+            </div>
+            <div class="section__right-col">
+               <p>
+                   Global weighted average in formed, in any convertible world's currency.
+               </p>
+            </div>
+         </div>
+    </div>
+</div>
+
+
+<footer class="footer clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="f_left foot_left">
+                <section>
+                    <h4><span>Support Us</span></h4>
+                            <span style="font-size: 80%">
+                                <a href="bitcoin:1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T?label=Donation%20to%20BitcoinAverage.com">1EQDEEbYJuevPpJsDczQzspTV8GRTCpk1T</a> &nbsp;&nbsp;&nbsp;<a href="img/donation_url_qrcode.png" data-lightbox="image-1" title="BitcoinAverage.com donation address">qr code</a>
+                            </span>
+                </section>
+            </div>
+            <div class="privacy">
+                2013 AGPLv3 (&#1021;) BITCOINAVERAGE
+            </div>
+            <div class="f_right foot_right" style="text-align: right">
+                <section id="section-connect">
+                    <h4><span>Connect with us</span></h4>
+                    <a href="https://github.com/bitcoinaverage/bitcoinaverage" target="_blank" title="github"><span class="icon-stack">
+                                <i class="icon-circle icon-stack-base icon-1x"></i>
+                                <i class="icon-github icon-light"></i>
+                            </span>
+                    </a>
+                    <a href="https://bitcointalk.org/index.php?topic=270190.0" target="_blank" title="bitcointalk thread">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-comment icon-light"></i>
+                            </span>
+                    </a>
+                    <a href="https://twitter.com/BitcoinAverage" target="_blank" title="twitter">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-twitter icon-light"></i>
+                            </span>
+                    </a>
+                    <a href="mailto:bitcoinaverage@gmail.com" title="email">
+                            <span class="icon-stack">
+                                <i class="icon-circle icon-stack-base"></i>
+                                <i class="icon-envelope icon-light"></i>
+                            </span>
+                    </a>
+                </section>
+            </div>
+        </div>
+    </div>
+</footer><!-- /footer -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-42688472-1', 'bitcoinaverage.com');ga('send', 'pageview');
+</script>
+</body>
+</html>
