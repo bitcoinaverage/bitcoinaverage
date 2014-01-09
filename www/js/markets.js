@@ -142,13 +142,7 @@ var renderAll = function(result, status, responseObj){
         var currencyHash = window.location.hash;
         currencyHash = currencyHash.slice(1);
         currencyHash = currencyHash.split('-')[0];
-        var selectedSlotNum = 0;
-        for(var slotNum in config.currencyOrder){
-            if(currencyHash == config.currencyOrder[slotNum]){
-                selectedSlotNum = slotNum;
-            }
-        }
-        $('#slot'+selectedSlotNum+'-link').click();
+        $('.currency-navigation').children("[data-currencycode='" + currencyHash + "']").click();
 
         var baseCookie = $.cookie('base');
         if(baseCookie == 'bitcoin'){
@@ -232,7 +226,7 @@ var renderLegend = function(currencyCode){
     }
 
     $('.legend-curcode').text(currencyCode);
-    $('.bitcoin-calc .currency-label').text(currencyCode);
+    $('.bitcoin-calc .currency-label').text(currencyCode + '↴');
 
     var last = currencyData.averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
@@ -453,7 +447,15 @@ $(function(){
 
     // currency navigation (primary currency, secondary currency, currency tabs on markets page
     $(document).on('click', '.currency-navigation li', currencyNavigation );
-    $('#nomillibit-button').click(changeBaseButtonClick);
 
+    // hide or show calc currency list by calc currency label click
+    $('#bitcoin-calc-currency-label').click(function(e){
+        e.stopPropagation();
+        if ($('.calculator-currency-switch').is(':visible')){
+            $('.calculator-currency-switch').slideUp();
+        } else {
+            $('.calculator-currency-switch').slideDown();
+        }
+    });
 
 });

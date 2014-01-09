@@ -140,6 +140,7 @@ var currencyNavigation = function(event){
 
 var changeBaseButtonClick = function(event){
     var button = $(this);
+
     if (config.scaleDivizer == 1000){
         $.cookie('base', 'bitcoin');
         config.scaleDivizer = 1;
@@ -186,17 +187,9 @@ var changeBaseButtonClick = function(event){
             renderSmallChart(selectedFiatCurrency);
         } else {
             renderLegendForExtendedCurrencyList(selectedFiatCurrency);
-
         }
     });
 
-    var selectedSlotNum = 0;
-    for(var slotNum in config.currencyOrder){
-        if(selectedFiatCurrency == config.currencyOrder[slotNum]){
-            selectedSlotNum = slotNum;
-        }
-    }
-    $('#slot'+selectedSlotNum+'-link').click();
 };
 
 
@@ -260,7 +253,7 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
         var currencyCodeData =  adjustScale (data[currencyCode], config.scaleDivizer);
 
         $('.legend-curcode').text(currencyCode);
-        $('.bitcoin-calc .currency-label').text(currencyCode);
+        $('.bitcoin-calc .currency-label').text(currencyCode + '↴');
 
         var last = currencyCodeData.last.toFixed(config.precision);
         var bid = currencyCodeData.bid.toFixed(config.precision);

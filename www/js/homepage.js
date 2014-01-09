@@ -79,6 +79,7 @@ var renderAll = function(result, status, responseObj){
         firstRenderDone = true;
 
     } else {
+
         renderSelect(selectedFiatCurrency);
     }
 };
@@ -251,10 +252,12 @@ var renderLegend = function(currencyCode){
     }
 
     $('.legend-curcode').text(currencyCode);
-    $('.bitcoin-calc .currency-label').text(currencyCode);
+
+    $('.bitcoin-calc .currency-label').text(currencyCode + '↴');
 
     var last = currencyData.global_averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
+    $('#global-last').html(last);
 
     var bitCoinInputValue = $('#bitcoin-input').toNumber().val();
     calc_renderBitcoin(bitCoinInputValue, $.cookie('base'));
