@@ -55,13 +55,16 @@ var renderAll = function(result, status, responseObj){
         var currencyHash = window.location.hash;
         currencyHash = currencyHash.slice(1);
         currencyHash = currencyHash.split('-')[0];
-        var selectedSlotNum = 0;
-        for(var slotNum in config.currencyOrder){
-            if(currencyHash == config.currencyOrder[slotNum]){
-                selectedSlotNum = slotNum;
-            }
+
+
+        renderSelect(currencyHash);
+        $('.currency-navigation').children("[data-currencycode='" + currencyHash + "']").click();
+        selectedFiatCurrency = currencyHash;
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+        if (!isPrimaryCurrency){
+            $('.more-currencies').click();
         }
-        $('#slot'+selectedSlotNum+'-link').click();
+
 
         var baseCookie = $.cookie('base');
         if(baseCookie == 'bitcoin'){
@@ -74,12 +77,22 @@ var renderAll = function(result, status, responseObj){
 
         $('#currency-input').focus();
         firstRenderDone = true;
+
     } else {
-        renderLegend(selectedFiatCurrency);
-        renderSmallChart(selectedFiatCurrency);
+        renderSelect(selectedFiatCurrency);
     }
 };
+var renderSelect = function(currencyHash) {
 
+    var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+    if ( isPrimaryCurrency ){
+        renderSmallChart(currencyHash);
+    }
+    else {
+        renderLegendForExtendedCurrencyList(currencyHash);
+
+    }
+}
 var renderMarketsData = function(apiData, currency){
     var globalAverageData = JSON.parse(JSON.stringify(apiData));
     globalAverageData = $.map(globalAverageData, function(value, index) {

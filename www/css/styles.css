@@ -941,8 +941,9 @@ footer .row{
 }
 
 .brackets-list li.ellipsis {
-    margin-left: 37px;
-    margin-right: 15px;
+    margin-left: 46px;
+    margin-right: 5px;
+    font-family: 'Titillium Web Thin', sans-serif;
 }
 
 .brackets-list li {
@@ -950,7 +951,7 @@ footer .row{
     height: 22px;
     display: block;
     float: left;
-    margin-left: 55px;
+    margin-left: 85px;
     text-align: center;
 }
 .brackets-list li:last-child {
@@ -968,25 +969,25 @@ footer .row{
 .exchanges-list {
     overflow: hidden;
     padding: 0;
+    padding-left: 15px;
     margin: 0;
 }
 .exchanges-list li {
-    font-size: 27px;
+    font-size: 23px;
     font-family: 'Titillium Web Thin', sans-serif;
     float: left;
-    line-height: 1;
     margin-left: 25px;
 }
 .exchanges-list li.first {
     color: #428bca;
+    width: 190px;
     margin-left: 0;
 }
-.exchanges-list.dotted li {
-    width: 171px;
 
-}
 .exchanges-list li.second {
     color: #10b114;
+    width: 182px;
+    margin-left: 40px;
 }
 .exchanges-list li.last {
     color: #a09e9a;
@@ -1045,6 +1046,12 @@ footer .row{
     font-size: 24px;
     font-family: 'Titillium Web', sans-serif;
     margin-left: 10px;
+}
+.insane-circles .circle-amount.ellipsis {
+    font-size: 23px;
+    font-family: 'Titillium Web Thin', sans-serif;
+    margin-left: 12px;
+    line-height: 20px;
 }
 .insane-circles .insane-arrow {
     background: url('../img/insane-arrow.png') no-repeat 0 50%;
@@ -1156,8 +1163,6 @@ footer .row{
 .section .section__left-col {
     width: 640px;
     float: left;
-    padding-left: 16px;
-
 }
 
 .section .section__right-col {
@@ -1170,6 +1175,7 @@ footer .row{
 }
 .section__left-col.exchanges{
     margin-top: 35px;
+    padding: 0;
 }
 .all-currency-navigation {
     display: none;

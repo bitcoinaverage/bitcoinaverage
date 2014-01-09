@@ -31,9 +31,12 @@ var renderAllCurrencies = function() {
         $.each(data, function(key, val){
             if ( $.inArray(key, generalCurrencies) == -1 && key != 'timestamp'){
                 var currencyInner = $('<li></li>');
+
                 currencyInner.attr('id', 'slot' + currencyIndex + '-link');
                 currencyInner.attr('data-currencycode', key );
-
+                if (selectedFiatCurrency == key){
+                    currencyInner.attr('class', 'active');
+                }
 
                 var currencyLink = $('<a></a>')
                 currencyLink.attr('href', '#'+key);
@@ -48,9 +51,6 @@ var renderAllCurrencies = function() {
         $('.all-currencies').html(allCurrenciesList);
     });
 }
-
-
-
 
 // Render secondary currencies menu
 var renderSecondaryCurrencies = function (){
@@ -75,8 +75,9 @@ var renderSecondaryCurrencies = function (){
     $('.secondary-currency-switch-calc').html(secondaryCurrenciesList);
 
 };
+
 var isCurrencyBelongsToPrimaryList = function() {
-{
+
     // if currency belongs to primary curreny list
     if( $.inArray(selectedFiatCurrency, config.currencyOrder) != -1 ){
         return true;
@@ -85,7 +86,7 @@ var isCurrencyBelongsToPrimaryList = function() {
     else {
         return false;
     }
-}
+
 }
 var renderSecondsSinceUpdate = function(){
     var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
@@ -113,7 +114,7 @@ var currencyNavigation = function(event){
             renderLegend(curCode);
             renderSmallChart(curCode);
             $('.calculator-currency-switch').slideUp();
-            $('#global-last').html(API_data[curCode].global_averages.bid.toFixed(config.precision));
+            $('#global-last').html(API_data[curCode].global_averages.last.toFixed(config.precision));
         }
         else {
             renderLegendForExtendedCurrencyList(curCode);
@@ -176,6 +177,7 @@ var changeBaseButtonClick = function(event){
     calc_renderBitcoin(1, $.cookie('base'));
 
     callAPI(function(result){
+
         renderAll(result);
 
         var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
@@ -184,6 +186,7 @@ var changeBaseButtonClick = function(event){
             renderSmallChart(selectedFiatCurrency);
         } else {
             renderLegendForExtendedCurrencyList(selectedFiatCurrency);
+
         }
     });
 
@@ -250,9 +253,11 @@ var calc_bitcoinInputKeyup = function(e){
 };
 
 var renderLegendForExtendedCurrencyList = function(currencyCode){
+
     $('.highcharts-container').hide();
     $.getJSON(config.apiIndexUrl+'ticker/global/all', function(data){
-        var currencyCodeData =  data[currencyCode];
+
+        var currencyCodeData =  adjustScale (data[currencyCode], config.scaleDivizer);
 
         $('.legend-curcode').text(currencyCode);
         $('.bitcoin-calc .currency-label').text(currencyCode);

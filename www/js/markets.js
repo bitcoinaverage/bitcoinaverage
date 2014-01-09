@@ -455,45 +455,5 @@ $(function(){
     $(document).on('click', '.currency-navigation li', currencyNavigation );
     $('#nomillibit-button').click(changeBaseButtonClick);
 
-    $(document).on('click', '.all-currency-navigation li', currencyNavigation );
-
-    // hide calc currency list by esc
-    $(document).keyup( function(e){
-        if(e.which == 27){
-            $('.calculator-currency-switch').slideUp();
-        }
-    } );
-
-
-    // hide calc currency list by document click
-    $(document).click(function(){
-        $('.calculator-currency-switch').slideUp();
-    });
-
-    // hide or show calc currency list by calc currency label click
-    $('#bitcoin-calc-currency-label').click(function(e){
-        e.stopPropagation();
-        if ($('.calculator-currency-switch').is(':visible')){
-            $('.calculator-currency-switch').slideUp();
-        } else {
-            $('.calculator-currency-switch').slideDown();
-        }
-    });
-
-    // collapsing or expanding extended currencies list
-    $('.more-currencies').click(function(){
-        var extendedCurrencyNavList = $('.all-currency-navigation');
-        var moreCurrenciesBtn = $(this);
-        if( extendedCurrencyNavList.is(':visible')) {
-            extendedCurrencyNavList.slideUp( "slow", function() {
-                moreCurrenciesBtn.text('more currencies');
-            });
-        } else {
-            extendedCurrencyNavList.slideDown( "slow", function() {
-                moreCurrenciesBtn.text('less currencies');
-            });
-        }
-        return false;
-    });
 
 });
