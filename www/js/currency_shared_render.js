@@ -19,8 +19,7 @@ var renderMajorCurrencies = function(){
     $('.primary-currency-switch-calc').html(primaryCurrencyList);
 };
 
-var renderAllCurrencies = function() {
-
+var renderWorldCurrencies = function() {
     var generalCurrencies = config.currencyOrder;
 
     var generalCurrenciesLength = generalCurrencies.length;
@@ -50,7 +49,7 @@ var renderAllCurrencies = function() {
         });
         $('.all-currencies').html(allCurrenciesList);
     });
-}
+};
 
 // Render secondary currencies menu
 var renderSecondaryCurrencies = function (){
@@ -76,18 +75,13 @@ var renderSecondaryCurrencies = function (){
 
 };
 
-var isCurrencyBelongsToPrimaryList = function() {
-
-    // if currency belongs to primary curreny list
-    if( $.inArray(selectedFiatCurrency, config.currencyOrder) != -1 ){
+var isCurrencyBelongsToPrimaryList = function(currencyCode) {
+    if($.inArray(currencyCode, config.currencyOrder) != -1){
         return true;
     }
-    // if currency belongs to extended currency list
-    else {
-        return false;
-    }
 
-}
+    return false;
+};
 var renderSecondsSinceUpdate = function(){
     var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
     if (seconds < 120) {
@@ -108,7 +102,7 @@ var currencyNavigation = function(event){
     if (selectedFiatCurrency == false || selectedFiatCurrency != curCode) {
         selectedFiatCurrency = curCode;
 
-        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(selectedFiatCurrency);
         if ( isPrimaryCurrency ){
             $('.highcharts-container').show();
             renderLegend(curCode);
@@ -181,7 +175,7 @@ var changeBaseButtonClick = function(event){
 
         renderAll(result);
 
-        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(selectedFiatCurrency);
         if(isPrimaryCurrency){
             renderLegend(selectedFiatCurrency);
             renderSmallChart(selectedFiatCurrency);
@@ -283,13 +277,13 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
 
     });
 
-
     $('.legend-currency-code-update').text(fiatCurrencies[currencyCode]['name']);
 
     $('#legend-global-volume-percent').text(0);
     $('#legend-24h-avg').text(0);
     $('#legend-currency-trading-volume').text(0);
-}
+};
+
 var calc_renderFiat = function(fiat_value){
     $('#currency-input').val(fiat_value).formatCurrency({symbol: '',
                                                           colorize: true,
