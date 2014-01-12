@@ -973,7 +973,7 @@ footer .row{
     margin: 0;
 }
 .exchanges-list li {
-    font-size: 23px;
+    font-size: 20px;
     font-family: 'Titillium Web Thin', sans-serif;
     float: left;
     margin-left: 25px;
@@ -995,7 +995,7 @@ footer .row{
 
 .exchanges-list li span{
     font-family: 'Titillium Web', sans-serif;
-    font-size: 23px;
+    font-size: 18px;
     padding-left: 10px;
 }
 
