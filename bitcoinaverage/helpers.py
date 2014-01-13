@@ -226,8 +226,11 @@ def write_api_index_files():
     global ba
 
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, 'favicon.ico')):
-        copyfile(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'favicon.ico'),
-                 os.path.join(ba.server.API_DOCUMENT_ROOT, 'favicon.ico'))
+        try:
+            copyfile(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'favicon.ico'),
+                     os.path.join(ba.server.API_DOCUMENT_ROOT, 'favicon.ico'))
+        except IOError:
+            pass
 
     #api root index
     api_index = {}

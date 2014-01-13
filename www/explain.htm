@@ -19,7 +19,6 @@
     <script src="js/lib/lightbox.js"></script>
     <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
 
-
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -52,10 +51,12 @@
 </div>
 
 <div id="main-container" class="container">
-
-
     <div class="content explain-page">
+        <div class="section__left-col">
+            <h1>How we do our global weighted average price?</h1>
+        </div>
         <div class="section exchanges-box">
+        <br>
             <div class="section__left-col">
                 <div class="cloud">
                     <h1>Exchanges all <br/> over the Internet</h1>
@@ -91,16 +92,16 @@
 
             <div class="section__right-col">
                 <p>
-                    First we collect data from all available exchanges over the Internet. Data consists of
+                    First we collect pieces of data from all available exchanges over the Internet. Each piece consists of
                     <ol>
-                        <li>nominated currency</li>
+                        <li>nominated fiat currency</li>
                         <li>last trade price</li>
                         <li>current lowest ask</li>
                         <li>current highest bid</li>
                         <li>24h sliding window trading volume</li>
                     </ol>
-                    For multicurrency exchanges like mtgox we collect multiple such sets, separately for each currency. <br/>
-                    This data is collected approximately every minute, which may slightly vary depending on the load time for various exchanges
+                    For multicurrency exchanges like mtgox we collect multiple pieces, separately for each currency. <br/>
+                    This data is collected roughly every minute, and cycle time may slightly vary depending on the load time for various exchanges.
                 </p>
             </div>
         </div>
@@ -116,8 +117,8 @@
             </div>
             <div class="section__right-col">
                 <p>
-                    When data is collected we calculate weighted averages within each currency using trading volumes as
-                    weights. Weighted averages are calculated for last price, bid and ask separately.
+                    When all data is collected we calculate weighted averages within each currency according to trading volumes.
+                    Weighted averages are calculated for last price, bid and ask separately.
                 </p>
 
                 <p>
@@ -137,19 +138,16 @@
                 <ul class="insane-circles">
                     <li class="circle">
                         <div class="blue insane-circle">$</div>
-                        <div class="circle-amount blue">0.82</div>
                     </li>
                     <li class="circle" style="margin-left: 110px">
                         <div class="insane-circle__wrapper">
                             <div class="green insane-circle">€</div>
-                            <div class="circle-amount green">0.62</div>
                         </div>
 
                         <div class="insane-arrow"></div>
 
                         <div class="insane-circle__wrapper">
                             <div class="blue insane-circle">$</div>
-                            <div class="circle-amount blue">0.83</div>
                         </div>
                     </li>
 
@@ -176,7 +174,7 @@
             <div class="section__right-col">
                 <p>
                     Global average is calculated using fiat exchange rates, so it can be shown in nearly any fiat
-                    currency. To calculate global average we choose a target currency (USD as example).
+                    currency. To calculate global average we choose a target currency (USD as example). <br>
                     Then we convert each market's weighted average into target currency using fiat exchange rates
                     provided by openexchangerates.org.
                 </p>
@@ -190,9 +188,8 @@
             </div>
             <div class="section__right-col">
                <p>
-                    Finally global weighted average is calculated using all market's averages together,
-                    converted into target currency. Each market's total trading volume is used as weight
-                    for calculation.
+                    Then the global weighted average is calculated using each market's average converted into target currency. <br>
+                    Each market's total trading volume is used as weight for calculation.
                 </p>
             </div>
          </div>
@@ -205,8 +202,14 @@
                 </div>
             </div>
             <div class="section__right-col">
+                <br>
                <p>
-                   Global weighted average in formed, in any convertible world's currency.
+                   Finally global weighted average in formed, in any convertible world's currency.
+               </p>
+                <br><br><br>
+               <p>
+                   <small><i>All figures in this example are for illustration only and do not represent actual
+                       current exchange rates.</i></small>
                </p>
             </div>
          </div>

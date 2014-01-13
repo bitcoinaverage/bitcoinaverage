@@ -50,9 +50,8 @@ var renderCurrencyTabs = function(){
         currentHash = currentHash.split('-');
 
     for (var majorCurrency in majorCurrencies) {
-        var currentCurrency  = majorCurrencies[majorCurrency];
+        var currentCurrency = majorCurrencies[majorCurrency];
         var data = API_data[currentCurrency];
-
 
         var last = (data['averages']['last']).toFixed(config.precision);
         var ask  = (data['averages']['ask']).toFixed(config.precision);
@@ -139,10 +138,15 @@ var renderAll = function(result, status, responseObj){
 
     renderSecondsSinceUpdate();
     if (!firstRenderDone) {
-        var currencyHash = window.location.hash;
-        currencyHash = currencyHash.slice(1);
-        currencyHash = currencyHash.split('-')[0];
-        $('.currency-navigation').children("[data-currencycode='" + currencyHash + "']").click();
+        var currencyCode = window.location.hash;
+        currencyCode = currencyCode.slice(1);
+        currencyCode = currencyCode.split('-')[0];
+        if(typeof fiatCurrencies[currencyCode] == 'undefined'){
+            currencyCode = config.currencyOrder[0];
+        }
+        selectedFiatCurrency = currencyCode;
+
+        $('.currency-navigation').children("[data-currencycode='" + selectedFiatCurrency + "']").click();
 
         var baseCookie = $.cookie('base');
         if(baseCookie == 'bitcoin'){
@@ -418,7 +422,7 @@ $(function(){
 
     renderMajorCurrencies();
     renderSecondaryCurrencies();
-    renderAllCurrencies();
+    renderWorldCurrencies();
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
