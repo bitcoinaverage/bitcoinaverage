@@ -56,6 +56,10 @@ var renderAll = function(result, status, responseObj){
         currencyHash = currencyHash.slice(1);
         currencyHash = currencyHash.split('-')[0];
 
+        // if currency hash isn't defined
+        if (currencyHash == ''){
+            currencyHash = config.currencyOrder[0];
+        }
 
         renderSelect(currencyHash);
         $('.currency-navigation').children("[data-currencycode='" + currencyHash + "']").click();
@@ -64,7 +68,6 @@ var renderAll = function(result, status, responseObj){
         if (!isPrimaryCurrency){
             $('.more-currencies').click();
         }
-
 
         var baseCookie = $.cookie('base');
         if(baseCookie == 'bitcoin'){
@@ -79,7 +82,6 @@ var renderAll = function(result, status, responseObj){
         firstRenderDone = true;
 
     } else {
-
         renderSelect(selectedFiatCurrency);
     }
 };
@@ -91,7 +93,6 @@ var renderSelect = function(currencyHash) {
     }
     else {
         renderLegendForExtendedCurrencyList(currencyHash);
-
     }
 }
 var renderMarketsData = function(apiData, currency){
@@ -253,7 +254,8 @@ var renderLegend = function(currencyCode){
 
     $('.legend-curcode').text(currencyCode);
 
-    $('.bitcoin-calc .currency-label').text(currencyCode + '↴');
+    $('.bitcoin-calc .currency-label').text(currencyCode);
+    $('.bitcoin-calc .currency-label').append($('<i class="glyphicon glyphicon-chevron-down"></i>'));
 
     var last = currencyData.global_averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
@@ -468,6 +470,7 @@ $(function(){
         e.stopPropagation();
         if ($('.calculator-currency-switch').is(':visible')){
             $('.calculator-currency-switch').slideUp();
+
         } else {
             $('.calculator-currency-switch').slideDown();
         }

@@ -253,7 +253,9 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
         var currencyCodeData =  adjustScale (data[currencyCode], config.scaleDivizer);
 
         $('.legend-curcode').text(currencyCode);
-        $('.bitcoin-calc .currency-label').text(currencyCode + '↴');
+
+        $('.bitcoin-calc .currency-label').text(currencyCode);
+        $('.bitcoin-calc .currency-label').append($('<i class="glyphicon glyphicon-chevron-down"></i>'));
 
         var last = currencyCodeData.last.toFixed(config.precision);
         var bid = currencyCodeData.bid.toFixed(config.precision);

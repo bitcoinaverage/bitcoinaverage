@@ -868,7 +868,9 @@ footer .row{
     border-top-right-radius: 4px;
     margin-left: 5px
 }
-
+.bitcoin-calc .bitcoin-field__wrapper .label i{
+    font-size: 20px;
+}
 .bitcoin-calc .bitcoin-field__wrapper .label:hover {
     cursor: pointer;
 }
