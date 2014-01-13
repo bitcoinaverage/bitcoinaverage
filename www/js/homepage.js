@@ -56,14 +56,17 @@ var renderAll = function(result, status, responseObj){
         currencyCode = currencyCode.slice(1);
         currencyCode = currencyCode.split('-')[0];
 
-        if(typeof fiatCurrencies[currencyCode] == 'undefined'){
+        // if currency hash isn't defined
+        if ( currencyCode == ''){
             currencyCode = config.currencyOrder[0];
         }
+
+        renderSelect(currencyCode);
+        $('.currency-navigation').children("[data-currencycode='" + currencyCode + "']").click();
         selectedFiatCurrency = currencyCode;
 
-        renderSelect(selectedFiatCurrency);
-        $('.currency-navigation').children("[data-currencycode='" + selectedFiatCurrency + "']").click();
-        if (!isCurrencyBelongsToPrimaryList(selectedFiatCurrency)){
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(currencyCode);
+        if (!isPrimaryCurrency){
             $('.more-currencies').click();
         }
 
@@ -78,19 +81,21 @@ var renderAll = function(result, status, responseObj){
 
         $('#currency-input').focus();
         firstRenderDone = true;
+
     } else {
         renderSelect(selectedFiatCurrency);
     }
 };
-var renderSelect = function(currencyCode) {
-    var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(currencyCode);
-    if(isPrimaryCurrency){
-        renderSmallChart(currencyCode);
-    } else {
-        renderLegendForExtendedCurrencyList(currencyCode);
-    }
-};
+var renderSelect = function(currencyHash) {
 
+    var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+    if(isPrimaryCurrency){
+        renderSmallChart(currencyHash);
+    }
+    else {
+        renderLegendForExtendedCurrencyList(currencyHash);
+    }
+}
 var renderMarketsData = function(apiData, currency){
     var globalAverageData = JSON.parse(JSON.stringify(apiData));
     globalAverageData = $.map(globalAverageData, function(value, index) {
@@ -227,7 +232,6 @@ var renderLegend = function(currencyCode){
     $('#global-curcode').text(currencyCode);
 
     var exchangeArray = [];
-    фдуке()
     var currencyData = API_data[currencyCode];
 
     var index = 0;
@@ -387,6 +391,7 @@ var renderSmallChart = function(currencyCode){
 };
 
 $(function(){
+
     $('#show-more-currencies-in-global-avg-table').click(function(e){
         e.preventDefault();
         if ($('.secondary-global-avg-row').is(':hidden')){
@@ -407,6 +412,11 @@ $(function(){
         $(this).hide();
         return false;
     });
+
+    callAPI();
+
+    setInterval(callAPI, config.refreshRate);
+    setInterval(renderSecondsSinceUpdate, 5000);
 
     renderMajorCurrencies();
     renderSecondaryCurrencies();
@@ -481,9 +491,6 @@ $(function(){
     });
 
 
-    callAPI();
 
-    setInterval(callAPI, config.refreshRate);
-    setInterval(renderSecondsSinceUpdate, 5000);
 
 });

@@ -76,12 +76,18 @@ var renderSecondaryCurrencies = function (){
 };
 
 var isCurrencyBelongsToPrimaryList = function(currencyCode) {
-    if($.inArray(currencyCode, config.currencyOrder) != -1){
+
+    // if currency belongs to primary curreny list
+    if( $.inArray(currencyCode, config.currencyOrder) != -1 ){
         return true;
     }
+    // if currency belongs to extended currency list
+    else {
+        return false;
+    }
 
-    return false;
-};
+}
+
 var renderSecondsSinceUpdate = function(){
     var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
     if (seconds < 120) {
@@ -102,7 +108,7 @@ var currencyNavigation = function(event){
     if (selectedFiatCurrency == false || selectedFiatCurrency != curCode) {
         selectedFiatCurrency = curCode;
 
-        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(selectedFiatCurrency);
+        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(curCode);
         if ( isPrimaryCurrency ){
             $('.highcharts-container').show();
             renderLegend(curCode);
@@ -288,11 +294,11 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
 
 var calc_renderFiat = function(fiat_value){
     $('#currency-input').val(fiat_value).formatCurrency({symbol: '',
-                                                          colorize: true,
-                                                            positiveFormat: '%n',
-                                                            negativeFormat: '-%s%n',
-                                                            roundToDecimalPlace: 2 //always 2 dec places for fiat
-                                                            });
+        colorize: true,
+        positiveFormat: '%n',
+        negativeFormat: '-%s%n',
+        roundToDecimalPlace: 2 //always 2 dec places for fiat
+    });
 };
 
 var calc_renderBitcoin = function(btc_value, base){
@@ -302,10 +308,10 @@ var calc_renderBitcoin = function(btc_value, base){
         var precision = 2;
     }
     $('#bitcoin-input').val(btc_value)
-                       .formatCurrency({symbol: '',
-                                        colorize: true,
-                                        positiveFormat: '%n',
-                                        negativeFormat: '-%s%n',
-                                        roundToDecimalPlace: precision
-                                          });
+        .formatCurrency({symbol: '',
+            colorize: true,
+            positiveFormat: '%n',
+            negativeFormat: '-%s%n',
+            roundToDecimalPlace: precision
+        });
 };
