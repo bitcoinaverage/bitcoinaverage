@@ -251,7 +251,8 @@ var renderLegend = function(currencyCode){
 
     $('.legend-curcode').text(currencyCode);
 
-    $('.bitcoin-calc .currency-label').text(currencyCode + '↴');
+    $('.bitcoin-calc .currency-label').text(currencyCode);
+    $('.bitcoin-calc .currency-label').append($('<i class="glyphicon glyphicon-chevron-down"></i>'));
 
     var last = currencyData.global_averages.last.toFixed(config.precision);
     $('#legend-last').html(last);
