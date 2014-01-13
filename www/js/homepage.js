@@ -330,7 +330,7 @@ var renderSmallChart = function(currencyCode){
     }
 
     var global_avg_url = config.apiHistoryIndexUrl;
-    var data_24h_URL = global_avg_url + currencyCode + '/24h_global_average_sliding_window.csv';
+    var data_24h_URL = global_avg_url + currencyCode + '/per_minute_24h_global_average_sliding_window.csv';
 
 	$.get(data_24h_URL, function(csv){
         var data = [];
