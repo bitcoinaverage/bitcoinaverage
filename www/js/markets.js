@@ -424,7 +424,7 @@ $(function(){
         event.stopPropagation();
     });
 
-    $(document).on('click', '.currency-navigation li', currencyNavigation );
+    $(document).on('click', '.currency-navigation li', currencyNavigationClick );
 
     $('#nomillibit-button').click(changeBaseButtonClick);
 
@@ -446,7 +446,7 @@ $(function(){
 
 
     // currency navigation (primary currency, secondary currency, currency tabs on markets page
-    $(document).on('click', '.currency-navigation li', currencyNavigation );
+    $(document).on('click', '.currency-navigation li', currencyNavigationClick );
 
     // hide or show calc currency list by calc currency label click
     $('#bitcoin-calc-currency-label').click(function(e){

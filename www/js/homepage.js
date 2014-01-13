@@ -89,7 +89,11 @@ var renderAll = function(result, status, responseObj){
 var renderSelect = function(currencyCode) {
     var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(currencyCode);
     if(isPrimaryCurrency){
+        $('.highcharts-container').show();
+        renderLegend(currencyCode);
         renderSmallChart(currencyCode);
+        $('.calculator-currency-switch').slideUp();
+        $('#global-last').html(API_data[currencyCode].global_averages.last.toFixed(config.precision));
     } else {
         renderLegendForExtendedCurrencyList(currencyCode);
     }
@@ -441,10 +445,10 @@ $(function(){
 
 
     // currency navigation (primary currency, secondary currency, currency tabs on markets page
-    $(document).on('click', '.currency-navigation li', currencyNavigation );
+    $(document).on('click', '.currency-navigation li', currencyNavigationClick );
     $('#nomillibit-button').click(changeBaseButtonClick);
 
-    $(document).on('click', '.all-currency-navigation li', currencyNavigation );
+    $(document).on('click', '.all-currency-navigation li', currencyNavigationClick );
 
     // hide calc currency list by esc
     $(document).keyup( function(e){

@@ -100,39 +100,35 @@ var renderSecondsSinceUpdate = function(){
     $('#legend-update-time-ago').html(timeString);
 };
 
-var currencyNavigation = function(event){
+var currencyNavigationClick = function(event){
     event.preventDefault();
     event.stopPropagation();
 
     var curCode = $(this).data('currencycode');
-    if (selectedFiatCurrency == false || selectedFiatCurrency != curCode) {
-        selectedFiatCurrency = curCode;
-
-        var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(curCode);
-        if (isPrimaryCurrency){
-            $('.highcharts-container').show();
-            renderLegend(curCode);
-            renderSmallChart(curCode);
-            $('.calculator-currency-switch').slideUp();
-            $('#global-last').html(API_data[curCode].global_averages.last.toFixed(config.precision));
-        } else {
-            renderLegendForExtendedCurrencyList(curCode);
-        }
-
-        // add active class to selected currency
-        $('.all-currency-navigation li').removeClass('active');
-        $('.currency-navigation li').removeClass('active');
-
-        $('.currency-navigation').find("[data-currencycode='" + curCode + "']").addClass('active');
-
-        var currentHash = window.location.hash;
-        var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-        if (config.scaleDivizer == 1){
-            newLocation = newLocation + '-nomillibit';
-        }
-        window.location.replace(newLocation);
+    selectedFiatCurrency = curCode;
+    if(isCurrencyBelongsToPrimaryList(curCode)){
+        $('.highcharts-container').show();
+        renderLegend(curCode);
+        renderSmallChart(curCode);
+        $('.calculator-currency-switch').slideUp();
+        $('#global-last').html(API_data[curCode].global_averages.last.toFixed(config.precision));
+    } else {
+        renderLegendForExtendedCurrencyList(curCode);
     }
+
+    // add active class to selected currency
+    $('.all-currency-navigation li').removeClass('active');
+    $('.currency-navigation li').removeClass('active');
+
+    $('.currency-navigation').find("[data-currencycode='" + curCode + "']").addClass('active');
+
+    var currentHash = window.location.hash;
+    var currentLocation = document.location.href;
+    var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
+    if (config.scaleDivizer == 1){
+        newLocation = newLocation + '-nomillibit';
+    }
+    window.location.replace(newLocation);
 };
 
 var changeBaseButtonClick = function(event){
