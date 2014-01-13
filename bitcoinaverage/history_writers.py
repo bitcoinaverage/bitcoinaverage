@@ -195,7 +195,7 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
 
     current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
     last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
-    if current_timestamp_date != last_recorded_timestamp_date:
+    if int(current_timestamp_date) != (int(last_recorded_timestamp_date) + 1):
         current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
         price_high = 0.0
         price_low = 0.0
