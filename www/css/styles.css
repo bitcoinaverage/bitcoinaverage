@@ -972,7 +972,7 @@ footer .row{
     margin: 0 auto 0;
     height: 187px;
 }
-.cloud h1 {
+.cloud h2 {
     font-weight: normal;
     text-align: left;
     padding-top: 88px;
@@ -1201,6 +1201,15 @@ footer .row{
 }
 .content .section:first-child {
     padding-bottom: 25px;
+    border-top: 0;
+}
+.explain-page h1 {
+   color: #565656;
+    font-size: 36px;
+    margin: 0;
+    font-family: 'Titillium Web', sans-serif;
+}
+.content .section.exchanges-box {
     border-top: 0;
 }
 .content .section {
