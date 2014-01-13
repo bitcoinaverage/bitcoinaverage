@@ -135,11 +135,10 @@ var renderAll = function(result, status, responseObj){
         currencyCode = currencyCode.slice(1);
         currencyCode = currencyCode.split('-')[0];
 
-        if (currencyCode == ''){
+        // if currency hash isn't defined
+        if(typeof fiatCurrencies[currencyCode] == 'undefined'){
             currencyCode = config.currencyOrder[0];
         }
-        renderSmallChart(currencyCode);
-
         $('.currency-navigation').children("[data-currencycode='" + currencyCode + "']").click();
         selectedFiatCurrency = currencyCode;
 

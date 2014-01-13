@@ -57,7 +57,7 @@ var renderAll = function(result, status, responseObj){
         currencyCode = currencyCode.split('-')[0];
 
         // if currency hash isn't defined
-        if ( currencyCode == ''){
+        if(typeof fiatCurrencies[currencyCode] == 'undefined'){
             currencyCode = config.currencyOrder[0];
         }
 
@@ -418,10 +418,6 @@ $(function(){
     setInterval(callAPI, config.refreshRate);
     setInterval(renderSecondsSinceUpdate, 5000);
 
-    renderMajorCurrencies();
-    renderSecondaryCurrencies();
-    renderWorldCurrencies();
-
     $('#legend-block').click(function(event){
         event.stopPropagation();
     });
@@ -489,8 +485,8 @@ $(function(){
         }
         return false;
     });
-
-
-
+    renderMajorCurrencies();
+    renderSecondaryCurrencies();
+    renderWorldCurrencies();
 
 });

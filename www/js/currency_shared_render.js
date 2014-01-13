@@ -236,7 +236,7 @@ var calc_bitcoinInputKeyup = function(e){
             case 78: break; // N (Opera 9.63+ maps the "." from the number key section to the "N" key too!) (See: http://unixpapa.com/js/key.html search for ". Del")
             case 110: break; // . number block (Opera 9.63+ maps the "." from the number block to the "N" key (78) !!!)
             case 190: break; // .
-            default: $(this).formatCurrency({ symbol: '', colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true });
+            default: $(this).formatCurrency({ symbol: '',  negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true });
         }
         var bitCoins = $(this).toNumber().val();
         var globalLastPrice = $('#legend-last').text();
@@ -294,7 +294,6 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
 
 var calc_renderFiat = function(fiat_value){
     $('#currency-input').val(fiat_value).formatCurrency({symbol: '',
-        colorize: true,
         positiveFormat: '%n',
         negativeFormat: '-%s%n',
         roundToDecimalPlace: 2 //always 2 dec places for fiat
@@ -309,7 +308,6 @@ var calc_renderBitcoin = function(btc_value, base){
     }
     $('#bitcoin-input').val(btc_value)
         .formatCurrency({symbol: '',
-            colorize: true,
             positiveFormat: '%n',
             negativeFormat: '-%s%n',
             roundToDecimalPlace: precision
