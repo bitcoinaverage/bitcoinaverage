@@ -294,15 +294,24 @@ ul{
 .legend-currency-code-update {
 
 }
-
-.legend-table .legend-heading .legend-curcode{
+.legend-table thead th {
+    border-bottom: 0 !important;
+    vertical-align: top !important;
+}
+.legend-table thead th .legend-table__wrapper {
+    padding: 13px 0 3px;
+}
+.legend-table .legend-table__wrapper .legend-curcode{
     font-size: 26px;
+    display: block;
     font-weight: bold;
+    line-height: 1;
     color: #4F4F4F;
 }
 .legend-table .last-price {
     text-align: right;
 }
+
 .legend-table  div .operation-label {
     font-size: 13px;
     color: #999999;
@@ -311,7 +320,7 @@ ul{
 .legend-table .last-price div #legend-last {
     font-size: 26px;
     font-weight: bold;
-
+    line-height: 1;
 }
 .legend-table .legend-currency-code-update,
 .legend-table .last-price div small {

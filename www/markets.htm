@@ -118,40 +118,41 @@
         <table width="100%;" cellpadding="0" cellspacing="0" class="legend-table table table-striped table-condensed table-hover">
         <thead>
             <tr>
-                <td width="35%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
-                    <div class="legend-heading" >
+                <th width="35%">
+                    <div class="legend-table__wrapper">
                         <span class="legend-curcode"></span>
-                    </div>
-
-                    <div>
                         <span class="legend-currency-code-update"></span>
                     </div>
-                </td>
+                </th>
 
-                <td width="30%">
-                    <div>
-                        <small class="operation-label">ask</small>
-                        <span id="legend-ask"></span>
+                <th width="30%">
+                    <div class="legend-table__wrapper">
+                        <div>
+                            <small class="operation-label">ask</small>
+                            <span id="legend-ask"></span>
+                        </div>
+
+                        <div>
+                            <small class="operation-label">bid</small>
+                            <span id="legend-bid"></span>
+                        </div>
                     </div>
+                </th>
 
-                    <div>
-                        <small class="operation-label">bid</small>
-                        <span id="legend-bid"></span>
+
+                <th width="35%" class="last-price">
+                    <div class="legend-table__wrapper">
+                        <div>
+                            <span id="legend-last"></span>
+                        </div>
+
+                        <div>
+                            <small>
+                                data <span id="legend-update-time-ago"></span> old
+                            </small>
+                        </div>
                     </div>
-                </td>
-
-
-                <td width="35%" class="last-price">
-                    <div>
-                        <span id="legend-last"></span>
-                    </div>
-
-                    <div>
-                        <small>
-                            data <span id="legend-update-time-ago"></span> old
-                        </small>
-                    </div>
-                </td>
+                </th>
             </tr>
         </thead>
         <tbody>
