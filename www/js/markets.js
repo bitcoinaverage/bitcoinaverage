@@ -139,6 +139,7 @@ var renderAll = function(result, status, responseObj){
         if(typeof fiatCurrencies[currencyCode] == 'undefined'){
             currencyCode = config.currencyOrder[0];
         }
+
         $('.currency-navigation').children("[data-currencycode='" + currencyCode + "']").click();
         selectedFiatCurrency = currencyCode;
 

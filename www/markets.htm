@@ -115,54 +115,43 @@
 
 <!--new section end -->
        <div class="col-sm-8 col-sm-offset-2 col-md-5 col-md-offset-0">
-        <table width="100%;" cellpadding="0" cellspacing="0" class="table table-striped table-condensed table-hover" style="font-size:14px;">
+        <table width="100%;" cellpadding="0" cellspacing="0" class="legend-table table table-striped table-condensed table-hover">
         <thead>
             <tr>
-                <th width="35%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td valign="top" class="legend-heading" style="padding-left: 0px; margin-left: 0px">
-                                <span class="legend-curcode"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top" style="padding: 0 0 0px;">
-                                <small style="font-size:11px; ">
-                                    <span class="legend-currency-code-update"></span>
-                                </small>
-                            </td>
-                        </tr>
-                    </table>
-                </th>
+                <td width="35%" valign="top" style="padding:6px 0 11px; border-bottom:none;">
+                    <div class="legend-heading" >
+                        <span class="legend-curcode"></span>
+                    </div>
 
-                <th width="30%" valign="top" style="vertical-align:top; padding:24px 0 16px 20px;  border-bottom:none; text-align:left;"><span style="font-size:15px;">
-                    <strong style=" display: block; line-height:9px;">
-                        <small style="color:#999999;">ask</small>
+                    <div>
+                        <span class="legend-currency-code-update"></span>
+                    </div>
+                </td>
+
+                <td width="30%">
+                    <div>
+                        <small class="operation-label">ask</small>
                         <span id="legend-ask"></span>
-                    </strong>
-                    <strong style=" display: block;">
-                        <small style="color:#999999;">bid</small>
+                    </div>
+
+                    <div>
+                        <small class="operation-label">bid</small>
                         <span id="legend-bid"></span>
-                    </strong></span>
-                </th>
+                    </div>
+                </td>
 
 
-                <th width="35%" valign="top" style="text-align:right; padding:6px 0 11px; border-bottom:none;">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td valign="top" class="legend-heading" style="padding-left: 0px; margin-left: 0px">
-                                <span id="legend-last"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top" style="padding: 0 0 0px;">
-                                <small style="font-size:11px; ">
-                                    data <span id="legend-update-time-ago"></span> old
-                                </small>
-                            </td>
-                        </tr>
-                    </table>
-                </th>
+                <td width="35%" class="last-price">
+                    <div>
+                        <span id="legend-last"></span>
+                    </div>
+
+                    <div>
+                        <small>
+                            data <span id="legend-update-time-ago"></span> old
+                        </small>
+                    </div>
+                </td>
             </tr>
         </thead>
         <tbody>

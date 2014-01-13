@@ -285,7 +285,46 @@ ul{
     width: 250px;
 }
 .arrows{font-size: 2em; }
-.legend-heading{font-size: 2.3em; font-weight: bold; color: #4F4F4F;}
+
+/* legend table start */
+
+.legend-table thead th {
+    vertical-align: top;
+}
+.legend-currency-code-update {
+
+}
+
+.legend-table .legend-heading .legend-curcode{
+    font-size: 26px;
+    font-weight: bold;
+    color: #4F4F4F;
+}
+.legend-table .last-price {
+    text-align: right;
+}
+.legend-table  div .operation-label {
+    font-size: 13px;
+    color: #999999;
+    font-weight: bold;
+}
+.legend-table .last-price div #legend-last {
+    font-size: 26px;
+    font-weight: bold;
+
+}
+.legend-table .legend-currency-code-update,
+.legend-table .last-price div small {
+    font-size: 11px;
+    font-weight: bold;
+}
+.legend-table  div #legend-bid,
+.legend-table  div #legend-ask {
+    color: #4F4F4F;
+    font-size: 15px;
+    font-weight: bold;
+}
+/* legend table [end] */
 
 
 .slot-global-bid_ask{font-size: 1.5em; font-weight: bold; }
@@ -871,7 +910,7 @@ footer .row{
 .bitcoin-calc .bitcoin-field__wrapper .label i{
     font-size: 20px;
 }
-.bitcoin-calc .bitcoin-field__wrapper .label:hover {
+.bitcoin-calc .bitcoin-field__wrapper .currency-label:hover {
     cursor: pointer;
 }
 
