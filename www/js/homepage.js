@@ -81,21 +81,20 @@ var renderAll = function(result, status, responseObj){
 
         $('#currency-input').focus();
         firstRenderDone = true;
-
     } else {
         renderSelect(selectedFiatCurrency);
     }
 };
-var renderSelect = function(currencyHash) {
 
-    var isPrimaryCurrency = isCurrencyBelongsToPrimaryList();
+var renderSelect = function(currencyCode) {
+    var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(currencyCode);
     if(isPrimaryCurrency){
-        renderSmallChart(currencyHash);
+        renderSmallChart(currencyCode);
+    } else {
+        renderLegendForExtendedCurrencyList(currencyCode);
     }
-    else {
-        renderLegendForExtendedCurrencyList(currencyHash);
-    }
-}
+};
+
 var renderMarketsData = function(apiData, currency){
     var globalAverageData = JSON.parse(JSON.stringify(apiData));
     globalAverageData = $.map(globalAverageData, function(value, index) {

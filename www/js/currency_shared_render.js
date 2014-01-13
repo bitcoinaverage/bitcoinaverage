@@ -109,14 +109,13 @@ var currencyNavigation = function(event){
         selectedFiatCurrency = curCode;
 
         var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(curCode);
-        if ( isPrimaryCurrency ){
+        if (isPrimaryCurrency){
             $('.highcharts-container').show();
             renderLegend(curCode);
             renderSmallChart(curCode);
             $('.calculator-currency-switch').slideUp();
             $('#global-last').html(API_data[curCode].global_averages.last.toFixed(config.precision));
-        }
-        else {
+        } else {
             renderLegendForExtendedCurrencyList(curCode);
         }
 
@@ -125,7 +124,6 @@ var currencyNavigation = function(event){
         $('.currency-navigation li').removeClass('active');
 
         $('.currency-navigation').find("[data-currencycode='" + curCode + "']").addClass('active');
-
 
         var currentHash = window.location.hash;
         var currentLocation = document.location.href;
@@ -136,7 +134,6 @@ var currencyNavigation = function(event){
         window.location.replace(newLocation);
     }
 };
-
 
 var changeBaseButtonClick = function(event){
     var button = $(this);
@@ -178,7 +175,6 @@ var changeBaseButtonClick = function(event){
     calc_renderBitcoin(1, $.cookie('base'));
 
     callAPI(function(result){
-
         renderAll(result);
 
         var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(selectedFiatCurrency);
