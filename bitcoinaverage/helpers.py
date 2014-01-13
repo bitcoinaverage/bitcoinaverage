@@ -221,6 +221,7 @@ def write_api_index_files():
             index_contents['monthly_sliding'] = '%s%s/per_hour_monthly_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
             index_contents['all_time'] = '%s%s/per_day_all_time_history.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
             index_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+            index_contents['global_24h_sliding'] = '%s%s/per_minute_24h_global_average_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
             index_file.write(json.dumps(index_contents, indent=2, sort_keys=True, separators=(',', ': ')))
 
     global ba
