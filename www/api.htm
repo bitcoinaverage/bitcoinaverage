@@ -83,8 +83,31 @@
                         This manual assumes that you are familiar with software development in general and understood all of the above.
                     </blockquote>
 
-                    <h3>Ticker API</h3>
+                    <h3>Global tickers API</h3>
                     <blockquote>
+                        <a href="explain.htm">Global weighted average</a> ticker API endpoints list is available at
+                        <a href="https://api.bitcoinaverage.com/ticker/global/">https://api.bitcoinaverage.com/ticker/global/</a>.
+                        Currencies dedicated endpoints are available at
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/global/&lt;UPPERCASE_CURRENCY_CODE&gt;/</b>.
+                        Aggregated ticker showing all currencies at once is available at
+                        <a href="https://api.bitcoinaverage.com/ticker/global/all" style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/global/all</a>.
+                        Ticker fields:
+                        <ul>
+                            <li><b>ask</b>: weighted average of ask prices</li>
+                            <li><b>bid</b>: weighted average of bid prices</li>
+                            <li><b>last</b>: weighted average of last prices</li>
+                            <li><b>volume_btc</b>: total trading volume across all exchanges in this currency in last 24 hours</li>
+                            <li><b>volume_percent</b>: percent of global ฿ trading volume</li>
+                        </ul>
+                        Each ticker field is available as a plain text value via separate request to it's own name.
+                        E.g. <a href="https://api.bitcoinaverage.com/ticker/global/USD/last" style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/global/USD/last</a>
+                        will return only USD last trading price value, as plain text.
+                    </blockquote>
+
+                    <h3>Market tickers API</h3>
+                    <blockquote>
+                        Market tickers represent only currencies that are directly traded to Bitcoin and thus have actual
+                        markets of it's own. Each currency has it's own average market price.
                         Ticker API endpoints list is available at
                         <a href="https://api.bitcoinaverage.com/ticker/">https://api.bitcoinaverage.com/ticker/</a>.
                         Currencies dedicated endpoints are available at
@@ -99,6 +122,9 @@
                             <li><b>last</b>: weighted average of last prices</li>
                             <li><b>total_vol</b>: total trading volume across all exchanges in last 24 hours</li>
                         </ul>
+                        Each ticker field is available as a plain text value via separate request to it's own name.
+                        E.g. <a href="https://api.bitcoinaverage.com/ticker/USD/last" style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/USD/last</a>
+                        will return only USD last trading price value, as plain text.
                     </blockquote>
 
                     <h3>Exchange volume API</h3>
@@ -149,19 +175,20 @@
                         with values that are wrapped in quotes.
                     </blockquote>
 
-                    <h3>'no-mtgox' API subset</h3>
+                    <h3>deprecated 'no-mtgox' API subset</h3>
                     <blockquote>
-                        <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/</a>
-                        provides access to ticker and exchange volume data with
-                        MtGox excluded from calculations. This API subset has own ticker endpoints (list available at
-                        <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/ticker/</a>)
-                        and exchange volume endpoints (list available at
-                        <a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/exchanges/</a>). <br>
-                        Both ticker and exchanges in no-mtgox subset have same structure as the main ticker and exchanges API.
-                        No-mtgox API has no dedicated History endpoints. <br>
-                        <b>NB!</b> MtGox is excluded from calculations only for USD, EUR and GBP where it plays a significant
-                        part yes is not the only option. MtGox is still used for other currencies where it's either has
-                        negligible volumes (eg RUB) or is the only market-making exchange (eg JPY).
+                        <b>This API subset is deprecated and will be removed in future!</b><br>
+                        <!--<a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/</a>-->
+                        <!--provides access to ticker and exchange volume data with-->
+                        <!--MtGox excluded from calculations. This API subset has own ticker endpoints (list available at-->
+                        <!--<a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/ticker/</a>)-->
+                        <!--and exchange volume endpoints (list available at-->
+                        <!--<a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/exchanges/</a>). <br>-->
+                        <!--Both ticker and exchanges in no-mtgox subset have same structure as the main ticker and exchanges API.-->
+                        <!--No-mtgox API has no dedicated History endpoints. <br>-->
+                        <!--<b>NB!</b> MtGox is excluded from calculations only for USD, EUR and GBP where it plays a significant-->
+                        <!--part yes is not the only option. MtGox is still used for other currencies where it's either has-->
+                        <!--negligible volumes (eg RUB) or is the only market-making exchange (eg JPY).-->
                     </blockquote>
 
                     <h3>Ignored exchanges</h3>
