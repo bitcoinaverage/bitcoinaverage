@@ -785,12 +785,12 @@ def _krakenApiCall(usd_ticker_url, eur_ticker_url, *args, **kwargs):
     result['USD'] = {'ask': Decimal(usd_ticker['result']['XXBTZUSD']['a'][0]).quantize(DEC_PLACES),
                      'bid': Decimal(usd_ticker['result']['XXBTZUSD']['b'][0]).quantize(DEC_PLACES),
                      'last': Decimal(usd_ticker['result']['XXBTZUSD']['c'][0]).quantize(DEC_PLACES),
-                     'volume': Decimal(usd_ticker['result']['XXBTZUSD']['v'][0]).quantize(DEC_PLACES),
+                     'volume': Decimal(usd_ticker['result']['XXBTZUSD']['v'][1]).quantize(DEC_PLACES),
                      }
     result['EUR'] = {'ask': Decimal(eur_ticker['result']['XXBTZEUR']['a'][0]).quantize(DEC_PLACES),
                      'bid': Decimal(eur_ticker['result']['XXBTZEUR']['b'][0]).quantize(DEC_PLACES),
                      'last': Decimal(eur_ticker['result']['XXBTZEUR']['c'][0]).quantize(DEC_PLACES),
-                     'volume': Decimal(eur_ticker['result']['XXBTZEUR']['v'][0]).quantize(DEC_PLACES),
+                     'volume': Decimal(eur_ticker['result']['XXBTZEUR']['v'][1]).quantize(DEC_PLACES),
                      }
     return result
 
