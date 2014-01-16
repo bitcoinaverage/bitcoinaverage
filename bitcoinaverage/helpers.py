@@ -315,13 +315,15 @@ def write_api_index_files():
 
     api_nogox_ticker_index = {}
     api_nogox_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + API_FILES['ALL_FILE']
-    api_nogox_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])
+    api_nogox_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'])
     for currency_code in ba.config.CURRENCY_LIST:
         api_nogox_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + currency_code
         if not os.path.exists(os.path.join(api_nogox_ticker_folder_path, currency_code)):
             os.makedirs(os.path.join(api_nogox_ticker_folder_path, currency_code))
     with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
         index_file.write(json.dumps(api_nogox_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+
+
 
     #api nogox global tickers index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])):
@@ -330,7 +332,12 @@ def write_api_index_files():
     api_ticker_index = {}
     api_ticker_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + API_FILES['ALL_FILE']
     api_nogox_global_ticker_folder_path = os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])
-    for currency_code in ba.config.CURRENCY_LIST:
+
+    fiat_exchange_rates_url = ba.server.API_INDEX_URL + 'fiat_data'
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        result = urllib2.urlopen(urllib2.Request(url=fiat_exchange_rates_url, headers=API_REQUEST_HEADERS)).read()
+        fiat_currencies_list = json.loads(result)
+    for currency_code in fiat_currencies_list:
         api_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
         if not os.path.exists(os.path.join(api_nogox_global_ticker_folder_path, currency_code)):
             os.makedirs(os.path.join(api_nogox_global_ticker_folder_path, currency_code))
