@@ -261,7 +261,7 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
         calc_renderFiat(last * bitCoinInputValue);
 
         $('#legend-bid').html(bid);
-        $('#legend-bid').html(ask);
+        $('#legend-ask').html(ask);
         $('#global-last').html(last);
 
         $('#legend-bid, #legend-ask, #legend-last').formatCurrency({symbol: '',
