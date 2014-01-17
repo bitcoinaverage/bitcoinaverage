@@ -20,7 +20,6 @@ import bitcoinaverage.helpers as helpers
 
 
 def get24hAverage(currency_code):
-    average_price = DEC_PLACES
     history_currency_API_24h_path = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
 
     try:
@@ -34,7 +33,7 @@ def get24hAverage(currency_code):
             urllib2.URLError,
             httplib.BadStatusLine,
             CallTimeoutException):
-        return 0
+        return DEC_PLACES
 
     csvfile = StringIO.StringIO(csv_result)
     csvreader = csv.reader(csvfile, delimiter=',')
@@ -47,6 +46,43 @@ def get24hAverage(currency_code):
             continue
         try:
             price_sum = price_sum + Decimal(row[1])
+            index = index + 1
+        except (IndexError, InvalidOperation):
+            continue
+    try:
+        average_price = (price_sum / Decimal(index)).quantize(DEC_PLACES)
+    except InvalidOperation:
+        average_price = DEC_PLACES
+
+    return average_price
+
+def get24hGlobalAverage(currency_code):
+    history_currency_API_24h_path = '%s%s/per_minute_24h_global_average_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+
+    try:
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            csv_result = urllib2.urlopen(urllib2.Request(url=history_currency_API_24h_path, headers=API_REQUEST_HEADERS)).read()
+    except (
+            KeyError,
+            ValueError,
+            socket.error,
+            simplejson.decoder.JSONDecodeError,
+            urllib2.URLError,
+            httplib.BadStatusLine,
+            CallTimeoutException):
+        return DEC_PLACES
+
+    csvfile = StringIO.StringIO(csv_result)
+    csvreader = csv.reader(csvfile, delimiter=',')
+    price_sum = DEC_PLACES
+    index = 0
+    header_passed = False
+    for row in csvreader:
+        if not header_passed:
+            header_passed = True
+            continue
+        try:
+            price_sum = price_sum + Decimal(row[len(row)-1])
             index = index + 1
         except (IndexError, InvalidOperation):
             continue
@@ -108,6 +144,11 @@ def calculateAllGlobalAverages(calculated_average_rates, total_currency_volumes)
         global_averages[currency_local]['last'] = global_averages[currency_local]['last'].quantize(DEC_PLACES)
         global_averages[currency_local]['bid'] = global_averages[currency_local]['bid'].quantize(DEC_PLACES)
         global_averages[currency_local]['ask'] = global_averages[currency_local]['ask'].quantize(DEC_PLACES)
+        currency_local_24h_avg = get24hGlobalAverage(currency_local)
+        if currency_local_24h_avg > DEC_PLACES:
+            global_averages[currency_local]['24h_avg'] = currency_local_24h_avg
+        else:
+            global_averages[currency_local]['24h_avg'] = None
 
     return global_averages, global_volume_percents
 
@@ -283,6 +324,11 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
             calculated_global_average_rates[currency]['bid'] = float(calculated_global_average_rates[currency]['bid'])
         except TypeError:
             calculated_global_average_rates[currency]['bid'] = str(calculated_global_average_rates[currency]['bid'])
+        try:
+            calculated_global_average_rates[currency]['24h_avg'] = float(calculated_global_average_rates[currency]['24h_avg'])
+        except TypeError:
+            calculated_global_average_rates[currency]['24h_avg'] = str(calculated_global_average_rates[currency]['24h_avg'])
+
         if currency in CURRENCY_LIST:
             try:
                 calculated_global_average_rates[currency]['volume_btc'] = float(total_currency_volumes[currency])
