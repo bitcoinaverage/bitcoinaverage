@@ -147,8 +147,6 @@ def calculateAllGlobalAverages(calculated_average_rates, total_currency_volumes)
         currency_local_24h_avg = get24hGlobalAverage(currency_local)
         if currency_local_24h_avg > DEC_PLACES:
             global_averages[currency_local]['24h_avg'] = currency_local_24h_avg
-        else:
-            global_averages[currency_local]['24h_avg'] = None
 
     return global_averages, global_volume_percents
 
@@ -328,6 +326,8 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
             calculated_global_average_rates[currency]['24h_avg'] = float(calculated_global_average_rates[currency]['24h_avg'])
         except TypeError:
             calculated_global_average_rates[currency]['24h_avg'] = str(calculated_global_average_rates[currency]['24h_avg'])
+        except KeyError:
+            pass
 
         if currency in CURRENCY_LIST:
             try:
