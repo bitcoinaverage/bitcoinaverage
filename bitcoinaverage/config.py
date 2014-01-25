@@ -29,7 +29,7 @@ FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to ou
 HISTORY_QUERY_FREQUENCY = 15 #seconds between history_daemon requests
 FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates, must be not less than an hour,
                                   # as total API queries amount limited at 1000/month
-API_CALL_TIMEOUT_THRESHOLD = 3 #seconds before exchange API call timeout. exchange may have multiple calls
+API_CALL_TIMEOUT_THRESHOLD = 15 #seconds before exchange API call timeout. exchange may have multiple calls
                                 #and total time spent querying one exchange will be threshold * number of calls
 
 #seconds between calls to various exchanges APIs
