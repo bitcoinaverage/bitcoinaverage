@@ -1,4 +1,5 @@
 from decimal import Decimal
+import time
 
 import bitcoinaverage.server
 
@@ -28,14 +29,13 @@ FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to ou
 HISTORY_QUERY_FREQUENCY = 15 #seconds between history_daemon requests
 FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates, must be not less than an hour,
                                   # as total API queries amount limited at 1000/month
-API_CALL_TIMEOUT_THRESHOLD = 15 #seconds before exchange API call timeout. exchange may have multiple calls
+API_CALL_TIMEOUT_THRESHOLD = 3 #seconds before exchange API call timeout. exchange may have multiple calls
                                 #and total time spent querying one exchange will be threshold * number of calls
 
 #seconds between calls to various exchanges APIs
-API_QUERY_FREQUENCY = {
-                        'default': 60,
+API_QUERY_FREQUENCY = { 'default': 60,
                         'bitcoincharts': 900,
-}
+                        }
 
 
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
@@ -161,6 +161,7 @@ EXCHANGE_LIST = {
                     'btcchina':  {'ticker_url': 'https://data.btcchina.com/data/ticker',
                                     },
                     'fxbtc':  {'ticker_url': 'https://data.fxbtc.com/api?op=query_ticker&symbol=btc_cny',
+                               'trades_url_template': 'https://data.fxbtc.com/api?op=query_history_trades&symbol=btc_cny&since={timestamp_sec}000000', #zeroes for millisec
                                     },
                     'bter':  {'ticker_url': 'https://bter.com/api/1/ticker/btc_cny',
                                     },
@@ -217,6 +218,18 @@ EXCHANGE_LIST = {
                                          },
                     'bitonic': {'ticker_url': 'https://bitonic.nl/api/price',
                                          },
+                    'itbit':  { 'usd_orders_url': 'https://www.itbit.com/api/v2/markets/XBTUSD/orders',
+                                'usd_trades_url': 'https://www.itbit.com/api/v2/markets/XBTUSD/trades?since=0',
+                                'sgd_orders_url': 'https://www.itbit.com/api/v2/markets/XBTSGD/orders',
+                                'sgd_trades_url': 'https://www.itbit.com/api/v2/markets/XBTSGD/trades?since=0',
+                                'eur_orders_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/orders',
+                                'eur_trades_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/trades?since=0',
+                                 },
+
+                    'vaultofsatoshi':  {'usd_ticker_url': 'https://api.vaultofsatoshi.com/public/ticker?order_currency=BTC&payment_currency=USD',
+                                        'eur_ticker_url': 'https://api.vaultofsatoshi.com/public/ticker?order_currency=BTC&payment_currency=EUR',
+                                        },
+
 
 
 
@@ -250,12 +263,6 @@ EXCHANGE_LIST = {
 
 
 
-                    'itbit':  {'usd_url': 'https://www.itbit.com/api/feeds/ticker/XBTUSD',
-                               'eur_url': 'https://www.itbit.com/api/feeds/ticker/XBTEUR',
-                               'sgd_url': 'https://www.itbit.com/api/feeds/ticker/XBTSGD',
-                               'ignored': True,
-                               'ignore_reason': 'API period incompatible',
-                                 },
                     'coinmkt':  {'ignored': True,
                                  'ignore_reason': 'no API available',
                                  },

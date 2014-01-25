@@ -47,7 +47,6 @@ def callAPI(exchange_name):
     result = None
     exchange_ignore_reason = None
 
-
     if exchange_name not in API_QUERY_CACHE:
         API_QUERY_CACHE[exchange_name] = {'last_call_timestamp': 0,
                                            'result': None,
@@ -67,7 +66,7 @@ def callAPI(exchange_name):
                 else:
                     if '_{exchange_name}ApiCall'.format(exchange_name=exchange_name) in globals():
                         try:
-                            result = globals()['_%sApiCall' % exchange_name](**EXCHANGE_LIST[exchange_name])
+                            result = globals()['_{}ApiCall'.format(exchange_name)](**EXCHANGE_LIST[exchange_name])
                             result['data_source'] = 'api'
                         except (
                                 KeyError,
@@ -653,15 +652,35 @@ def _btcchinaApiCall(ticker_url, *args, **kwargs):
             }
 
 
-def _fxbtcApiCall(ticker_url, *args, **kwargs):
+def _fxbtcApiCall(ticker_url, trades_url_template, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
+    timestamp_24h = int(time.time() - 86400)
+    current_timestamp = timestamp_24h
+    volume = DEC_PLACES
+    index = 0 #just for safety
+    while True:
+        trades_url = trades_url_template.format(timestamp_sec=current_timestamp)
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+            trades = json.loads(response)
+
+        for trade in trades['datas']:
+            if timestamp_24h < int(trade['date']):
+                volume = volume + Decimal(trade['vol'])
+            if current_timestamp < int(trade['date']):
+                current_timestamp = int(trade['date'])
+
+        index = index + 1
+        if len(trades['datas']) == 0 or index > 10000:
+            break
+
     return {'CNY': {'ask': Decimal(ticker['ticker']['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['ticker']['bid']).quantize(DEC_PLACES),
                     'last': Decimal(ticker['ticker']['last_rate']).quantize(DEC_PLACES),
-                    'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
+                    'volume': Decimal(volume).quantize(DEC_PLACES),
                     },
             }
 
@@ -1081,4 +1100,85 @@ def _bitonicApiCall(ticker_url, *args, **kwargs):
                      'last': Decimal(ticker['price']).quantize(DEC_PLACES),
                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
                      }
+    return result
+
+
+def _itbitApiCall(usd_orders_url, usd_trades_url, sgd_orders_url, sgd_trades_url, eur_orders_url, eur_trades_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_orders_url, headers=API_REQUEST_HEADERS)).read()
+        usd_orders = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_trades_url, headers=API_REQUEST_HEADERS)).read()
+        usd_trades = json.loads(response)
+
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=sgd_orders_url, headers=API_REQUEST_HEADERS)).read()
+        sgd_orders = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=sgd_trades_url, headers=API_REQUEST_HEADERS)).read()
+        sgd_trades = json.loads(response)
+
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_orders_url, headers=API_REQUEST_HEADERS)).read()
+        eur_orders = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_trades_url, headers=API_REQUEST_HEADERS)).read()
+        eur_trades = json.loads(response)
+
+    def __calculate(trades, orders):
+        volume = DEC_PLACES
+        last_24h_timestamp = time.time()-86400
+        last_trade_timestamp = 0
+        last_trade_price = DEC_PLACES
+        for trade in trades:
+            if trade['date'] > last_24h_timestamp:
+                volume = volume + trade['amount']
+            if trade['date'] > last_trade_timestamp:
+                last_trade_price = trade['price']
+
+        bid = 0
+        for bid_order in orders['bids']:
+            if bid < bid_order[0] or bid == 0:
+                bid = bid_order[0]
+
+        ask = 0
+        for ask_order in orders['asks']:
+            if ask > ask_order[0] or ask == 0:
+                ask = ask_order[0]
+
+
+        return {'ask': Decimal(ask).quantize(DEC_PLACES),
+                'bid': Decimal(bid).quantize(DEC_PLACES),
+                'last': Decimal(last_trade_price).quantize(DEC_PLACES),
+                'volume': Decimal(volume).quantize(DEC_PLACES),
+                     }
+
+    result = {}
+    result['USD']= __calculate(usd_trades, usd_orders)
+    result['SGD']= __calculate(sgd_trades, sgd_orders)
+    result['EUR']= __calculate(eur_trades, eur_orders)
+    return result
+
+
+def _vaultofsatoshiApiCall(usd_ticker_url, eur_ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        usd_ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        eur_ticker = json.loads(response)
+
+
+    result = {}
+    result['USD'] = {'ask': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                     'bid': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                     'last': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                     'volume': Decimal(usd_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
+                     }
+    if eur_ticker['data']['volume_1day']['value'] > 0:
+        result['EUR'] = {'ask': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'bid': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'last': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'volume': Decimal(eur_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
+                         }
     return result
