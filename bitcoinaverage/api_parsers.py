@@ -1132,13 +1132,13 @@ def _itbitApiCall(usd_orders_url, usd_trades_url, sgd_orders_url, sgd_trades_url
 
     def __calculate(trades, orders):
         volume = DEC_PLACES
-        last_24h_timestamp = time.time()-86400
+        last_24h_timestamp = int(time.time())-86400
         last_trade_timestamp = 0
         last_trade_price = DEC_PLACES
         for trade in trades:
-            if trade['date'] > last_24h_timestamp:
-                volume = volume + trade['amount']
-            if trade['date'] > last_trade_timestamp:
+            if int(trade['date']) > last_24h_timestamp:
+                volume = volume + Decimal(trade['amount'])
+            if int(trade['date']) > last_trade_timestamp:
                 last_trade_price = trade['price']
 
         bid = 0
