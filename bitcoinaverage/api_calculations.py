@@ -196,6 +196,7 @@ def calculateRelativeVolumes(exchanges_rates, total_currency_volumes, total_curr
                                                                                 'last': rate[currency]['last'],
                                                                                     }
                 calculated_volumes[currency][rate['exchange_name']]['source'] = rate['data_source']
+                calculated_volumes[currency][rate['exchange_name']]['display_name'] = rate['exchange_display_name']
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
 
@@ -283,6 +284,7 @@ def formatDataForAPI(calculated_average_rates, calculated_volumes, total_currenc
 
         for exchange_name in EXCHANGE_LIST:
             if currency in calculated_volumes and exchange_name in calculated_volumes[currency]:
+                calculated_volumes[currency][exchange_name]['display_name'] = calculated_volumes[currency][exchange_name]['display_name']
                 try:
                     calculated_volumes[currency][exchange_name]['rates']['last'] = float(calculated_volumes[currency][exchange_name]['rates']['last'])
                 except TypeError:

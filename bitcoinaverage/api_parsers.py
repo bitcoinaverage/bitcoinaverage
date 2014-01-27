@@ -34,6 +34,10 @@ def callAll():
         if exchange_ignore_reason is None:
             if exchange_data is not None:
                 exchange_data['exchange_name'] = exchange_name
+                try:
+                    exchange_data['exchange_display_name'] = EXCHANGE_LIST[exchange_name]['display_name']
+                except KeyError:
+                    exchange_data['exchange_display_name'] = exchange_name
                 exchanges_rates.append(exchange_data)
         else:
             exchanges_ignored[exchange_name] = exchange_ignore_reason
@@ -661,7 +665,7 @@ def _fxbtcApiCall(ticker_url, trades_url_template, *args, **kwargs):
     current_timestamp = timestamp_24h
     volume = DEC_PLACES
     index = 0 #just for safety
-    while True:
+    while index < 100:
         trades_url = trades_url_template.format(timestamp_sec=current_timestamp)
         with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
             response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
@@ -673,9 +677,10 @@ def _fxbtcApiCall(ticker_url, trades_url_template, *args, **kwargs):
             if current_timestamp < int(trade['date']):
                 current_timestamp = int(trade['date'])
 
-        index = index + 1
-        if len(trades['datas']) == 0 or index > 10000:
+        if len(trades['datas']) == 0:
             break
+
+        index = index + 1
 
     return {'CNY': {'ask': Decimal(ticker['ticker']['ask']).quantize(DEC_PLACES),
                     'bid': Decimal(ticker['ticker']['bid']).quantize(DEC_PLACES),
@@ -1181,4 +1186,17 @@ def _vaultofsatoshiApiCall(usd_ticker_url, eur_ticker_url, *args, **kwargs):
                          'last': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
                          'volume': Decimal(eur_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
                          }
+    return result
+
+def _quickbitcoinApiCall(gbp_ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=gbp_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        gbp_ticker = json.loads(response)
+
+    result = {}
+    result['GBP'] = {'ask': Decimal(gbp_ticker['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(gbp_ticker['sell']).quantize(DEC_PLACES),
+                     'last': Decimal(gbp_ticker['sell']).quantize(DEC_PLACES),
+                     'volume': Decimal(gbp_ticker['volume24']).quantize(DEC_PLACES),
+                     }
     return result

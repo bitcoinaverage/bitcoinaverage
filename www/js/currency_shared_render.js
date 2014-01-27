@@ -53,7 +53,7 @@ var renderWorldCurrencies = function() {
 
 // Render secondary currencies menu
 var renderSecondaryCurrencies = function (){
-    var secondaryCurrencies = config.currencyOrder.slice(config.majorCurrencies+1);
+    var secondaryCurrencies = config.currencyOrder.slice(config.majorCurrencies);
     var currencyIndex = config.majorCurrencies + 1;
     var secondaryCurrenciesList = '';
     for (var secondaryCurrencyIndex in secondaryCurrencies) {
