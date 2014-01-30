@@ -1,5 +1,7 @@
 *this is the source of BitcoinAverage.com website*
 
+*licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License*
+
 run instructions
 ---------------------
 - download sources
