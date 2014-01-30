@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
     
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
     <link href="css/lightbox.css" rel="stylesheet" type="text/css" />
 
@@ -18,7 +18,6 @@
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="js/lib/lightbox.js"></script>
-
 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
 </head>
@@ -71,10 +70,10 @@
                         BitcoinAverage API can be found at <a href="https://api.bitcoinaverage.com/" target="_blank">https://api.bitcoinaverage.com/</a>. <br>
                         API allows you to access all data available on site and is read only.<br>
                         API is accessible via HTTP GET in JSON format for current data and in CSV format for historical data.
-                        API doesn't provide JSONP, however is does support cross-origin resource sharing and provides HTTP header
-                        <b>Access-Control-Allow-Origin: *</b> allowing unlimited crossdomain AJAX calls.<br>
+                        API doesn't provide JSONP, however it does support cross-origin resource sharing and provides HTTP header
+                        <code>Access-Control-Allow-Origin: *</code> allowing unlimited crossdomain AJAX calls.<br>
                         API is updated along with the site, normally around every minute.
-                        There is no explicit restriction about how often you can call the API, yet calling it more often
+                        There is no explicit restriction on how often you can call the API, however calling it more
                         than once a minute makes no sense. Please be good.<br>
                         Each API level starting from the top provides you with a self-explanatory JSON document containing
                         links to deeper levels of API up to data endpoints.<br>
@@ -99,7 +98,7 @@
                             <li><b>volume_btc</b>: total trading volume across all exchanges in this currency in last 24 hours</li>
                             <li><b>volume_percent</b>: percent of global ฿ trading volume</li>
                         </ul>
-                        Each ticker field is available as a plain text value via separate request to it's own name.
+                        Each ticker field is available as a plain text value via separate request to its own name.
                         E.g. <a href="https://api.bitcoinaverage.com/ticker/global/USD/last" style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/global/USD/last</a>
                         will return only USD last trading price value, as plain text.
                     </blockquote>
@@ -107,11 +106,11 @@
                     <h3>Market tickers API</h3>
                     <blockquote>
                         Market tickers represent only currencies that are directly traded to Bitcoin and thus have actual
-                        markets of it's own. Each currency has it's own average market price.
+                        markets of its own. Each currency has its own average market price.
                         Ticker API endpoints list is available at
                         <a href="https://api.bitcoinaverage.com/ticker/">https://api.bitcoinaverage.com/ticker/</a>.
                         Currencies dedicated endpoints are available at
-                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>.
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/&lt;UPPERCASE_CURRENCY_CODE&gt;/</b>.
                         Aggregated ticker showing all currencies at once is available at
                         <b style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/all</b>.
                         Ticker fields:
@@ -122,7 +121,7 @@
                             <li><b>last</b>: weighted average of last prices</li>
                             <li><b>total_vol</b>: total trading volume across all exchanges in last 24 hours</li>
                         </ul>
-                        Each ticker field is available as a plain text value via separate request to it's own name.
+                        Each ticker field is available as a plain text value via separate request to its own name.
                         E.g. <a href="https://api.bitcoinaverage.com/ticker/USD/last" style="white-space: nowrap;">https://api.bitcoinaverage.com/ticker/USD/last</a>
                         will return only USD last trading price value, as plain text.
                     </blockquote>
@@ -132,10 +131,10 @@
                         Exchange volume API URL list is available at
                         <a href="https://api.bitcoinaverage.com/exchanges/">https://api.bitcoinaverage.com/exchanges/</a>.
                         Currencies dedicated exchange volume endpoints available at
-                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>.
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/&lt;UPPERCASE_CURRENCY_CODE&gt;/</b>.
                         Aggregated document showing all currencies volumes at once is available at
                         <b style="white-space: nowrap;">https://api.bitcoinaverage.com/exchanges/all</b>.
-                        Each exchange volume endpoint document is broken down by exchanges.
+                        Each exchange volume endpoint document is broken down by exchange.
                         Each exchange has these fields:
                         <ul>
                             <li><b>rates</b>: subset of current ask, bid and last values for exchange to date</li>
@@ -149,8 +148,8 @@
                     <h3>Historical data</h3>
                     <blockquote>
                         Historical data URL list is available at <a href="https://api.bitcoinaverage.com/history/">https://api.bitcoinaverage.com/history/</a>.
-                        Currencies dedicated histrical data URL lists available at 
-                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;</b>. <br>
+                        A list of historical data CSV files for any currency can be obtained at 
+                        <b style="white-space: nowrap;">https://api.bitcoinaverage.com/history/&lt;UPPERCASE_CURRENCY_CODE&gt;/</b>. <br>
 
                         Each currency has four CSV endpoints:
                         <ul>
@@ -175,7 +174,7 @@
                         with values that are wrapped in quotes.
                     </blockquote>
 
-                    <h3>deprecated 'no-mtgox' API subset</h3>
+                    <h3>Deprecated 'no-mtgox' API subset</h3>
                     <blockquote>
                         <b>This API subset is deprecated and will be removed in future!</b><br>
                         <!--<a href="https://api.bitcoinaverage.com/no-mtgox/">https://api.bitcoinaverage.com/no-mtgox/</a>-->
@@ -187,7 +186,7 @@
                         <!--Both ticker and exchanges in no-mtgox subset have same structure as the main ticker and exchanges API.-->
                         <!--No-mtgox API has no dedicated History endpoints. <br>-->
                         <!--<b>NB!</b> MtGox is excluded from calculations only for USD, EUR and GBP where it plays a significant-->
-                        <!--part yes is not the only option. MtGox is still used for other currencies where it's either has-->
+                        <!--part yes is not the only option. MtGox is still used for other currencies where it either has-->
                         <!--negligible volumes (eg RUB) or is the only market-making exchange (eg JPY).-->
                     </blockquote>
 
