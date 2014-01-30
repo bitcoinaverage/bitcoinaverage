@@ -23,7 +23,7 @@ This folder must be web accessible as web API.
 - /www folder - actual website. Static, must be web accessible. Files in /www/charts/* and /www/currencies/* are generated automatically and are not meant to be user viewed. 
 
 
-Whole frontend is JS-diven, it fetches JSON API via AJAX and renders the page. 
+Whole frontend is JS-driven, it fetches JSON API via AJAX and renders the page. 
 
 
 *Feel free to contact us at bitcoinaverage@gmail.com for with questions on any matters about this system and website.*
