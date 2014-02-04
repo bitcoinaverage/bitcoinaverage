@@ -78,6 +78,8 @@ while True:
 
     cycle_time = int(time.time())-start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)
-    print '%s, sleeping %ss - api daemon' % (human_timestamp, str(sleep_time))
+    print '{timestamp}, spent {spent}s, sleeping {sleep}s - api daemon'.format(timestamp=human_timestamp,
+                                                                               spent=cycle_time,
+                                                                               sleep=str(sleep_time))
 
     time.sleep(sleep_time)

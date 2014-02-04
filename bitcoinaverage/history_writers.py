@@ -98,7 +98,7 @@ def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_cod
 
     csv_currency_titles.append('datetime')
 
-    for currency in currency_data_all:
+    for currency in CURRENCY_LIST:
         csv_currency_titles.append(currency + ' ' + 'volume')
         csv_currency_titles.append(currency + ' ' + 'average')
         csv_currency_titles.append(currency + ' ' + 'rate')

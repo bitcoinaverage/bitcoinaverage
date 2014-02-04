@@ -664,10 +664,10 @@ def _fxbtcApiCall(ticker_url, trades_url_template, *args, **kwargs):
     timestamp_24h = int(time.time() - 86400)
     current_timestamp = timestamp_24h
     volume = DEC_PLACES
-    index = 0 #just for safety
-    while index < 100:
+    index = 0
+    while index < 20: #just for safety
         trades_url = trades_url_template.format(timestamp_sec=current_timestamp)
-        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        with Timeout(5, CallTimeoutException):
             response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
             trades = json.loads(response)
 
