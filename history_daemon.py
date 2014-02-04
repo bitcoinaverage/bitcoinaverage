@@ -49,13 +49,16 @@ while True:
     current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
 
     for currency_code in CURRENCY_LIST:
-        history_writers.write_24h_csv(currency_code, current_data_all[currency_code]['averages'], current_data_timestamp)
-        history_writers.write_1mon_csv(currency_code, current_data_timestamp)
-        history_writers.write_forever_csv(currency_code, current_data_all[currency_code]['averages']['total_vol'], current_data_timestamp)
-        history_writers.write_volumes_csv(currency_code, current_data_all[currency_code], current_data_timestamp)
+        try:
+            history_writers.write_24h_csv(currency_code, current_data_all[currency_code]['averages'], current_data_timestamp)
+            history_writers.write_1mon_csv(currency_code, current_data_timestamp)
+            history_writers.write_forever_csv(currency_code, current_data_all[currency_code]['averages']['total_vol'], current_data_timestamp)
+            history_writers.write_volumes_csv(currency_code, current_data_all[currency_code], current_data_timestamp)
 
-        history_writers.write_24h_global_average_csv(fiat_data_all, current_data_all,  currency_code, current_data_timestamp)
-        history_writers.write_24h_global_average_short_csv(current_data_all,  currency_code, current_data_timestamp)
+            history_writers.write_24h_global_average_csv(fiat_data_all, current_data_all,  currency_code, current_data_timestamp)
+            history_writers.write_24h_global_average_short_csv(current_data_all,  currency_code, current_data_timestamp)
+        except KeyError:
+            pass
 
     current_time = time.time()
     timestamp = email.utils.formatdate(current_time)
