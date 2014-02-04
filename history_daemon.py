@@ -55,6 +55,7 @@ while True:
         history_writers.write_volumes_csv(currency_code, current_data_all[currency_code], current_data_timestamp)
 
         history_writers.write_24h_global_average_csv(fiat_data_all, current_data_all,  currency_code, current_data_timestamp)
+        history_writers.write_24h_global_average_short_csv(current_data_all,  currency_code, current_data_timestamp)
 
     current_time = time.time()
     timestamp = email.utils.formatdate(current_time)

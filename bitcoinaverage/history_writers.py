@@ -49,7 +49,6 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
 
 
 def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_code,  current_timestamp):
-
     current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_global_average_sliding_window.csv')
     current_24h_sliding_data = []
 
@@ -111,6 +110,49 @@ def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_cod
         for row in current_24h_sliding_data:
             csvwriter.writerow(row)
 
+def write_24h_global_average_short_csv(currency_data_all, currency_code,  current_timestamp):
+    current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_global_average_sliding_window_short.csv')
+    current_24h_sliding_data = []
+
+    #to create file if not exists
+    with open(current_24h_sliding_file_path, 'a') as csvfile:
+        pass
+
+    with open(current_24h_sliding_file_path, 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+        header_passed = False
+        for row in csvreader:
+            if not header_passed:
+                header_passed = True
+                continue
+            last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
+            if current_timestamp - last_recorded_timestamp < 86400: #60*60*24
+                current_24h_sliding_data.append(row)
+
+    last_recorded_timestamp = 0
+    if len(current_24h_sliding_data) > 0:
+        last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_24h_sliding_data[len(current_24h_sliding_data)-1][0],
+                                                          '%Y-%m-%d %H:%M:%S').timetuple())
+
+    if current_timestamp - last_recorded_timestamp > 60*2:
+        row = []
+        #-60 added because otherwise the timestamp will point to the the beginning of next period and not current
+        timestamp = datetime.datetime.strftime(datetime.datetime.fromtimestamp(current_timestamp-60), '%Y-%m-%d %H:%M:%S')
+        currency_global_average = currency_data_all[currency_code]['global_averages']['last']
+        row.append(timestamp)
+        row.append(currency_global_average)
+        current_24h_sliding_data.append(row)
+
+    csv_currency_titles = []
+
+    csv_currency_titles.append('datetime')
+    csv_currency_titles.append(currency_code + ' ' + 'global average')
+
+    with open(current_24h_sliding_file_path, 'wb') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',')
+        csvwriter.writerow( csv_currency_titles )
+        for row in current_24h_sliding_data:
+            csvwriter.writerow(row)
 
 def write_1mon_csv(currency_code, current_timestamp):
     current_1h_1mon_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_hour_monthly_sliding_window.csv')
@@ -268,7 +310,7 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
 
     current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
     last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
-    if current_timestamp_date != last_recorded_timestamp_date:
+    if int(current_timestamp_date) != (int(last_recorded_timestamp_date) + 1):
         for exchange in currency_data['exchanges']:
             if exchange not in exchanges_order:
                 exchanges_order.append(exchange)
