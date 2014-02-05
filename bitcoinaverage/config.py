@@ -258,6 +258,7 @@ EXCHANGE_LIST = {
 
                     'vaultofsatoshi':  {'usd_ticker_url': 'https://api.vaultofsatoshi.com/public/ticker?order_currency=BTC&payment_currency=USD',
                                         'eur_ticker_url': 'https://api.vaultofsatoshi.com/public/ticker?order_currency=BTC&payment_currency=EUR',
+                                        'cad_ticker_url': 'https://api.vaultofsatoshi.com/public/ticker?order_currency=BTC&payment_currency=CAD',
                                         'display_name': 'Vault of Satoshi',
                                         },
 

@@ -1165,26 +1165,39 @@ def _itbitApiCall(usd_orders_url, usd_trades_url, sgd_orders_url, sgd_trades_url
     return result
 
 
-def _vaultofsatoshiApiCall(usd_ticker_url, eur_ticker_url, *args, **kwargs):
+def _vaultofsatoshiApiCall(usd_ticker_url, eur_ticker_url, cad_ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
         usd_ticker = json.loads(response)
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
         eur_ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=cad_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        cad_ticker = json.loads(response)
 
 
     result = {}
-    result['USD'] = {'ask': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
-                     'bid': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
-                     'last': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
-                     'volume': Decimal(usd_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
-                     }
-    if eur_ticker['data']['volume_1day']['value'] > 0:
+    if float(usd_ticker['data']['volume_1day']['value']) > 0:
+        print 'vaultofsatoshi USD'
+        result['USD'] = {'ask': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'bid': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'last': Decimal(usd_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'volume': Decimal(usd_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
+                         }
+    if float(eur_ticker['data']['volume_1day']['value']) > 0:
+        print 'vaultofsatoshi EUR'
         result['EUR'] = {'ask': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
                          'bid': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
                          'last': Decimal(eur_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
                          'volume': Decimal(eur_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
+                         }
+    if float(cad_ticker['data']['volume_1day']['value']) > 0:
+        print 'vaultofsatoshi CAD'
+        result['CAD'] = {'ask': Decimal(cad_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'bid': Decimal(cad_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'last': Decimal(cad_ticker['data']['closing_price']['value']).quantize(DEC_PLACES),
+                         'volume': Decimal(cad_ticker['data']['volume_1day']['value']).quantize(DEC_PLACES),
                          }
     return result
 
