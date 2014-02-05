@@ -305,8 +305,12 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
 
     last_recorded_timestamp = 0
     if len(current_volumes_data) > 0:
-        last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
-                                                           '%Y-%m-%d %H:%M:%S').timetuple())
+        try:
+            last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
+                                                               '%Y-%m-%d %H:%M:%S').timetuple())
+        except ValueError:
+            last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
+                                                               '%Y-%m-%d').timetuple())
 
     current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
     last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
