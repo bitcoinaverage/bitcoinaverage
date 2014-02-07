@@ -151,10 +151,6 @@ EXCHANGE_LIST = {
                                    'display_name': 'Rock Trading',
                                     },
 
-                    # 'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
-                    #             'bitcoincharts_symbols': {'CZK': 'bitcashCZK',
-                    #                                        },
-                    #               },
 
                     #with intersango only EUR is used, because trader needs to convert to EUR to add/withdraw with it
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
@@ -168,9 +164,7 @@ EXCHANGE_LIST = {
                                 'display_name': 'Kapiton',
                                 },
 
-                    'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/thirdparty/ticker/',
-                              'display_name': 'RMBTB',
-                                },
+
 
                     'btcchina':  {'ticker_url': 'https://data.btcchina.com/data/ticker',
                                   'display_name': 'BTC China',
@@ -182,9 +176,6 @@ EXCHANGE_LIST = {
                     'bter':  {'ticker_url': 'https://bter.com/api/1/ticker/btc_cny',
                               'display_name': 'Bter',
                                     },
-                    # 'goxbtc':  {'ticker_url': 'https://goxbtc.com/api/btc_cny/ticker.htm',
-                    #             'display_name': 'GoXBTC',
-                    #                 },
                     'mercado':  {'ticker_url': 'https://www.mercadobitcoin.com.br/api/ticker/',
                                  'display_name': 'Mercado Bitcoin',
                                  'bitcoincharts_symbols': {'BRL': 'mrcdBRL',
@@ -266,6 +257,10 @@ EXCHANGE_LIST = {
                                       'display_name': 'QuickBitcoin',
                                         },
 
+                    'quadrigacx':  {'cad_ticker_url': 'http://api.quadrigacx.com/public/info',
+                                    'display_name': 'QuadrigaCX',
+                                        },
+
 
 
 
@@ -273,6 +268,14 @@ EXCHANGE_LIST = {
                     'campbx': {'bitcoincharts_symbols': {'USD': 'cbxUSD',
                                                             },
                                'display_name': 'CampBX',
+                                 },
+                    'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
+                                                            },
+                               'display_name': 'Bitcoin Euro Exchange',
+                                 },
+                    'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
+                                                            },
+                               'display_name': 'bit121',
                                  },
 
                     'btcmarkets': {'bitcoincharts_symbols': {'AUD': 'btcmarketsAUD',
@@ -297,7 +300,6 @@ EXCHANGE_LIST = {
                                                            },
                               'display_name': 'Weex',
                                  },
-
 
 
 
@@ -339,9 +341,21 @@ EXCHANGE_LIST = {
                     #'icbit': {'bitcoincharts_symbols': {'USD': 'icbitUSD',
                     #                                       },
                     #             },
+                    # 'goxbtc':  {'ticker_url': 'https://goxbtc.com/api/btc_cny/ticker.htm',
+                    #             'display_name': 'GoXBTC',
+                    #                 },
+                    # 'rmbtb': {'ticker_url': 'https://www.rmbtb.com/api/thirdparty/ticker/',
+                    #           'display_name': 'RMBTB',
+                    #             },
+                    # 'bitcash': {'czk_api_url': 'https://bitcash.cz/market/api/BTCCZK/ticker.json',
+                    #             'bitcoincharts_symbols': {'CZK': 'bitcashCZK',
+                    #                                        },
+                    #               },
 
 
                 }
+
+
 
 
 

@@ -1198,6 +1198,7 @@ def _vaultofsatoshiApiCall(usd_ticker_url, eur_ticker_url, cad_ticker_url, *args
                          }
     return result
 
+
 def _quickbitcoinApiCall(gbp_ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=gbp_ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -1208,5 +1209,19 @@ def _quickbitcoinApiCall(gbp_ticker_url, *args, **kwargs):
                      'bid': Decimal(gbp_ticker['sell']).quantize(DEC_PLACES),
                      'last': Decimal(gbp_ticker['sell']).quantize(DEC_PLACES),
                      'volume': Decimal(gbp_ticker['volume24']).quantize(DEC_PLACES),
+                     }
+    return result
+
+
+def _quadrigacxApiCall(cad_ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=cad_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        cad_ticker = json.loads(response)
+
+    result = {}
+    result['CAD'] = {'ask': Decimal(cad_ticker['btc_cad']['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(cad_ticker['btc_cad']['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(cad_ticker['btc_cad']['rate']).quantize(DEC_PLACES),
+                     'volume': Decimal(cad_ticker['btc_cad']['volume']).quantize(DEC_PLACES),
                      }
     return result
