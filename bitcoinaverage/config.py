@@ -303,7 +303,7 @@ EXCHANGE_LIST = {
                                                         },
 
                               'ignored': True,
-                              'ignore_reason': 'withdrawal block',
+                              'ignore_reason': 'withdrawals blocked',
                                   },
                     'okcoin':  {'ticker_url': 'https://www.okcoin.com/api/ticker.do',
                                 'display_name': 'OKCoin',
