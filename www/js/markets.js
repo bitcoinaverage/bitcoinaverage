@@ -334,13 +334,13 @@ var renderSmallChart = function(currencyCode){
             if (i == 0 || line.length == 0 || values.length != 2){
                 return;
             }
-            var dailyChartValue =  parseFloat(values[1]) / config.scaleDivizer
+            var chartDailyValue =  parseFloat(values[1]) / config.scaleDivizer
             var dateStr = values[0];
             var dateData = dateStr.split(' ');
             dateData[0] = dateData[0].split('-');
             dateData[1] = dateData[1].split(':');
             var dateInt = Date.UTC(dateData[0][0], dateData[0][1], dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
-            data.push([dateInt, dailyChartValue]);
+            data.push([dateInt, chartDailyValue]);
         });
 
         data.sort(function(a,b){
