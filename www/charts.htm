@@ -214,7 +214,13 @@ var renderPriceChart = function(currencyCode){
             if (i == 0 || line.length == 0 || values.length != 2){
                 return;
             }
-            data.push([parseDate(values[0]).getTime(),  parseFloat(values[1]) ]);
+
+            var dateStr = values[0];
+            var dateData = dateStr.split(' ');
+            dateData[0] = dateData[0].split('-');
+            dateData[1] = dateData[1].split(':');
+            var dateInt = Date.UTC(dateData[0][0], dateData[0][1], dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
+            data.push([dateInt,  parseFloat(values[1]) ]);
         });
 
         ajaxCall(dataMonthlyURL, function(csv){
@@ -324,6 +330,13 @@ var renderVolumeChart = function(currencyCode){
     ajaxCall(dataVolumesURL, function(csv){
         $.each(csv.split('\n'), function(i, line){
             var values = line.split(',');
+
+            var dateStr = values[0];
+            var dateData = dateStr.split(' ');
+            dateData[0] = dateData[0].split('-');
+            dateData[1] = dateData[1].split(':');
+            var dateInt = Date.UTC(dateData[0][0], dateData[0][1], dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
+
             if (i == 0){
                 for(var columnNum in values){
                     var regexp = new RegExp('^[a-zA-Z0-9_]{1,} BTC$');
@@ -348,7 +361,7 @@ var renderVolumeChart = function(currencyCode){
                     if (dataSeries[dataSeriesIndex].name == exchangesHeaders[columnNum]){
                         var val = values[columnNum];
                         if (val == undefined) val = 0;
-                         dataSeries[dataSeriesIndex].data.push([parseDate(values[0]).getTime(),
+                         dataSeries[dataSeriesIndex].data.push([dateInt,
                                                                parseFloat(val)
                                                                 ]);
                     }
