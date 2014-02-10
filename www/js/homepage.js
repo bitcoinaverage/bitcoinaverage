@@ -381,7 +381,7 @@ var renderSmallChart = function(currencyCode){
 			scrollbar: {enabled: false},
 			navigator: {enabled: false},
 			exporting: {enabled: false},
-//			tooltip: {enabled : false},
+			tooltip: {enabled : false},
 			credits: {enabled : false},
 			series : [{
 				data : data,
