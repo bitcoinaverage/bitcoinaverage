@@ -91,8 +91,8 @@ EXCHANGE_LIST = {
                                   'pln_trades_url': 'https://pln.bitcurex.com/data/trades.json',
                                   'display_name': 'Bitcurex',
                                     },
-                    'vircurex': { 'usd_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=USD',
-                                  'eur_api_url': 'https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=EUR',
+                    'vircurex': { 'usd_api_url': 'https://api.vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=USD',
+                                  'eur_api_url': 'https://api.vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=EUR',
                                   'display_name': 'Vircurex',
                                     },
 
