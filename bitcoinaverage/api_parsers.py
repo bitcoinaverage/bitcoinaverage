@@ -1,7 +1,7 @@
 import email
 import json
 import time
-from decimal import Decimal
+from decimal import Decimal, DivisionByZero
 import datetime
 import eventlet
 from eventlet.green import urllib2
@@ -76,6 +76,7 @@ def callAPI(exchange_name):
                                 KeyError,
                                 TypeError,
                                 ValueError,
+                                DivisionByZero,
                                 simplejson.decoder.JSONDecodeError,
                                 socket.error,
                                 urllib2.URLError,
@@ -101,6 +102,7 @@ def callAPI(exchange_name):
                     KeyError,
                     TypeError,
                     ValueError,
+                    DivisionByZero,
                     socket.error,
                     simplejson.decoder.JSONDecodeError,
                     urllib2.URLError,
