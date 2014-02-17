@@ -273,7 +273,7 @@ var renderLegend = function(currencyCode){
     $('#legend-ask').html(currencyData.global_averages.ask.toFixed(config.precision));
 
     if (typeof currencyData.averages['24h_avg'] != 'undefined') {
-        $('#legend-24h-avg').html(currencyData.averages['24h_avg'].toFixed(config.precision));
+        $('#legend-24h-avg').html(currencyData.global_averages['24h_avg'].toFixed(config.precision));
         $('#legend-24h-avg-container').show();
     } else {
         $('#legend-24h-avg-container').hide();
@@ -327,7 +327,7 @@ var renderSmallChart = function(currencyCode){
     $('#charts-link a').show();
     $('#charts-link a').attr('href', 'charts.htm#'+currencyCode);
 
-    if ($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies) {
+    if($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies){
         $('#charts-link a').hide();
         return;
     }
@@ -339,7 +339,7 @@ var renderSmallChart = function(currencyCode){
         var data = [];
         $.each(csv.split('\n'), function(i, line){
             var values = line.split(',');
-            if (i == 0 || line.length == 0){
+            if(i == 0 || line.length == 0){
                 return;
             }
 
@@ -398,7 +398,6 @@ var renderSmallChart = function(currencyCode){
 };
 
 $(function(){
-
     $('#show-more-currencies-in-global-avg-table').click(function(e){
         e.preventDefault();
         if ($('.secondary-global-avg-row').is(':hidden')){
@@ -429,19 +428,19 @@ $(function(){
         event.stopPropagation();
     });
 
-    $('#currency-input').blur(function() {
+    $('#currency-input').blur(function(){
         calc_renderFiat($(this).toNumber().val());
     });
 
-    $('#currency-input').focus(function() {
+    $('#currency-input').focus(function(){
         $('#currency-input').val($(this).toNumber().val());
     });
     $('#currency-input').keyup(calc_fiatInputKeyup);
 
-    $('#bitcoin-input').blur(function() {
+    $('#bitcoin-input').blur(function(){
         calc_renderBitcoin($(this).toNumber().val(), $.cookie('base'));
     });
-    $('#bitcoin-input').focus(function() {
+    $('#bitcoin-input').focus(function(){
         $('#bitcoin-input').val($(this).toNumber().val());
     });
 
