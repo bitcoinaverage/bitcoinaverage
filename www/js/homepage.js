@@ -252,8 +252,8 @@ var renderLegend = function(currencyCode){
         }
     });
 
-    if (selectedFiatCurrency == currencyCode){
-        document.title = API_data[currencyCode].global_averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage - independent bitcoin price';
+    if(selectedFiatCurrency == currencyCode){
+        document.title = API_data[currencyCode].global_averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage Price Index';
     }
 
     $('.legend-curcode').text(currencyCode);
@@ -317,9 +317,6 @@ var renderLegend = function(currencyCode){
     $('#monthly-sliding-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_hour_monthly_sliding_window.csv');
     $('#daily-averages-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/per_day_all_time_history.csv');
     $('#volumes-link').attr('href', config.apiHistoryIndexUrl+currencyCode+'/volumes.csv');
-
-    $('#set-global-average-currency').attr('title','click to set '+currencyCode+' as your global average default currency');
-    $('#set-global-average-currency').attr('href','#'+currencyCode);
 };
 
 var renderSmallChart = function(currencyCode){

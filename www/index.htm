@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>BitcoinAverage - independent bitcoin price</title>
+    <title>BitcoinAverage Price Index</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
-    <meta name="description" content="BitcoinAverage provides a more accurate price of bitcoin using weighted average for multiple exchanges.">
+    <meta name="description" content="BitcoinAverage provides a weighted average bitcoin price using data from nearly all bitcoin exchanges around the world.">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
@@ -56,8 +56,15 @@
             <div itemscope itemtype="http://schema.org/Brand">
                 <meta itemprop="image" content="https://bitcoinaverage.com/img/logo_full_large.png" />
                 <meta itemprop="logo" content="https://bitcoinaverage.com/img/logo_full_large.png" />
-                <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url"><span itemprop="name">BitcoinAverage</span></a>
-                <h1 class="navbar-brand slogan" itemprop="description hidden-xs hidden-sm">independent bitcoin price</h1>
+                <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url">
+
+                    <span style="font-family:tahoma; color:#A4C7E5;" itemprop="name">
+                        <span style="font-size:3em; font-family:calibri;">&#0139;</span>
+                        <span style="font-size:1.2em; color:#666666;"><b>&#3647;</b>itcoin<b>A</b>verage</span>
+                        <span style="font-size:3em; font-family:calibri;">&#0155;</span>
+                    </span>
+                </a>
+                <h1 class="navbar-brand slogan hidden-xs hidden-sm" itemprop="description">bitcoin weighted average price index</h1>
             </div>
 
         </div>
@@ -84,7 +91,7 @@
     <div class="indent">
         <div class="market-page-description text-left">
             <span class="base">millibitcoin</span> to <span class="full-currency-name legend-currency-code-update">
-            United States Dollar</span>, <span class="currency-code legend-curcode">USD</span> <a href="explain.htm">global weighted average</a>
+            United States Dollar</span>, <a href="explain.htm">bitcoin average price index</a>
         </div>
     </div>
 
@@ -97,7 +104,7 @@
                 <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
             </span>
             <br/>
-            <button type="button" class="btn btn-default btn-xs ignore_btn" id="nomillibit-button">switch to ฿1 base</button>
+            <button type="button" class="btn btn-default btn-xs ignore_btn" id="nomillibit-button">switch to &#3647;1 base</button>
         </div>
         <div class="row show-grid currency-box col-md-12">
             <ul class="currency-navigation primary-currency-switch col-md-4 col-sm-12 col-xs-12"></ul>
@@ -135,7 +142,7 @@
 
             <div class="bitcoin-field__wrapper">
                 <input type="text" value="1" id="bitcoin-input" style="color: black;">
-                <div class="label bitcoin-label">m฿</div>
+                <div class="label bitcoin-label">m&#3647;</div>
             </div>
 
         </div>
@@ -193,8 +200,24 @@
                     <td class="" width="25%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                     <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 </tr>
+                <tr>
+                    <td class="legend-name" colspan="2">today's high</td>
+                    <td class="legend-rate text-right" width="44%">0.578 USD</td>
+                </tr>
+                <tr>
+                    <td class="legend-name" colspan="2">today's low</td>
+                    <td class="legend-rate text-right" width="44%">0.578 USD</td>
+                </tr>
+                <tr>
+                    <td class="legend-name" colspan="2">today's open</td>
+                    <td class="legend-rate text-right" width="44%">0.578 USD</td>
+                </tr>
+                <tr>
+                    <td class="legend-name" colspan="2">change</td>
+                    <td class="legend-rate text-right" width="44%">0.578 USD</td>
+                </tr>
                 <tr id="legend-24h-avg-container">
-                    <td class="legend-name" colspan="2"><span class="legend-curcode">USD</span> 24h global sliding average</td>
+                    <td class="legend-name" colspan="2">24h global sliding average</td>
                     <td class="legend-rate text-right" width="44%"><span id="legend-24h-avg"></span> <span class="legend-curcode">USD</span></td>
                 </tr>
                 <tr>
@@ -206,7 +229,7 @@
                     <td class="legend-rate text-right" width="44%"><span id="legend-global-volume-percent"></span>%</td>
                 </tr>
                 <tr>
-                    <td class="legend-name" colspan="2">total market volume (24h)</td>
+                    <td class="legend-name" colspan="2">bitcoin total market volume (24h)</td>
                     <td class="legend-rate text-right" width="44%"><span class="">&#3647;</span> <span id="legend-global-trading-volume"></span></td>
                 </tr>
                 </tbody>

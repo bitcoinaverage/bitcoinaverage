@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>   
-    <title>API | BitcoinAverage - independent bitcoin price</title>
+    <title>API | BitcoinAverage Price Index</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
-    <meta name="description" content="BitcoinAverage helps provide a more accurate price of a bitcoin using a weighted average for multiple exchanges.">
+    <meta name="description" content="BitcoinAverage provides a weighted average bitcoin price using data from nearly all bitcoin exchanges around the world.">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
     
@@ -37,7 +37,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
-                <span class="navbar-brand slogan">independent bitcoin price</span>
+                <span class="navbar-brand slogan hidden-xs hidden-sm">bitcoin weighted average price index</span>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -65,6 +65,17 @@
                 </div>
                 <div class="panel-body">
 
+                    <h3>Terms of use</h3>
+                    <blockquote>
+                        You are free to use our public API in your projects. If you decide to do so - please provide a
+                        link back saying <a href="https://BitcoinAverage.com">BitcoinAverage Price Index</a>. Also please send us a note to
+                        <a href="mailto:bitcoinaverage@gmail.com">bitcoinaverage@gmail.com</a> telling about your project
+                        and how you're going to use our data. <br>
+                        There is no explicit restriction on how often you can call the API, however calling it more
+                        than once a minute makes no sense. Please be good.<br>
+                        <br>
+                    </blockquote>
+
                     <h3>Basics</h3>
                     <blockquote>
                         BitcoinAverage API can be found at <a href="https://api.bitcoinaverage.com/" target="_blank">https://api.bitcoinaverage.com/</a>. <br>
@@ -72,13 +83,13 @@
                         API is accessible via HTTP GET in JSON format for current data and in CSV format for historical data.
                         API doesn't provide JSONP, however it does support cross-origin resource sharing and provides HTTP header
                         <code>Access-Control-Allow-Origin: *</code> allowing unlimited crossdomain AJAX calls.<br>
-                        API is updated along with the site, normally around every minute.
-                        There is no explicit restriction on how often you can call the API, however calling it more
-                        than once a minute makes no sense. Please be good.<br>
+                        <br>
                         Each API level starting from the top provides you with a self-explanatory JSON document containing
                         links to deeper levels of API up to data endpoints.<br>
                         Each API endpoint JSON document includes a timestamp indicating document generation time. All API timestamps assume UTC time.<br>
                         You can use HTTP or HTTPS for API queries, preference is yours, yet we recommend using HTTPS.<br>
+                        <br><br>
+                        API is updated along with the site, normally around every minute.<br>
                         This manual assumes that you are familiar with software development in general and understood all of the above.
                     </blockquote>
 

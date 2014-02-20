@@ -226,6 +226,10 @@ EXCHANGE_LIST = {
                     'quadrigacx':  {'cad_ticker_url': 'http://api.quadrigacx.com/public/info',
                                     'display_name': 'QuadrigaCX',
                                         },
+                    # 'bitquick_co':  {'usd_api_url': 'https://www.bitquick.co/api',
+                    #                 'display_name': 'BitQuick.co',
+                    #                     },
+
 
 
 
@@ -266,7 +270,6 @@ EXCHANGE_LIST = {
                                                            },
                               'display_name': 'Weex',
                                  },
-
 
 
                     'mtgox': {'usd_api_url': 'https://data.mtgox.com/api/2/BTCUSD/money/ticker',
