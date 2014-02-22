@@ -147,7 +147,7 @@ EXCHANGE_LIST = {
                                  'bitcoincharts_symbols': {'BRL': 'mrcdBRL',
                                                            },
                                     },
-                    'bitx':  {'ticker_url': 'https://bitx.co.za/api/1/BTCZAR/ticker',
+                    'bitx':  {'ticker_url': 'https://bitx.co.za/api/1/ticker?pair=XBTZAR',
                               'display_name': 'BitX',
                                   },
                     'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
