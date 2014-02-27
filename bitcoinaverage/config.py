@@ -17,7 +17,10 @@ API_FILES = {'TICKER_PATH': 'ticker/',
              'EXCHANGES_PATH': 'exchanges/',
              'ALL_FILE': 'all',
              'IGNORED_FILE': 'ignored',
+             'CUSTOM_API': 'custom/'
              }
+
+CUSTOM_API_FILES = {'AndroidBitcoinWallet': 'abw'}
 
 API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}

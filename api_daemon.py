@@ -12,9 +12,10 @@ from email import utils
 import bitcoinaverage as ba
 import bitcoinaverage.server
 from bitcoinaverage import api_parsers
+from bitcoinaverage import api_custom_writers
 from bitcoinaverage.config import API_QUERY_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
-from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, createNogoxApi, calculateAllGlobalAverages
+from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, calculateAllGlobalAverages
 
 if ba.server.PROJECT_PATH == '':
     ba.server.PROJECT_PATH = include_path
@@ -68,7 +69,12 @@ while True:
                   calculated_global_average_rates_formatted,
                   exchanges_ignored)
 
-    createNogoxApi(human_timestamp, exchanges_rates, exchanges_ignored)
+    api_custom_writers.createCustomAPIs(ba.server.API_DOCUMENT_ROOT,
+                                        human_timestamp,
+                                        calculated_average_rates_formatted,
+                                        calculated_volumes_formatted,
+                                        calculated_global_average_rates_formatted,
+                                        exchanges_ignored)
 
 
     if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
