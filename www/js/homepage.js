@@ -272,7 +272,7 @@ var renderLegend = function(currencyCode){
     $('#legend-bid').html(currencyData.global_averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.global_averages.ask.toFixed(config.precision));
 
-    if (typeof currencyData.averages['24h_avg'] != 'undefined') {
+    if (typeof currencyData.global_averages['24h_avg'] != 'undefined') {
         $('#legend-24h-avg').html(currencyData.global_averages['24h_avg'].toFixed(config.precision));
         $('#legend-24h-avg-container').show();
     } else {
