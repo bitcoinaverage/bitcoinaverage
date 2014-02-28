@@ -220,7 +220,7 @@ var renderLegend = function(currencyCode){
     });
 
     if (selectedFiatCurrency == currencyCode){
-        document.title = API_data[currencyCode].global_averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage Price Index';
+        document.title = API_data[currencyCode].averages.last.toFixed(config.precision)+' '+currencyCode+' | BitcoinAverage Price Index';
     }
 
     $('.legend-curcode').text(currencyCode);
