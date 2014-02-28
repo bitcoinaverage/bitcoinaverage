@@ -1,0 +1,4 @@
+eventlet
+requests
+lxml
+simplejson
