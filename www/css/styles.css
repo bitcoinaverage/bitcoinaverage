@@ -591,9 +591,21 @@ ul{
     text-decoration: none;
 }
 
-#global-average-data-table{
+#global-average-data-table {
 
 }
+
+@media (max-width: 480px){
+    #global-average-data-table th {
+        word-break: break-all;
+    }
+    #global-average-data-table th,
+    #global-average-data-table td {
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+}
+
 #global-average-data-table .legend-curcode{
     text-decoration: none;
 }
