@@ -197,6 +197,10 @@ def calculateRelativeVolumes(exchanges_rates, total_currency_volumes, total_curr
                                                                                     }
                 calculated_volumes[currency][rate['exchange_name']]['source'] = rate['data_source']
                 calculated_volumes[currency][rate['exchange_name']]['display_name'] = rate['exchange_display_name']
+                try:
+                    calculated_volumes[currency][rate['exchange_name']]['display_URL'] = rate['exchange_display_URL']
+                except KeyError:
+                    pass
                 if calculated_volumes[currency][rate['exchange_name']]['rates']['last'] is not None:
                     calculated_volumes[currency][rate['exchange_name']]['rates']['last'].quantize(DEC_PLACES)
 

@@ -38,6 +38,10 @@ def callAll():
                     exchange_data['exchange_display_name'] = EXCHANGE_LIST[exchange_name]['display_name']
                 except KeyError:
                     exchange_data['exchange_display_name'] = exchange_name
+                try:
+                    exchange_data['exchange_display_URL'] = EXCHANGE_LIST[exchange_name]['URL']
+                except KeyError:
+                    pass
                 exchanges_rates.append(exchange_data)
         else:
             exchanges_ignored[exchange_name] = exchange_ignore_reason
@@ -290,55 +294,44 @@ def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_ur
     }
 
 
-def _bitstampApiCall(api_url, *args, **kwargs):
+def _bitstampApiCall(api_ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=api_url, headers=API_REQUEST_HEADERS)).read()
-        result = json.loads(response)
+        response = urllib2.urlopen(urllib2.Request(url=api_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
 
-    return {'USD': {'ask': Decimal(result['ask']).quantize(DEC_PLACES),
-                    'bid': Decimal(result['bid']).quantize(DEC_PLACES),
-                    'last': Decimal(result['last']).quantize(DEC_PLACES),
-                    'volume': Decimal(result['volume']).quantize(DEC_PLACES),
-    }}
+    result = {}
+    result['USD'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                    'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+    }
 
-# direct volume calculation gives weird results, bitcoincharts API used for now
-#@TODO check with campbx why their API results are incorrect
-# def campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
-#     ticker_result = requests.get(api_ticker_url, headers=API_REQUEST_HEADERS).json()
-#
-#     return_data = {'USD': {'ask': Decimal(ticker_result['Best Ask']).quantize(DEC_PLACES),
-#                                            'bid': Decimal(ticker_result['Best Bid']).quantize(DEC_PLACES),
-#                                            'last': Decimal(ticker_result['Last Trade']).quantize(DEC_PLACES),
-#                                            'high': None,
-#                                            'low': None,
-#                                            }
-#                     }
-#
-#     from_time = int(time.time())-(86400)
-#     volume = 0.0
-#
-#     all_trades_direct = {}
-#
-#     while True:
-#         trades = requests.get(api_trades_url % from_time, headers=API_REQUEST_HEADERS).json()
-#         new_from_time = from_time
-#         for trade in trades:
-#             if trade['Time'] > new_from_time:
-#                 all_trades_direct[trade['Order ID']] = {'time': trade['Time'],
-#                                                          'volume': trade['Bitcoins'],
-#                                                          'price': trade['Price'],
-#                                                          }
-#                 new_from_time = trade['Time']
-#                 volume = volume + float(trade['Bitcoins'])
-#
-#         if new_from_time == from_time:
-#             break
-#         else:
-#             from_time = new_from_time
-#
-#     return_data['USD']]['volume'] = Decimal(volume).quantize(DEC_PLACES)
-#
-#     return return_data
+    return result
+
+
+def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=api_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    last_24h_timestamp = time.time()-86400
+    api_trades_url = api_trades_url.format(timestamp_since=last_24h_timestamp)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=api_trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades = json.loads(response)
+
+    volume = Decimal(0)
+    for trade in trades:
+        if trade['date'] > last_24h_timestamp:
+            volume = volume + Decimal(trade['price'])
+
+    result = {}
+    result['USD'] = {'ask': Decimal(ticker['Best Ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['Best Bid']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['Last Trade']).quantize(DEC_PLACES),
+                     'volume': Decimal(volume).quantize(DEC_PLACES),
+                      }
+    return result
 
 
 def _btceApiCall(usd_api_url, eur_api_url, rur_api_url, *args, **kwargs):
