@@ -14,3 +14,4 @@
 
 /venv/*
 fabfile.py
+supervisord.conf

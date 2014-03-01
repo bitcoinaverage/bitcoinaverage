@@ -2,3 +2,4 @@ eventlet
 requests
 lxml
 simplejson
+supervisor
