@@ -18,6 +18,7 @@
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="js/lib/highstock.js"></script>
+    <script type="text/javascript" src="js/lib/highstock.exporting.js"></script>
     <script type="text/javascript" src="js/lib/lightbox.js"></script>
 
 
@@ -46,7 +47,7 @@ if (config.apiHistoryIndexUrl[config.apiHistoryIndexUrl.length-1] != '/') {
 var firstRenderDone = false;
 var currencyCode;
 var chartMode;
-var rangesArray = { '1d' : 0 , '1w' : 1 , 'all' : 2 };
+var rangesArray = { '1h' : 0 , '12h' : 1 , '1d' : 2 , '1w' : 3 , '1m' : 4 , '3m' : 5 , '1y' : 6 , 'all' : 7 };
 
 var parseDate = function(dateString){
     var parts = dateString.split(' ');
@@ -267,14 +268,41 @@ var renderPriceChart = function(currencyCode){
                     title: { text: currencyCode+' average price history'},
                     rangeSelector: {
                         buttons: [{
+                            type: 'minute',
+                            count: 60,
+                            text: '1h'
+                            },
+                            {
+                            type: 'minute',
+                            count: 60 * 12,
+                            text: '12h'
+                            },
+                            {
                             type: 'day',
                             count: 1,
                             text: '1d'
-                            }, {
+                            },
+                            {
                             type: 'week',
                             count: 1,
                             text: '1w'
-                            }, {
+                            },
+                            {
+                            type: 'month',
+                            count: 1,
+                            text: '1m'
+                            },
+                            {
+                            type: 'month',
+                            count: 3,
+                            text: '3m'
+                            },
+                            {
+                            type: 'year',
+                            count: 1,
+                            text: '1y'
+                            },
+                            {
                             type: 'all',
                             count: 1,
                             text: 'All	'
@@ -300,7 +328,7 @@ var renderPriceChart = function(currencyCode){
                     plotOptions:{
                         series:{
                             dataGrouping:{
-                                groupPixelWidth:25,
+                                groupPixelWidth:1,
                                 units: [
                                         ['minute', [1, 2, 5, 10, 15, 22, 30]],
                                         ['hour', [1, 2, 3, 6, 8, 10, 12]],
