@@ -234,11 +234,12 @@ EXCHANGE_LIST = {
                                 'display_name': 'Bitonic',
                                          },
                     'itbit':  { 'usd_orders_url': 'https://www.itbit.com/api/v2/markets/XBTUSD/orders',
-                                'usd_trades_url': 'https://www.itbit.com/api/v2/markets/XBTUSD/trades?since=10262',
+                                'usd_trades_url': 'https://www.itbit.com/api/v2/markets/XBTUSD/trades?since={trade_id}',
                                 'sgd_orders_url': 'https://www.itbit.com/api/v2/markets/XBTSGD/orders',
-                                'sgd_trades_url': 'https://www.itbit.com/api/v2/markets/XBTSGD/trades?since=10262',
+                                'sgd_trades_url': 'https://www.itbit.com/api/v2/markets/XBTSGD/trades?since={trade_id}',
                                 'eur_orders_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/orders',
-                                'eur_trades_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/trades?since=10262',
+                                'eur_trades_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/trades?since={trade_id}',
+                                'since_trade_id': 10262,
                                 'URL': 'https://itbit.com',
                                 'display_name': 'itBit',
                                  },
@@ -266,30 +267,30 @@ EXCHANGE_LIST = {
                                'bitcoincharts_symbols': {'USD': 'cbxUSD',
                                                             },
                                 },
-                    # 'bitquick_co':  {'usd_api_url': 'https://www.bitquick.co/api',
-                    #                 'display_name': 'BitQuick.co',
-                    #                     },
-
+                    'btcmarkets': {'ticker_url': 'https://api.btcmarkets.net/market/BTC/AUD/tick',
+                                   'trades_url': 'https://api.btcmarkets.net/market/BTC/AUD/trades',
+                                   'bitcoincharts_symbols': {'AUD': 'btcmarketsAUD',
+                                                                },
+                                   'URL': 'https://btcmarkets.net/',
+                                   'display_name': 'BTC Markets',
+                                    },
 
 
 
 
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
                                                             },
+                               'URL': 'http://www.btceur.eu/',
                                'display_name': 'Bitcoin Euro Exchange',
                                  },
                     'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
                                                             },
+                               'URL': 'https://bit121.co.uk/',
                                'display_name': 'bit121',
                                  },
-
-                    'btcmarkets': {'bitcoincharts_symbols': {'AUD': 'btcmarketsAUD',
-                                                                },
-                                   'display_name': 'BTC Markets',
-                                    },
-
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitnzNZD',
                                                            },
+                               'URL': 'https://bitnz.com/',
                                'display_name': 'bitNZ',
                                  },
 
@@ -297,13 +298,8 @@ EXCHANGE_LIST = {
                                                           'HKD': 'anxhkHKD',
                                                           'CNY': 'anxhkCNY',
                                                            },
+                                'URL': 'https://anxbtc.com/',
                                 'display_name': 'ANX.HK',
-                                 },
-                    'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
-                                                        #'CAD': 'weexCAD',
-                                                        #'USD': 'weexUSD',
-                                                           },
-                              'display_name': 'Weex',
                                  },
 
 
@@ -335,6 +331,12 @@ EXCHANGE_LIST = {
 
 
                     # these exchanges seem to be dead
+                    # 'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
+                    #                                     #'CAD': 'weexCAD',
+                    #                                     #'USD': 'weexUSD',
+                    #                                        },
+                    #           'display_name': 'Weex',
+                    #              },
                     #'bitbox': {'bitcoincharts_symbols': {'USD': 'bitboxUSD',
                     #                                      },
                     #              },

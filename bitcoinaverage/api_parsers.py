@@ -1103,48 +1103,66 @@ def _bitonicApiCall(ticker_url, *args, **kwargs):
     return result
 
 
-def _itbitApiCall(usd_orders_url, usd_trades_url, sgd_orders_url, sgd_trades_url, eur_orders_url, eur_trades_url, *args, **kwargs):
+def _itbitApiCall(usd_orders_url, usd_trades_url,
+                  sgd_orders_url, sgd_trades_url,
+                  eur_orders_url, eur_trades_url,
+                  since_trade_id, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=usd_orders_url, headers=API_REQUEST_HEADERS)).read()
         usd_orders = json.loads(response)
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=usd_trades_url, headers=API_REQUEST_HEADERS)).read()
-        usd_trades = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=sgd_orders_url, headers=API_REQUEST_HEADERS)).read()
         sgd_orders = json.loads(response)
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=sgd_trades_url, headers=API_REQUEST_HEADERS)).read()
-        sgd_trades = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=eur_orders_url, headers=API_REQUEST_HEADERS)).read()
         eur_orders = json.loads(response)
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=eur_trades_url, headers=API_REQUEST_HEADERS)).read()
-        eur_trades = json.loads(response)
 
-    def __calculate(trades, orders):
+    def _get_all_trades(trades_url, since_trade_id):
+        trades_url = trades_url.format(trade_id=since_trade_id)
+        with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+            response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+            new_trades = json.loads(response)
+
+        last_24h_timestamp = int(time.time())-86400
+        last_trade_id = since_trade_id
+        trades_list = []
+        for trade in new_trades:
+            if int(trade['date']) > last_24h_timestamp:
+                trades_list.append(trade)
+            if last_trade_id < int(trade['tid']):
+                last_trade_id = int(trade['tid'])
+        return trades_list, last_trade_id
+
+    def __calculate(trades_url, since_trade_id, orders):
         volume = DEC_PLACES
         last_24h_timestamp = int(time.time())-86400
         last_trade_timestamp = 0
         last_trade_price = DEC_PLACES
+
+        trades = []
+        for i in range(10): #no more than ten requests to API, random "magic" figure
+            new_trades, last_trade_id = _get_all_trades(trades_url, since_trade_id)
+            if len(new_trades) == 0:
+                break
+
+            trades = trades + new_trades
+            since_trade_id = last_trade_id
+
         for trade in trades:
             if int(trade['date']) > last_24h_timestamp:
                 volume = volume + Decimal(trade['amount'])
             if int(trade['date']) > last_trade_timestamp:
                 last_trade_price = trade['price']
 
-        bid = 0
+        bid = 0.0
         for bid_order in orders['bids']:
-            if bid < bid_order[0] or bid == 0:
-                bid = bid_order[0]
+            if bid < float(bid_order[0]) or bid == 0.0:
+                bid = float(bid_order[0])
 
-        ask = 0
+        ask = 0.0
         for ask_order in orders['asks']:
-            if ask > ask_order[0] or ask == 0:
-                ask = ask_order[0]
+            if ask > float(ask_order[0]) or ask == 0.0:
+                ask = float(ask_order[0])
 
 
         return {'ask': Decimal(ask).quantize(DEC_PLACES),
@@ -1154,9 +1172,9 @@ def _itbitApiCall(usd_orders_url, usd_trades_url, sgd_orders_url, sgd_trades_url
                      }
 
     result = {}
-    result['USD']= __calculate(usd_trades, usd_orders)
-    result['SGD']= __calculate(sgd_trades, sgd_orders)
-    result['EUR']= __calculate(eur_trades, eur_orders)
+    result['USD']= __calculate(usd_trades_url, since_trade_id, usd_orders)
+    result['SGD']= __calculate(sgd_trades_url, since_trade_id, sgd_orders)
+    result['EUR']= __calculate(eur_trades_url, since_trade_id, eur_orders)
     return result
 
 
@@ -1222,37 +1240,26 @@ def _quadrigacxApiCall(cad_ticker_url, *args, **kwargs):
     return result
 
 
-def _bitquick_coApiCall(usd_api_url, *args, **kwargs):
-    trades_list = {}
+def _btcmarkets_coApiCall(ticker_url, trades_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=usd_api_url, headers=API_REQUEST_HEADERS)).read()
-        try:
-            trades_list = json.loads(response)
-        except ValueError:
-            json_text = response.replace(', ]', ']')
-            trades_list = json.loads(json_text)
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
+        trades_list = json.loads(response)
 
     last24h_timestamp = time.time() - 86400
     volume = Decimal(0)
-    last_trade_timestamp = 0
-    last_trade = Decimal(0)
     for trade in trades_list:
-        try:
-            trade_timestamp = time.mktime(datetime.datetime.strptime(trade['time'], '%Y-%m-%d %H:%M:%S').timetuple())
-        except (KeyError, ValueError):
-            continue
-        if trade_timestamp > last24h_timestamp:
-            volume = volume + Decimal(trade['buyamount'])
-            if last_trade_timestamp < trade_timestamp:
-                last_trade_timestamp = trade_timestamp
-                last_trade = Decimal(trade['usdbtc'])
+        if trade['date'] > last24h_timestamp:
+            volume = volume + Decimal(trade['amount'])
 
 
     result = {}
-    result['USD'] = {'ask': Decimal(last_trade).quantize(DEC_PLACES),
-                    'bid': Decimal(last_trade).quantize(DEC_PLACES),
-                    'last': Decimal(last_trade).quantize(DEC_PLACES),
+    result['AUD'] = {'ask': Decimal(ticker['bestAsk']).quantize(DEC_PLACES),
+                    'bid': Decimal(ticker['bestBid']).quantize(DEC_PLACES),
+                    'last': Decimal(ticker['lastPrice']).quantize(DEC_PLACES),
                     'volume': Decimal(volume).quantize(DEC_PLACES),
                         }
     return result
-

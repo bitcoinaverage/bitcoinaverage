@@ -4,11 +4,60 @@
     <title>FAQ | BitcoinAverage Price Index</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="bitcoin, price, average, bitcoin price, bitcoin average price, bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, weighted average, weighted price, mean price, mean">
-    <meta name="description" content="BitcoinAverage provides a weighted average bitcoin price using data from nearly all bitcoin exchanges around the world.">
+    <meta name="keywords" content="bitcoin price, bitcoin price index, bitcoin live price, bitcoin live rate, bitcoin average price,
+    bitcoin mean price, bitcoin exchange, bitcoin average rate, bitcoin exchange rate, bitcoin weighted average, bitcoin weighted average price,
+    bitcoin alerts, bitcoin price alerts,
+    bitcoin calculator, bitcoin price calculator, bitcoin converter, bitcoin price converter, bitcoin cost,  bitcoin value, bitcoin worth,
+    BTC price, BTC converter, BTC cost, BTC value, BTC worth,
+    BTC mean price, BTC exchange, BTC rate, BTC average rate, BTC exchange rate,
+    XBT price, XBT converter, XBT cost, XBT value, XBT worth,
+    XBT mean price, XBT exchange, XBT rate, XBT average rate, XBT exchange rate,
+    bitcoin markets, bitcoin currency markets,
+    bitcoin volume, bitcoin trading volume, bitcoin volume charts, bitcoin volume history, bitcoin trading volume history, bitcoin market volume,
+    bitcoin price history, bitcoin rate history, bitcoin price charts, bitcoin trading history, bitcoin market history, bitcoin exchanges history,
+    bitcoin USD exchange rate, BTC USD exchange rate, XBT USD exchange rate, bitcoin dollar exchange rate,
+    bitcoin EUR exchange rate, BTC EUR exchange rate, XBT EUR exchange rate, bitcoin euro exchange rate,
+    bitcoin GBP exchange rate, BTC GBP exchange rate, XBT GBP exchange rate, bitcoin sterling exchange rate,
+    bitcoin CNY exchange rate, BTC CNY exchange rate, XBT CNY exchange rate, bitcoin renminbi exchange rate,
+    bitcoin CAD exchange rate, BTC CAD exchange rate, XBT CAD exchange rate, bitcoin canadian dollar exchange rate,
+    bitcoin API, bitcoin rate API, bitcoin price API, bitcoin price index API,
+    BTC API, BTC rate API, BTC price API, BTC price index API,
+    bitcoin price" />
+
+    <meta name="description" content="BitcoinAverage Price Index is a weighted average of prices from nearly all Bitcoin exchanges around the world. BitcoinAverage.com is opensource.">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <link rel="author" href="https://github.com/alexykot" />
+    <link rel="publisher" href="https://plus.google.com/+BitcoinaveragePriceIndex" />
+    <link rel="alternate" type="application/json" href="https://api.bitcoinaverage.com/all" title="full API data for BitcoinAverage Price Index" />
+    <link rel="canonical" href="http://bitcoinaverage.com/price/" />
+    <link rel="help" href="https://bitcoinaverage.com/faq.htm" title="BitcoinAverage FAQ" />
+    <link rel="dns-prefetch" href="https://api.bitcoinaverage.com" />
+    <link rel="shortcut icon" href="https://bitcoinaverage.com/favicon.ico" />
+
+    <meta property="og:locale" content="en_US"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="BitcoinAverage Price Index and Charts - BitcoinAverage"/>
+    <meta property="og:description" content="BitcoinAverage Price Index is a weighted average of prices from nearly all Bitcoin exchanges around the world. BitcoinAverage.com is opensource."/>
+    <meta property="og:site_name" content="BitcoinAverage"/>
+    <meta property="og:url" content="https://bitcoinaverage.com/"/>
+    <meta property="og:image" content="https://bitcoinaverage.com/img/logo_full.png"/>
+
+    <meta property="article:author" content="https://github.com/alexykot"/>
+    <meta property="article:publisher" content="https://plus.google.com/+BitcoinaveragePriceIndex"/>
+    <meta property="article:published_time" content="2013-08-02T14:41:59+00:00"/>
+    <meta property="article:modified_time" content="2014-03-02T08:35:50+00:00"/>
+
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="BitcoinAverage Price Index and Charts - BitcoinAverage"/>
+    <meta name="twitter:description" content="BitcoinAverage Price Index is a weighted average of prices from nearly all Bitcoin exchanges around the world. BitcoinAverage.com is opensource."/>
+    <meta name="twitter:site" content="@BitcoinAverage"/>
+    <meta name="twitter:site:id" content="1620115130"/>
+    <meta name="twitter:creator" content="@BitcoinAverage"/>
+    <meta name="twitter:creator:id" content="1620115130"/>
+    <meta name="twitter:image" content="https://bitcoinaverage.com/img/logo_full.png"/>
+
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="https://bitcoinaverage.com/css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
@@ -53,100 +102,92 @@
     </div>
     
     <div id="main-container" class="container">      
-        
-            <div class="panel panel-default" style="margin-top: 20px;">
-                <div class="panel-body">
-                    <h1 class="panel-title">FAQ <small class="panel-title">- Frequently Asked Questions</small></h1>
-                </div>
+        <div class="panel panel-default" style="margin-top: 20px;">
+            <div class="panel-body">
+                <h1 class="panel-title">FAQ <small class="panel-title">- Frequently Asked Questions</small></h1>
             </div>
-            
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">General</h2>
-                </div>
-                <div class="panel-body">
+        </div>
 
-                    <h3>What is BitcoinAverage?</h3>
-                    <blockquote>
-                        It's an open source project designed to provide weighted average bitcoin price calculation.
-                        It utilises all exchanges where price and volume data is available.
-                    </blockquote>
-
-                    <h3>How exactly the price is calculated?</h3>
-                    <blockquote>
-                        Price is a weighted average. Meaning that for every exchange the last trade price and last 24h trading
-                        volume is taken, each exchange contributes to the final price only to the extent of it's current trading volume.
-                        For a more detailed arithmetics explanation <a href="http://www.investopedia.com/terms/w/weightedaverage.asp" target="_blank">check here</a>.
-                    </blockquote>
-
-                    <h3 id="global-average">What is global average?</h3>
-                    <blockquote>
-                        Global average is a weighted average price across weighted average prices of all currencies markets
-                        represented on BitcoinAverage. <br>
-                        More details on our <a href="explain.htm">explanation page</a>.
-                    </blockquote>
-
-                    <h3>Who owns and controls this service?</h3>
-                    <blockquote>
-                        BitcoinAverage.com is an opensource project, meaning that anybody willing to take over the maintenance
-                        and development may participate in it, in consensus with other developers.
-                        You can view list of contributors and participate yourself
-                        <a href="https://github.com/bitcoinaverage/bitcoinaverage/graphs/contributors">at github</a>. <br>
-                        Right now it's managed and developed by a team of two, the lead developer of the project is
-                        <a href="https://github.com/alexykot/">alexykot</a>.
-                    </blockquote>
-
-                    <h3>Who uses BitcoinAverage.com?</h3>
-                    <blockquote>
-                        <ul>
-                            <li><a href="https://play.google.com/store/apps/details?id=de.schildbach.wallet">Android Bitcoin Wallet by Andreas Schildbach</a> - exchange rates</li>
-                            <li><a href="https://localbitcoins.com">localbitcoins.com</a> - default bitcoin price</li>
-                            <li><a href="https://play.google.com/store/apps/details?id=com.veken0m.cavirtex">Android Bitcoinium price ticker</a> - one of the data sources</li>
-                            <li><a href="http://coingig.com">coingig.com</a> - default bitcoin price</li>
-                            <li><a href="http://www.kitco.com/finance/bitcoin/">kitco.com</a> - bitcoin price and page interface</li>
-                            <li><a href="https://bitbargain.co.uk/">bitbargain.co.uk</a> - default UK bitcoin price</li>
-                            <li><a href="https://chrome.google.com/webstore/detail/kryptokit/lhhipingoaiddcoalochnbjlkifbpmoj">KryptoKit Chrome extension</a> - bitcoin price and charts</li>
-                            <li><a href="https://chrome.google.com/webstore/detail/bitcoinaverage-btc-live-t/hkhpemlecgbfbohhfbcdonhkahibmgid">Price ticker Chrome extension</a> - bitcoin price</li>
-
-                            <li><a href="http://bitcoinprice.com">bitcoinprice.com</a> - prices and website sources</li>
-                            <li>and many many more...</li>
-                        </ul>
-                    </blockquote>
-
-                    <h3>How to contact the team?</h3>
-                    <blockquote>
-                        You can send an email to <a href="mailto:bitcoinaverage@gmail.com">bitcoinaverage@gmail.com</a>. Also you can tweet us at
-                        <a href="https://twitter.com/BitcoinAverage">twitter.com/BitcoinAverage</a>, comment on our thread at
-                        <a href="https://bitcointalk.org/index.php?topic=270190.0">bitcointalk.org</a> or get in touch via
-                        <a href="https://github.com/bitcoinaverage/bitcoinaverage">github</a>.
-                    </blockquote>
-
-                    <h3>I want to add new exchange, report a bug or propose a feature. How do I do that?</h3>
-                    <blockquote>
-                        Let us know via means proposed above.
-                    </blockquote>
-
-                </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">General</h2>
             </div>
+            <div class="panel-body">
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">Technical</h2>
-                </div>
-                <div class="panel-body">
+                <h3>What is BitcoinAverage?</h3>
+                <blockquote>
+                    BitcoinAverage.com was launched in August 2013 with a goal to aggregate rates from all available Bitcoin
+                    exchanges around the world and provide a weighted average bitcoin price. <br>
+                    As of March 2014 we have
+                    over 30 exchanges integrated and are directly serving over 50000 users monthly plus providing data
+                    to numerous other websites and resources.
+                </blockquote>
 
-                    <h3>How to use API and integrate with BitcoinAverage?</h3>
-                    <blockquote>
-                        Here is the <a href="api.htm">API manual</a>, also feel free to contact us with any technical questions you have about it.
-                    </blockquote>
-                    <h3>Where can I find BitcoinAverage's source code?</h3>
-                    <blockquote>
-                        Our repository is public and can be found on
-                        <a href="https://github.com/bitcoinaverage/bitcoinaverage" target="_blank" title="github">github</a>
-                    </blockquote>
-                </div>
+                <h3>What is BitcoinAverage Price Index?</h3>
+                <blockquote>
+                    BitcoinAverage Price Index is a average rate of all exchanges existing around, weighted by trading volume.
+                    Meaning that for every exchange the last trade price and last 24h trading volume is considered,
+                    and each exchange contributes to the final price only to the extent of it's current trading volume.
+                    More details on our <a href="explain.htm" title="BitcoinAverage Price Index infographics">infographics explanation page</a>.
+                </blockquote>
+
+                <h3>Who owns and controls this service?</h3>
+                <blockquote>
+                    BitcoinAverage.com is an opensource project, code released under
+                    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a> license.
+                    You can view list of contributors and participate yourself
+                    <a href="https://github.com/bitcoinaverage/bitcoinaverage/graphs/contributors">at github</a>. <br>
+                    Right now it's managed and developed by a team of two, the lead developer of the project is
+                    <a rel="author" href="https://github.com/alexykot/">alexykot</a>.
+                </blockquote>
+
+                <h3>Who uses BitcoinAverage.com?</h3>
+                <blockquote>
+                    <ul>
+                        <li><a href="https://play.google.com/store/apps/details?id=de.schildbach.wallet">Android Bitcoin Wallet by Andreas Schildbach</a> - exchange rates</li>
+                        <li><a href="https://play.google.com/store/apps/details?id=com.veken0m.cavirtex">Android Bitcoinium price ticker</a> - one of the data sources</li>
+                        <li><a href="http://coingig.com">coingig.com</a> - default bitcoin price</li>
+                        <li><a href="http://www.kitco.com/finance/bitcoin/">kitco.com</a> - bitcoin price and page interface</li>
+                        <li><a href="https://chrome.google.com/webstore/detail/kryptokit/lhhipingoaiddcoalochnbjlkifbpmoj">KryptoKit Chrome extension</a> - bitcoin price and charts</li>
+                        <li><a href="https://chrome.google.com/webstore/detail/bitcoinaverage-btc-live-t/hkhpemlecgbfbohhfbcdonhkahibmgid">Price ticker Chrome extension</a> - bitcoin price</li>
+                        <li><a href="http://bitcoinprice.com">bitcoinprice.com</a> - prices and website sources</li>
+                        <li>and many many more...</li>
+                    </ul>
+                </blockquote>
+
+                <h3>How to contact the team?</h3>
+                <blockquote>
+                    You can send an email to <a href="mailto:bitcoinaverage@gmail.com">bitcoinaverage@gmail.com</a>. Also you can tweet us at
+                    <a href="https://twitter.com/BitcoinAverage">twitter.com/BitcoinAverage</a>, comment on our thread at
+                    <a href="https://bitcointalk.org/index.php?topic=270190.0">bitcointalk.org</a> or get in touch via
+                    <a href="https://github.com/bitcoinaverage/bitcoinaverage">github</a>.
+                </blockquote>
+
+                <h3>I want to add new exchange, report a bug or propose a feature. How do I do that?</h3>
+                <blockquote>
+                    Let us know via means proposed above.
+                </blockquote>
+
             </div>
-        
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Technical</h2>
+            </div>
+            <div class="panel-body">
+
+                <h3>How to use API and integrate with BitcoinAverage?</h3>
+                <blockquote>
+                    Here is the <a href="api.htm">API manual</a>, also feel free to contact us with any technical questions you have about it.
+                </blockquote>
+                <h3>Where can I find BitcoinAverage's source code?</h3>
+                <blockquote>
+                    Our repository is public and can be found on
+                    <a href="https://github.com/bitcoinaverage/bitcoinaverage" target="_blank" title="github">github</a>
+                </blockquote>
+            </div>
+        </div>
     </div>
     
     
