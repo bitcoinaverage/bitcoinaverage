@@ -308,7 +308,10 @@ var renderPriceChart = function(currencyCode){
                             text: 'All	'
                             }],
                         selected: selectedRangeValue,
-                        inputEnabled: true
+                        inputEnabled: true,
+                        inputPosition: {
+                            x: -85
+                        }
                     },
 
 
@@ -340,7 +343,24 @@ var renderPriceChart = function(currencyCode){
 
                     series : [{
                         data: data
-                    }]
+                    }],
+
+                    exporting: {
+                        buttons: {
+                            contextButton: {
+                                y: 20,
+                                text: 'export',
+                                theme: {
+                                    'stroke-width': 1,
+                                    'line-height': '8px',
+                                    verticalAlign: 'middle',
+                                    padding: 1.9,
+                                    stroke: 'silver',
+                                    r: 0
+                                }
+                            }
+                        }
+                    }
                 });
             });
         });
