@@ -352,6 +352,23 @@ ul{
     font-size: 19px;
 }
 
+.logo-center {
+    color: #666666;
+    display: inline-block;
+    font-size: 1.2em;
+    font-family: Tahoma;
+    vertical-align: middle;
+}
+
+.logo-brace {
+    color: #A4C7E5;
+    display: inline-block;
+    font-size: 3em;
+    font-family: Arial;
+    margin-top: -0.2em;
+    vertical-align: middle;
+}
+
 .slogan {
     margin: auto !important;
     line-height: auto !important;
@@ -591,9 +608,21 @@ ul{
     text-decoration: none;
 }
 
-#global-average-data-table{
+#global-average-data-table {
 
 }
+
+@media (max-width: 480px){
+    #global-average-data-table th {
+        word-break: break-all;
+    }
+    #global-average-data-table th,
+    #global-average-data-table td {
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+}
+
 #global-average-data-table .legend-curcode{
     text-decoration: none;
 }

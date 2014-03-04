@@ -11,3 +11,7 @@
 /bitcoinaverage/server.py
 
 /api/*
+
+/venv/*
+fabfile.py
+supervisord.conf
