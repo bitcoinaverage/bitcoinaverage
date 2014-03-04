@@ -36,7 +36,7 @@ def write_js_config():
 
     js_config_template = 'var config = $CONFIG_DATA;'
 
-    color = lambda name: "#" + hashlib.md5(name.encode()).hexdigest()[:6]
+    exchange_color = lambda name: "#" + hashlib.md5(name.encode()).hexdigest()[:6]
 
     config_data = {}
     config_data['apiIndexUrl'] = ba.server.API_INDEX_URL
@@ -47,7 +47,7 @@ def write_js_config():
     config_data['majorCurrencies'] = ba.config.FRONTEND_MAJOR_CURRENCIES
     config_data['scaleDivizer'] = ba.config.FRONTEND_SCALE_DIVIZER
     config_data['precision'] = ba.config.FRONTEND_PRECISION
-    config_data['exchangesColors'] = {ex: color(ex) for ex in ba.config.EXCHANGE_LIST.keys()}
+    config_data['exchangesColors'] = {ex: exchange_color(ex) for ex in ba.config.EXCHANGE_LIST.keys()}
     config_string = js_config_template.replace('$CONFIG_DATA', json.dumps(config_data))
 
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'config.js'), 'w') as config_file:
