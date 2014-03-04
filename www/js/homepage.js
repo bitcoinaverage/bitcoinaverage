@@ -78,8 +78,6 @@ var renderAll = function(result, status, responseObj){
         }
 
         $('body').show();
-
-        $('#currency-input').focus();
         firstRenderDone = true;
     } else {
         renderSelect(selectedFiatCurrency);
