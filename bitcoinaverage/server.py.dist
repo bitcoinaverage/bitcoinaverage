@@ -1,6 +1,6 @@
 API_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api used
 API_DOCUMENT_ROOT_NOGOX = ''  # if empty - <main.py folder>/api/no-mtgox used
-HISTORY_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/history used
+HISTORY_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api/history used
 WWW_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/www used
 
 LOG_PATH = ''  # if empty - <main.py folder>/runtime used
