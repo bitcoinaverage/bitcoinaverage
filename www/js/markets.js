@@ -206,7 +206,6 @@ var renderLegend = function(currencyCode){
 
     var index = 0;
     for(var exchange_name in currencyData.exchanges){
-        currencyData.exchanges[exchange_name]['name'] = exchange_name;
         exchangeArray[index] = currencyData.exchanges[exchange_name];
         index++;
     }
@@ -282,10 +281,10 @@ var renderLegend = function(currencyCode){
     $('#legend-api-down-note').hide();
     for(var slotNum in exchangeArray){
         if (exchangeArray[slotNum]['source'] == 'cache') {
-            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '**';
+            exchangeArray[slotNum]['display_name'] = exchangeArray[slotNum]['display_name'].replace(/\*+/, '') + '**';
             $('#legend-api-down-note').show();
         } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
-            exchangeArray[slotNum]['name'] = exchangeArray[slotNum]['name'] + '*';
+            exchangeArray[slotNum]['display_name'] = exchangeArray[slotNum]['display_name'].replace(/\*+/, '') + '*';
             $('#legend-api-unavailable-note').show();
         }
 
@@ -293,7 +292,11 @@ var renderLegend = function(currencyCode){
         var pad = "00000";
         volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
 
-        $('#legend-slot'+slotNum+'-name').text(exchangeArray[slotNum]['name']);
+        var exchange_link = $('<a>', {
+            href: exchangeArray[slotNum]['display_URL'],
+            target: '_blank'
+        }).text(exchangeArray[slotNum]['display_name']);
+        $('#legend-slot'+slotNum+'-name').html(exchange_link);
         $('#legend-slot'+slotNum+'-volume_btc').text(exchangeArray[slotNum]['volume_btc'])
                                                .formatCurrency({symbol: '',
                                                                 positiveFormat: '%n',
@@ -446,9 +449,6 @@ $(function(){
     });
     $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
 
-
-    // currency navigation (primary currency, secondary currency, currency tabs on markets page
-    $(document).on('click', '.currency-navigation li', currencyNavigationClick );
 
     // hide or show calc currency list by calc currency label click
     $('#bitcoin-calc-currency-label').click(function(e){
