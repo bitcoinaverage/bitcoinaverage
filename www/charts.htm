@@ -434,9 +434,13 @@ var renderVolumeChart = function(currencyCode){
                 }
                 var index = 0;
                 for (var columnNum in exchangesHeaders) {
-                    dataSeries[index] = {type: 'area',
-                                         data: [],
-                                         name: exchangesHeaders[columnNum]};
+                    var exchName = exchangesHeaders[columnNum];
+                    dataSeries[index] = {
+                        type: 'area',
+                        data: [],
+                        name: exchName,
+                        color: config.exchangesColors[exchName],
+                    };
                     index++;
                 }
                 return;
