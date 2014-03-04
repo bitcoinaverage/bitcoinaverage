@@ -197,7 +197,7 @@ EXCHANGE_LIST = {
                                                            },
                                  },
                     'bitfinex': {'ticker_url': 'https://api.bitfinex.com/v1/ticker/btcusd',
-                                 'trades_url': 'https://api.bitfinex.com/v1/trades/btcusd?limit_trades=9999', # limit_trades might need increase if daily trading will go above it
+                                 'today_url': 'https://api.bitfinex.com/v1/today/btcusd', # limit_trades might need increase if daily trading will go above it
                                  'URL': 'https://bitfinex.com',
                                  'display_name': 'Bitfinex',
                                  },
@@ -283,11 +283,6 @@ EXCHANGE_LIST = {
                                'URL': 'http://www.btceur.eu/',
                                'display_name': 'Bitcoin Euro Exchange',
                                  },
-                    'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
-                                                            },
-                               'URL': 'https://bit121.co.uk/',
-                               'display_name': 'bit121',
-                                 },
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitnzNZD',
                                                            },
                                'URL': 'https://bitnz.com/',
@@ -331,6 +326,11 @@ EXCHANGE_LIST = {
 
 
                     # these exchanges seem to be dead
+                    # 'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
+                    #                                         },
+                    #            'URL': 'https://bit121.co.uk/',
+                    #            'display_name': 'bit121',
+                    #              },
                     # 'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
                     #                                     #'CAD': 'weexCAD',
                     #                                     #'USD': 'weexUSD',
