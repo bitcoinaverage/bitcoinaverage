@@ -7,6 +7,22 @@
  *
  */
 
+function _maxelm(v) {
+	var m = v[0][1];
+	for (var i=1; i < v.length; i++) {
+		m = Math.max(m, v[i][1]);
+	}
+	return m;
+}
+
+function _minelm(v) {
+	var m = v[0][1];
+	for (var i=1; i < v.length; i++) {
+		m = Math.min(m, v[i][1]);
+	}
+	return m;
+}
+
 var BAWidget = function () {
 	this._protocol = window.location.protocol;
 	this._wrapper_id = 'ba-embed';
@@ -57,10 +73,13 @@ var BAWidget = function () {
 	this.createTemplate = function () {
 		this._template = [
 			'<div class="ba-chart"></div>',
-			'<div class="ba-data">',
-				'<span class="ba-current"></span>',
-				'<span class="ba-low"></span>',
-				'<span class="ba-high"></span>',
+			'<div>',
+				'<span style="color: #2f7ed8; font-size: 10px; display: inline-block; margin-left: 6px;">',
+					'High: <span id="ba-range-high"></span>',
+				'</span>',
+				'<span style="color: #2f7ed8; font-size: 10px; display: inline-block; margin-left: 6px;">',
+					'Low: <span id="ba-range-low"></span>',
+				'</span>',
 			'</div>',
 		].join('\n')
 	}
@@ -68,16 +87,45 @@ var BAWidget = function () {
 	this.createWidget = function () {
 		self._widget = $('#' + self._wrapper_id);
 		self._widget.html(self._template);
+		var widget_total_height = self._widget.height();
+		var chart_height = widget_total_height - 20;  // 20 computed manually
+		$('#' + self._wrapper_id + ' .ba-chart').height(chart_height);
 		var data = []
-		$(".ba-chart").highcharts("StockChart", {
+		$('#' + self._wrapper_id + ' .ba-chart').highcharts("StockChart", {
 			rangeSelector: {enabled: false},
 			xAxis:{labels:{enabled: false}},
 			yAxis:{labels:{enabled: false}},
 			scrollbar: {enabled: false},
 			navigator: {enabled: false},
 			exporting: {enabled: false},
-			tooltip: {enabled : false},
+			tooltip: {
+				backgroundColor: 'transparent',
+				borderWidth: 0,
+				borderRadius: 0,
+				//headerFormat: '{point.key} ',
+				pointFormat: ' | <b>{point.y}</b>',
+				crosshairs: false,
+				positioner: function () {
+					return { x: 0, y: 0 };
+				},
+				shadow: false,
+				valueDecimals: 2
+			},
 			credits: {enabled : false},
+
+			plotOptions: {
+				series: {
+					dataGrouping: {
+						groupPixelWidth: 1,
+						units: [
+							['minute', [1, 2, 5, 10, 15, 22, 30]],
+							['hour', [1, 2, 3, 6, 8, 10, 12]],
+							['day', [1]]
+							]
+					}
+				}
+			},
+
 			chart : {
 				events : {
 					load : function () {
@@ -98,7 +146,7 @@ var BAWidget = function () {
 	self.updateData = function (highchart) {
 		var data = [];
 		self._ajaxCall(self._data24hURL, function (csv) {
-			$.each(csv.split('\n'), function(i, line) {
+			$.each(csv.split('\n').slice(-60), function(i, line) {
 				var values = line.split(',');
 				if (i == 0 || line.length == 0 || values.length != 2) {
 					return;
@@ -107,6 +155,8 @@ var BAWidget = function () {
 					   parseFloat(values[1])]);
 			});
 			highchart.series[0].setData(data);
+			document.getElementById('ba-range-high').innerHTML = _maxelm(data);
+			document.getElementById('ba-range-low').innerHTML = _minelm(data);
 		});
 		return data;
 	}
