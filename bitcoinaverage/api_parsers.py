@@ -78,7 +78,7 @@ def callAPI(exchange_name):
                             result['data_source'] = 'api'
                         except (
                                 KeyError,
-                                TypeError,
+                                # TypeError,
                                 ValueError,
                                 DivisionByZero,
                                 simplejson.decoder.JSONDecodeError,
@@ -104,7 +104,7 @@ def callAPI(exchange_name):
                                                        }
             except (
                     KeyError,
-                    TypeError,
+                    # TypeError,
                     ValueError,
                     DivisionByZero,
                     socket.error,
@@ -326,15 +326,16 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     def _lbcParseCurrency(result, ticker, currency_code):
         try:
             volume = Decimal(ticker[currency_code]['volume_btc']).quantize(DEC_PLACES)
-            if 'avg_3h' in ticker[currency_code]:
+            if 'avg_3h' in ticker[currency_code] and ticker[currency_code]['avg_3h'] is not None:
                 rate = Decimal(ticker[currency_code]['avg_3h']).quantize(DEC_PLACES)
-            elif 'avg_12h' in ticker[currency_code]:
+            elif 'avg_12h' in ticker[currency_code] and ticker[currency_code]['avg_12h'] is not None:
                 rate = Decimal(ticker[currency_code]['avg_12h']).quantize(DEC_PLACES)
-            elif 'avg_24h' in ticker[currency_code]:
+            elif 'avg_24h' in ticker[currency_code] and ticker[currency_code]['avg_24h'] is not None:
                 rate = Decimal(ticker[currency_code]['avg_24h']).quantize(DEC_PLACES)
             else:
                 rate = None
                 volume = None
+
             result[currency_code]= {'ask': rate,
                                     'bid': rate,
                                     'last': rate,
