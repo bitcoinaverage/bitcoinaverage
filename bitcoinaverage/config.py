@@ -136,7 +136,7 @@ EXCHANGE_LIST = {
                                    },
 
                     'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/BtcNis/Ticker.json',
-                              'URL': 'https://bit2c.co.il/',
+                              'URL': 'https://www.bit2c.co.il/',
                               'display_name': 'Bit2C',
                                 },
                     'kapiton': {'ticker_url': 'https://kapiton.se/api/0/ticker',
@@ -203,14 +203,14 @@ EXCHANGE_LIST = {
                                  },
                     'fybsg': {'ticker_url': 'https://www.fybsg.com/api/SGD/ticker.json',
                               'trades_url': 'https://www.fybsg.com/api/SGD/trades.json', # this URL queries all trades for this exchange since beginning of time, this is not effective, ideally they should allow API to query by date.
-                              'URL': 'https://fybsg.com',
+                              'URL': 'https://www.fybsg.com',
                               'display_name': 'FYB-SG',
                               'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                 },
                     'fybse':  {'ticker_url': 'https://www.fybse.se/api/SEK/ticker.json',
                                'trades_url': 'https://www.fybse.se/api/SEK/trades.json', # this URL queries all trades for this exchange since beginning of time, this is not effective, ideally they should allow API to query by date.
-                               'URL': 'https://fybse.se',
+                               'URL': 'https://www.fybse.se',
                                'display_name': 'FYB-SE',
                                'bitcoincharts_symbols': {'SEK': 'fybseSEK',
                                                            },
@@ -240,7 +240,7 @@ EXCHANGE_LIST = {
                                 'eur_orders_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/orders',
                                 'eur_trades_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/trades?since={trade_id}',
                                 'since_trade_id': 10262,
-                                'URL': 'https://itbit.com',
+                                'URL': 'https://www.itbit.com',
                                 'display_name': 'itBit',
                                  },
 
