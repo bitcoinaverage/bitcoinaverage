@@ -174,7 +174,7 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
         response = urllib2.urlopen(urllib2.Request(url=api_ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
-    last_24h_timestamp = time.time()-86400
+    last_24h_timestamp = int(time.time()-86400)
     api_trades_url = api_trades_url.format(timestamp_since=last_24h_timestamp)
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=api_trades_url, headers=API_REQUEST_HEADERS)).read()
@@ -183,7 +183,7 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
     volume = Decimal(0)
     for trade in trades:
         if trade['date'] > last_24h_timestamp:
-            volume = volume + Decimal(trade['price'])
+            volume = volume + Decimal(trade['amount'])
 
     result = {}
     result['USD'] = {'ask': Decimal(ticker['Best Ask']).quantize(DEC_PLACES),
