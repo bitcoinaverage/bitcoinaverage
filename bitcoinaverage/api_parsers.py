@@ -326,11 +326,11 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     def _lbcParseCurrency(result, ticker, currency_code):
         try:
             volume = Decimal(ticker[currency_code]['volume_btc']).quantize(DEC_PLACES)
-            if ticker[currency_code]['avg_3h'] is not None:
+            if 'avg_3h' in ticker[currency_code]:
                 rate = Decimal(ticker[currency_code]['avg_3h']).quantize(DEC_PLACES)
-            elif ticker[currency_code]['avg_12h'] is not None:
+            elif 'avg_12h' in ticker[currency_code]:
                 rate = Decimal(ticker[currency_code]['avg_12h']).quantize(DEC_PLACES)
-            elif ticker[currency_code]['avg_24h'] is not None:
+            elif 'avg_24h' in ticker[currency_code]:
                 rate = Decimal(ticker[currency_code]['avg_24h']).quantize(DEC_PLACES)
             else:
                 rate = None
