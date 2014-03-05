@@ -347,9 +347,15 @@ ul{
 .navbar-nav > li > a:hover {text-decoration: underline !important; }
 
 .logo {
+    background: url(../img/logo_full_small.png) no-repeat scroll center center rgba(0, 0, 0, 0);
     color: #428BCA !important;
+    display: block;
     font-family: 'Titillium Web Thin', sans-serif;
     font-size: 19px;
+    height: 40px;
+    margin: 5px;
+    text-indent: -9999px;
+    width: 172px;
 }
 
 .logo-center {
