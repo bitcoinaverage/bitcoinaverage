@@ -78,7 +78,7 @@ def callAPI(exchange_name):
                             result['data_source'] = 'api'
                         except (
                                 KeyError,
-                                # TypeError,
+                                TypeError,
                                 ValueError,
                                 DivisionByZero,
                                 simplejson.decoder.JSONDecodeError,
@@ -104,7 +104,7 @@ def callAPI(exchange_name):
                                                        }
             except (
                     KeyError,
-                    # TypeError,
+                    TypeError,
                     ValueError,
                     DivisionByZero,
                     socket.error,
@@ -182,8 +182,13 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
 
     volume = Decimal(0)
     for trade in trades:
-        if trade['date'] > last_24h_timestamp:
-            volume = volume + Decimal(trade['amount'])
+        try:
+            if trade['date'] > last_24h_timestamp:
+                volume = volume + Decimal(trade['amount'])
+        except TypeError as error:
+            print 'CampBX error'
+            print trade
+            raise error
 
     result = {}
     result['USD'] = {'ask': Decimal(ticker['Best Ask']).quantize(DEC_PLACES),
