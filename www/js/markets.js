@@ -278,11 +278,12 @@ var renderLegend = function(currencyCode){
     $('#legend-api-unavailable-note').hide();
     $('#legend-api-down-note').hide();
     for(var slotNum in exchangeArray){
+        exchangeArray[slotNum]['display_name'] = exchangeArray[slotNum]['display_name'].replace(/\*+/, '')
         if (exchangeArray[slotNum]['source'] == 'cache') {
-            exchangeArray[slotNum]['display_name'] = exchangeArray[slotNum]['display_name'].replace(/\*+/, '') + '**';
+            exchangeArray[slotNum]['display_name'] += '**';
             $('#legend-api-down-note').show();
         } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
-            exchangeArray[slotNum]['display_name'] = exchangeArray[slotNum]['display_name'].replace(/\*+/, '') + '*';
+            exchangeArray[slotNum]['display_name'] += '*';
             $('#legend-api-unavailable-note').show();
         }
 
