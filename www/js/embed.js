@@ -9,7 +9,7 @@
 
 var BAWidget = function () {
 	this._protocol = window.location.protocol;
-	this._wrapper_id = 'embed';
+	this._wrapper_id = 'ba-embed';
 	this._apiHistoryIndexUrl = 'https://api.bitcoinaverage.com/history/';
 	this._currencyCode = 'USD'  // for now
 	this._data24hURL = this._apiHistoryIndexUrl + this._currencyCode + '/per_minute_24h_sliding_window.csv';
@@ -56,7 +56,7 @@ var BAWidget = function () {
 
 	this.createTemplate = function () {
 		this._template = [
-			'<div class="ba-graph"></div>',
+			'<div class="ba-chart"></div>',
 			'<div class="ba-data">',
 				'<span class="ba-current"></span>',
 				'<span class="ba-low"></span>',
@@ -69,7 +69,7 @@ var BAWidget = function () {
 		self._widget = $('#' + self._wrapper_id);
 		self._widget.html(self._template);
 		var data = []
-		$(".ba-data").highcharts("StockChart", {
+		$(".ba-chart").highcharts("StockChart", {
 			rangeSelector: {enabled: false},
 			xAxis:{labels:{enabled: false}},
 			yAxis:{labels:{enabled: false}},
