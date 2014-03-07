@@ -20,7 +20,7 @@ direction = ""
 while True:
     try:
         r = requests.get(URL).json()
-    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionErro):
+    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
         time.sleep(2)
         continue
 
@@ -42,10 +42,10 @@ while True:
             perc = round(a, 2)
             
     if perc != 0 and change != 0 and direction != "":
-        status = "Bitcoin Average Global Rate: ${0} ({1} ${2}) - https://BitcoinAverage.com".format(newprice,direction,change)
+        status = "BitcoinAverage price index: ${0} ({1} ${2}) - https://BitcoinAverage.com".format(newprice,direction,change)
         status = api.PostUpdate(status)
     else:
-        status = "Bitcoin Average Global Rate: ${0} - https://BitcoinAverage.com".format(newprice)
+        status = "BitcoinAverage price index: ${0} - https://BitcoinAverage.com".format(newprice)
         status = api.PostUpdate(status)
         
     oldprice = newprice
