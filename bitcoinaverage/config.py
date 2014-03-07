@@ -67,15 +67,17 @@ CURRENCY_LIST = ('USD',
                  'ILS',
                  'CHF',
                  'TRY',
+                 'HKD',
+
                  # 'CZK',
                  # 'DKK',
-                 # 'HKD',
                  # 'THB',
                     )
 
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
 
 EXCHANGE_LIST = {
+#EXCHANGES WITH DIRECT INTEGRATION
                     'bitstamp': {'api_ticker_url': 'https://www.bitstamp.net/api/ticker/',
                                  'display_name': 'Bitstamp',
                                  'URL': 'https://bitstamp.net/',
@@ -102,18 +104,15 @@ EXCHANGE_LIST = {
                                   'URL': 'https://vircurex.com/',
                                   'display_name': 'Vircurex',
                                     },
-
                     'bitbargain': {'volume_api_url': 'https://bitbargain.co.uk/api/bbticker',
                                    'ticker_api_url': 'https://bitbargain.co.uk/api/btcavg',
                                    'URL': 'https://bitbargain.co.uk/',
                                    'display_name': 'BitBargain',
                                    },
-
                     'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
                                       'URL': 'https://localbitcoins.com/',
                                       'display_name': 'LocalBitcoins',
                                          },
-
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
                                    'URL': 'https://crypto-trade.com/',
                                    'display_name': 'Crypto-Trade',
@@ -127,8 +126,6 @@ EXCHANGE_LIST = {
                                    'URL': 'https://therocktrading.com/',
                                    'display_name': 'Rock Trading',
                                     },
-
-
                     #with intersango only EUR is used, because trader needs to convert to EUR to add/withdraw with it
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
                                    'URL': 'https://intersango.com/',
@@ -250,12 +247,10 @@ EXCHANGE_LIST = {
                                         'URL': 'https://vaultofsatoshi.com',
                                         'display_name': 'Vault of Satoshi',
                                         },
-
                     'quickbitcoin':  {'gbp_ticker_url': 'https://quickbitcoin.co.uk/ticker',
                                       'URL': 'https://quickbitcoin.co.uk',
                                       'display_name': 'QuickBitcoin',
                                         },
-
                     'quadrigacx':  {'cad_ticker_url': 'http://api.quadrigacx.com/public/info',
                                     'URL': 'https://quadrigacx.com',
                                     'display_name': 'QuadrigaCX',
@@ -276,8 +271,7 @@ EXCHANGE_LIST = {
                                     },
 
 
-
-
+#EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
                                                             },
                                'URL': 'http://www.btceur.eu/',
@@ -288,16 +282,16 @@ EXCHANGE_LIST = {
                                'URL': 'https://bitnz.com/',
                                'display_name': 'bitNZ',
                                  },
-
                     'anx_hk':  {'bitcoincharts_symbols': {'USD': 'anxhkUSD',
                                                           'HKD': 'anxhkHKD',
                                                           'CNY': 'anxhkCNY',
                                                            },
                                 'URL': 'https://anxbtc.com/',
-                                'display_name': 'ANX.HK',
+                                'display_name': 'ANXBTC',
                                  },
 
 
+#EXCHANGES IGNORED
                     'okcoin':  {'ticker_url': 'https://www.okcoin.com/api/ticker.do',
                                 'display_name': 'OKCoin',
                                 'ignored': True,
@@ -325,13 +319,13 @@ EXCHANGE_LIST = {
 
 
 
-                    # these exchanges seem to be dead
-                    # 'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
+#EXCHANGES DEAD AND BURIED
+                    #'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
                     #                                         },
                     #            'URL': 'https://bit121.co.uk/',
                     #            'display_name': 'bit121',
                     #              },
-                    # 'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
+                    #'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
                     #                                     #'CAD': 'weexCAD',
                     #                                     #'USD': 'weexUSD',
                     #                                        },
