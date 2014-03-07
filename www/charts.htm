@@ -374,6 +374,7 @@ var renderPriceChart = function(currencyCode){
                     tooltip:{
                         valueDecimals: 2,
                         valuePrefix:currencyCode+' '
+
                     },
 
                     plotOptions:{
@@ -385,7 +386,8 @@ var renderPriceChart = function(currencyCode){
                                         ['hour', [1, 2, 3, 6, 8, 10, 12]],
                                         ['day',[1]]
                                         ]
-                            }
+                            },
+                            name: "Average Price"
                         }
                     },
 
@@ -504,7 +506,14 @@ var renderVolumeChart = function(currencyCode){
             series : dataSeries,
             tooltip:{
                 valueDecimals: 2,
-                valuePrefix:'BTC '
+                formatter: function() {
+                    var s = Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'<br/>';
+                    this.points.sort(function(a,b){return b.y - a.y});
+                    $.each(this.points, function(i, point) {
+                        s +='<span style="color:'+point.series.color+'">'+point.series.name+'</span>: <b> BTC '+point.y+'</b><br/>';
+                    });
+                    return s;
+                }
             },
             exporting: {
                 buttons: {
@@ -523,7 +532,6 @@ var renderVolumeChart = function(currencyCode){
                 }
             }
         });
-
     });
 }
 
