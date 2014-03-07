@@ -1,8 +1,8 @@
 /*
  * Usage:
  * <div id="embed"></div>
- * <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
- * <script src="http://code.highcharts.com/stock/highstock.js"></script>
+ * <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+ * <script src="https://code.highcharts.com/stock/highstock.js"></script>
  * <script src="embed.js"></script>
  *
  */
