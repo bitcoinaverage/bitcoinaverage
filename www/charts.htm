@@ -353,6 +353,7 @@ var renderPriceChart = function(currencyCode){
                     },
 
                     title: { text: currencyCode+' average price history'},
+                    subtitle: { text: '' },
                     rangeSelector: {
                         buttons: buttons,
                         selected: selectedRangeValue,
@@ -412,10 +413,36 @@ var renderPriceChart = function(currencyCode){
                         }
                     }
                 });
+                var chart = $('#big-chart').highcharts();
+                var axis = chart.xAxis[0].getExtremes();
+                var begin;
+                var end = 0;
+                for (var i = 0; i < chart.series[0].points.length; i++) {
+                    if(chart.series[0].points[i].x < axis.min){
+                        begin = chart.series[0].points[i].y;
+                        break;
+                    }
+                }
+                for (var i = 0; i < chart.series[0].points.length; i++) {
+                    if(chart.series[0].points[i].x >= axis.max) {
+                        end = chart.series[0].points[i-1].y;
+                        break;
+                    }
+                }
+                if (end === 0) {
+                    end = chart.series[0].points[chart.series[0].points.length-1].y;
+                }
+                var percent = (end-begin)*100/end;
+                var diff = end-begin;
+                chart.setTitle(null, {text: diff.toFixed(2)+" (" + percent.toFixed(2) + "%)"});
+                if (percent > 0) {
+                    chart.setTitle(null, { style: { color: 'green' }});
+                } else {
+                    chart.setTitle(null, { style: { color: 'red' }});
+                }
             });
         });
     });
-
 }
 
 var renderVolumeChart = function(currencyCode){
