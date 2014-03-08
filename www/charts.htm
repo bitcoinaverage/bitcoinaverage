@@ -465,9 +465,13 @@ var renderVolumeChart = function(currencyCode){
                 }
                 var index = 0;
                 for (var columnNum in exchangesHeaders) {
-                    dataSeries[index] = {type: 'area',
-                                         data: [],
-                                         name: exchangesHeaders[columnNum]};
+                    var exchName = exchangesHeaders[columnNum];
+                    dataSeries[index] = {
+                        type: 'area',
+                        data: [],
+                        name: exchName,
+                        color: config.exchangesColors[exchName],
+                    };
                     index++;
                 }
                 return;
@@ -584,12 +588,14 @@ var getRandomArbitrary = function(min, max) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
-                <span class="navbar-brand slogan">independent bitcoin price</span>
-                <h1 class="navbar-brand slogan hidden-xs hidden-sm" itemprop="description">bitcoin weighted average price index</h1>
+                <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url">
+                    <span itemprop="name">BitcoinAverage</span>
+                </a>
+                <h1 class="navbar-brand slogan hidden-xs hidden-sm" itemprop="description">bitcoin price index</h1>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
+                    <li><a class="submenu" href="explain.htm">INDEX FORMULA</a></li>
                     <li><a class="submenu" href="markets.htm">MARKETS</a></li>
                     <li><a class="submenu" href="charts.htm">CHARTS</a></li>
                     <!--<li><a class="submenu" href="blog.htm">BLOG</a></li>-->

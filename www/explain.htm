@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>How? | BitcoinAverage Price Index</title>
+    <title>Index Formula | BitcoinAverage Price Index</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="bitcoin average price index, bitcoin global average price index, bitcoin global average price, bitcoin global average price infgraphics " />
@@ -68,11 +68,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand logo" href="https://bitcoinaverage.com/">BitcoinAverage</a>
-            <span class="navbar-brand slogan hidden-xs hidden-sm">bitcoin weighted average price index</span>
+            <a class="navbar-brand logo" href="https://bitcoinaverage.com/" itemprop="url">
+                <span itemprop="name">BitcoinAverage</span>
+            </a>
+            <span class="navbar-brand slogan hidden-xs hidden-sm">bitcoin price index</span>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
+                <li><a class="submenu" href="explain.htm">INDEX FORMULA</a></li>
                 <li><a class="submenu" href="markets.htm">MARKETS</a></li>
                 <li><a class="submenu" href="charts.htm">CHARTS</a></li>
                 <!--<li><a class="submenu" href="blog.htm">BLOG</a></li>-->
@@ -86,7 +89,7 @@
 <div id="main-container" class="container">
     <div class="content explain-page">
         <div class="section__left-col">
-            <h1>How we do our bitcoin average price index?</h1>
+            <h1>How we do BitcoinAverage bitcoin price index?</h1>
         </div>
         <div class="section exchanges-box v-offset3">
             <div class="section__left-col">
@@ -99,12 +102,12 @@
                 <table class="exchanges-list" width="100%">
                     <tr>
                         <td class="blue" width="30%">
-                            <span class="exchange-name">mtgox </span>
+                            <span class="exchange-name">bitfinex </span>
                             <span class="exchange-price">$0.85</span>
                         </td>
 
                         <td class="green" width="30%">
-                            <span class="exchange-name">mtgox </span>
+                            <span class="exchange-name">kraken </span>
                             <span class="exchange-price">€0.68</span>
                         </td>
 
@@ -112,7 +115,7 @@
                             <span>...</span>
                         </td>
                         <td class="gray" width="30%">
-                            <span class="exchange-name"> btcchina</span>
+                            <span class="exchange-name">btcchina</span>
                             <span class="exchange-price"> ¥4.2</span>
                         </td>
                     </tr>
@@ -132,7 +135,7 @@
                             <span>...</span>
                         </td>
                         <td class="gray" width="30%">
-                            <span class="exchange-name">okcoin </span>
+                            <span class="exchange-name">fxbtc</span>
                             <span class="exchange-price"> ¥4.1</span>
                         </td>
                     </tr>
@@ -161,7 +164,7 @@
                         </td>
 
                         <td class="green" width="30%">
-                            <span class="exchange-name">kraken</span>
+                            <span class="exchange-name">localbitcoins</span>
                             <span class="exchange-price">€0.65</span>
                         </td>
 
@@ -169,20 +172,9 @@
                             <span>...</span>
                         </td>
                         <td class="gray" width="30%">
-                            <span class="exchange-name">rmbtb</span>
+                            <span class="exchange-name">bter</span>
                             <span class="exchange-price">¥4.4</span>
                         </td>
-                    </tr>
-
-                     <tr>
-                        <td class="blue" width="30%">
-                            <span class="exchange-name">localbitcoins</span>
-                            <span class="exchange-price">$0.84</span>
-                        </td>
-
-                        <td class="green" width="30%"></td>
-                        <td width="5%" class="ellipsis"></td>
-                        <td class="gray" width="30%"></td>
                     </tr>
 
                 </table>
@@ -191,7 +183,7 @@
 
             <div class="section__right-col">
                 <p>
-                    First we collect pieces of data from all available exchanges over the Internet. Each piece consists of
+                    <b>1.</b> We collect pieces of data from all available exchanges over the Internet. Each piece consists of
                     <ol>
                         <li>nominated fiat currency</li>
                         <li>last trade price</li>
@@ -199,7 +191,7 @@
                         <li>current highest bid</li>
                         <li>24h sliding window trading volume</li>
                     </ol>
-                    For multicurrency exchanges like mtgox we collect multiple pieces, separately for each currency. <br/>
+                    For multicurrency exchanges like LocalBitcoins we collect multiple pieces, separately for each currency. <br/>
                     This data is collected roughly every minute, and cycle time may slightly vary depending on the load time for various exchanges.
                 </p>
             </div>
@@ -216,7 +208,7 @@
             </div>
             <div class="section__right-col">
                 <p>
-                    When all data is collected we calculate weighted averages within each currency according to trading volumes.
+                    <b>2.</b> When all data is collected we calculate weighted averages within each currency according to trading volumes.
                     Weighted averages are calculated for last price, bid and ask separately.
                 </p>
 
@@ -272,7 +264,7 @@
             </div>
             <div class="section__right-col">
                 <p>
-                    Global average is calculated using fiat exchange rates, so it can be shown in nearly any fiat
+                    <b>3.</b> Global average is calculated using fiat exchange rates, so it can be shown in nearly any fiat
                     currency. To calculate global average we choose a target currency (USD as example). <br>
                     Then we convert each market's weighted average into target currency using fiat exchange rates
                     provided by openexchangerates.org.
@@ -287,7 +279,7 @@
             </div>
             <div class="section__right-col">
                <p>
-                    Then the global weighted average is calculated using each market's average converted into target currency. <br>
+                    <b>4.</b> Then the global weighted average is calculated using each market's average converted into target currency. <br>
                     Each market's total trading volume is used as weight for calculation.
                 </p>
             </div>
@@ -303,7 +295,7 @@
             <div class="section__right-col">
                 <br>
                <p>
-                   Finally global weighted average in formed, in any convertible world's currency.
+                   <b>5.</b> Finally global weighted average in formed, in any convertible world's currency.
                </p>
                 <br><br><br>
                <p>

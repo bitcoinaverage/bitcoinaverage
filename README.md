@@ -27,3 +27,10 @@ Whole frontend is JS-driven, it fetches JSON API via AJAX and renders the page.
 
 
 *Feel free to contact us at bitcoinaverage@gmail.com for with questions on any matters about this system and website.*
+
+
+
+related thirdparty libraries
+--------------------
+- python calculator module - https://gist.github.com/miohtama/7814435
+- ruby API wrapper - https://github.com/git-toni/bitcoinaverage

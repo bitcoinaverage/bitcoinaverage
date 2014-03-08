@@ -67,15 +67,17 @@ CURRENCY_LIST = ('USD',
                  'ILS',
                  'CHF',
                  'TRY',
+                 'HKD',
+
                  # 'CZK',
                  # 'DKK',
-                 # 'HKD',
                  # 'THB',
                     )
 
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
 
 EXCHANGE_LIST = {
+#EXCHANGES WITH DIRECT INTEGRATION
                     'bitstamp': {'api_ticker_url': 'https://www.bitstamp.net/api/ticker/',
                                  'display_name': 'Bitstamp',
                                  'URL': 'https://bitstamp.net/',
@@ -102,18 +104,15 @@ EXCHANGE_LIST = {
                                   'URL': 'https://vircurex.com/',
                                   'display_name': 'Vircurex',
                                     },
-
                     'bitbargain': {'volume_api_url': 'https://bitbargain.co.uk/api/bbticker',
                                    'ticker_api_url': 'https://bitbargain.co.uk/api/btcavg',
                                    'URL': 'https://bitbargain.co.uk/',
                                    'display_name': 'BitBargain',
                                    },
-
                     'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
                                       'URL': 'https://localbitcoins.com/',
                                       'display_name': 'LocalBitcoins',
                                          },
-
                     'cryptotrade':{'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
                                    'URL': 'https://crypto-trade.com/',
                                    'display_name': 'Crypto-Trade',
@@ -127,8 +126,6 @@ EXCHANGE_LIST = {
                                    'URL': 'https://therocktrading.com/',
                                    'display_name': 'Rock Trading',
                                     },
-
-
                     #with intersango only EUR is used, because trader needs to convert to EUR to add/withdraw with it
                     'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
                                    'URL': 'https://intersango.com/',
@@ -136,7 +133,7 @@ EXCHANGE_LIST = {
                                    },
 
                     'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/BtcNis/Ticker.json',
-                              'URL': 'https://bit2c.co.il/',
+                              'URL': 'https://www.bit2c.co.il/',
                               'display_name': 'Bit2C',
                                 },
                     'kapiton': {'ticker_url': 'https://kapiton.se/api/0/ticker',
@@ -197,20 +194,20 @@ EXCHANGE_LIST = {
                                                            },
                                  },
                     'bitfinex': {'ticker_url': 'https://api.bitfinex.com/v1/ticker/btcusd',
-                                 'trades_url': 'https://api.bitfinex.com/v1/trades/btcusd?limit_trades=9999', # limit_trades might need increase if daily trading will go above it
+                                 'today_url': 'https://api.bitfinex.com/v1/today/btcusd', # limit_trades might need increase if daily trading will go above it
                                  'URL': 'https://bitfinex.com',
                                  'display_name': 'Bitfinex',
                                  },
                     'fybsg': {'ticker_url': 'https://www.fybsg.com/api/SGD/ticker.json',
                               'trades_url': 'https://www.fybsg.com/api/SGD/trades.json', # this URL queries all trades for this exchange since beginning of time, this is not effective, ideally they should allow API to query by date.
-                              'URL': 'https://fybsg.com',
+                              'URL': 'https://www.fybsg.com',
                               'display_name': 'FYB-SG',
                               'bitcoincharts_symbols': {'SGD': 'fybsgSGD'
                                                            },
                                 },
                     'fybse':  {'ticker_url': 'https://www.fybse.se/api/SEK/ticker.json',
                                'trades_url': 'https://www.fybse.se/api/SEK/trades.json', # this URL queries all trades for this exchange since beginning of time, this is not effective, ideally they should allow API to query by date.
-                               'URL': 'https://fybse.se',
+                               'URL': 'https://www.fybse.se',
                                'display_name': 'FYB-SE',
                                'bitcoincharts_symbols': {'SEK': 'fybseSEK',
                                                            },
@@ -240,7 +237,7 @@ EXCHANGE_LIST = {
                                 'eur_orders_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/orders',
                                 'eur_trades_url': 'https://www.itbit.com/api/v2/markets/XBTEUR/trades?since={trade_id}',
                                 'since_trade_id': 10262,
-                                'URL': 'https://itbit.com',
+                                'URL': 'https://www.itbit.com',
                                 'display_name': 'itBit',
                                  },
 
@@ -250,12 +247,10 @@ EXCHANGE_LIST = {
                                         'URL': 'https://vaultofsatoshi.com',
                                         'display_name': 'Vault of Satoshi',
                                         },
-
                     'quickbitcoin':  {'gbp_ticker_url': 'https://quickbitcoin.co.uk/ticker',
                                       'URL': 'https://quickbitcoin.co.uk',
                                       'display_name': 'QuickBitcoin',
                                         },
-
                     'quadrigacx':  {'cad_ticker_url': 'http://api.quadrigacx.com/public/info',
                                     'URL': 'https://quadrigacx.com',
                                     'display_name': 'QuadrigaCX',
@@ -276,33 +271,27 @@ EXCHANGE_LIST = {
                                     },
 
 
-
-
+#EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
                                                             },
                                'URL': 'http://www.btceur.eu/',
                                'display_name': 'Bitcoin Euro Exchange',
-                                 },
-                    'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
-                                                            },
-                               'URL': 'https://bit121.co.uk/',
-                               'display_name': 'bit121',
                                  },
                     'bitnz':  {'bitcoincharts_symbols': {'NZD': 'bitnzNZD',
                                                            },
                                'URL': 'https://bitnz.com/',
                                'display_name': 'bitNZ',
                                  },
-
                     'anx_hk':  {'bitcoincharts_symbols': {'USD': 'anxhkUSD',
                                                           'HKD': 'anxhkHKD',
                                                           'CNY': 'anxhkCNY',
                                                            },
                                 'URL': 'https://anxbtc.com/',
-                                'display_name': 'ANX.HK',
+                                'display_name': 'ANXBTC',
                                  },
 
 
+#EXCHANGES IGNORED
                     'okcoin':  {'ticker_url': 'https://www.okcoin.com/api/ticker.do',
                                 'display_name': 'OKCoin',
                                 'ignored': True,
@@ -330,8 +319,13 @@ EXCHANGE_LIST = {
 
 
 
-                    # these exchanges seem to be dead
-                    # 'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
+#EXCHANGES DEAD AND BURIED
+                    #'bit121': {'bitcoincharts_symbols': {'GBP': 'bit121GBP',
+                    #                                         },
+                    #            'URL': 'https://bit121.co.uk/',
+                    #            'display_name': 'bit121',
+                    #              },
+                    #'weex':  {'bitcoincharts_symbols': {'AUD': 'weexAUD',
                     #                                     #'CAD': 'weexCAD',
                     #                                     #'USD': 'weexUSD',
                     #                                        },
@@ -396,8 +390,4 @@ EXCHANGE_LIST = {
 
 
                 }
-
-
-
-
 

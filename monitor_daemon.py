@@ -46,7 +46,7 @@ def process_exists(proc_name):
 def api_time_diff():
     try:
         r = requests.get(ticker_URL).json()
-    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionErro):
+    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
         return None
 
     current_data_datetime = r['timestamp']
@@ -59,11 +59,10 @@ def api_time_diff():
     diff = current_time - current_data_timestamp
     return diff
 
-
 def history_time_diff():
     try:
         csv_result = requests.get(history_URL).text
-    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionErro):
+    except(simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
         return None
 
     csvfile = StringIO.StringIO(csv_result)
@@ -77,13 +76,15 @@ def history_time_diff():
     
     current_data_datetime = last_log[0]
     current_time = time.time()
-    
-    current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%Y-%m-%d %H:%M:%S')
-    current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
-    
+
+    try:
+        current_data_datetime = datetime.datetime.strptime(current_data_datetime, '%Y-%m-%d %H:%M:%S')
+        current_data_timestamp = int((current_data_datetime - datetime.datetime(1970, 1, 1)).total_seconds())
+    except ValueError:
+        return None
+
     diff = (current_time - current_data_timestamp)
     return diff
-    
 
 def send_email(daemon):
     try:

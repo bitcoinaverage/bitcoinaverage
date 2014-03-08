@@ -154,146 +154,6 @@ def callAPI(exchange_name):
     return exchange_name, result, exchange_ignore_reason
 
 
-def _mtgoxApiCall(usd_api_url, eur_api_url, gbp_api_url, cad_api_url, pln_api_url, rub_api_url, aud_api_url, chf_api_url,
-                  cny_api_url, dkk_api_url, hkd_api_url, jpy_api_url, nzd_api_url, sgd_api_url, sek_api_url, *args, **kwargs):
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=usd_api_url, headers=API_REQUEST_HEADERS)).read()
-        usd_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=eur_api_url, headers=API_REQUEST_HEADERS)).read()
-        eur_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=gbp_api_url, headers=API_REQUEST_HEADERS)).read()
-        gbp_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=cad_api_url, headers=API_REQUEST_HEADERS)).read()
-        cad_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=pln_api_url, headers=API_REQUEST_HEADERS)).read()
-        pln_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=rub_api_url, headers=API_REQUEST_HEADERS)).read()
-        rub_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=aud_api_url, headers=API_REQUEST_HEADERS)).read()
-        aud_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=chf_api_url, headers=API_REQUEST_HEADERS)).read()
-        chf_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=cny_api_url, headers=API_REQUEST_HEADERS)).read()
-        cny_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=dkk_api_url, headers=API_REQUEST_HEADERS)).read()
-        dkk_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=hkd_api_url, headers=API_REQUEST_HEADERS)).read()
-        hkd_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=jpy_api_url, headers=API_REQUEST_HEADERS)).read()
-        jpy_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=nzd_api_url, headers=API_REQUEST_HEADERS)).read()
-        nzd_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=sgd_api_url, headers=API_REQUEST_HEADERS)).read()
-        sgd_result = json.loads(response)
-
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=sek_api_url, headers=API_REQUEST_HEADERS)).read()
-        sek_result = json.loads(response)
-
-    return {'USD': {'ask': Decimal(usd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(usd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(usd_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(usd_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'EUR': {'ask': Decimal(eur_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(eur_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(eur_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(eur_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'GBP': {'ask': Decimal(gbp_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(gbp_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(gbp_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(gbp_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'CAD': {'ask': Decimal(cad_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(cad_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(cad_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(cad_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'PLN': {'ask': Decimal(pln_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(pln_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(pln_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(pln_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'RUB': {'ask': Decimal(rub_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(rub_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(rub_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(rub_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'AUD': {'ask': Decimal(aud_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(aud_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(aud_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(aud_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'CHF': {'ask': Decimal(chf_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(chf_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(chf_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(chf_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'CNY': {'ask': Decimal(cny_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(cny_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(cny_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(cny_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'DKK': {'ask': Decimal(dkk_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(dkk_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(dkk_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(dkk_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'HKD': {'ask': Decimal(hkd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(hkd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(hkd_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(hkd_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'JPY': {'ask': Decimal(jpy_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(jpy_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(jpy_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(jpy_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'NZD': {'ask': Decimal(nzd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(nzd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(nzd_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(nzd_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'SGD': {'ask': Decimal(sgd_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(sgd_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(sgd_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(sgd_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-            'SEK': {'ask': Decimal(sek_result['data']['sell']['value']).quantize(DEC_PLACES),
-                    'bid': Decimal(sek_result['data']['buy']['value']).quantize(DEC_PLACES),
-                    'last': Decimal(sek_result['data']['last']['value']).quantize(DEC_PLACES),
-                    'volume': Decimal(sek_result['data']['vol']['value']).quantize(DEC_PLACES),
-            },
-    }
-
-
 def _bitstampApiCall(api_ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=api_ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -314,7 +174,7 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
         response = urllib2.urlopen(urllib2.Request(url=api_ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
-    last_24h_timestamp = time.time()-86400
+    last_24h_timestamp = int(time.time()-86400)
     api_trades_url = api_trades_url.format(timestamp_since=last_24h_timestamp)
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=api_trades_url, headers=API_REQUEST_HEADERS)).read()
@@ -322,8 +182,13 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
 
     volume = Decimal(0)
     for trade in trades:
-        if trade['date'] > last_24h_timestamp:
-            volume = volume + Decimal(trade['price'])
+        try:
+            if trade['date'] > last_24h_timestamp:
+                volume = volume + Decimal(trade['amount'])
+        except TypeError as error:
+            print 'CampBX error'
+            print trade
+            raise error
 
     result = {}
     result['USD'] = {'ask': Decimal(ticker['Best Ask']).quantize(DEC_PLACES),
@@ -466,15 +331,16 @@ def _localbitcoinsApiCall(api_url, *args, **kwargs):
     def _lbcParseCurrency(result, ticker, currency_code):
         try:
             volume = Decimal(ticker[currency_code]['volume_btc']).quantize(DEC_PLACES)
-            if ticker[currency_code]['avg_3h'] is not None:
+            if 'avg_3h' in ticker[currency_code] and ticker[currency_code]['avg_3h'] is not None:
                 rate = Decimal(ticker[currency_code]['avg_3h']).quantize(DEC_PLACES)
-            elif ticker[currency_code]['avg_12h'] is not None:
+            elif 'avg_12h' in ticker[currency_code] and ticker[currency_code]['avg_12h'] is not None:
                 rate = Decimal(ticker[currency_code]['avg_12h']).quantize(DEC_PLACES)
-            elif ticker[currency_code]['avg_24h'] is not None:
+            elif 'avg_24h' in ticker[currency_code] and ticker[currency_code]['avg_24h'] is not None:
                 rate = Decimal(ticker[currency_code]['avg_24h']).quantize(DEC_PLACES)
             else:
                 rate = None
                 volume = None
+
             result[currency_code]= {'ask': rate,
                                     'bid': rate,
                                     'last': rate,
@@ -562,18 +428,6 @@ def _rocktradingApiCall(usd_ticker_url, usd_trades_url,
                                     },
             }
 
-
-# def _bitcashApiCall(czk_api_url, *args, **kwargs):
-#     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-#         response = urllib2.urlopen(urllib2.Request(url=czk_api_url, headers=API_REQUEST_HEADERS)).read()
-#         czk_result = json.loads(response)
-#
-#     return {'CZK': {'ask': Decimal(czk_result['data']['sell']['value']).quantize(DEC_PLACES),
-#                     'bid': Decimal(czk_result['data']['buy']['value']).quantize(DEC_PLACES),
-#                     'last': Decimal(czk_result['data']['last']['value']).quantize(DEC_PLACES),
-#                     'volume': Decimal(czk_result['data']['vol']['value']).quantize(DEC_PLACES),
-#                     },
-#             }
 
 
 def _intersangoApiCall(ticker_url, *args, **kwargs):
@@ -902,27 +756,19 @@ def _cavirtexApiCall(ticker_url, orderbook_url, *args, **kwargs):
     return result
 
 
-def _bitfinexApiCall(ticker_url, trades_url, *args, **kwargs):
+def _bitfinexApiCall(ticker_url, today_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=trades_url, headers=API_REQUEST_HEADERS)).read()
-        trades = json.loads(response)
-
-    volume = DEC_PLACES
-    last24h_timestamp = time.time() - 86400
-    for trade in trades:
-        if trade['exchange'] == 'bitfinex' and trade['timestamp'] >= last24h_timestamp:
-            volume = volume + Decimal(trade['amount'])
-
-    volume = volume.quantize(DEC_PLACES)
+        response = urllib2.urlopen(urllib2.Request(url=today_url, headers=API_REQUEST_HEADERS)).read()
+        today = json.loads(response)
 
     result = {}
     result['USD'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
                      'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
                      'last': Decimal(ticker['last_price']).quantize(DEC_PLACES),
-                     'volume': volume,
+                     'volume': Decimal(today['volume']).quantize(DEC_PLACES),
                      }
 
     return result
@@ -1023,40 +869,6 @@ def _bitcoin_deApiCall(rates_url, trades_url, *args, **kwargs):
                      'last': last_avg_price,
                      'volume': volume,
                      }
-
-    return result
-
-
-def _itbitApiCall(usd_url, eur_url, sgd_url, *args, **kwargs):
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=usd_url, headers=API_REQUEST_HEADERS)).read()
-        usd_rates = json.loads(response)
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=eur_url, headers=API_REQUEST_HEADERS)).read()
-        eur_trades = json.loads(response)
-    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=sgd_url, headers=API_REQUEST_HEADERS)).read()
-        sgd_trades = json.loads(response)
-
-    result = {}
-    if usd_rates['volume'] > 0:
-        result['USD'] = {'ask': Decimal(usd_rates['ask']).quantize(DEC_PLACES),
-                         'bid': Decimal(usd_rates['bid']).quantize(DEC_PLACES),
-                         'last': Decimal(usd_rates['close']).quantize(DEC_PLACES),
-                         'volume': Decimal(usd_rates['volume']).quantize(DEC_PLACES),
-                         }
-    if eur_trades['volume'] > 0:
-        result['EUR'] = {'ask': Decimal(eur_trades['ask']).quantize(DEC_PLACES),
-                         'bid': Decimal(eur_trades['bid']).quantize(DEC_PLACES),
-                         'last': Decimal(eur_trades['close']).quantize(DEC_PLACES),
-                         'volume': Decimal(eur_trades['volume']).quantize(DEC_PLACES),
-                         }
-    if sgd_trades['volume'] > 0:
-        result['SGD'] = {'ask': Decimal(sgd_trades['ask']).quantize(DEC_PLACES),
-                         'bid': Decimal(sgd_trades['bid']).quantize(DEC_PLACES),
-                         'last': Decimal(sgd_trades['close']).quantize(DEC_PLACES),
-                         'volume': Decimal(sgd_trades['volume']).quantize(DEC_PLACES),
-                         }
 
     return result
 
