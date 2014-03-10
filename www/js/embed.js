@@ -72,14 +72,19 @@ var BAWidget = function () {
 
 	this.createTemplate = function () {
 		this._template = [
-			'<div class="ba-chart"></div>',
-			'<div>',
-				'<span style="color: #2f7ed8; font-size: 10px; display: inline-block; margin-left: 6px;">',
-					'High: <span id="ba-range-high"></span>',
-				'</span>',
-				'<span style="color: #2f7ed8; font-size: 10px; display: inline-block; margin-left: 6px;">',
-					'Low: <span id="ba-range-low"></span>',
-				'</span>',
+			'<div style="background:#f7f7f7; border-top:2px solid #dadada;border-bottom:2px solid #ccc;position:relative;">',
+				'<div class="ba-chart"></div>',
+				'<div style="display: inline-block">',
+					'<span style = "color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;">$</span>',
+					'<span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block; margin-left: 6px;"><!--',
+					'--></span><!--',
+					'--><span id="ba-range-frac" style="color: #2f7ed8; font-size: 24px; font-weight: bold; display: inline-block; ">',
+					'</span>',
+					'<div style = "margin-left:6px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;">BitcoinAverage <span style = "color:#609de1;">price index</span></div>',
+				'</div>',
+				'<div style="display: inline-block; position:absolute; right:10px;bottom:6px;">',
+					'<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_xsmall.png"/></a>',
+				'</div>',
 			'</div>',
 		].join('\n')
 	}
@@ -88,13 +93,20 @@ var BAWidget = function () {
 		self._widget = $('#' + self._wrapper_id);
 		self._widget.html(self._template);
 		var widget_total_height = self._widget.height();
-		var chart_height = widget_total_height - 20;  // 20 computed manually
+		var chart_height = widget_total_height - 60;  // computed manually
 		$('#' + self._wrapper_id + ' .ba-chart').height(chart_height);
 		var data = []
 		$('#' + self._wrapper_id + ' .ba-chart').highcharts("StockChart", {
 			rangeSelector: {enabled: false},
-			xAxis:{labels:{enabled: false}},
-			yAxis:{labels:{enabled: false}},
+			xAxis:{
+				labels:{enabled: false},
+				tickWidth:0,
+				lineWidth:0
+			},
+			yAxis:{
+				labels:{enabled: false},
+				gridLineWidth: 0
+			},
 			scrollbar: {enabled: false},
 			navigator: {enabled: false},
 			exporting: {enabled: false},
@@ -102,14 +114,16 @@ var BAWidget = function () {
 				backgroundColor: 'transparent',
 				borderWidth: 0,
 				borderRadius: 0,
-				//headerFormat: '{point.key} ',
+				headerFormat: '{point.key} ',
 				pointFormat: ' | <b>{point.y}</b>',
 				crosshairs: false,
 				positioner: function () {
 					return { x: 0, y: 0 };
 				},
 				shadow: false,
-				valueDecimals: 2
+				valueDecimals: 2,
+				valuePrefix: "$",
+				xDateFormat: "%H:%M"
 			},
 			credits: {enabled : false},
 
@@ -127,6 +141,7 @@ var BAWidget = function () {
 			},
 
 			chart : {
+				backgroundColor: "#f7f7f7",
 				events : {
 					load : function () {
 						highchart = this
@@ -155,8 +170,17 @@ var BAWidget = function () {
 					   parseFloat(values[1])]);
 			});
 			highchart.series[0].setData(data);
-			document.getElementById('ba-range-high').innerHTML = _maxelm(data);
-			document.getElementById('ba-range-low').innerHTML = _minelm(data);
+
+			var value = data[data.length-1][1];
+			var integer = Math.floor(data[data.length-1][1]);
+			var fraction = Math.round((value % 1)*100);
+			document.getElementById('ba-range-int').innerHTML = integer+".";
+			if(fraction >= 10) {
+				document.getElementById('ba-range-frac').innerHTML = fraction;
+			} else {
+				document.getElementById('ba-range-frac').innerHTML = "0" + fraction;
+			}
+			
 		});
 		return data;
 	}

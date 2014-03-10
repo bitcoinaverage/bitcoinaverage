@@ -93,7 +93,8 @@ var firstRenderDone = false;
 var currencyCode;
 var chartMode;
 var rangesArray = { '1h' : 0 , '12h' : 1 , '1d' : 2 , '1w' : 3 , '1m' : 4 , '3m' : 5 , '1y' : 6 , 'all' : 7 };
-var defaultSelectedRangeValue = rangesArray['1d']
+var defaultPriceSelectedRangeValue = rangesArray['1d']
+var defaultVolumesSelectedRangeValue = rangesArray['1w']
 // these buttons are common for both charts
 var buttons = [{
     type: 'minute',
@@ -183,14 +184,19 @@ $(function(){
         chartMode = currentHash[1];
     }
 
-   selectedRange = currentHash[2];
+    selectedRange = currentHash[2];
 
-   if (typeof currentHash[2] != 'undefined'){
+    if (typeof currentHash[2] != 'undefined'){
         selectedRangeValue = rangesArray[selectedRange];
-   } else {
-       selectedRangeValue = defaultSelectedRangeValue;
-       selectedRange = searchKeyByVal(selectedRangeValue);
-   }
+    } else {
+        if (chartMode == 'volumes') {
+            selectedRangeValue = defaultVolumesSelectedRangeValue;
+        } else {
+            selectedRangeValue = defaultPriceSelectedRangeValue;
+        }
+        selectedRangeValue = defaultSelectedRangeValue;
+        selectedRange = searchKeyByVal(selectedRangeValue);
+    }
 
     if ($.inArray(currencyCode, config.currencyOrder) == -1){
         currencyCode = 'USD';
@@ -353,6 +359,7 @@ var renderPriceChart = function(currencyCode){
                     },
 
                     title: { text: currencyCode+' average price history'},
+                    subtitle: { text: '' },
                     rangeSelector: {
                         buttons: buttons,
                         selected: selectedRangeValue,
@@ -412,10 +419,41 @@ var renderPriceChart = function(currencyCode){
                         }
                     }
                 });
+                var chart = $('#big-chart').highcharts();
+                var axis = chart.xAxis[0].getExtremes();
+                var begin;
+                var end = 0;
+                for (var i = 0; i < chart.series[0].points.length; i++) {
+                    if(chart.series[0].points[i].x < axis.min){
+                        begin = chart.series[0].points[i].y;
+                        break;
+                    }
+                }
+                for (var i = 0; i < chart.series[0].points.length; i++) {
+                    if(chart.series[0].points[i].x >= axis.max) {
+                        end = chart.series[0].points[i-1].y;
+                        break;
+                    }
+                }
+                if (end === 0) {
+                    end = chart.series[0].points[chart.series[0].points.length-1].y;
+                }
+                var percent = (end-begin)*100/end;
+                var diff = end-begin;
+                if (percent > 0) {
+                    chart.setTitle(null, {
+                        style: {color: 'green'},
+                        text: "+" + diff.toFixed(2) + " (+" + percent.toFixed(2) + "%)"
+                    });
+                } else {
+                    chart.setTitle(null, {
+                        style: {color: 'red'},
+                        text: diff.toFixed(2) + " (" + percent.toFixed(2) + "%)"
+                    });
+                }
             });
         });
     });
-
 }
 
 var renderVolumeChart = function(currencyCode){
