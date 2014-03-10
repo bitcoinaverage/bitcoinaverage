@@ -126,11 +126,6 @@ EXCHANGE_LIST = {
                                    'URL': 'https://therocktrading.com/',
                                    'display_name': 'Rock Trading',
                                     },
-                    #with intersango only EUR is used, because trader needs to convert to EUR to add/withdraw with it
-                    'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
-                                   'URL': 'https://intersango.com/',
-                                   'display_name': 'Intersango',
-                                   },
 
                     'bit2c': {'ticker_url' : 'https://www.bit2c.co.il/Exchanges/BtcNis/Ticker.json',
                               'URL': 'https://www.bit2c.co.il/',
@@ -387,6 +382,10 @@ EXCHANGE_LIST = {
                     #           'ignored': True,
                     #           'ignore_reason': 'withdrawals blocked',
                     #               },
+                    # 'intersango': {'ticker_url': 'https://intersango.com/api/ticker.php',
+                    #                'URL': 'https://intersango.com/',
+                    #                'display_name': 'Intersango',
+                    #                },
 
 
                 }
