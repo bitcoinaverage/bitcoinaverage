@@ -707,6 +707,26 @@ def _bittyliciousApiCall(ticker_url, *args, **kwargs):
     except KeyError as error:
         pass
 
+    try:
+        volume = Decimal(ticker['EURBTC']['volume_24h']).quantize(DEC_PLACES)
+        if ticker['EURBTC']['avg_6h'] is not None:
+            rate = Decimal(ticker['EURBTC']['avg_6h']).quantize(DEC_PLACES)
+        elif ticker['EURBTC']['avg_12h'] is not None:
+            rate = Decimal(ticker['EURBTC']['avg_12h']).quantize(DEC_PLACES)
+        elif ticker['EURBTC']['avg_24h'] is not None:
+            rate = Decimal(ticker['EURBTC']['avg_24h']).quantize(DEC_PLACES)
+        else:
+            rate = None
+            volume = None
+        if volume is not None and volume > 0:
+            result['EUR']= {'ask': rate,
+                            'bid': rate,
+                            'last': rate,
+                            'volume': volume,
+                            }
+    except KeyError as error:
+        pass
+
     return result
 
 
