@@ -170,6 +170,44 @@ var getNewLocation = function(currentLocation){
     return currentLocation.replace(window.location.hash, '') + '#' + currencyCode+'-' + chartMode + '-' + selectedRange;
 }
 
+var countPercent = function(){
+    var chart = $('#big-chart').highcharts();
+    var axis = chart.xAxis[0].getExtremes();
+    var begin = 0;
+    var end = 0;
+    for (var i = 0; i < chart.series[0].points.length; i++) {
+        if(chart.series[0].points[i].x < axis.min){
+            begin = chart.series[0].points[i].y;
+            break;
+        }
+    }
+    for (var i = 0; i < chart.series[0].points.length; i++) {
+        if(chart.series[0].points[i].x >= axis.max) {
+            end = chart.series[0].points[i-1].y;
+            break;
+        }
+    }
+    if (end === 0) {
+        end = chart.series[0].points[chart.series[0].points.length-1].y;
+    }
+    if (begin === 0) {
+        begin = chart.series[0].points[0].y;
+    }
+    var percent = (end-begin)*100/end;
+    var diff = end-begin;
+    if (percent > 0) {
+        chart.setTitle(null, {
+            style: {color: 'green'},
+            text: "+" + diff.toFixed(2) + " (+" + percent.toFixed(2) + "%)"
+        });
+    } else {
+        chart.setTitle(null, {
+            style: {color: 'red'},
+            text: diff.toFixed(2) + " (" + percent.toFixed(2) + "%)"
+        });
+    }
+}
+
 $(function(){
     renderMajorCurrencies();
     renderSecondaryCurrencies();
@@ -353,6 +391,7 @@ var renderPriceChart = function(currencyCode){
                         events: {
                             redraw: function(event) {
                                 setTimeout( 'setNewRangeUrl()', 1000);
+                                countPercent();
                             }
                         }
                     },
@@ -418,38 +457,7 @@ var renderPriceChart = function(currencyCode){
                         }
                     }
                 });
-                var chart = $('#big-chart').highcharts();
-                var axis = chart.xAxis[0].getExtremes();
-                var begin;
-                var end = 0;
-                for (var i = 0; i < chart.series[0].points.length; i++) {
-                    if(chart.series[0].points[i].x < axis.min){
-                        begin = chart.series[0].points[i].y;
-                        break;
-                    }
-                }
-                for (var i = 0; i < chart.series[0].points.length; i++) {
-                    if(chart.series[0].points[i].x >= axis.max) {
-                        end = chart.series[0].points[i-1].y;
-                        break;
-                    }
-                }
-                if (end === 0) {
-                    end = chart.series[0].points[chart.series[0].points.length-1].y;
-                }
-                var percent = (end-begin)*100/end;
-                var diff = end-begin;
-                if (percent > 0) {
-                    chart.setTitle(null, {
-                        style: {color: 'green'},
-                        text: "+" + diff.toFixed(2) + " (+" + percent.toFixed(2) + "%)"
-                    });
-                } else {
-                    chart.setTitle(null, {
-                        style: {color: 'red'},
-                        text: diff.toFixed(2) + " (" + percent.toFixed(2) + "%)"
-                    });
-                }
+                countPercent();
             });
         });
     });
