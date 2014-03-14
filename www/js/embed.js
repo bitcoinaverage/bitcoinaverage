@@ -173,12 +173,12 @@ var ba_widget = function (html_id, currency) {
 			} else {
 				document.getElementById('ba-range-frac').innerHTML = "0" + fraction;
 			}
-			var mapping = {'USD': ['$', 'USD'], 'EUR': ['€', 'EUR'], 'GBP': ['£', 'GBP']};
-			document.getElementById('currency_sign').innerHTML = mapping[currency][0];
-			document.getElementById('currency_cod').innerHTML = mapping[currency][1];
+			if (config.currencySymbols[self._currencyCode]) {
+				document.getElementById('currency_sign').innerHTML = config.currencySymbols[self._currencyCode][0];
+				document.getElementById('currency_cod').innerHTML = config.currencySymbols[self._currencyCode][1];
+			}
 		});
 		return data;
 	}
-
 	self.init();
 }

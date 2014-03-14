@@ -48,7 +48,9 @@ def write_js_config():
     config_data['scaleDivizer'] = ba.config.FRONTEND_SCALE_DIVIZER
     config_data['precision'] = ba.config.FRONTEND_PRECISION
     config_data['exchangesColors'] = {ex: exchange_color(ex) for ex in ba.config.EXCHANGE_LIST.keys()}
-    config_string = js_config_template.replace('$CONFIG_DATA', json.dumps(config_data))
+    config_data['currencySymbols'] = ba.config.FRONTEND_CURRENCY_SYMBOLS
+    config_string = js_config_template.replace('$CONFIG_DATA',
+            json.dumps(config_data, ensure_ascii=False).encode('utf8'))
 
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'js', 'config.js'), 'w') as config_file:
         config_file.write(config_string)
