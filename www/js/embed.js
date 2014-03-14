@@ -23,11 +23,11 @@ function _minelm(v) {
 	return m;
 }
 
-var BAWidget = function () {
+var ba_widget = function (html_id, currency) {
 	this._protocol = window.location.protocol;
-	this._wrapper_id = 'ba-embed';
+	this._wrapper_id = html_id;
 	this._apiHistoryIndexUrl = 'https://api.bitcoinaverage.com/history/';
-	this._currencyCode = 'USD'  // for now
+	this._currencyCode = currency;
 	this._data24hURL = this._apiHistoryIndexUrl + this._currencyCode + '/per_minute_24h_sliding_window.csv';
 	var self = this
 
@@ -72,28 +72,31 @@ var BAWidget = function () {
 
 	this.createTemplate = function () {
 		this._template = [
-			'<div style="background:#f7f7f7; border-top:2px solid #dadada;border-bottom:2px solid #ccc;position:relative;">',
+			'<div style="background:#f7f7f7; border-top:2px solid #dadada; border-bottom:2px solid #ccc; position:relative;">',
 				'<div class="ba-chart"></div>',
-				'<div style="display: inline-block">',
-					'<span style = "color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;">$</span>',
-					'<span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block; margin-left: 6px;"><!--',
+				'<div style="display: inline-block; font-family: Open Sans;">',
+					'<span id="currency_sign" style = "color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;"></span><!--',
+					'--><span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block;margin-left: 3px;"><!--',
 					'--></span><!--',
 					'--><span id="ba-range-frac" style="color: #2f7ed8; font-size: 24px; font-weight: bold; display: inline-block; ">',
 					'</span>',
-					'<div style = "margin-left:6px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;">BitcoinAverage <span style = "color:#609de1;">price index</span></div>',
+					'<span id="currency_cod" style = "color: #4f4f4f; font-size: 24px;""></span>',
+					'<div style = "margin-left:3px;">BitcoinAverage <a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com" style = "color:#609de1; text-decoration:none;">price index</a></div>',
 				'</div>',
-				'<div style="display: inline-block; position:absolute; right:10px;bottom:6px;">',
-					'<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_xsmall.png"/></a>',
+				'<div style="display: inline-block; position:absolute;right:3px;bottom:1px;">',
+					'<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"/></a>',
 				'</div>',
 			'</div>',
 		].join('\n')
 	}
 
+
+
 	this.createWidget = function () {
 		self._widget = $('#' + self._wrapper_id);
 		self._widget.html(self._template);
 		var widget_total_height = self._widget.height();
-		var chart_height = widget_total_height - 60;  // computed manually
+		var chart_height = widget_total_height - 56;  // computed manually
 		$('#' + self._wrapper_id + ' .ba-chart').height(chart_height);
 		var data = []
 		$('#' + self._wrapper_id + ' .ba-chart').highcharts("StockChart", {
@@ -127,18 +130,6 @@ var BAWidget = function () {
 			},
 			credits: {enabled : false},
 
-			plotOptions: {
-				series: {
-					dataGrouping: {
-						groupPixelWidth: 1,
-						units: [
-							['minute', [1, 2, 5, 10, 15, 22, 30]],
-							['hour', [1, 2, 3, 6, 8, 10, 12]],
-							['day', [1]]
-							]
-					}
-				}
-			},
 
 			chart : {
 				backgroundColor: "#f7f7f7",
@@ -150,7 +141,9 @@ var BAWidget = function () {
 							self.updateData(highchart);
 						}, 60000);
 					}
-				}
+				},
+				panning:false,
+				spacing:[0, 0, 0, 0]
 			},
 			series : [{
 				data : data,
@@ -180,12 +173,12 @@ var BAWidget = function () {
 			} else {
 				document.getElementById('ba-range-frac').innerHTML = "0" + fraction;
 			}
-			
+			if (config.currencySymbols[self._currencyCode]) {
+				document.getElementById('currency_sign').innerHTML = config.currencySymbols[self._currencyCode][0];
+				document.getElementById('currency_cod').innerHTML = config.currencySymbols[self._currencyCode][1];
+			}
 		});
 		return data;
 	}
-
-	self.init()
+	self.init();
 }
-
-var _widget = new BAWidget();

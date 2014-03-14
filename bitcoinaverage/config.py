@@ -74,6 +74,11 @@ CURRENCY_LIST = ('USD',
                  # 'THB',
                     )
 
+FRONTEND_CURRENCY_SYMBOLS = {
+        'USD': (u'$', u'USD'),
+        'EUR': (u'\u20ac', u'EUR'),
+        }
+
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
 
 EXCHANGE_LIST = {
