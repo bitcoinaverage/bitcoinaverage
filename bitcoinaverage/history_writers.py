@@ -233,11 +233,11 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
             if not header_passed:
                 header_passed = True
                 continue
-            last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
+            # Last timestamp from the file points to the beginning of last period
+            last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple()) + 86400
 
-    current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
-    last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
-    if int(current_timestamp_date) != (int(last_recorded_timestamp_date) + 1):
+    timestamp_delta = datetime.timedelta(seconds=(current_timestamp - last_recorded_timestamp))
+    if timestamp_delta >= datetime.timedelta(days=1):
         current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
         price_high = 0.0
         price_low = 0.0
