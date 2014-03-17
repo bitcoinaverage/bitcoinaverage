@@ -191,7 +191,7 @@ def write_1mon_csv(currency_code, current_timestamp):
                     header_passed = True
                     continue
                 timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
-                if current_timestamp - timestamp < 3600: #60*60*24
+                if current_timestamp - timestamp < 3600: #60*60
                     index = index + 1
                     price = float(row[1])
                     price_sum = price_sum + Decimal(price)
