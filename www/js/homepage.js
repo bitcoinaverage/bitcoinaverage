@@ -18,7 +18,7 @@ var active_API_URL = API_all_url;
 
 var selectedFiatCurrency = false;
 var firstRenderDone = false;
-var apiDataUpdated = true;
+var apiDataUpdated = false;
 var fiatExchangeRates = [];
 var timeGap = 0; //actual time is fetched from server, and user's local time is adjusted by X seconds to be completely exact
 
@@ -48,7 +48,8 @@ var renderAll = function(result, status, responseObj){
         timeGap = getTimeGap(responseObj.getAllResponseHeaders());
     }
 
-    if (API_data['timestamp'] !== result['timestamp']) {
+    apiDataUpdated = false;
+    if(API_data['timestamp'] != result['timestamp']){
         apiDataUpdated = true;
     }
 
