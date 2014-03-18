@@ -441,10 +441,25 @@ $(function(){
 
     $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
 
+    $('#global-last').on('dblclick', function () {
+        // http://stackoverflow.com/questions/985272/jquery-selecting-text-in-an-element-akin-to-highlighting-with-your-mouse
+        if (document.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(this);
+            range.select();
+        } else if (window.getSelection) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(this);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    });
+
+    $('#nomillibit-button').click(changeBaseButtonClick);
 
     // currency navigation (primary currency, secondary currency, currency tabs on markets page
     $(document).on('click', '.currency-navigation li', currencyNavigationClick );
-    $('#nomillibit-button').click(changeBaseButtonClick);
 
     $(document).on('click', '.all-currency-navigation li', currencyNavigationClick );
 
