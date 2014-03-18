@@ -18,6 +18,7 @@ var active_API_URL = API_all_url;
 
 var selectedFiatCurrency = false;
 var firstRenderDone = false;
+var apiDataUpdated = true;
 var fiatExchangeRates = [];
 var timeGap = 0; //actual time is fetched from server, and user's local time is adjusted by X seconds to be completely exact
 
@@ -45,6 +46,10 @@ var renderAll = function(result, status, responseObj){
     //responseObj is not available in IE
     if(typeof responseObj == 'object'){
         timeGap = getTimeGap(responseObj.getAllResponseHeaders());
+    }
+
+    if (API_data['timestamp'] !== result['timestamp']) {
+        apiDataUpdated = true;
     }
 
     API_data = result;
@@ -318,15 +323,9 @@ var renderLegend = function(currencyCode){
 };
 
 var renderSmallChart = function(currencyCode){
-    $('#small-chart').html('');
-    $('#charts-link a').show();
-    $('#charts-link a').attr('href', 'charts.htm#'+currencyCode);
-
-    if($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies){
-        $('#charts-link a').hide();
+    if (!apiDataUpdated) {
         return;
     }
-
     var global_avg_url = config.apiHistoryIndexUrl;
     var data_24h_URL = global_avg_url + currencyCode + '/per_minute_24h_global_average_sliding_window_short.csv';
 
@@ -355,6 +354,8 @@ var renderSmallChart = function(currencyCode){
                 return -0;
             }
         });
+
+        $('#small-chart').html('');
 
 		$('#small-chart').highcharts('StockChart', {
 			chart : {
