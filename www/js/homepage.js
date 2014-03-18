@@ -342,7 +342,7 @@ var renderSmallChart = function(currencyCode){
             var dateData = dateStr.split(' ');
             dateData[0] = dateData[0].split('-');
             dateData[1] = dateData[1].split(':');
-            var dateInt = Date.UTC(dateData[0][0], dateData[0][1], dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
+            var dateInt = Date.UTC(dateData[0][0], dateData[0][1] - 1, dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
             data.push([dateInt, chartDailyValue]);
         });
         data.sort(function(a,b){
@@ -377,12 +377,16 @@ var renderSmallChart = function(currencyCode){
             scrollbar: {enabled: false},
             navigator: {enabled: false},
             exporting: {enabled: false},
-            tooltip: {enabled : false},
+            tooltip: {
+                enabled : true,
+                valueDecimals: 3
+            },
             credits: {enabled : false},
             series : [{
-                data : data,
-                cursor:'pointer',
-                events:{
+                name: currencyCode,
+                data: data,
+                cursor: 'pointer',
+                events: {
                     click: function(event){
                         window.location.href = 'charts.htm#'+currencyCode;
                     }
