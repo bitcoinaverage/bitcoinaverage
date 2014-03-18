@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+import time
+
 import twitter
 import simplejson
-import time
 import requests
 
 from bitcoinaverage.twitter_config import api
 
-# requires  http://code.google.com/p/python-twitter/
-# https://github.com/bear/python-twitter.git
 
 URL = "https://api.bitcoinaverage.com/ticker/global/USD"
 
@@ -43,11 +43,14 @@ while True:
             
     if perc != 0 and change != 0 and direction != "":
         status = "BitcoinAverage price index: ${0} ({1} ${2}) - https://BitcoinAverage.com".format(newprice,direction,change)
-        status = api.PostUpdate(status)
     else:
         status = "BitcoinAverage price index: ${0} - https://BitcoinAverage.com".format(newprice)
-        status = api.PostUpdate(status)
-        
-    oldprice = newprice
 
-    time.sleep(60*60*1)
+    try:
+        result = api.PostUpdate(status)
+    except twitter.TwitterError, err:
+        print("Twitter error: {0}".format(str(err)))
+    else:
+        oldprice = newprice
+
+    time.sleep(3600)
