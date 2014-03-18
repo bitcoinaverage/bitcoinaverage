@@ -233,11 +233,11 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
             if not header_passed:
                 header_passed = True
                 continue
+            # Last timestamp from the file points to the beginning of previous period
             last_recorded_timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
 
-    current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
-    last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
-    if int(current_timestamp_date) != (int(last_recorded_timestamp_date) + 1):
+    timestamp_delta = datetime.timedelta(seconds=(current_timestamp - last_recorded_timestamp))
+    if timestamp_delta >= datetime.timedelta(days=2):
         current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
         price_high = 0.0
         price_low = 0.0
@@ -251,7 +251,7 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
                     header_passed = True
                     continue
                 timestamp = time.mktime(datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S').timetuple())
-                if current_timestamp - timestamp < 3600: #60*60*24
+                if current_timestamp - timestamp < 86400:  # 1 day
                     index = index + 1
                     price = float(row[1])
                     price_sum = price_sum + Decimal(price)
@@ -267,12 +267,15 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
         with open(current_forever_file_path, 'ab') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=',')
             #-86400 added because otherwise the timestamp will point to the the beginning of next period and not current
-            csvwriter.writerow([datetime.datetime.strftime(datetime.datetime.fromtimestamp(current_timestamp-86400), '%Y-%m-%d %H:%M:%S'),
-                                price_high,
-                                price_low,
-                                price_avg,
-                                total_sliding_volume,
-                                ])
+            new_data_row = [datetime.datetime.strftime(
+                                datetime.datetime.fromtimestamp(current_timestamp - 86400),
+                                '%Y-%m-%d 00:00:00'),
+                            price_high,
+                            price_low,
+                            price_avg,
+                            total_sliding_volume,
+                            ]
+            csvwriter.writerow(new_data_row)
 
 
 def write_volumes_csv(currency_code, currency_data, current_timestamp):
@@ -305,6 +308,7 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
 
     last_recorded_timestamp = 0
     if len(current_volumes_data) > 0:
+        # Last timestamp from the file points to the beginning of previous period
         try:
             last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
                                                                '%Y-%m-%d %H:%M:%S').timetuple())
@@ -312,9 +316,8 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
             last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
                                                                '%Y-%m-%d').timetuple())
 
-    current_timestamp_date = datetime.datetime.fromtimestamp(current_timestamp).strftime('%d')
-    last_recorded_timestamp_date = datetime.datetime.fromtimestamp(last_recorded_timestamp).strftime('%d')
-    if int(current_timestamp_date) != (int(last_recorded_timestamp_date) + 1):
+    timestamp_delta = datetime.timedelta(seconds=(current_timestamp - last_recorded_timestamp))
+    if timestamp_delta >= datetime.timedelta(days=2):
         for exchange in currency_data['exchanges']:
             if exchange not in exchanges_order:
                 exchanges_order.append(exchange)
@@ -322,7 +325,9 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
                 headers.append('%s %%' % exchange)
 
         new_data_row = []
-        new_data_row.append(datetime.datetime.strftime(datetime.datetime.fromtimestamp(current_timestamp-86400), '%Y-%m-%d %H:%M:%S'))
+        new_data_row.append(datetime.datetime.strftime(
+            datetime.datetime.fromtimestamp(current_timestamp - 86400),
+            '%Y-%m-%d 00:00:00'))
         new_data_row.append(currency_data['averages']['total_vol'])
 
         for exchange in exchanges_order:

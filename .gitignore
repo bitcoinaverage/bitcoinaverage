@@ -9,6 +9,7 @@
 /www/js/fiat_data.js
 
 /bitcoinaverage/server.py
+/bitcoinaverage/twitter_config.py
 
 /api/*
 

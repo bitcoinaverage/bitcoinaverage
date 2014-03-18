@@ -1,5 +1,5 @@
 eventlet
-requests
+requests==2.2.0
 lxml
 simplejson
-supervisor
+http://python-twitter.googlecode.com/files/python-twitter-1.0.tar.gz

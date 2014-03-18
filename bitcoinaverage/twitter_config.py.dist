@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 # Twitter Daemon config
+import twitter
 
-api = twitter.Api(consumer_key='',
-                      consumer_secret='',
-                      access_token_key='',
-                      access_token_secret='')
+api = twitter.Api(
+                consumer_key='',
+                consumer_secret='',
+                access_token_key='',
+                access_token_secret='')

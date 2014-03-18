@@ -18,6 +18,7 @@ var active_API_URL = API_all_url;
 
 var selectedFiatCurrency = false;
 var firstRenderDone = false;
+var apiDataUpdated = true;
 var fiatExchangeRates = [];
 var timeGap = 0; //actual time is fetched from server, and user's local time is adjusted by X seconds to be completely exact
 
@@ -45,6 +46,10 @@ var renderAll = function(result, status, responseObj){
     //responseObj is not available in IE
     if(typeof responseObj == 'object'){
         timeGap = getTimeGap(responseObj.getAllResponseHeaders());
+    }
+
+    if (API_data['timestamp'] !== result['timestamp']) {
+        apiDataUpdated = true;
     }
 
     API_data = result;
@@ -318,19 +323,13 @@ var renderLegend = function(currencyCode){
 };
 
 var renderSmallChart = function(currencyCode){
-    $('#small-chart').html('');
-    $('#charts-link a').show();
-    $('#charts-link a').attr('href', 'charts.htm#'+currencyCode);
-
-    if($.inArray(currencyCode, config.currencyOrder) >= majorCurrencies){
-        $('#charts-link a').hide();
+    if (!apiDataUpdated) {
         return;
     }
-
     var global_avg_url = config.apiHistoryIndexUrl;
     var data_24h_URL = global_avg_url + currencyCode + '/per_minute_24h_global_average_sliding_window_short.csv';
 
-	$.get(data_24h_URL, function(csv){
+    $.get(data_24h_URL, function(csv){
         var data = [];
         $.each(csv.split('\n'), function(i, line){
             var values = line.split(',');
@@ -343,7 +342,7 @@ var renderSmallChart = function(currencyCode){
             var dateData = dateStr.split(' ');
             dateData[0] = dateData[0].split('-');
             dateData[1] = dateData[1].split(':');
-            var dateInt = Date.UTC(dateData[0][0], dateData[0][1], dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
+            var dateInt = Date.UTC(dateData[0][0], dateData[0][1] - 1, dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
             data.push([dateInt, chartDailyValue]);
         });
         data.sort(function(a,b){
@@ -356,8 +355,10 @@ var renderSmallChart = function(currencyCode){
             }
         });
 
-		$('#small-chart').highcharts('StockChart', {
-			chart : {
+        $('#small-chart').html('');
+
+        $('#small-chart').highcharts('StockChart', {
+            chart : {
                 animation : {
                     duration: 10000
                 },
@@ -370,25 +371,29 @@ var renderSmallChart = function(currencyCode){
                 spacingLeft: 0,
                 spacingRight: 0,
                 spacingTop: 0
-			},
-			rangeSelector: {enabled: false},
-			title: {text: '24h price '+currencyCode+' movement'},
-			scrollbar: {enabled: false},
-			navigator: {enabled: false},
-			exporting: {enabled: false},
-			tooltip: {enabled : false},
-			credits: {enabled : false},
-			series : [{
-				data : data,
-                cursor:'pointer',
-                events:{
+            },
+            rangeSelector: {enabled: false},
+            title: {text: '24h price '+currencyCode+' movement'},
+            scrollbar: {enabled: false},
+            navigator: {enabled: false},
+            exporting: {enabled: false},
+            tooltip: {
+                enabled : true,
+                valueDecimals: 3
+            },
+            credits: {enabled : false},
+            series : [{
+                name: currencyCode,
+                data: data,
+                cursor: 'pointer',
+                events: {
                     click: function(event){
                         window.location.href = 'charts.htm#'+currencyCode;
                     }
                 }
-			}]
+            }]
 
-		});
+        });
     });
 };
 
@@ -441,10 +446,25 @@ $(function(){
 
     $('#bitcoin-input').keyup(calc_bitcoinInputKeyup);
 
+    $('#global-last').on('dblclick', function () {
+        // http://stackoverflow.com/questions/985272/jquery-selecting-text-in-an-element-akin-to-highlighting-with-your-mouse
+        if (document.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(this);
+            range.select();
+        } else if (window.getSelection) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(this);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    });
+
+    $('#nomillibit-button').click(changeBaseButtonClick);
 
     // currency navigation (primary currency, secondary currency, currency tabs on markets page
     $(document).on('click', '.currency-navigation li', currencyNavigationClick );
-    $('#nomillibit-button').click(changeBaseButtonClick);
 
     $(document).on('click', '.all-currency-navigation li', currencyNavigationClick );
 
