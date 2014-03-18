@@ -329,7 +329,7 @@ var renderSmallChart = function(currencyCode){
     var global_avg_url = config.apiHistoryIndexUrl;
     var data_24h_URL = global_avg_url + currencyCode + '/per_minute_24h_global_average_sliding_window_short.csv';
 
-	$.get(data_24h_URL, function(csv){
+    $.get(data_24h_URL, function(csv){
         var data = [];
         $.each(csv.split('\n'), function(i, line){
             var values = line.split(',');
@@ -357,8 +357,8 @@ var renderSmallChart = function(currencyCode){
 
         $('#small-chart').html('');
 
-		$('#small-chart').highcharts('StockChart', {
-			chart : {
+        $('#small-chart').highcharts('StockChart', {
+            chart : {
                 animation : {
                     duration: 10000
                 },
@@ -371,25 +371,25 @@ var renderSmallChart = function(currencyCode){
                 spacingLeft: 0,
                 spacingRight: 0,
                 spacingTop: 0
-			},
-			rangeSelector: {enabled: false},
-			title: {text: '24h price '+currencyCode+' movement'},
-			scrollbar: {enabled: false},
-			navigator: {enabled: false},
-			exporting: {enabled: false},
-			tooltip: {enabled : false},
-			credits: {enabled : false},
-			series : [{
-				data : data,
+            },
+            rangeSelector: {enabled: false},
+            title: {text: '24h price '+currencyCode+' movement'},
+            scrollbar: {enabled: false},
+            navigator: {enabled: false},
+            exporting: {enabled: false},
+            tooltip: {enabled : false},
+            credits: {enabled : false},
+            series : [{
+                data : data,
                 cursor:'pointer',
                 events:{
                     click: function(event){
                         window.location.href = 'charts.htm#'+currencyCode;
                     }
                 }
-			}]
+            }]
 
-		});
+        });
     });
 };
 
