@@ -331,6 +331,40 @@ var setNewRangeUrl = function(){
     var newLocation = getNewLocation(currentLocation);
     window.location.replace(newLocation);
 }
+
+var commonChartOptions = {
+    chart: {
+        spacingBottom: 0,
+        spacingLeft: 0,
+        spacingRight: 0,
+        spacingTop: 0
+    },
+    rangeSelector: {
+        inputEnabled: true,
+        inputPosition: {
+            x: -90,
+            y: 30
+        }
+    },
+    exporting: {
+        buttons: {
+            contextButton: {
+                x: -1,
+                y: 30,
+                symbolSize: 12,
+                text: 'export',
+                theme: {
+                    height: 14,
+                    padding: 2,
+                    strokeWidth: 1,
+                    stroke: 'silver',
+                    r: 0,
+                },
+            }
+        }
+    }
+};
+
 var renderPriceChart = function(currencyCode){
     document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
 
@@ -382,12 +416,8 @@ var renderPriceChart = function(currencyCode){
                     }
                 });
 
-                $('#big-chart').highcharts('StockChart', {
+                $('#big-chart').highcharts('StockChart', $.extend(true, {
                     chart : {
-                        spacingBottom: 0,
-                        spacingLeft: 0,
-                        spacingRight: 0,
-                        spacingTop: 0,
                         events: {
                             redraw: function(event) {
                                 setTimeout( 'setNewRangeUrl()', 1000);
@@ -397,14 +427,9 @@ var renderPriceChart = function(currencyCode){
                     },
 
                     title: { text: currencyCode+' average price history'},
-                    subtitle: { text: '' },
                     rangeSelector: {
                         buttons: buttons,
-                        selected: selectedRangeValue,
-                        inputEnabled: true,
-                        inputPosition: {
-                            x: -85
-                        }
+                        selected: selectedRangeValue
                     },
 
 
@@ -438,25 +463,8 @@ var renderPriceChart = function(currencyCode){
 
                     series : [{
                         data: data
-                    }],
-
-                    exporting: {
-                        buttons: {
-                            contextButton: {
-                                y: 20,
-                                text: 'export',
-                                theme: {
-                                    'stroke-width': 1,
-                                    'line-height': '8px',
-                                    verticalAlign: 'middle',
-                                    padding: 1.9,
-                                    stroke: 'silver',
-                                    r: 0
-                                }
-                            }
-                        }
-                    }
-                });
+                    }]
+                }, commonChartOptions));
                 countPercent();
             });
         });
@@ -509,22 +517,11 @@ var renderVolumeChart = function(currencyCode){
             }
         });
 
-        $('#big-chart').highcharts('StockChart', {
-            chart : {
-                spacingBottom: 0,
-                spacingLeft: 0,
-                spacingRight: 0,
-                spacingTop: 0
-            },
-
+        $('#big-chart').highcharts('StockChart', $.extend(true, {
             title: { text: currencyCode+' daily volumes history'},
             rangeSelector: {
                 buttons: buttons,
-                selected: selectedRangeValue,
-                inputEnabled: true,
-                inputPosition: {
-                    x: -85
-                }
+                selected: selectedRangeValue
             },
 
             xAxis:{
@@ -563,24 +560,8 @@ var renderVolumeChart = function(currencyCode){
                     });
                     return s;
                 }
-            },
-            exporting: {
-                buttons: {
-                    contextButton: {
-                        y: 20,
-                        text: 'export',
-                        theme: {
-                            'stroke-width': 1,
-                            'line-height': '8px',
-                            verticalAlign: 'middle',
-                            padding: 1.9,
-                            stroke: 'silver',
-                            r: 0
-                        }
-                    }
-                }
             }
-        });
+        }, commonChartOptions));
     });
 }
 
