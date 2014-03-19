@@ -339,51 +339,6 @@ ul{
 .slot-global-bid_ask{font-size: 1.5em; font-weight: bold; }
 .slot-global-bid_ask-titles, .other_values{ color: #999; }
 
-.submenu {
-    color: #428BCA !important;
-    font-family: 'Titillium Web Thin', sans-serif;
-    font-size: 15px;
-}
-.navbar-nav > li > a:hover {text-decoration: underline !important; }
-
-.logo {
-    background: url(../img/logo_full_small.png) no-repeat scroll center center rgba(0, 0, 0, 0);
-    color: #428BCA !important;
-    display: block;
-    font-family: 'Titillium Web Thin', sans-serif;
-    font-size: 19px;
-    height: 40px;
-    margin: 5px;
-    text-indent: -9999px;
-    width: 172px;
-}
-
-.logo-center {
-    color: #666666;
-    display: inline-block;
-    font-size: 1.2em;
-    font-family: Tahoma;
-    vertical-align: middle;
-}
-
-.logo-brace {
-    color: #A4C7E5;
-    display: inline-block;
-    font-size: 3em;
-    font-family: Arial;
-    margin-top: -0.2em;
-    vertical-align: middle;
-}
-
-.slogan {
-    margin: auto !important;
-    line-height: auto !important;
-    font-family: "Titillium Web Thin", sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    color: #000000 !important;
-}
-
 .legend ul{
     list-style: none outside;
     margin: 0;
@@ -417,6 +372,36 @@ ul{
 }
 #header .container{
     max-width:90%;
+}
+
+.submenu {
+    color: #428BCA !important;
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 15px;
+}
+
+.navbar-nav > li > a:hover {text-decoration: underline !important; }
+
+.logo {
+    background: url(../img/logo_full_small.png) no-repeat scroll center center rgba(0, 0, 0, 0);
+    display: block;
+    height: 40px;
+    margin: 5px 0 !important;
+    text-indent: -9999px;
+    width: 172px;
+}
+
+.navbar-collapse .navbar-right li:last-child {
+    padding-right: 0;
+}
+
+.slogan {
+    margin: auto !important;
+    line-height: auto !important;
+    font-family: "Titillium Web Thin", sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #000000 !important;
 }
 
 .navbar .container > #question-mark {
