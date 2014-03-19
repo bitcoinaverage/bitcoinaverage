@@ -367,8 +367,9 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
                             }
                 all_data[currency] = cur_data
 
-        with open(os.path.join(api_path, API_FILES['ALL_FILE']), 'w+') as api_all_data_file:
-            api_all_data_file.write(json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
+        helpers.write_api_file(
+            os.path.join(api_path, API_FILES['ALL_FILE']),
+            json.dumps(all_data,  indent=2, sort_keys=True, separators=(',', ': ')))
 
         # /ticker/*
         for currency in CURRENCY_LIST:
@@ -377,35 +378,41 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
                 ticker_cur = calculated_average_rates_formatted[currency]
                 ticker_cur['timestamp'] = timestamp
                 ticker_currency_path = os.path.join(api_path, API_FILES['TICKER_PATH'], currency)
-                with open(os.path.join(ticker_currency_path, INDEX_DOCUMENT_NAME), 'w+') as api_ticker_file:
-                    api_ticker_file.write(json.dumps(ticker_cur, indent=2, sort_keys=True, separators=(',', ': ')))
+                helpers.write_api_file(
+                    os.path.join(ticker_currency_path, INDEX_DOCUMENT_NAME),
+                    json.dumps(ticker_cur, indent=2, sort_keys=True, separators=(',', ': ')))
                 for key in ticker_cur:
-                    with open(os.path.join(ticker_currency_path, key), 'w+') as api_ticker_file:
-                        api_ticker_file.write(str(ticker_cur[key]))
+                    helpers.write_api_file(
+                        os.path.join(ticker_currency_path, key),
+                        str(ticker_cur[key]))
 
         # /ticker/all
         rates_all = calculated_average_rates_formatted
         rates_all['timestamp'] = timestamp
-        with open(os.path.join(api_path, API_FILES['TICKER_PATH'], 'all'), 'w+') as api_ticker_all_file:
-            api_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
+        helpers.write_api_file(
+            os.path.join(api_path, API_FILES['TICKER_PATH'], 'all'),
+            json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
 
         # /ticker/global/*
         for currency in calculated_global_average_rates_formatted:
             ticker_cur = calculated_global_average_rates_formatted[currency]
             ticker_cur['timestamp'] = timestamp
             ticker_currency_path = os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], currency)
-            with open(os.path.join(ticker_currency_path, INDEX_DOCUMENT_NAME), 'w+') as api_ticker_file:
-                api_ticker_file.write(json.dumps(ticker_cur, indent=2, sort_keys=True, separators=(',', ': ')))
+            helpers.write_api_file(
+                os.path.join(ticker_currency_path, INDEX_DOCUMENT_NAME),
+                json.dumps(ticker_cur, indent=2, sort_keys=True, separators=(',', ': ')))
             for key in ticker_cur:
-                with open(os.path.join(ticker_currency_path, key), 'w+') as api_ticker_file:
-                    api_ticker_file.write(str(ticker_cur[key]))
+                helpers.write_api_file(
+                    os.path.join(ticker_currency_path, key),
+                    str(ticker_cur[key]))
 
         # /ticker/global/all
         rates_all = calculated_global_average_rates_formatted
         rates_all['timestamp'] = timestamp
         try:
-            with open(os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], 'all'), 'w+') as api_global_ticker_all_file:
-                api_global_ticker_all_file.write(json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
+            helpers.write_api_file(
+                os.path.join(api_path, API_FILES['GLOBAL_TICKER_PATH'], 'all'),
+                json.dumps(rates_all, indent=2, sort_keys=True, separators=(',', ': ')))
         except IOError as error:
             #pass on Windows if there is currency with code ALL and it will interfer with file called 'all'
             pass
@@ -413,8 +420,9 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
         # /exchanges/all
         volumes_all = calculated_volumes_formatted
         volumes_all['timestamp'] = timestamp
-        with open(os.path.join(api_path, API_FILES['EXCHANGES_PATH'], 'all'), 'w+') as api_volume_all_file:
-            api_volume_all_file.write(json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
+        helpers.write_api_file(
+            os.path.join(api_path, API_FILES['EXCHANGES_PATH'], 'all'),
+            json.dumps(volumes_all, indent=2, sort_keys=True, separators=(',', ': ')))
 
         # /exchanges/*
         for currency in CURRENCY_LIST:
@@ -422,13 +430,14 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
                 and currency in calculated_global_average_rates_formatted):
                 volume_cur = calculated_volumes_formatted[currency]
                 volume_cur['timestamp'] = timestamp
-                api_ticker_file = open(os.path.join(api_path, API_FILES['EXCHANGES_PATH'], currency), 'w+')
-                api_ticker_file.write(json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
-                api_ticker_file.close()
+                helpers.write_api_file(
+                    os.path.join(api_path, API_FILES['EXCHANGES_PATH'], currency),
+                    json.dumps(volume_cur,  indent=2, sort_keys=True, separators=(',', ': ')))
 
         # /ignored
-        with open(os.path.join(api_path, API_FILES['IGNORED_FILE']), 'w+') as api_ignored_file:
-            api_ignored_file.write(json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
+        helpers.write_api_file(
+            os.path.join(api_path, API_FILES['IGNORED_FILE']),
+            json.dumps(exchanges_ignored,  indent=2, sort_keys=True, separators=(',', ': ')))
 
     except IOError as error:
         error_text = '%s, %s ' % (sys.exc_info()[0], error)

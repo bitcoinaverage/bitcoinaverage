@@ -13,6 +13,7 @@ from eventlet.green import httplib
 import simplejson
 import subprocess
 import hashlib
+import gzip
 
 import bitcoinaverage as ba
 from bitcoinaverage.config import API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, API_FILES
@@ -376,3 +377,8 @@ def write_api_index_files():
         index_file.write(json.dumps(currency_history_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
+def write_api_file(api_file_name, content):
+    with open(api_file_name, 'w+') as api_file:
+        api_file.write(content)
+    with gzip.GzipFile(api_file_name + '.gz', 'w+') as api_gzipped_file:
+        api_gzipped_file.write(content)
