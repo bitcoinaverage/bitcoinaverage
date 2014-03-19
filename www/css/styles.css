@@ -339,35 +339,6 @@ ul{
 .slot-global-bid_ask{font-size: 1.5em; font-weight: bold; }
 .slot-global-bid_ask-titles, .other_values{ color: #999; }
 
-.submenu {
-    color: #428BCA !important;
-    font-family: 'Titillium Web Thin', sans-serif;
-    font-size: 15px;
-}
-.navbar-nav > li > a:hover {text-decoration: underline !important; }
-
-.logo {
-    background: url(../img/logo_full_small.png) no-repeat scroll center center rgba(0, 0, 0, 0);
-    display: block;
-    height: 40px;
-    margin: 5px 0 !important;
-    text-indent: -9999px;
-    width: 172px;
-}
-
-.navbar-collapse .navbar-right li:last-child {
-    padding-right: 0;
-}
-
-.slogan {
-    margin: auto !important;
-    line-height: auto !important;
-    font-family: "Titillium Web Thin", sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    color: #000000 !important;
-}
-
 .legend ul{
     list-style: none outside;
     margin: 0;
@@ -401,6 +372,36 @@ ul{
 }
 #header .container{
     max-width:90%;
+}
+
+.submenu {
+    color: #428BCA !important;
+    font-family: 'Titillium Web Thin', sans-serif;
+    font-size: 15px;
+}
+
+.navbar-nav > li > a:hover {text-decoration: underline !important; }
+
+.logo {
+    background: url(../img/logo_full_small.png) no-repeat scroll center center rgba(0, 0, 0, 0);
+    display: block;
+    height: 40px;
+    margin: 5px 0 !important;
+    text-indent: -9999px;
+    width: 172px;
+}
+
+.navbar-collapse .navbar-right li:last-child {
+    padding-right: 0;
+}
+
+.slogan {
+    margin: auto !important;
+    line-height: auto !important;
+    font-family: "Titillium Web Thin", sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #000000 !important;
 }
 
 .navbar .container > #question-mark {
