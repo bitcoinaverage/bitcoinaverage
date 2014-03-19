@@ -382,7 +382,18 @@ def write_api_index_files():
 
 
 def write_api_file(api_file_name, content):
-    with open(api_file_name, 'w+') as api_file:
+    with open(api_file_name, 'w') as api_file:
         api_file.write(content)
-    with gzip.GzipFile(api_file_name + '.gz', 'w+') as api_gzipped_file:
-        api_gzipped_file.write(content)
+    with open(api_file_name, 'rb') as api_file:
+        with gzip.open(api_file_name + '.gz', 'wb') as api_gzipped_file:
+            api_gzipped_file.writelines(api_file)
+
+
+def gzip_history_file(history_writer):
+    def wrapper(*args, **kwargs):
+        history_file_name = history_writer(*args, **kwargs)
+        if history_file_name is not None:
+            with open(history_file_name, 'rb') as history_file:
+                with gzip.open(history_file_name + '.gz', 'wb') as history_gzipped_file:
+                    history_gzipped_file.writelines(history_file)
+    return wrapper
