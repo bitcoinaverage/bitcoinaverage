@@ -331,6 +331,16 @@ var setNewRangeUrl = function(){
     var newLocation = getNewLocation(currentLocation);
     window.location.replace(newLocation);
 }
+
+var commonChartOptions = {
+    chart: {
+        spacingBottom: 0,
+        spacingLeft: 0,
+        spacingRight: 0,
+        spacingTop: 0
+    }
+};
+
 var renderPriceChart = function(currencyCode){
     document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
 
@@ -382,12 +392,8 @@ var renderPriceChart = function(currencyCode){
                     }
                 });
 
-                $('#big-chart').highcharts('StockChart', {
+                $('#big-chart').highcharts('StockChart', $.extend(true, {
                     chart : {
-                        spacingBottom: 0,
-                        spacingLeft: 0,
-                        spacingRight: 0,
-                        spacingTop: 0,
                         events: {
                             redraw: function(event) {
                                 setTimeout( 'setNewRangeUrl()', 1000);
@@ -456,7 +462,7 @@ var renderPriceChart = function(currencyCode){
                             }
                         }
                     }
-                });
+                }, commonChartOptions));
                 countPercent();
             });
         });
@@ -509,14 +515,7 @@ var renderVolumeChart = function(currencyCode){
             }
         });
 
-        $('#big-chart').highcharts('StockChart', {
-            chart : {
-                spacingBottom: 0,
-                spacingLeft: 0,
-                spacingRight: 0,
-                spacingTop: 0
-            },
-
+        $('#big-chart').highcharts('StockChart', $.extend(true, {
             title: { text: currencyCode+' daily volumes history'},
             rangeSelector: {
                 buttons: buttons,
@@ -580,7 +579,7 @@ var renderVolumeChart = function(currencyCode){
                     }
                 }
             }
-        });
+        }, commonChartOptions));
     });
 }
 
