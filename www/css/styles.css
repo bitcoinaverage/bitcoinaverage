@@ -391,7 +391,7 @@ ul{
     width: 172px;
 }
 
-.navbar-collapse .navbar-right li:last-child {
+.navbar-collapse .navbar-right li:last-child a {
     padding-right: 0;
 }
 
