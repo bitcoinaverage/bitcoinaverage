@@ -222,14 +222,17 @@ def write_api_index_files():
             os.makedirs(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code))
 
         current_index_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, ba.config.INDEX_DOCUMENT_NAME)
-        with open(current_index_file_path, 'w') as index_file:
-            index_contents = {}
-            index_contents['24h_sliding'] = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-            index_contents['monthly_sliding'] = '%s%s/per_hour_monthly_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-            index_contents['all_time'] = '%s%s/per_day_all_time_history.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-            index_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-            index_contents['global_24h_sliding'] = '%s%s/per_minute_24h_global_average_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
-            index_file.write(json.dumps(index_contents, indent=2, sort_keys=True, separators=(',', ': ')))
+
+        index_contents = {}
+        index_contents['24h_sliding'] = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        index_contents['monthly_sliding'] = '%s%s/per_hour_monthly_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        index_contents['all_time'] = '%s%s/per_day_all_time_history.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        index_contents['volumes'] = '%s%s/volumes.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+        index_contents['global_24h_sliding'] = '%s%s/per_minute_24h_global_average_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+
+        write_api_file(
+            current_index_file_path,
+            json.dumps(index_contents, indent=2, sort_keys=True, separators=(',', ': ')))
 
     global ba
 
@@ -249,9 +252,9 @@ def write_api_index_files():
     api_index['ignored'] = ba.server.API_INDEX_URL + API_FILES['IGNORED_FILE']
     api_index['no-mtgox'] = ba.server.API_INDEX_URL_NOGOX
     api_index['history'] = ba.server.API_INDEX_URL_HISTORY
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api tickers index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'])):
@@ -264,9 +267,9 @@ def write_api_index_files():
         api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['TICKER_PATH'] + currency_code
         if not os.path.exists(os.path.join(api_ticker_folder_path, currency_code)):
             os.makedirs(os.path.join(api_ticker_folder_path, currency_code))
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api global tickers index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'])):
@@ -286,8 +289,9 @@ def write_api_index_files():
             api_ticker_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
             if not os.path.exists(os.path.join(api_ticker_folder_path, currency_code)):
                 os.makedirs(os.path.join(api_ticker_folder_path, currency_code))
-        with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-            index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
+        write_api_file(
+            os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME),
+            json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
     except (KeyError,ValueError,socket.error,simplejson.decoder.JSONDecodeError,urllib2.URLError,httplib.BadStatusLine,CallTimeoutException):
         pass
 
@@ -299,9 +303,9 @@ def write_api_index_files():
     api_exchanges_index['all'] = ba.server.API_INDEX_URL + API_FILES['EXCHANGES_PATH'] + API_FILES['ALL_FILE']
     for currency_code in ba.config.CURRENCY_LIST:
         api_exchanges_index[currency_code] = ba.server.API_INDEX_URL + API_FILES['EXCHANGES_PATH'] + currency_code
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT, API_FILES['EXCHANGES_PATH'], ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api nogox root index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX)):
@@ -312,9 +316,9 @@ def write_api_index_files():
     api_nogox_index['tickers'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH']
     api_nogox_index['exchanges'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH']
     api_nogox_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['ALL_FILE']
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_nogox_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_nogox_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api nogox tickers index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'])):
@@ -327,10 +331,9 @@ def write_api_index_files():
         api_nogox_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['TICKER_PATH'] + currency_code
         if not os.path.exists(os.path.join(api_nogox_ticker_folder_path, currency_code)):
             os.makedirs(os.path.join(api_nogox_ticker_folder_path, currency_code))
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_nogox_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_nogox_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api nogox global tickers index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'])):
@@ -348,9 +351,9 @@ def write_api_index_files():
         api_ticker_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['GLOBAL_TICKER_PATH'] + currency_code
         if not os.path.exists(os.path.join(api_nogox_global_ticker_folder_path, currency_code)):
             os.makedirs(os.path.join(api_nogox_global_ticker_folder_path, currency_code))
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['GLOBAL_TICKER_PATH'], ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_ticker_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api nogox exchanges index
     if not os.path.exists(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'])):
@@ -359,9 +362,9 @@ def write_api_index_files():
     api_nogox_exchanges_index['all'] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH'] + API_FILES['ALL_FILE']
     for currency_code in ba.config.CURRENCY_LIST:
         api_nogox_exchanges_index[currency_code] = ba.server.API_INDEX_URL_NOGOX + API_FILES['EXCHANGES_PATH'] + currency_code
-    with open(os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'], ba.config.INDEX_DOCUMENT_NAME), 'w') as index_file:
-        index_file.write(json.dumps(api_nogox_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
-
+    write_api_file(
+        os.path.join(ba.server.API_DOCUMENT_ROOT_NOGOX, API_FILES['EXCHANGES_PATH'], ba.config.INDEX_DOCUMENT_NAME),
+        json.dumps(api_nogox_exchanges_index, indent=2, sort_keys=True, separators=(',', ': ')))
 
     #api history index files
     if not os.path.exists(os.path.join(ba.server.HISTORY_DOCUMENT_ROOT)):
@@ -373,8 +376,9 @@ def write_api_index_files():
         currency_history_links_list[currency_code] = '%s%s/' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
 
     general_index_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, ba.config.INDEX_DOCUMENT_NAME)
-    with open(general_index_file_path, 'w') as index_file:
-        index_file.write(json.dumps(currency_history_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
+    write_api_file(
+        general_index_file_path,
+        json.dumps(currency_history_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
 def write_api_file(api_file_name, content):
