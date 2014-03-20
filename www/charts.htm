@@ -339,6 +339,11 @@ var commonChartOptions = {
         spacingRight: 0,
         spacingTop: 0
     },
+    subtitle: {
+        style: {
+            display: 'none'
+        }
+    },
     rangeSelector: {
         inputEnabled: true,
         inputPosition: {
@@ -606,16 +611,11 @@ var getRandomArbitrary = function(min, max) {
     </div>
 
     <div id="main-container" class="container">
-
-        <div class="row" style="margin-top: 25px;" >
-
-            <div style="border-top: 1px solid #dadada" class="row show-grid currency-box col-md-12">
-                <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
-                <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
-            </div>
-
-            <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0 v-offset4"></div>
+        <div style="border-top: 1px solid #dadada; margin-top: 25px !important;" class="row show-grid currency-box col-md-12">
+            <ul class="currency-navigation primary-currency-switch col-md-5 col-sm-12 col-xs-12"></ul>
+            <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
         </div>
+        <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0 v-offset4"></div>
         <div class="row text-center">
             <div style="font-weight: bold;">
                 <ul class="pagination">

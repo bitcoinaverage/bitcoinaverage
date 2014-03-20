@@ -48,10 +48,7 @@ var renderAll = function(result, status, responseObj){
         timeGap = getTimeGap(responseObj.getAllResponseHeaders());
     }
 
-    apiDataUpdated = false;
-    if(API_data['timestamp'] != result['timestamp']){
-        apiDataUpdated = true;
-    }
+    apiDataUpdated = (API_data['timestamp'] != result['timestamp']);
 
     API_data = result;
 
