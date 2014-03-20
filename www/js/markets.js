@@ -315,7 +315,6 @@ var renderLegend = function(currencyCode){
 };
 
 var renderSmallChart = function(currencyCode){
-    $('#small-chart').html('');
     $('#charts-link a').show();
     $('#charts-link a').attr('href', 'charts.htm#'+currencyCode);
 
@@ -323,7 +322,6 @@ var renderSmallChart = function(currencyCode){
         $('#charts-link a').hide();
         return;
     }
-
 
     var data_24h_URL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
     $.get(data_24h_URL, function(csv){
@@ -338,7 +336,7 @@ var renderSmallChart = function(currencyCode){
             var dateData = dateStr.split(' ');
             dateData[0] = dateData[0].split('-');
             dateData[1] = dateData[1].split(':');
-            var dateInt = Date.UTC(dateData[0][0], dateData[0][1], dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
+            var dateInt = Date.UTC(dateData[0][0], dateData[0][1] - 1, dateData[0][2], dateData[1][0], dateData[1][1], dateData[1][2]);
             data.push([dateInt, chartDailyValue]);
         });
 
@@ -351,6 +349,8 @@ var renderSmallChart = function(currencyCode){
                 return -0;
             }
         });
+
+        $('#small-chart').html('');
 
         $('#small-chart').highcharts('StockChart', {
             chart : {
@@ -372,13 +372,17 @@ var renderSmallChart = function(currencyCode){
             scrollbar: {enabled: false},
             navigator: {enabled: false},
             exporting: {enabled: false},
-            tooltip: {enabled : false},
+            tooltip: {
+                enabled : true,
+                valueDecimals: 3
+            },
             credits: {enabled : false},
 
             series : [{
-                data : data,
-                cursor:'pointer',
-                events:{
+                name: currencyCode,
+                data: data,
+                cursor: 'pointer',
+                events: {
                     click: function(event){
                         window.location.href = 'charts.htm#'+currencyCode;
                     }
