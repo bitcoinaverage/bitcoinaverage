@@ -389,11 +389,7 @@ def write_api_file(api_file_name, content):
             api_gzipped_file.writelines(api_file)
 
 
-def gzip_history_file(history_writer):
-    def wrapper(*args, **kwargs):
-        history_file_name = history_writer(*args, **kwargs)
-        if history_file_name is not None:
-            with open(history_file_name, 'rb') as history_file:
-                with gzip.open(history_file_name + '.gz', 'wb') as history_gzipped_file:
-                    history_gzipped_file.writelines(history_file)
-    return wrapper
+def gzip_history_file(history_file_name):
+    with open(history_file_name, 'rb') as history_file:
+        with gzip.open(history_file_name + '.gz', 'wb') as history_gzipped_file:
+            history_gzipped_file.writelines(history_file)
