@@ -156,7 +156,7 @@ var renderMarketsData = function(apiData, currency){
         /* Currency NAME */
         var aLegendCurrency = $('<a></a>');
         var tdLegendCurrency = $('<td></td>');
-        aLegendCurrency.attr('href', '/markets.htm#' + currencyCode);
+        aLegendCurrency.attr('href', 'markets.htm#' + currencyCode);
         aLegendCurrency.text(currencyCode);
         tdLegendCurrency.attr('class', 'legend-currency');
         tdLegendCurrency.append(aLegendCurrency);
