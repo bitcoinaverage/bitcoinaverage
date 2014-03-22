@@ -101,7 +101,7 @@ def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_cod
     csv_currency_titles.append(currency_code + ' ' + 'global average')
 
     with open(current_24h_sliding_file_path, 'wb') as csvfile:
-        csvwriter = csv.DictWriter(csvfile, csv_currency_titles, restval=0, delimiter=',')
+        csvwriter = csv.DictWriter(csvfile, csv_currency_titles, restval=0, extrasaction='ignore', delimiter=',')
         csvwriter.writeheader()
         for row in current_24h_sliding_data:
             csvwriter.writerow(row)
