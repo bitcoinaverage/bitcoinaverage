@@ -1298,14 +1298,20 @@ footer .row{
 
 /* Banners */
 
-.beastoptions-wrapper {
+.ba-ads-right {
     position: absolute;
     right: 0;
-    top: 126px;
+    top: 150px;
+}
+
+.ba-ads-right p {
+    color: #999;
+    padding-right: 10px;
+    text-align: right;
 }
 
 @media (max-width: 1500px) {
-    .beastoptions-wrapper {
+    .ba-ads-right {
         display: none;
     }
 }
