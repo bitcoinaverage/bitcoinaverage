@@ -141,7 +141,7 @@ var ba_widget = function (html_id, currency) {
 				shadow: false,
 				valueDecimals: 2,
 				valuePrefix: getCurrencySymbol(self._currencyCode) + ' ',
-				xDateFormat: "%I:%M %p"
+				xDateFormat: "%l:%M %p"
 			},
 			credits: {enabled : false},
 
