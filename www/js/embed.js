@@ -78,15 +78,15 @@ var ba_widget = function (html_id, currency) {
 	self._template =
 		'<div style="background: #f7f7f7; border-top: 2px solid #dadada; border-bottom: 2px solid #ccc; position: relative;">\
 			<div class="ba-chart"></div>\
-			<div style="display: inline-block; font-family: Open Sans;">\
-				<span id="currency_sign" style = "color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;"></span><!--\
+			<div style="display: inline-block;">\
+				<span id="currency_sign" style="color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;"></span><!--\
 				--><span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block;margin-left: 3px;"></span><!--\
 				--><span id="ba-range-frac" style="color: #2f7ed8; font-size: 24px; font-weight: bold; display: inline-block; "></span><!--\
-				--><span id="currency_code" style = "color: #4f4f4f; font-size: 24px;"></span>\
-				<div style = "margin-left:3px;">BitcoinAverage <a id="ba-link" href="https://bitcoinaverage.com/" alt="bitcoinaverage.com">price index</a></div>\
+				--><span id="currency_code" style="color: #4f4f4f; font-size: 24px;"></span>\
+				<div id="ba-text">BitcoinAverage <a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com">price index</a></div>\
 			</div>\
 			<div style="display: inline-block; position: absolute; right: 3px; bottom: 1px;">\
-				<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"/></a>\
+				<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"></a>\
 			</div>\
 		</div>';
 

@@ -6,14 +6,19 @@
     <body>
         <style>
             #ba-embed {
-                width: 320px;
-                height: 200px;
+                font-family: Open Sans;
+                width: 260px;
+                height: 160px;
             }
-            #ba-link {
+            #ba-text {
+                font-size: 0.8em;
+                margin-left: 3px;
+            }
+            #ba-text a {
                 color: #609de1;
                 text-decoration: none;
             }
-            #ba-link:hover {
+            #ba-text a:hover {
                 text-decoration: underline;
             }
         </style>
@@ -22,6 +27,9 @@
         <script src="https://code.highcharts.com/stock/highstock.js"></script>
         <script src="js/embed.js" charset="UTF-8"></script>
         <script src="js/config.js"></script>
-        <script type="text/javascript">ba_widget('ba-embed', 'EUR');</script>
+        <script type="text/javascript">
+            var currency = window.location.hash.substring(1);
+            ba_widget('ba-embed', currency);
+        </script>
     </body>
 </html>
