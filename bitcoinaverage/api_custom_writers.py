@@ -1,4 +1,3 @@
-import gzip
 import os
 import subprocess
 import sys
@@ -62,10 +61,6 @@ def _writeCustomAPI_AndroidBitcoinWallet(api_path,
         elif "last" in calculated_global_average_rates_formatted[currency_code]:
             result[currency_code] = {'last': calculated_global_average_rates_formatted[currency_code]['last']}
 
-
-    with open(os.path.join(api_path, API_FILES['CUSTOM_API'], CUSTOM_API_FILES['AndroidBitcoinWallet']), 'w+') as custom_api_abw_file:
-        custom_api_abw_file.write(json.dumps(result))
-
-    with gzip.GzipFile(os.path.join(api_path, API_FILES['CUSTOM_API'],
-                                    CUSTOM_API_FILES['AndroidBitcoinWallet']+'.gz'), 'w+') as custom_api_abw_gzipped_file:
-        custom_api_abw_gzipped_file.write(json.dumps(result))
+    helpers.write_api_file(
+        os.path.join(api_path, API_FILES['CUSTOM_API'], CUSTOM_API_FILES['AndroidBitcoinWallet']),
+        json.dumps(result))

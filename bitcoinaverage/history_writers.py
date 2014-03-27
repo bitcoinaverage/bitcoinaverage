@@ -7,6 +7,7 @@ import json
 
 import bitcoinaverage as ba
 import bitcoinaverage.server
+from bitcoinaverage import helpers
 from bitcoinaverage.config import DEC_PLACES, CURRENCY_LIST
 
 
@@ -46,6 +47,8 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
         csvwriter.writerow(['datetime','average'])
         for row in current_24h_sliding_data:
             csvwriter.writerow(row)
+
+    helpers.gzip_history_file(current_24h_sliding_file_path)
 
 
 def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_code,  current_timestamp):
@@ -110,6 +113,9 @@ def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_cod
         for row in current_24h_sliding_data:
             csvwriter.writerow(row)
 
+    helpers.gzip_history_file(current_24h_sliding_file_path)
+
+
 def write_24h_global_average_short_csv(currency_data_all, currency_code,  current_timestamp):
     current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_global_average_sliding_window_short.csv')
     current_24h_sliding_data = []
@@ -153,6 +159,9 @@ def write_24h_global_average_short_csv(currency_data_all, currency_code,  curren
         csvwriter.writerow( csv_currency_titles )
         for row in current_24h_sliding_data:
             csvwriter.writerow(row)
+
+    helpers.gzip_history_file(current_24h_sliding_file_path)
+
 
 def write_1mon_csv(currency_code, current_timestamp):
     current_1h_1mon_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_hour_monthly_sliding_window.csv')
@@ -216,6 +225,8 @@ def write_1mon_csv(currency_code, current_timestamp):
             for row in current_1mon_sliding_data:
                 csvwriter.writerow(row)
 
+        helpers.gzip_history_file(current_1h_1mon_sliding_file_path)
+
 
 def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
     current_forever_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_day_all_time_history.csv')
@@ -276,6 +287,8 @@ def write_forever_csv(currency_code, total_sliding_volume, current_timestamp):
                             total_sliding_volume,
                             ]
             csvwriter.writerow(new_data_row)
+
+        helpers.gzip_history_file(current_forever_file_path)
 
 
 def write_volumes_csv(currency_code, currency_data, current_timestamp):
@@ -346,4 +359,4 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
 
             csvwriter.writerow(new_data_row)
 
-
+        helpers.gzip_history_file(current_volumes_file_path)
