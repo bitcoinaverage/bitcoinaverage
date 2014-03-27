@@ -81,18 +81,28 @@ var ba_widget = function (html_id, currency) {
 	}
 
 	self._template =
-		'<div style="background: #f7f7f7; border-top: 2px solid #dadada; border-bottom: 2px solid #ccc; position: relative;">\
+		'<style>\
+			.ba-wrapper {background: #f7f7f7; border-top: 2px solid #dadada; border-bottom: 2px solid #ccc; font-family: Open Sans; position: relative;}\
+			.ba-rate {display: inline-block;}\
+			.ba-cur-symbol {color: #4f4f4f; font-size: 22px; font-weight: bold; display: inline-block; margin-left: 6px;}\
+			.ba-range-int {color: #2f7ed8; display: inline-block; font-size: 28px; font-weight: bold; margin-left: 3px;}\
+			.ba-range-frac {color: #2f7ed8; display: inline-block; font-size: 22px; font-weight: bold;}\
+			.ba-cur-code {color: #4f4f4f; font-size: 22px;}\
+			.ba-text {font-size: 0.8em; margin-left: 3px;}\
+			.ba-text a {color: #609de1; text-decoration: none;}\
+			.ba-text a:hover {text-decoration: underline;}\
+			.ba-logo {display: inline-block; bottom: 1px; right: 3px; position: absolute;}\
+		</style>\
+		<div class="ba-wrapper">\
 			<div class="ba-chart"></div>\
-			<div style="display: inline-block;">\
-				<span id="currency_sign" style="color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;"></span><!--\
-				--><span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block;margin-left: 3px;"></span><!--\
-				--><span id="ba-range-frac" style="color: #2f7ed8; font-size: 24px; font-weight: bold; display: inline-block; "></span><!--\
-				-->&nbsp;<span id="currency_code" style="color: #4f4f4f; font-size: 24px;"></span>\
-				<div id="ba-text">BitcoinAverage <a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com">price index</a></div>\
+			<div class="ba-rate">\
+				<span class="ba-cur-symbol"></span><!--\
+				--><span class="ba-range-int"></span><!--\
+				--><span class="ba-range-frac"></span><!--\
+				-->&nbsp;<span class="ba-cur-code"></span>\
 			</div>\
-			<div style="display: inline-block; position: absolute; right: 3px; bottom: 1px;">\
-				<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"></a>\
-			</div>\
+			<div class="ba-text">BitcoinAverage <a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com">price index</a></div>\
+			<div class="ba-logo"><a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"></a></div>\
 		</div>';
 
 	self.createWidget = function () {
@@ -100,9 +110,9 @@ var ba_widget = function (html_id, currency) {
 		self._widget.html(self._template);
 		var widget_total_height = self._widget.height();
 		var chart_height = widget_total_height - 56;  // computed manually
-		$('#' + self._wrapper_id + ' .ba-chart').height(chart_height);
+		self._widget.find('.ba-chart').height(chart_height);
 		var data = []
-		$('#' + self._wrapper_id + ' .ba-chart').highcharts("StockChart", {
+		self._widget.find('.ba-chart').highcharts("StockChart", {
 			rangeSelector: {enabled: false},
 			xAxis:{
 				labels:{enabled: false},
@@ -162,22 +172,24 @@ var ba_widget = function (html_id, currency) {
 				if (i == 0 || line.length == 0 || values.length != 2) {
 					return;
 				}
-				data.push([self._parseDate(values[0]).getTime(),
-					   parseFloat(values[1])]);
+				data.push([
+					self._parseDate(values[0]).getTime(),
+					parseFloat(values[1])
+				]);
 			});
 			highchart.series[0].setData(data);
 
 			var value = data[data.length-1][1];
 			var integer = Math.floor(data[data.length-1][1]);
 			var fraction = Math.round((value % 1)*100);
-			document.getElementById('ba-range-int').innerHTML = integer+".";
+			$('.ba-range-int').html(integer + ".");
 			if(fraction >= 10) {
-				document.getElementById('ba-range-frac').innerHTML = fraction;
+				$('.ba-range-frac').html(fraction);
 			} else {
-				document.getElementById('ba-range-frac').innerHTML = "0" + fraction;
+				$('.ba-range-frac').html("0" + fraction);
 			}
-			document.getElementById('currency_sign').innerHTML = getCurrencySymbol(self._currencyCode);
-			document.getElementById('currency_code').innerHTML = self._currencyCode;
+			$('.ba-cur-symbol').html(getCurrencySymbol(self._currencyCode));
+			$('.ba-cur-code').html(self._currencyCode);
 		});
 		return data;
 	}
