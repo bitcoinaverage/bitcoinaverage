@@ -74,9 +74,27 @@ CURRENCY_LIST = ('USD',
                  # 'THB',
                     )
 
+# http://www.currencysymbols.in/
 FRONTEND_CURRENCY_SYMBOLS = {
-        'USD': (u'0024', u'USD'),
-        'EUR': (u'20ac', u'EUR'),
+        'USD': ['0024'],
+        'EUR': ['20ac'],
+        'CNY': ['00a5'],
+        'GBP': ['00a3'],
+        'CAD': ['0024'],
+        'PLN': ['007a', '0142'],
+        'JPY': ['00a5'],
+        'RUB': [],
+        'AUD': ['0024'],
+        'SEK': ['006b', '0072'],
+        'BRL': ['0052', '0024'],
+        'NZD': ['0024'],
+        'SGD': ['0024'],
+        'ZAR': ['0052'],
+        'NOK': ['006b', '0072'],
+        'ILS': ['20aa'],
+        'CHF': [],
+        'TRY': [],
+        'HKD': ['0024'],
         }
 
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
