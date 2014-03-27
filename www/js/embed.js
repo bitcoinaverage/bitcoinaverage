@@ -23,25 +23,35 @@ function _minelm(v) {
 	return m;
 }
 
-var ba_widget = function (html_id, currency) {
-	this._protocol = window.location.protocol;
-	this._wrapper_id = html_id;
-	this._apiHistoryIndexUrl = 'https://api.bitcoinaverage.com/history/';
-	this._currencyCode = currency;
-	this._data24hURL = this._apiHistoryIndexUrl + this._currencyCode + '/per_minute_24h_sliding_window.csv';
-	var self = this
+function getCurrencySymbol(curCode) {
+	var symbol = '';
+	var codes = config.currencySymbols[curCode];
+	if (codes) {
+		for (var i = 0; i < codes.length; i++) {
+			symbol += String.fromCharCode(parseInt(codes[i], 16));
+		}
+	}
+	return symbol;
+}
 
-	this.init = function () {
+var ba_widget = function (html_id, currency) {
+	var self = this;
+	self._protocol = window.location.protocol;
+	self._wrapper_id = html_id;
+	self._currencyCode = currency;
+	self._apiHistoryIndexUrl = 'https://api.bitcoinaverage.com/history/';
+	self._data24hURL = self._apiHistoryIndexUrl + self._currencyCode + '/per_minute_24h_sliding_window.csv';
+
+	self.init = function () {
 		// jQuery is required for different stuff
 		if (!window.jQuery) {
 			console.warn('jQuery is required');
 			return;
 		}
-		this.createTemplate();
-		this.createWidget();
+		self.createWidget();
 	}
 
-	this._ajaxCall = function(url, callback) {
+	self._ajaxCall = function(url, callback) {
 		if (typeof callback == 'undefined') {
 			callback = function(data){};
 		}
@@ -58,48 +68,53 @@ var ba_widget = function (html_id, currency) {
 		}
 	}
 
-	this._parseDate = function(dateString) {
+	self._parseTimeStamp = function(dateString) {
 		var parts = dateString.split(' ');
 		var dateParts = parts[0].split('-');
 		if (typeof parts[1] != 'undefined') {
-		var timeParts = parts[1].split(':');
+			var timeParts = parts[1].split(':');
 		} else {
-		var timeParts = [0,0,0];
+			var timeParts = [0,0,0];
 		}
-		var result = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
+		var result = Date.UTC(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
 		return result;
 	}
 
-	this.createTemplate = function () {
-		this._template = [
-			'<div style="background:#f7f7f7; border-top:2px solid #dadada; border-bottom:2px solid #ccc; position:relative;">',
-				'<div class="ba-chart"></div>',
-				'<div style="display: inline-block; font-family: Open Sans;">',
-					'<span id="currency_sign" style = "color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;"></span><!--',
-					'--><span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block;margin-left: 3px;"><!--',
-					'--></span><!--',
-					'--><span id="ba-range-frac" style="color: #2f7ed8; font-size: 24px; font-weight: bold; display: inline-block; ">',
-					'</span>',
-					'<span id="currency_cod" style = "color: #4f4f4f; font-size: 24px;""></span>',
-					'<div style = "margin-left:3px;">BitcoinAverage <a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com" style = "color:#609de1; text-decoration:none;">price index</a></div>',
-				'</div>',
-				'<div style="display: inline-block; position:absolute;right:3px;bottom:1px;">',
-					'<a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"/></a>',
-				'</div>',
-			'</div>',
-		].join('\n')
-	}
+	self._template =
+		'<style>\
+			@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,600italic&subset=latin,cyrillic-ext);\
+			.ba-wrapper {background: #f7f7f7; border-top: 2px solid #dadada; border-bottom: 2px solid #ccc; font-family: Open Sans; position: relative;}\
+			.ba-rate {display: inline-block;}\
+			.ba-cur-symbol {color: #4f4f4f; font-size: 22px; font-weight: bold; display: inline-block; margin-left: 6px;}\
+			.ba-range-int {color: #2f7ed8; display: inline-block; font-size: 28px; font-weight: bold; margin-left: 3px;}\
+			.ba-range-frac {color: #2f7ed8; display: inline-block; font-size: 22px; font-weight: bold;}\
+			.ba-cur-code {color: #4f4f4f; font-size: 22px;}\
+			.ba-text {font-size: 0.8em; margin-left: 3px;}\
+			.ba-text a {color: #609de1; text-decoration: none;}\
+			.ba-text a:hover {text-decoration: underline;}\
+			.ba-logo {display: inline-block; bottom: 1px; right: 3px; position: absolute;}\
+		</style>\
+		<div class="ba-wrapper">\
+			<div class="ba-chart"></div>\
+			<div class="ba-rate">\
+				<span class="ba-cur-symbol"></span><!--\
+				--><span class="ba-range-int"></span><!--\
+				--><span class="ba-range-frac"></span><!--\
+				-->&nbsp;<span class="ba-cur-code"></span>\
+			</div>\
+			<div class="ba-text">BitcoinAverage <a>price index</a></div>\
+			<div class="ba-logo"><a href="https://bitcoinaverage.com/"><img src="img/logo_chart.png" alt="bitcoinaverage.com"></a></div>\
+		</div>';
 
-
-
-	this.createWidget = function () {
+	self.createWidget = function () {
 		self._widget = $('#' + self._wrapper_id);
 		self._widget.html(self._template);
+		self._widget.find('.ba-text a').attr('href', 'https://bitcoinaverage.com/#' + self._currencyCode);
 		var widget_total_height = self._widget.height();
 		var chart_height = widget_total_height - 56;  // computed manually
-		$('#' + self._wrapper_id + ' .ba-chart').height(chart_height);
+		self._widget.find('.ba-chart').height(chart_height);
 		var data = []
-		$('#' + self._wrapper_id + ' .ba-chart').highcharts("StockChart", {
+		self._widget.find('.ba-chart').highcharts("StockChart", {
 			rangeSelector: {enabled: false},
 			xAxis:{
 				labels:{enabled: false},
@@ -125,8 +140,8 @@ var ba_widget = function (html_id, currency) {
 				},
 				shadow: false,
 				valueDecimals: 2,
-				valuePrefix: "$",
-				xDateFormat: "%H:%M"
+				valuePrefix: getCurrencySymbol(self._currencyCode) + ' ',
+				xDateFormat: "%l:%M %p"
 			},
 			credits: {enabled : false},
 
@@ -135,7 +150,7 @@ var ba_widget = function (html_id, currency) {
 				backgroundColor: "#f7f7f7",
 				events : {
 					load : function () {
-						highchart = this
+						var highchart = this;
 						self.updateData(highchart);
 						setInterval(function() {
 							self.updateData(highchart);
@@ -159,24 +174,24 @@ var ba_widget = function (html_id, currency) {
 				if (i == 0 || line.length == 0 || values.length != 2) {
 					return;
 				}
-				data.push([self._parseDate(values[0]).getTime(),
-					   parseFloat(values[1])]);
+				data.push([
+					self._parseTimeStamp(values[0]),
+					parseFloat(values[1])
+				]);
 			});
 			highchart.series[0].setData(data);
 
 			var value = data[data.length-1][1];
 			var integer = Math.floor(data[data.length-1][1]);
 			var fraction = Math.round((value % 1)*100);
-			document.getElementById('ba-range-int').innerHTML = integer+".";
+			$('.ba-range-int').html(integer + ".");
 			if(fraction >= 10) {
-				document.getElementById('ba-range-frac').innerHTML = fraction;
+				$('.ba-range-frac').html(fraction);
 			} else {
-				document.getElementById('ba-range-frac').innerHTML = "0" + fraction;
+				$('.ba-range-frac').html("0" + fraction);
 			}
-			if (config.currencySymbols[self._currencyCode]) {
-				document.getElementById('currency_sign').innerHTML = config.currencySymbols[self._currencyCode][0];
-				document.getElementById('currency_cod').innerHTML = config.currencySymbols[self._currencyCode][1];
-			}
+			$('.ba-cur-symbol').html(getCurrencySymbol(self._currencyCode));
+			$('.ba-cur-code').html(self._currencyCode);
 		});
 		return data;
 	}
