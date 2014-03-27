@@ -68,7 +68,7 @@ var ba_widget = function (html_id, currency) {
 		}
 	}
 
-	self._parseDate = function(dateString) {
+	self._parseTimeStamp = function(dateString) {
 		var parts = dateString.split(' ');
 		var dateParts = parts[0].split('-');
 		if (typeof parts[1] != 'undefined') {
@@ -76,7 +76,7 @@ var ba_widget = function (html_id, currency) {
 		} else {
 			var timeParts = [0,0,0];
 		}
-		var result = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
+		var result = Date.UTC(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1], timeParts[2]);
 		return result;
 	}
 
@@ -141,7 +141,7 @@ var ba_widget = function (html_id, currency) {
 				shadow: false,
 				valueDecimals: 2,
 				valuePrefix: getCurrencySymbol(self._currencyCode) + ' ',
-				xDateFormat: "%H:%M"
+				xDateFormat: "%I:%M %p"
 			},
 			credits: {enabled : false},
 
@@ -175,7 +175,7 @@ var ba_widget = function (html_id, currency) {
 					return;
 				}
 				data.push([
-					self._parseDate(values[0]).getTime(),
+					self._parseTimeStamp(values[0]),
 					parseFloat(values[1])
 				]);
 			});
