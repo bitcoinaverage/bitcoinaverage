@@ -588,7 +588,7 @@ ul{
 .currency-box .secondary-currency-switch li {
     display: inline-block;
     text-transform: uppercase;
-    padding: 3px 7px;;
+    padding: 3px 7px;
     width: 45px;
 }
 .currency-box .secondary-currency-switch li.active {
@@ -1294,4 +1294,24 @@ footer .row{
 }
 .all-currency-navigation {
     display: none;
+}
+
+/* Banners */
+
+.ba-ads-right {
+    position: absolute;
+    right: 0;
+    top: 115px;
+}
+
+.ba-ads-right p {
+    color: #999;
+    padding-right: 10px;
+    text-align: right;
+}
+
+@media (max-width: 1500px) {
+    .ba-ads-right {
+        display: none;
+    }
 }
