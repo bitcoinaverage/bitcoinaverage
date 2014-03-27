@@ -82,6 +82,7 @@ var ba_widget = function (html_id, currency) {
 
 	self._template =
 		'<style>\
+			@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,600italic&subset=latin,cyrillic-ext);\
 			.ba-wrapper {background: #f7f7f7; border-top: 2px solid #dadada; border-bottom: 2px solid #ccc; font-family: Open Sans; position: relative;}\
 			.ba-rate {display: inline-block;}\
 			.ba-cur-symbol {color: #4f4f4f; font-size: 22px; font-weight: bold; display: inline-block; margin-left: 6px;}\
@@ -101,13 +102,14 @@ var ba_widget = function (html_id, currency) {
 				--><span class="ba-range-frac"></span><!--\
 				-->&nbsp;<span class="ba-cur-code"></span>\
 			</div>\
-			<div class="ba-text">BitcoinAverage <a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com">price index</a></div>\
-			<div class="ba-logo"><a href="https://bitcoinaverage.com/" alt="bitcoinaverage.com"><img src="img/logo_chart.png"></a></div>\
+			<div class="ba-text">BitcoinAverage <a>price index</a></div>\
+			<div class="ba-logo"><a href="https://bitcoinaverage.com/"><img src="img/logo_chart.png" alt="bitcoinaverage.com"></a></div>\
 		</div>';
 
 	self.createWidget = function () {
 		self._widget = $('#' + self._wrapper_id);
 		self._widget.html(self._template);
+		self._widget.find('.ba-text a').attr('href', 'https://bitcoinaverage.com/#' + self._currencyCode);
 		var widget_total_height = self._widget.height();
 		var chart_height = widget_total_height - 56;  // computed manually
 		self._widget.find('.ba-chart').height(chart_height);
@@ -138,7 +140,7 @@ var ba_widget = function (html_id, currency) {
 				},
 				shadow: false,
 				valueDecimals: 2,
-				valuePrefix: getCurrencySymbol(self._currencyCode),
+				valuePrefix: getCurrencySymbol(self._currencyCode) + ' ',
 				xDateFormat: "%H:%M"
 			},
 			credits: {enabled : false},
