@@ -75,8 +75,8 @@ CURRENCY_LIST = ('USD',
                     )
 
 FRONTEND_CURRENCY_SYMBOLS = {
-        'USD': (u'$', u'USD'),
-        'EUR': (u'\u20ac', u'EUR'),
+        'USD': (u'0024', u'USD'),
+        'EUR': (u'20ac', u'EUR'),
         }
 
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'

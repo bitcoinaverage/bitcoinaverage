@@ -27,8 +27,14 @@ var ba_widget = function (html_id, currency) {
 	var self = this;
 	self._protocol = window.location.protocol;
 	self._wrapper_id = html_id;
-	self._apiHistoryIndexUrl = 'https://api.bitcoinaverage.com/history/';
 	self._currencyCode = currency;
+	if (config.currencySymbols[self._currencyCode]) {
+		self._currencySymbol = String.fromCharCode(
+			parseInt(config.currencySymbols[self._currencyCode][0], 16));
+	} else {
+		self._currencySymbol = '';
+	}
+	self._apiHistoryIndexUrl = 'https://api.bitcoinaverage.com/history/';
 	self._data24hURL = self._apiHistoryIndexUrl + self._currencyCode + '/per_minute_24h_sliding_window.csv';
 
 	self.init = function () {
@@ -76,7 +82,7 @@ var ba_widget = function (html_id, currency) {
 				<span id="currency_sign" style = "color: #4f4f4f; font-size: 24px; font-weight: bold; display: inline-block; margin-left: 6px;"></span><!--\
 				--><span id="ba-range-int" style="color: #2f7ed8; font-size: 30px; font-weight: bold; display: inline-block;margin-left: 3px;"></span><!--\
 				--><span id="ba-range-frac" style="color: #2f7ed8; font-size: 24px; font-weight: bold; display: inline-block; "></span><!--\
-				--><span id="currency_cod" style = "color: #4f4f4f; font-size: 24px;"></span>\
+				--><span id="currency_code" style = "color: #4f4f4f; font-size: 24px;"></span>\
 				<div style = "margin-left:3px;">BitcoinAverage <a id="ba-link" href="https://bitcoinaverage.com/" alt="bitcoinaverage.com">price index</a></div>\
 			</div>\
 			<div style="display: inline-block; position: absolute; right: 3px; bottom: 1px;">\
@@ -117,7 +123,7 @@ var ba_widget = function (html_id, currency) {
 				},
 				shadow: false,
 				valueDecimals: 2,
-				valuePrefix: "$",
+				valuePrefix: self._currencySymbol,
 				xDateFormat: "%H:%M"
 			},
 			credits: {enabled : false},
@@ -165,10 +171,8 @@ var ba_widget = function (html_id, currency) {
 			} else {
 				document.getElementById('ba-range-frac').innerHTML = "0" + fraction;
 			}
-			if (config.currencySymbols[self._currencyCode]) {
-				document.getElementById('currency_sign').innerHTML = config.currencySymbols[self._currencyCode][0];
-				document.getElementById('currency_cod').innerHTML = config.currencySymbols[self._currencyCode][1];
-			}
+			document.getElementById('currency_sign').innerHTML = self._currencySymbol;
+			document.getElementById('currency_code').innerHTML = self._currencyCode;
 		});
 		return data;
 	}
