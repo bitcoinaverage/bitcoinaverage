@@ -517,9 +517,13 @@ var renderVolumeChart = function(currencyCode){
                 for(var dataSeriesIndex in dataSeries){
                     if (dataSeries[dataSeriesIndex].name == exchangesHeaders[columnNum]){
                         var val = values[columnNum];
-                        if (val == undefined) val = 0;
-                        dataSeries[dataSeriesIndex].data.push([parseDate(values[0]).getTime(),
-                                                               parseFloat(val)]);
+                        if (!val) {
+                            val = 0;
+                        }
+                        dataSeries[dataSeriesIndex].data.push([
+                            parseDate(values[0]).getTime(),
+                            parseFloat(val)
+                        ]);
                     }
                 }
             }
