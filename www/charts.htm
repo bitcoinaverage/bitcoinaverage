@@ -351,6 +351,10 @@ var commonChartOptions = {
             y: 30
         }
     },
+    xAxis: {
+        type: 'datetime',
+        ordinal: false
+    },
     exporting: {
         buttons: {
             contextButton: {
@@ -439,7 +443,6 @@ var renderPriceChart = function(currencyCode){
 
 
                     xAxis:{
-                        type:'datetime',
                         tickPixelInterval: 100
                     },
 
@@ -530,7 +533,6 @@ var renderVolumeChart = function(currencyCode){
             },
 
             xAxis:{
-                type:'datetime',
                 tickPixelInterval: 100
             },
 
