@@ -381,12 +381,13 @@ def write_api_index_files():
         json.dumps(currency_history_links_list, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
-def write_api_file(api_file_name, content):
+def write_api_file(api_file_name, content, compress=True):
     with open(api_file_name, 'w') as api_file:
         api_file.write(content)
-    with open(api_file_name, 'rb') as api_file:
-        with gzip.open(api_file_name + '.gz', 'wb') as api_gzipped_file:
-            api_gzipped_file.writelines(api_file)
+    if compress:
+        with open(api_file_name, 'rb') as api_file:
+            with gzip.open(api_file_name + '.gz', 'wb') as api_gzipped_file:
+                api_gzipped_file.writelines(api_file)
 
 
 def gzip_history_file(history_file_name):
