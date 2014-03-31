@@ -23,7 +23,6 @@ if ba.server.LOG_PATH == '':
     ba.server.LOG_PATH = os.path.join(ba.server.PROJECT_PATH, 'runtime', 'app.log')
 if ba.server.API_DOCUMENT_ROOT == '':
     ba.server.API_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'api')
-    ba.server.API_DOCUMENT_ROOT_NOGOX = os.path.join(ba.server.API_DOCUMENT_ROOT, 'no-mtgox')
 if ba.server.WWW_DOCUMENT_ROOT == '':
     ba.server.WWW_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'www')
 if ba.server.HISTORY_DOCUMENT_ROOT == '':

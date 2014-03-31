@@ -1,5 +1,4 @@
 API_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api used
-API_DOCUMENT_ROOT_NOGOX = ''  # if empty - <main.py folder>/api/no-mtgox used
 HISTORY_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api/history used
 WWW_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/www used
 
@@ -9,7 +8,6 @@ PROJECT_PATH = ''  # if empty - <main.py folder> used
 FRONTEND_INDEX_URL = '' #should be not empty, default - 'https://bitcoinaverage.com/'
 API_INDEX_URL = '' #should be not empty, default - 'https://api.bitcoinaverage.com/'
 API_INDEX_URL_HISTORY = '' #should be not empty, default - 'https://api.bitcoinaverage.com/history/'
-API_INDEX_URL_NOGOX = '' #should be not empty, default - 'https://api.bitcoinaverage.com/no-mtgox/'
 # DEFAULT_API_QUERY_FREQUENCY_OVERRIDE = 60 #if present - overrides normal frequency of exchange APIs calls
 # DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_OVERRIDE = 'bitcoinaverage.com test query bot' #if present - overrides normal "User-Agent" request value
 
