@@ -961,7 +961,12 @@ footer .row{
 
 .bitcoin-calc__wrapper {
     padding-bottom: 75px;
+}
 
+.bitcoin-calc__wrapper .twitter-follow-wrapper {
+    clear: right;
+    padding-right: 15px;
+    text-align: right;
 }
 
 .currency-navtabs {
