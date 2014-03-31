@@ -135,7 +135,7 @@ var changeBaseButtonClick = function(event){
     var button = $(this);
 
     if (config.scaleDivizer == 1000){
-        $.cookie('base', 'bitcoin');
+        $.cookie('base', 'bitcoin', {expires: 365});
         config.scaleDivizer = 1;
         config.precision = 1;
 
@@ -151,7 +151,7 @@ var changeBaseButtonClick = function(event){
         $('.bitcoin-label').text('฿');
         $('.market-page-description .base').text('bitcoin');
     } else {
-        $.cookie('base', 'millibitcoin');
+        $.cookie('base', 'millibitcoin', {expires: 365});
         config.scaleDivizer = 1000;
         config.precision = 3;
 

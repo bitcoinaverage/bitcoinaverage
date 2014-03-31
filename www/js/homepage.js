@@ -77,7 +77,7 @@ var renderAll = function(result, status, responseObj){
         if(baseCookie == 'bitcoin'){
             $('#nomillibit-button').click();
         } else if(baseCookie == null){
-            $.cookie('base', 'millibitcoin');
+            $.cookie('base', 'millibitcoin', {expires: 365});
         }
 
         $('body').show();
