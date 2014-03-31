@@ -508,4 +508,12 @@ $(function(){
     renderSecondaryCurrencies();
     renderWorldCurrencies();
 
+    if (config.apiUsers.length > 0) {
+        $('.ba-ads-left').append('<p>BAPI used by</p>');
+        $.each(config.apiUsers, function (i, entry) {
+            var banner = $('<a/>', {href: entry.href, title: entry.name});
+            banner.append($('<img/>', {src: entry.image}));
+            $('.ba-ads-left').append(banner);
+        });
+    }
 });

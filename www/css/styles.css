@@ -1307,6 +1307,18 @@ footer .row{
 
 /* Banners */
 
+.ba-ads-left {
+    position: absolute;
+    left: 0;
+    top: 115px;
+}
+
+.ba-ads-left p {
+    color: #999;
+    padding-left: 10px;
+    text-align: left;
+}
+
 .ba-ads-right {
     position: absolute;
     right: 0;
@@ -1320,6 +1332,7 @@ footer .row{
 }
 
 @media (max-width: 1500px) {
+    .ba-ads-left,
     .ba-ads-right {
         display: none;
     }
