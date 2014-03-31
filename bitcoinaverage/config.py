@@ -29,7 +29,7 @@ if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_O
     API_REQUEST_HEADERS['User-Agent'] = bitcoinaverage.server.DEFAULT_API_QUERY_REQUEST_HEADER_USER_AGENT_OVERRIDE
 
 FRONTEND_QUERY_FREQUENCY = 15 #seconds between AJAX requests from frontend to our API
-HISTORY_QUERY_FREQUENCY = 15 #seconds between history_daemon requests
+HISTORY_QUERY_FREQUENCY = 30 #seconds between history_daemon requests
 FIAT_RATES_QUERY_FREQUENCY = 3600 #seconds between requests for fiat exchange rates, must be not less than an hour,
                                   # as total API queries amount limited at 1000/month
 API_CALL_TIMEOUT_THRESHOLD = 15 #seconds before exchange API call timeout. exchange may have multiple calls

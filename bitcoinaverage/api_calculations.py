@@ -384,7 +384,8 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
                 for key in ticker_cur:
                     helpers.write_api_file(
                         os.path.join(ticker_currency_path, key),
-                        str(ticker_cur[key]))
+                        str(ticker_cur[key]),
+                        compress=False)
 
         # /ticker/all
         rates_all = calculated_average_rates_formatted
@@ -404,7 +405,8 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
             for key in ticker_cur:
                 helpers.write_api_file(
                     os.path.join(ticker_currency_path, key),
-                    str(ticker_cur[key]))
+                    str(ticker_cur[key]),
+                    compress=False)
 
         # /ticker/global/all
         rates_all = calculated_global_average_rates_formatted
