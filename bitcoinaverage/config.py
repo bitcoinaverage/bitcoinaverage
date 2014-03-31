@@ -413,3 +413,10 @@ EXCHANGE_LIST = {
 
                 }
 
+API_USERS = [
+     #{
+     #     'name': 'name',
+     #     'image': 'http://example.com/image.jpg',
+     #     'href': 'http://example.com'
+     #},
+]

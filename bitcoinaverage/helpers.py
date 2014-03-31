@@ -50,6 +50,7 @@ def write_js_config():
     config_data['precision'] = ba.config.FRONTEND_PRECISION
     config_data['exchangesColors'] = {ex: exchange_color(ex) for ex in ba.config.EXCHANGE_LIST.keys()}
     config_data['currencySymbols'] = ba.config.FRONTEND_CURRENCY_SYMBOLS
+    config_data['apiUsers'] = ba.config.API_USERS
     config_string = js_config_template.replace('$CONFIG_DATA',
             json.dumps(config_data, ensure_ascii=False).encode('utf8'))
 
