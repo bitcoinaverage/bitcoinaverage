@@ -351,6 +351,10 @@ var commonChartOptions = {
             y: 30
         }
     },
+    xAxis: {
+        type: 'datetime',
+        ordinal: false
+    },
     exporting: {
         buttons: {
             contextButton: {
@@ -439,7 +443,6 @@ var renderPriceChart = function(currencyCode){
 
 
                     xAxis:{
-                        type:'datetime',
                         tickPixelInterval: 100
                     },
 
@@ -514,9 +517,13 @@ var renderVolumeChart = function(currencyCode){
                 for(var dataSeriesIndex in dataSeries){
                     if (dataSeries[dataSeriesIndex].name == exchangesHeaders[columnNum]){
                         var val = values[columnNum];
-                        if (val == undefined) val = 0;
-                        dataSeries[dataSeriesIndex].data.push([parseDate(values[0]).getTime(),
-                                                               parseFloat(val)]);
+                        if (!val) {
+                            val = 0;
+                        }
+                        dataSeries[dataSeriesIndex].data.push([
+                            parseDate(values[0]).getTime(),
+                            parseFloat(val)
+                        ]);
                     }
                 }
             }
@@ -530,7 +537,6 @@ var renderVolumeChart = function(currencyCode){
             },
 
             xAxis:{
-                type:'datetime',
                 tickPixelInterval: 100
             },
 
