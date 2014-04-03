@@ -287,7 +287,10 @@ EXCHANGE_LIST = {
                                    'URL': 'https://btcmarkets.net/',
                                    'display_name': 'BTC Markets',
                                     },
-
+                    'btc38':      {'ticker_url': 'http://api.btc38.com/v1/ticker.php?c=btc',
+                                   'URL': 'http://btc38.com/',
+                                   'display_name': 'BTC38',
+                                    },
 
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',

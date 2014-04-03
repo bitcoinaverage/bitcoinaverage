@@ -1095,3 +1095,17 @@ def _btcmarkets_coApiCall(ticker_url, trades_url, *args, **kwargs):
                     'volume': Decimal(volume).quantize(DEC_PLACES),
                         }
     return result
+
+
+def _btc38ApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['CNY'] = {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
+                        }
+    return result
