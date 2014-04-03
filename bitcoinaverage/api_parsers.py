@@ -1103,9 +1103,9 @@ def _btc38ApiCall(ticker_url, *args, **kwargs):
         ticker = json.loads(response)
 
     result = {}
-    result['CNY'] = {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
-                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
-                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
-                     'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
+    result['CNY'] = {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['ticker']['vol']).quantize(DEC_PLACES),
                         }
     return result
