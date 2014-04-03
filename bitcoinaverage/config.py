@@ -20,7 +20,10 @@ API_FILES = {'TICKER_PATH': 'ticker/',
              'CUSTOM_API': 'custom/'
              }
 
-CUSTOM_API_FILES = {'AndroidBitcoinWallet': 'abw'}
+CUSTOM_API_FILES = {'AndroidBitcoinWallet': 'abw',
+                    'HiveMacDesktopWallet': 'hive_mac',
+                    'HiveAndroidWallet': 'hive_android',
+                    }
 
 API_REQUEST_HEADERS = {'User-Agent': 'bitcoinaverage.com query bot',
                        'Origin': 'bitcoinaverage.com'}
