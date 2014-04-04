@@ -274,6 +274,7 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
 
         $('#legend-curcode').text(currencyCode);
         $('.curcode-main').text(currencyCode);
+        $('.cursym-main').text(getCurrencySymbol(currencyCode));
 
     });
 
