@@ -267,23 +267,20 @@ ul{
 }
 
 .curcode{font-size: 22px; font-weight: bold; color: #4F4F4F; margin-bottom: 10px; margin-top: 0px; padding-top: 0px !important; }
+
 .last-main{
     font-size: 4.3em;
     font-weight: 600;
     color: #428BCA;
-    width: 250px;
-
 }
-.price-gap {
-    font-size: 4.3em;
-    font-weight: 600;
-}
-.curcode-main{
-    font-size: 4.3em;
+.cursym-main,
+.curcode-main {
+    font-size: 2em;
     font-weight: 600;
     color: #4F4F4F;
-    width: 250px;
+    vertical-align: 0.8em;
 }
+
 .arrows{font-size: 2em; }
 
 /* legend table start */

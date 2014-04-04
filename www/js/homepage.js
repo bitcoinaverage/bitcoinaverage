@@ -234,6 +234,7 @@ var renderLegend = function(currencyCode){
     renderMarketsData(API_data, currencyCode);
 
     $('#global-curcode').text(currencyCode);
+    $('#global-cursym').text(getCurrencySymbol(currencyCode));
 
     var exchangeArray = [];
     var currencyData = API_data[currencyCode];
