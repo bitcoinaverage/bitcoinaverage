@@ -198,26 +198,6 @@
     }
 
 }
-@media (max-width: 1150px){
-    .market-page.ignore_btn{
-        width:100%!important;
-        position:relative!important;
-        padding:0px!important;
-        margin:0; top:0!important;
-        right:0px!important;
-    }
-}
-@media (max-width: 650px){
-    .ignore_btn{
-        width:100%!important;
-        position:relative!important;
-        padding:0px!important;
-        margin:0; top:0!important;
-        right:0px!important;
-    }
-}
-
-
 
 /** Main CSS **/
 
@@ -459,12 +439,6 @@ ul{
 }
 #global-avg-arrowup, #global-avg-arrowdown{
     display: none;
-}
-
-#nomillibit-button{
-     position: absolute;
-    right: 10px;
-    top: 39px;
 }
 
 .strip .btn:focus{
@@ -717,9 +691,9 @@ footer .row{
 }
 
 .indent {
-    margin-top: 75px;
-    margin-bottom: 5px;
+    margin: 75px 0 5px;
 }
+
 /**Generic Classes**/
 .strip {
     position: relative;
@@ -881,7 +855,6 @@ footer .row{
  color: #999999;
  font-size: 15px;
 }
-.ignore_btn{width:130px; float:left; white-space:normal; line-height:20px; }
 
 #small-chart{height:200px;}
 .action-link{border-bottom: dashed 1px;} .action-link:hover{text-decoration: none;}
@@ -982,8 +955,25 @@ footer .row{
 .currency-navtabs li h2 {
     margin-top: 5px;
 }
-.market-page-description {
+
+.market-page-description,
+.base-button-wrapper {
     padding: 19px 0 13px;
+}
+
+#nomillibit-button {
+    line-height: 20px;
+    width: 130px;
+    white-space: normal;
+}
+
+@media (max-width: 650px) {
+    .base-button-wrapper {
+        padding: 0;
+    }
+    #nomillibit-button {
+        width: 100%;
+    }
 }
 
 .currency-header {
