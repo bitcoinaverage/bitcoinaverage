@@ -31,19 +31,18 @@ def createCustomAPIs(api_document_root,
 
     globals_list = globals()
     for globals_item in globals_list:
-        if globals_item.startswith('_writeCustomAPI_'):
-            globals()[globals_item](api_document_root,
-                                     human_timestamp,
-                                     calculated_average_rates_formatted,
-                                     calculated_volumes_formatted,
-                                     calculated_global_average_rates_formatted,
-                                     exchanges_ignored)
-
-def _writeCustomAPI_AndroidBitcoinWallet(api_path,
+        for custom_api_name in CUSTOM_API_FILES:
+            if globals_item == '_writeCustomAPI_{}'.format(custom_api_name):
+                globals()[globals_item](api_document_root,
+                                         CUSTOM_API_FILES[custom_api_name],
                                          human_timestamp,
                                          calculated_average_rates_formatted,
                                          calculated_volumes_formatted,
                                          calculated_global_average_rates_formatted,
+                                         exchanges_ignored)
+
+def _writeCustomAPI_AndroidBitcoinWallet(api_path, api_file_name, human_timestamp, calculated_average_rates_formatted,
+                                         calculated_volumes_formatted, calculated_global_average_rates_formatted,
                                          exchanges_ignored):
 
     result = {}
@@ -62,14 +61,11 @@ def _writeCustomAPI_AndroidBitcoinWallet(api_path,
             result[currency_code] = {'last': calculated_global_average_rates_formatted[currency_code]['last']}
 
     helpers.write_api_file(
-        os.path.join(api_path, API_FILES['CUSTOM_API'], CUSTOM_API_FILES['AndroidBitcoinWallet']),
+        os.path.join(api_path, API_FILES['CUSTOM_API'], api_file_name),
         json.dumps(result))
 
-def _writeCustomAPI_HiveMacDesktopWallet(api_path,
-                                         human_timestamp,
-                                         calculated_average_rates_formatted,
-                                         calculated_volumes_formatted,
-                                         calculated_global_average_rates_formatted,
+def _writeCustomAPI_HiveMacDesktopWallet(api_path, api_file_name, human_timestamp, calculated_average_rates_formatted,
+                                         calculated_volumes_formatted, calculated_global_average_rates_formatted,
                                          exchanges_ignored):
 
     result = {}
@@ -88,14 +84,11 @@ def _writeCustomAPI_HiveMacDesktopWallet(api_path,
             result[currency_code] = {'last': calculated_global_average_rates_formatted[currency_code]['last']}
 
     helpers.write_api_file(
-        os.path.join(api_path, API_FILES['CUSTOM_API'], CUSTOM_API_FILES['AndroidBitcoinWallet']),
+        os.path.join(api_path, API_FILES['CUSTOM_API'], api_file_name),
         json.dumps(result))
 
-def _writeCustomAPI_HiveAndroidWallet(api_path,
-                                         human_timestamp,
-                                         calculated_average_rates_formatted,
-                                         calculated_volumes_formatted,
-                                         calculated_global_average_rates_formatted,
+def _writeCustomAPI_HiveAndroidWallet(api_path, api_file_name, human_timestamp, calculated_average_rates_formatted,
+                                         calculated_volumes_formatted, calculated_global_average_rates_formatted,
                                          exchanges_ignored):
 
     result = {}
@@ -114,5 +107,5 @@ def _writeCustomAPI_HiveAndroidWallet(api_path,
             result[currency_code] = {'last': calculated_global_average_rates_formatted[currency_code]['last']}
 
     helpers.write_api_file(
-        os.path.join(api_path, API_FILES['CUSTOM_API'], CUSTOM_API_FILES['AndroidBitcoinWallet']),
+        os.path.join(api_path, API_FILES['CUSTOM_API'], api_file_name),
         json.dumps(result))
