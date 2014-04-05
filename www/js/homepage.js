@@ -220,8 +220,7 @@ var renderMarketsData = function(apiData, currency){
 
     $('.main-volume .volume').text(allVolumeBtc).formatCurrency({
         symbol: '฿',
-        positiveFormat: '%s%n',
-        negativeFormat: '-%s%n',
+        positiveFormat: '%s %n',
         roundToDecimalPlace: 2
     });
     $('#legend-global-trading-volume').text(allVolumeBtc)
@@ -379,6 +378,7 @@ var renderSmallChart = function(currencyCode){
         var priceShift = data[data.length - 1][1] - data[0][1];
         var priceShiftPercentage = priceShift / data[0][1] * 100;
         $('.main-price-shift .price-arrow').text(priceShift < 0 ? '▼' : '▲');
+        $('.main-price-shift').attr('data-trend', priceShift < 0 ? 'down' : 'up');
         $('.main-price-shift .price-shift').text(priceShift).formatCurrency({
             symbol: getCurrencySymbol(currencyCode),
             positiveFormat: '%s%n ' + currencyCode,

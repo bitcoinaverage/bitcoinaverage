@@ -250,6 +250,60 @@ ul{
 
 /* Main block */
 
+.main-price-shift,
+.main-volume {
+    padding: 1.5em 0;
+}
+
+.main-price-shift[data-trend="up"] {
+    color: green;
+}
+
+.main-price-shift[data-trend="down"] {
+    color: red;
+}
+
+.main-price-shift .price-arrow {
+    float: left;
+    padding-top: 0.6em;
+    padding-right: 5px;
+    text-align: right;
+    width: 50%;
+}
+
+.main-price-shift .price-shift,
+.main-price-shift .price-shift-prc {
+    float: right;
+    padding-left: 5px;
+    text-align: left;
+    width: 50%;
+}
+
+.main-volume .volume-title {
+    color: #999;
+}
+
+.main-price-highlow .price-high-title,
+.main-price-highlow .price-low-title,
+.main-market-avg .market-cur-avg-title,
+.main-market-avg .market-24h-avg-title {
+    color: #999;
+    float: left;
+    padding-right: 5px;
+    text-align: right;
+    width: 50%;
+}
+
+.main-price-highlow .price-high,
+.main-price-highlow .price-low,
+.main-market-avg .market-cur-avg,
+.main-market-avg .market-24h-avg {
+    float: right;
+    padding-left: 5px;
+    text-align: left;
+    width: 50%;
+}
+
 .last-main{
     font-size: 4.3em;
     font-weight: 600;
