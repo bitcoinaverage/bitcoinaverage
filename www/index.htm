@@ -147,12 +147,35 @@
 
     <div class="col-md-12 text-center currency-header">
 
-        <div class="strip active">
-            <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
+        <div class="row strip active">
+            <div class="col-md-4 main-price-shift">
+                <div class="price-arrow"></div>
+                <div class="price-shift"></div>
+                <div class="price-shift-prc"></div>
+            </div>
+            <div class="col-md-4" id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
                 <span id="global-cursym" class="cursym-main"></span>
                 <span id="global-last" class="last-main" itemprop="price">385</span>
                 <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
-            </span>
+            </div>
+            <div class="col-md-4 main-volume">
+                <div class="volume-title">24h global trading volume</div>
+                <div class="volume"></div>
+                <div class="volume-shift"></div>
+                <div class="volume-shift-prc"></div>
+            </div>
+            <div class="col-md-6 main-price-highlow">
+                <div class="price-high-title">high</div>
+                <div class="price-high"></div>
+                <div class="price-low-title">low</div>
+                <div class="price-low"></div>
+            </div>
+            <div class="col-md-6 main-market-avg">
+                <div class="market-cur-avg-title"></div>
+                <div class="market-cur-avg"></div>
+                <div class="market-24h-avg-title">24h sliding average</div>
+                <div class="market-24h-avg"></div>
+            </div>
         </div>
         <div class="row show-grid currency-box col-md-12">
             <ul class="currency-navigation primary-currency-switch col-md-4 col-sm-12 col-xs-12"></ul>

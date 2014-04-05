@@ -248,6 +248,8 @@ ul{
 
 .curcode{font-size: 22px; font-weight: bold; color: #4F4F4F; margin-bottom: 10px; margin-top: 0px; padding-top: 0px !important; }
 
+/* Main block */
+
 .last-main{
     font-size: 4.3em;
     font-weight: 600;
@@ -702,6 +704,7 @@ footer .row{
     background: #f7f7f7;
     border-top: 1px solid #dadada;
     border-bottom: 1px solid #dadada;
+    margin: 0;
 }
 
 /** Sidebar Currency Bar **/
