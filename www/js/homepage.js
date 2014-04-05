@@ -259,14 +259,15 @@ var renderLegend = function(currencyCode){
         }
     });
 
-    var last = currencyData.global_averages.last.toFixed(config.precision);
+    var globalLast = currencyData.global_averages.last.toFixed(config.precision);
 
     if(selectedFiatCurrency == currencyCode){
-        document.title = last + ' ' + currencyCode + ' | BitcoinAverage Price Index';
+        document.title = globalLast + ' ' + currencyCode + ' | BitcoinAverage Price Index';
     }
 
-    $('#global-last').html(last);
-    $('#legend-last').html(last);
+    // Main price
+    $('#global-last').html(globalLast);
+    $('#legend-last').html(globalLast);
 
     $('.legend-curcode').text(currencyCode);
 
@@ -275,17 +276,17 @@ var renderLegend = function(currencyCode){
 
     var bitCoinInputValue = $('#bitcoin-input').toNumber().val();
     calc_renderBitcoin(bitCoinInputValue, $.cookie('base'));
-    calc_renderFiat(last * bitCoinInputValue);
+    calc_renderFiat(globalLast * bitCoinInputValue);
 
     $('#legend-bid').html(currencyData.global_averages.bid.toFixed(config.precision));
     $('#legend-ask').html(currencyData.global_averages.ask.toFixed(config.precision));
 
+    // 24h sliding average
     if (typeof currencyData.global_averages['24h_avg'] != 'undefined') {
         var g24hAverage = currencyData.global_averages['24h_avg'].toFixed(config.precision);
         $('.main-market-avg .market-24h-avg').text(g24hAverage).formatCurrency({
             symbol: getCurrencySymbol(currencyCode),
             positiveFormat: '%s%n ' + currencyCode,
-            negativeFormat: '- %s%n ' + currencyCode,
             roundToDecimalPlace: config.precision
         });
         $('#legend-24h-avg').html(g24hAverage);
@@ -294,6 +295,14 @@ var renderLegend = function(currencyCode){
         $('#legend-24h-avg-container').hide();
     }
 
+    // Market average
+    var marketAverage = currencyData.averages.last;
+    $('.main-market-avg .market-cur-avg-title').text(currencyCode + ' market average');
+    $('.main-market-avg .market-cur-avg').text(marketAverage).formatCurrency({
+        symbol: getCurrencySymbol(currencyCode),
+        positiveFormat: '%s%n ' + currencyCode,
+        roundToDecimalPlace: config.precision
+    });
 
     if ($(API_data.ignored_exchanges).countObj() == 0) {
         $('#show-ignored').hide();
