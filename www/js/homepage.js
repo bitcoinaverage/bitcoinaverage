@@ -382,10 +382,10 @@ var renderSmallChart = function(currencyCode){
         $('.main-price-shift .price-shift').text(priceShift).formatCurrency({
             symbol: getCurrencySymbol(currencyCode),
             positiveFormat: '%s%n ' + currencyCode,
-            negativeFormat: '- %s%n ' + currencyCode,
+            negativeFormat: '%s%n ' + currencyCode,
             roundToDecimalPlace: config.precision
         });
-        $('.main-price-shift .price-shift-prc').text(priceShiftPercentage.toFixed(2) + '%');
+        $('.main-price-shift .price-shift-prc').text(Math.abs(priceShiftPercentage).toFixed(2) + '%');
 
         var prices = $.map(data, function (e, i) { return e[1]; });
         $('.main-price-highlow .price-high')
