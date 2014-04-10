@@ -223,13 +223,6 @@ var renderMarketsData = function(apiData, currency){
         positiveFormat: '%s %n',
         roundToDecimalPlace: 2
     });
-    $('#legend-global-trading-volume').text(allVolumeBtc)
-        .formatCurrency({   symbol: 'USD',
-                            colorize: true,
-                            positiveFormat: '%n',
-                            negativeFormat: '-%s%n',
-                            roundToDecimalPlace: 2
-                            });
 };
 
 
