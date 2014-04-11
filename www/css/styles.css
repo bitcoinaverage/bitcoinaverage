@@ -255,6 +255,11 @@ ul{
     padding: 1.5em 0;
 }
 
+.main-price-shift .price-shift-title,
+.main-volume .volume-title {
+    color: #999;
+}
+
 .main-price-shift[data-trend="up"] {
     color: green;
 }
@@ -263,24 +268,11 @@ ul{
     color: red;
 }
 
-.main-price-shift .price-arrow {
-    float: left;
-    padding-top: 0.6em;
-    padding-right: 5px;
-    text-align: right;
-    width: 50%;
-}
-
+.main-price-shift .price-arrow,
 .main-price-shift .price-shift,
 .main-price-shift .price-shift-prc {
-    float: right;
-    padding-left: 5px;
-    text-align: left;
-    width: 50%;
-}
-
-.main-volume .volume-title {
-    color: #999;
+    display: inline-block;
+    margin-right: 10px;
 }
 
 .main-price-highlow .price-high-title,

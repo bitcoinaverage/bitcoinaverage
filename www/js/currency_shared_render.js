@@ -106,7 +106,9 @@ var currencyNavigationClick = function(event){
 
     var curCode = $(this).data('currencycode');
     selectedFiatCurrency = curCode;
-    if(isCurrencyBelongsToPrimaryList(curCode)){
+    
+    if (isCurrencyBelongsToPrimaryList(curCode)) {
+        apiDataUpdated = true;
         $('.highcharts-container').show();
         renderLegend(curCode);
         renderSmallChart(curCode);
