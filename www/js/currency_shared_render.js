@@ -274,6 +274,7 @@ var renderLegendForExtendedCurrencyList = function(currencyCode){
 
         $('#legend-curcode').text(currencyCode);
         $('.curcode-main').text(currencyCode);
+        $('.cursym-main').text(getCurrencySymbol(currencyCode));
 
     });
 
@@ -305,3 +306,14 @@ var calc_renderBitcoin = function(btc_value, base){
             roundToDecimalPlace: precision
         });
 };
+
+function getCurrencySymbol(curCode) {
+    var symbol = '';
+    var codes = config.currencySymbols[curCode];
+    if (codes) {
+        for (var i = 0; i < codes.length; i++) {
+            symbol += String.fromCharCode(parseInt(codes[i], 16));
+        }
+    }
+    return symbol;
+}

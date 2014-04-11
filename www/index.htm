@@ -134,23 +134,48 @@
 
 <div id="main-container" class="container">
 
-    <div class="indent">
-        <div class="market-page-description text-left">
+    <div class="row indent">
+        <div class="col-md-6 market-page-description text-left">
             <span class="base">millibitcoin</span> to <span class="full-currency-name legend-currency-code-update">
             United States Dollar</span>, <a href="explain.htm">bitcoin average price index</a>
+        </div>
+        <div class="col-md-6 base-button-wrapper text-right">
+            <button type="button" class="btn btn-default btn-xs" id="nomillibit-button">switch to &#3647;1 base</button>
         </div>
     </div>
 
 
     <div class="col-md-12 text-center currency-header">
 
-        <div class="strip active">
-            <span id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
-                <span id="global-last" class="last-main" itemprop="price">385</span><span class="price-gap">&nbsp;</span>
-                <span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
-            </span>
-            <br/>
-            <button type="button" class="btn btn-default btn-xs ignore_btn" id="nomillibit-button">switch to &#3647;1 base</button>
+        <div class="row strip active">
+            <div class="col-md-4 main-price-shift">
+                <div class="price-arrow"></div>
+                <div class="price-shift"></div>
+                <div class="price-shift-prc"></div>
+            </div>
+            <div class="col-md-4" id="global-box" itemscope itemtype="http://schema.org/PriceSpecification">
+                <span id="global-cursym" class="cursym-main"></span><!--
+                --><span id="global-last" class="last-main" itemprop="price">385</span><!--
+                --><span id="global-curcode" class="curcode-main" itemprop="priceCurrency">USD</span>
+            </div>
+            <div class="col-md-4 main-volume">
+                <div class="volume-title">24h global trading volume</div>
+                <div class="volume"></div>
+                <div class="volume-shift"></div>
+                <div class="volume-shift-prc"></div>
+            </div>
+            <div class="col-md-6 main-price-highlow">
+                <div class="price-high-title">high</div>
+                <div class="price-high"></div>
+                <div class="price-low-title">low</div>
+                <div class="price-low"></div>
+            </div>
+            <div class="col-md-6 main-market-avg">
+                <div class="market-cur-avg-title"></div>
+                <div class="market-cur-avg"></div>
+                <div class="market-24h-avg-title">24h sliding average</div>
+                <div class="market-24h-avg"></div>
+            </div>
         </div>
         <div class="row show-grid currency-box col-md-12">
             <ul class="currency-navigation primary-currency-switch col-md-4 col-sm-12 col-xs-12"></ul>
