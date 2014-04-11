@@ -174,9 +174,9 @@ var changeBaseButtonClick = function(event){
 
     callAPI(function(result){
         renderAll(result);
-
         var isPrimaryCurrency = isCurrencyBelongsToPrimaryList(selectedFiatCurrency);
-        if(isPrimaryCurrency){
+        if (isPrimaryCurrency) {
+            apiDataUpdated = true;
             renderLegend(selectedFiatCurrency);
             renderSmallChart(selectedFiatCurrency);
         } else {
