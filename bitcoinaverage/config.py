@@ -295,6 +295,13 @@ EXCHANGE_LIST = {
                                    'display_name': 'BTC38',
                                     },
 
+                    'cointrader':  {'bid_url': 'https://www.cointrader.net/api/stats/high/USD',
+                                    'ask_url': 'https://www.cointrader.net/api/stats/low/USD',
+                                    'volume_url': 'https://www.cointrader.net/api/stats/market',
+                                    'URL': 'https://www.cointrader.net/',
+                                    'display_name': 'Cointrader'
+                                    },
+
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
                                                             },
