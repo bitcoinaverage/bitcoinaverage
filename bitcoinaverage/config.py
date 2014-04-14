@@ -432,9 +432,14 @@ EXCHANGE_LIST = {
                 }
 
 API_USERS = [
-     #{
-     #     'name': 'name',
-     #     'image': 'http://example.com/image.jpg',
-     #     'href': 'http://example.com'
-     #},
+     {
+          'name': 'Bitcoin Wallet',
+          'image': 'https://lh4.ggpht.com/mkAOtT2IYdrrFPql95BqirLG1dtApT5Z8eEq5Q4clQHvZTBVZCb5FKPARyH7cFAvkA=w300',
+          'href': 'https://play.google.com/store/apps/details?id=de.schildbach.wallet'
+     },
+     {
+          'name': 'Mycelium',
+          'image': 'https://lh5.ggpht.com/9pS6MKseKSl06PwreFjZ4RnVuf0wCy_pBk00ZpHWXKNzY4N0otRm6OFMXjiCCpPJDGHq=w300',
+          'href': 'https://play.google.com/store/apps/details?id=com.mycelium.wallet'
+     },
 ]
