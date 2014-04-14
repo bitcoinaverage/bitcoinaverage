@@ -1111,7 +1111,7 @@ def _btc38ApiCall(ticker_url, *args, **kwargs):
     return result
 
 
-def _cointraderApiCall(bid_url, ask_url, volume_url, *args, **kwargs):
+def _cointraderApiCall(bid_url, ask_url, last_url, volume_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=bid_url, headers=API_REQUEST_HEADERS)).read()
         bid = json.loads(response)
@@ -1124,9 +1124,15 @@ def _cointraderApiCall(bid_url, ask_url, volume_url, *args, **kwargs):
         response = urllib2.urlopen(urllib2.Request(url=volume_url, headers=API_REQUEST_HEADERS)).read()
         volume = json.loads(response)
 
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=last_url, headers=API_REQUEST_HEADERS)).read()
+        last = json.loads(response)
+
+
     result = {}
     result['USD'] = {'ask': Decimal(ask['data']['price']).quantize(DEC_PLACES),
                      'bid': Decimal(bid['data']['price']).quantize(DEC_PLACES),
+                     'last': Decimal(last['data'][0]['price']).quantize(DEC_PLACES),
                      'volume': Decimal(volume['data'][0]['volume']).quantize(DEC_PLACES),
                      }
 

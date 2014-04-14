@@ -297,6 +297,7 @@ EXCHANGE_LIST = {
 
                     'cointrader':  {'bid_url': 'https://www.cointrader.net/api/stats/high/USD',
                                     'ask_url': 'https://www.cointrader.net/api/stats/low/USD',
+                                    'last_url': 'https://www.cointrader.net/api/stats/trades/1',
                                     'volume_url': 'https://www.cointrader.net/api/stats/market',
                                     'URL': 'https://www.cointrader.net/',
                                     'display_name': 'Cointrader'
