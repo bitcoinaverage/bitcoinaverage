@@ -1117,11 +1117,11 @@ def _cointraderApiCall(bid_url, ask_url, volume_url, *args, **kwargs):
         bid = json.loads(response)
 
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=bid_url, headers=API_REQUEST_HEADERS)).read()
+        response = urllib2.urlopen(urllib2.Request(url=ask_url, headers=API_REQUEST_HEADERS)).read()
         ask = json.loads(response)
 
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
-        response = urllib2.urlopen(urllib2.Request(url=bid_url, headers=API_REQUEST_HEADERS)).read()
+        response = urllib2.urlopen(urllib2.Request(url=volume_url, headers=API_REQUEST_HEADERS)).read()
         volume = json.loads(response)
 
     result = {}
