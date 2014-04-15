@@ -74,10 +74,10 @@ var renderAll = function(result, status, responseObj){
         }
 
         var baseCookie = $.cookie('base');
-        if(baseCookie == 'bitcoin'){
-            $('#nomillibit-button').click();
-        } else if(baseCookie == null){
-            $.cookie('base', 'millibitcoin', {expires: 365});
+        if (baseCookie == 'millibitcoin') {
+            $('#base-switch-button').click();
+        } else {
+            $.cookie('base', 'bitcoin', {expires: 365});
         }
 
         $('body').show();
@@ -502,7 +502,7 @@ $(function(){
         }
     });
 
-    $('#nomillibit-button').click(changeBaseButtonClick);
+    $('#base-switch-button').on('click', changeBaseButtonClick);
 
     // currency navigation (primary currency, secondary currency, currency tabs on markets page
     $(document).on('click', '.currency-navigation li', currencyNavigationClick );
