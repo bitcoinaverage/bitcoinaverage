@@ -126,9 +126,9 @@ var currencyNavigationClick = function(event){
 
     var currentHash = window.location.hash;
     var currentLocation = document.location.href;
-    var newLocation = currentLocation.replace(currentHash, '')+'#'+curCode;
-    if (config.scaleDivizer == 1){
-        newLocation = newLocation + '-nomillibit';
+    var newLocation = currentLocation.replace(currentHash, '') + '#' + curCode;
+    if (config.scaleDivizer === 1000){
+        newLocation = newLocation + '-millibit';
     }
     window.location.replace(newLocation);
 };
@@ -147,7 +147,7 @@ var changeBaseButtonClick = function(event){
 
         var currentHash = window.location.hash;
         var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(currentHash, '') + '#' + selectedFiatCurrency + '-nomillibit';
+        var newLocation = currentLocation.replace(currentHash, '') + '#' + selectedFiatCurrency;
         window.location.replace(newLocation);
 
         $('.bitcoin-label').text('฿');
@@ -163,7 +163,7 @@ var changeBaseButtonClick = function(event){
 
         var currentHash = window.location.hash;
         var currentLocation = document.location.href;
-        var newLocation = currentLocation.replace(currentHash, '') + '#' + selectedFiatCurrency;
+        var newLocation = currentLocation.replace(currentHash, '') + '#' + selectedFiatCurrency + '-millibit';
         window.location.replace(newLocation);
 
         $('.bitcoin-label').text('m฿');

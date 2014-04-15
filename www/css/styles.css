@@ -1010,7 +1010,7 @@ footer .row{
     padding: 19px 0 13px;
 }
 
-#nomillibit-button {
+#base-switch-button {
     line-height: 20px;
     width: 130px;
     white-space: normal;
@@ -1020,7 +1020,7 @@ footer .row{
     .base-button-wrapper {
         padding: 0;
     }
-    #nomillibit-button {
+    #base-switch-button {
         width: 100%;
     }
 }
