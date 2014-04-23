@@ -58,7 +58,7 @@ CURRENCY_LIST = ('USD',
                  'GBP',
                  'CAD',
                  'PLN',
-                 'JPY',
+                 #'JPY',
                  'RUB',
                  'AUD',
                  'SEK',
@@ -72,6 +72,7 @@ CURRENCY_LIST = ('USD',
                  'TRY',
                  'HKD',
                  'RON',
+                 'MXN',
 
                  # 'CZK',
                  # 'DKK',
@@ -86,7 +87,7 @@ FRONTEND_CURRENCY_SYMBOLS = {
         'GBP': ['00a3'],
         'CAD': ['0024'],
         'PLN': ['007a', '0142'],
-        'JPY': ['00a5'],
+        #'JPY': ['00a5'],
         'RUB': [],
         'AUD': ['0024'],
         'SEK': ['006b', '0072'],
@@ -100,6 +101,7 @@ FRONTEND_CURRENCY_SYMBOLS = {
         'TRY': [],
         'HKD': ['0024'],
         'RON': [],
+        'MXN': [],
         }
 
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
@@ -308,6 +310,10 @@ EXCHANGE_LIST = {
                                    'URL': 'https://www.btcxchange.ro/',
                                    'display_name': 'BTCXchange',
                                     },
+                    'bitso': {'ticker_url': 'https://api.bitso.com/public/info',
+                              'URL': 'https://bitso.com/',
+                              'display_name': 'bitso',
+                              },
 
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',

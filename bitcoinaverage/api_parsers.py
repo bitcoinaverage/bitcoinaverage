@@ -1150,3 +1150,16 @@ def _btcxchangeApiCall(ticker_url, *args, **kwards):
                      'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
                      }
     return result
+
+def _bitsoApiCall(ticker_url, *args, **kwards):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['MXN'] = {'ask': Decimal(ticker['btc_mxn']['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['btc_mxn']['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['btc_mxn']['rate']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['btc_mxn']['volume']).quantize(DEC_PLACES),
+                     }
+    return result
