@@ -71,6 +71,7 @@ CURRENCY_LIST = ('USD',
                  'CHF',
                  'TRY',
                  'HKD',
+                 'RON',
 
                  # 'CZK',
                  # 'DKK',
@@ -98,6 +99,7 @@ FRONTEND_CURRENCY_SYMBOLS = {
         'CHF': [],
         'TRY': [],
         'HKD': ['0024'],
+        'RON': [],
         }
 
 BITCOIN_CHARTS_API_URL = 'https://api.bitcoincharts.com/v1/markets.json'
