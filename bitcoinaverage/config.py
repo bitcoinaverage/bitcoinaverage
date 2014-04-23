@@ -305,6 +305,8 @@ EXCHANGE_LIST = {
                                     'display_name': 'Cointrader'
                                     },
                     'btcxchange': {'ticker_url': 'https://api.btcxchange.ro/ticker',
+                                   'URL': 'https://www.btcxchange.ro/',
+                                   'display_name': 'BTCXchange',
                                     },
 
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
