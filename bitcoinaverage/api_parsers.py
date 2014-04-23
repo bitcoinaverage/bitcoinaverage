@@ -1135,5 +1135,18 @@ def _cointraderApiCall(bid_url, ask_url, last_url, volume_url, *args, **kwargs):
                      'last': Decimal(last['data'][0]['price']).quantize(DEC_PLACES),
                      'volume': Decimal(volume['data'][0]['volume']).quantize(DEC_PLACES),
                      }
+    return result
 
+
+def _btcxchangeApiCall(ticker_url, *args, **kwards):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['RON'] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['volume']).quantize(DEC_PLACES),
+                     }
     return result

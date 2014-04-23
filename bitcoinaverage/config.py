@@ -302,6 +302,8 @@ EXCHANGE_LIST = {
                                     'URL': 'https://www.cointrader.net/',
                                     'display_name': 'Cointrader'
                                     },
+                    'btcxchange': {'ticker_url': 'https://api.btcxchange.ro/ticker',
+                                    },
 
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
