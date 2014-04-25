@@ -39,8 +39,9 @@ while True:
     try:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
         fiat_data_all = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
-    except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError):
-        time.sleep(2)
+    except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError), err:
+        write_log("can not get API data: {0}".format(str(err)), "ERROR")
+        time.sleep(10)
         continue
 
     current_data_datetime = current_data_all['timestamp']
