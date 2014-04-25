@@ -456,7 +456,7 @@ API_USERS = [
      },
     {
             'name': 'Hive Wallet',
-            'image': 'https://www.hivewallet.com/images/logo.png',
+            'image': 'https://bitcoinaverage.com/img/hive.png',
             'href': 'https://www.hivewallet.com',
     },
     {
