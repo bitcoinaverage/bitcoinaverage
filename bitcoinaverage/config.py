@@ -454,4 +454,19 @@ API_USERS = [
           'image': 'https://lh5.ggpht.com/9pS6MKseKSl06PwreFjZ4RnVuf0wCy_pBk00ZpHWXKNzY4N0otRm6OFMXjiCCpPJDGHq=w300',
           'href': 'https://play.google.com/store/apps/details?id=com.mycelium.wallet'
      },
+    {
+            'name': 'Hive Wallet',
+            'image': 'https://www.hivewallet.com/images/logo.png',
+            'href': 'https://www.hivewallet.com',
+    },
+    {
+            'name': 'GreenAddress',
+            'image': 'https://greenaddress.it/static/img/logos/logo-greenaddress.png',
+            'href': 'https://greenaddress.it',
+    },
+    {
+            'name': 'Kitco',
+            'image': 'https://bitcoinaverage.com/img/kitco.jpg',
+            'href': 'http://www.kitco.com/finance/bitcoin/',
+    },
 ]
