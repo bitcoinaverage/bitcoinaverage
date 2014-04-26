@@ -408,7 +408,7 @@ var renderSmallChart = function(currencyCode){
                         window.location.href = 'charts.htm#'+currencyCode;
                     }
                 },
-                spacingBottom: 0,
+                spacingBottom: 5,
                 spacingLeft: 0,
                 spacingRight: 0,
                 spacingTop: 0
