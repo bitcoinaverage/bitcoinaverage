@@ -561,7 +561,8 @@ $(function(){
             }));
             banner.append($('<a/>', {
                 href: entry.href,
-                title: entry.name
+                title: entry.name,
+                target: "_blank",
             }).html(entry.name));
             $('.ba-ads-left').append(banner);
         });
