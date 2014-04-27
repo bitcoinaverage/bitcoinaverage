@@ -1381,9 +1381,17 @@ footer .row{
     text-align: right;
 }
 
+.ba-ads-middle {
+    display: none;
+    text-align: center;
+}
+
 @media (max-width: 1500px) {
     .ba-ads-left,
     .ba-ads-right {
         display: none;
+    }
+    .ba-ads-middle {
+        display: block;
     }
 }
