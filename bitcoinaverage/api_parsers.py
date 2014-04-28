@@ -1138,7 +1138,7 @@ def _cointraderApiCall(bid_url, ask_url, last_url, volume_url, *args, **kwargs):
     return result
 
 
-def _btcxchangeApiCall(ticker_url, *args, **kwards):
+def _btcxchangeApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
@@ -1151,7 +1151,7 @@ def _btcxchangeApiCall(ticker_url, *args, **kwards):
                      }
     return result
 
-def _bitsoApiCall(ticker_url, *args, **kwards):
+def _bitsoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
@@ -1163,3 +1163,11 @@ def _bitsoApiCall(ticker_url, *args, **kwards):
                      'volume': Decimal(ticker['btc_mxn']['volume']).quantize(DEC_PLACES),
                      }
     return result
+
+def _coinfloorApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlppen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+        result = {}
+        result['GBP'] = {'ask': Decimal(ticker[0])}
