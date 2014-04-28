@@ -77,7 +77,6 @@ while True:
 
 
     if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
-        helpers.write_html_currency_pages()
         helpers.write_sitemap()
         last_fiat_exchange_rate_update = int(time.time())
 
