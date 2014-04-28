@@ -207,10 +207,6 @@ EXCHANGE_LIST = {
                                      'URL': 'https://bittylicious.com/',
                                      'display_name': 'Bittylicious',
                                      },
-                    'bitxf': {'ticker_url': 'https://bitxf.com/api/v0/CNY/ticker.json',
-                              'URL': 'https://bitxf.com/',
-                              'display_name': 'BitXF',
-                                 },
                     'cavirtex': {'ticker_url': 'https://www.cavirtex.com/api/CAD/ticker.json',
                                  'orderbook_url': 'https://www.cavirtex.com/api/CAD/orderbook.json',
                                  'display_name': 'VirtEx',
@@ -362,6 +358,12 @@ EXCHANGE_LIST = {
                                   'ignored': True,
                                   'ignore_reason': 'volume data not published',
                                   },
+                    #'bitxf': {'ticker_url': 'https://bitxf.com/api/v0/CNY/ticker.json',
+                    #          'URL': 'https://bitxf.com/',
+                    #          'display_name': 'BitXF',
+                    #          'ignored': True,
+                    #          'ignore_reason': 'unavailable'
+                    #            },
 
                     ### not integrated
                     # CNY - btc100.org
