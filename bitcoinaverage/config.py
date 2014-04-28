@@ -314,6 +314,10 @@ EXCHANGE_LIST = {
                               'URL': 'https://bitso.com/',
                               'display_name': 'bitso',
                               },
+                    'coinfloor': {'ticker_url': 'https://webapi.coinfloor.co.uk:8443/XBT/GBP/ticker',
+                                  'URL': 'https://coinfloor.co.uk/',
+                                  'display_name': 'coinfloor',
+                                  },
 
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
                     'btceur': {'bitcoincharts_symbols': {'EUR': 'btceurEUR',
