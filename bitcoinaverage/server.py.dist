@@ -1,3 +1,5 @@
+# Default paths set in __init__.py
+
 API_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api used
 HISTORY_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/api/history used
 WWW_DOCUMENT_ROOT = ''  # if empty - <main.py folder>/www used

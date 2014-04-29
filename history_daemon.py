@@ -2,10 +2,6 @@
 import os
 import sys
 
-include_path = os.path.abspath(os.path.join(__file__, os.pardir))
-sys.path.insert(0, include_path)
-
-
 import time
 import requests
 import simplejson
@@ -18,13 +14,6 @@ from bitcoinaverage.config import HISTORY_QUERY_FREQUENCY, CURRENCY_LIST
 from bitcoinaverage.helpers import write_log
 from bitcoinaverage import history_writers
 
-
-if ba.server.PROJECT_PATH == '':
-    ba.server.PROJECT_PATH = include_path
-if ba.server.LOG_PATH == '':
-    ba.server.LOG_PATH = os.path.join(ba.server.PROJECT_PATH, 'runtime', 'app.log')
-if ba.server.HISTORY_DOCUMENT_ROOT == '':
-    ba.server.HISTORY_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'api', 'history')
 
 write_log('script started', 'LOG')
 
