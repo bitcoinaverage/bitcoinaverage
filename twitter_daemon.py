@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import time
-import logging.config
+import logging
 
 import twitter
 import simplejson
@@ -9,7 +9,6 @@ import requests
 
 from bitcoinaverage.twitter_config import api
 
-logging.config.fileConfig("logging.ini", disable_existing_loggers=False)
 logger = logging.getLogger("twitter_daemon")
 
 URL = "https://api.bitcoinaverage.com/ticker/global/USD"

@@ -3,6 +3,7 @@ import os
 import sys
 import time
 from email import utils
+import logging
 
 import redis
 import simplejson as json
@@ -14,7 +15,9 @@ from bitcoinaverage.config import API_WRITE_FREQUENCY, FIAT_RATES_QUERY_FREQUENC
 import bitcoinaverage.helpers as helpers
 from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, calculateAllGlobalAverages
 
-helpers.write_log('script started', 'LOG')
+logger = logging.getLogger("api_daemon")
+
+logger.info("script started")
 helpers.write_js_config()
 helpers.write_fiat_rates_config()
 last_fiat_exchange_rate_update = time.time()
@@ -78,9 +81,9 @@ while True:
 
     cycle_time = int(time.time()) - start_time
     sleep_time = max(0, API_WRITE_FREQUENCY - cycle_time)
-    helpers.write_log("{timestamp}, spent {spent}s, sleeping {sleep}s - api daemon".format(
+    logger.info("{timestamp}, spent {spent}s, sleeping {sleep}s - api daemon".format(
         timestamp=human_timestamp,
         spent=cycle_time,
-        sleep=str(sleep_time)), "LOG")
+        sleep=str(sleep_time)))
 
     time.sleep(sleep_time)
