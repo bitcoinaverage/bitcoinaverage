@@ -8,14 +8,14 @@ import simplejson
 import json
 import datetime
 import email
+import logging
 
 import bitcoinaverage as ba
 from bitcoinaverage.config import HISTORY_QUERY_FREQUENCY, CURRENCY_LIST
-from bitcoinaverage.helpers import write_log
 from bitcoinaverage import history_writers
 
-
-write_log('script started', 'LOG')
+logger = logging.getLogger("history_daemon")
+logger.info("script started")
 
 
 for currency_code in CURRENCY_LIST:
@@ -29,7 +29,7 @@ while True:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
         fiat_data_all = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
     except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError), err:
-        write_log("can not get API data: {0}".format(str(err)), "ERROR")
+        logger.error("can not get API data: {0}".format(str(err)))
         time.sleep(10)
         continue
 
@@ -55,7 +55,7 @@ while True:
     sleep_time = HISTORY_QUERY_FREQUENCY - (current_time % HISTORY_QUERY_FREQUENCY)
     sleep_time = min(HISTORY_QUERY_FREQUENCY, sleep_time)
 
-    write_log("{0}, sleeping {1}s - history daemon".format(timestamp, str(sleep_time)), "LOG")
+    logger.info("{0}, sleeping {1}s - history daemon".format(timestamp, str(sleep_time)))
 
     time.sleep(sleep_time)
 

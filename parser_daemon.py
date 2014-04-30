@@ -8,10 +8,6 @@ import simplejson as json
 from bitcoinaverage import api_parsers
 from bitcoinaverage.config import API_QUERY_FREQUENCY
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(name)s [%(levelname)s] :: %(message)s",
-    handlers=[logging.StreamHandler()])
 logger = logging.getLogger("parser_daemon")
 
 logger.info("started API parser daemon")
