@@ -443,6 +443,5 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
 
     except IOError as error:
         error_text = '%s, %s ' % (sys.exc_info()[0], error)
-        helpers.write_log(error_text)
-        print 'ERROR: %s ' % (error_text)
+        helpers.write_log(error_text, "ERROR")
         raise error

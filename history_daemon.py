@@ -55,7 +55,7 @@ while True:
     sleep_time = HISTORY_QUERY_FREQUENCY - (current_time % HISTORY_QUERY_FREQUENCY)
     sleep_time = min(HISTORY_QUERY_FREQUENCY, sleep_time)
 
-    print '%s, sleeping %ss - history daemon' % (timestamp, str(sleep_time))
+    write_log("{0}, sleeping {1}s - history daemon".format(timestamp, str(sleep_time)), "LOG")
 
     time.sleep(sleep_time)
 

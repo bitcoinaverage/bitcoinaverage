@@ -124,12 +124,12 @@ def callAPI(exchange_name):
                     # Retrieve data from cache
                     result = API_QUERY_CACHE[exchange_name]['result']
                     result['data_source'] = 'cache'
-                    write_log('%s call failed, %s, %s fails in a row, using cache, cache age %ss'
-                              % (exchange_name,
-                                 type(error).__name__,
-                                 str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                 str(current_timestamp - API_QUERY_CACHE[exchange_name]['last_successful_call']) ),
-                              'WARNING')
+                    log_message = "{0} call failed, {1}, {2} fails in a row, using cache, cache age {3}s".format(
+                        exchange_name,
+                        type(error).__name__,
+                        str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']))
+                    write_log(log_message, 'WARNING')
                 else:
                     # Ignore
                     last_successful_call = API_QUERY_CACHE[exchange_name]['last_successful_call']
@@ -138,12 +138,11 @@ def callAPI(exchange_name):
                     else:
                         last_successful_call_strdate = email.utils.formatdate(last_successful_call)
 
-                    log_message = ('%s call failed, %s, %s fails in a row, last successful call - %s, cache timeout, exchange ignored'
-                                   % (exchange_name,
-                                      type(error).__name__,
-                                      str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                      last_successful_call_strdate,
-                                        ))
+                    log_message = "{0} call failed, {1}, {2} fails in a row, last successful call - {3}, cache timeout, exchange ignored".format(
+                        exchange_name,
+                        type(error).__name__,
+                        str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                        last_call_strdate)
                     write_log(log_message, 'ERROR')
 
                     last_successful_call_datetime = datetime.datetime.fromtimestamp(last_successful_call)
@@ -204,8 +203,7 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
             if trade['date'] > last_24h_timestamp:
                 volume = volume + Decimal(trade['amount'])
         except TypeError as error:
-            print 'CampBX error'
-            print trade
+            write_log("CampBX error: {0}".format(trade), "ERROR")
             raise error
 
     result = {}

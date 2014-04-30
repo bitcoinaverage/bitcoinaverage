@@ -78,8 +78,9 @@ while True:
 
     cycle_time = int(time.time()) - start_time
     sleep_time = max(0, API_WRITE_FREQUENCY - cycle_time)
-    print '{timestamp}, spent {spent}s, sleeping {sleep}s - api daemon'.format(timestamp=human_timestamp,
-                                                                               spent=cycle_time,
-                                                                               sleep=str(sleep_time))
+    helpers.write_log("{timestamp}, spent {spent}s, sleeping {sleep}s - api daemon".format(
+        timestamp=human_timestamp,
+        spent=cycle_time,
+        sleep=str(sleep_time)), "LOG")
 
     time.sleep(sleep_time)
