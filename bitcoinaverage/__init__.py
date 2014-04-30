@@ -37,13 +37,13 @@ log_config = {
         'file': {
             'class': 'logging.FileHandler',
             'filename': server.LOG_PATH,
-            'level': 'WARNING',
+            'level': 'INFO',
             'formatter': 'nice',
         },
     },
     'root': {
         'handlers': ['console', 'file'],
-        'level': 'INFO',
+        'level': 'DEBUG',
     },
 }
 logging.config.dictConfig(log_config)
