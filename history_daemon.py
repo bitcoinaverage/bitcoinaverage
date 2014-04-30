@@ -29,7 +29,7 @@ while True:
         current_data_all = requests.get(ticker_url, headers=ba.config.API_REQUEST_HEADERS).json()
         fiat_data_all = requests.get(fiat_data_url, headers=ba.config.API_REQUEST_HEADERS).json()
     except (simplejson.decoder.JSONDecodeError, requests.exceptions.ConnectionError), err:
-        logger.error("can not get API data: {0}".format(str(err)))
+        logger.warning("can not get API data: {0}".format(str(err)))
         time.sleep(10)
         continue
 
@@ -47,8 +47,8 @@ while True:
 
             history_writers.write_24h_global_average_csv(fiat_data_all, current_data_all,  currency_code, current_data_timestamp)
             history_writers.write_24h_global_average_short_csv(current_data_all,  currency_code, current_data_timestamp)
-        except KeyError:
-            pass
+        except KeyError, err:
+            logger.warning(str(err))
 
     current_time = time.time()
     timestamp = email.utils.formatdate(current_time)
