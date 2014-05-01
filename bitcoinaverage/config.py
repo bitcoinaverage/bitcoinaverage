@@ -309,7 +309,7 @@ EXCHANGE_LIST = {
                               },
                     'coinfloor': {'ticker_url': 'https://webapi.coinfloor.co.uk:8443/XBT/GBP/ticker',
                                   'URL': 'https://coinfloor.co.uk/',
-                                  'display_name': 'coinfloor',
+                                  'display_name': 'Coinfloor',
                                   },
 
 #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
