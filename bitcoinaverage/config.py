@@ -295,10 +295,7 @@ EXCHANGE_LIST = {
                                    'display_name': 'BTC38',
                                     },
 
-                    'cointrader':  {'bid_url': 'https://www.cointrader.net/api/stats/high/USD',
-                                    'ask_url': 'https://www.cointrader.net/api/stats/low/USD',
-                                    'last_url': 'https://www.cointrader.net/api/stats/trades/1',
-                                    'volume_url': 'https://www.cointrader.net/api/stats/market',
+                    'cointrader':  {'ticker_url': 'https://www.cointrader.net/api/stats/daily',
                                     'URL': 'https://www.cointrader.net/',
                                     'display_name': 'Cointrader'
                                     },
