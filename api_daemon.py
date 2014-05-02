@@ -10,7 +10,7 @@ import simplejson as json
 import bitcoinaverage as ba
 import bitcoinaverage.server
 from bitcoinaverage import api_custom_writers
-from bitcoinaverage.config import API_QUERY_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
+from bitcoinaverage.config import API_WRITE_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
 from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, calculateAllGlobalAverages
 
@@ -29,7 +29,7 @@ while True:
     start_time = int(time.time())
 
     if not red.exists("ba:exchanges"):
-        time.sleep(API_QUERY_FREQUENCY['default'])
+        time.sleep(API_WRITE_FREQUENCY)
         continue
     exchanges_rates = []
     exchanges_ignored = {}
@@ -76,8 +76,8 @@ while True:
         helpers.write_sitemap()
         last_fiat_exchange_rate_update = int(time.time())
 
-    cycle_time = int(time.time())-start_time
-    sleep_time = max(0, API_QUERY_FREQUENCY['default']-cycle_time)
+    cycle_time = int(time.time()) - start_time
+    sleep_time = max(0, API_WRITE_FREQUENCY - cycle_time)
     print '{timestamp}, spent {spent}s, sleeping {sleep}s - api daemon'.format(timestamp=human_timestamp,
                                                                                spent=cycle_time,
                                                                                sleep=str(sleep_time))

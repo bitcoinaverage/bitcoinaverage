@@ -50,6 +50,9 @@ if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
 #seconds before a consequently failing API will be put into ignored list (in the mean time data will be taken from cache)
 API_IGNORE_TIMEOUT = 1800
 
+# API daemon write frequency
+API_WRITE_FREQUENCY = 60
+
 DEC_PLACES = Decimal('0.00')
 
 CURRENCY_LIST = ('USD',
