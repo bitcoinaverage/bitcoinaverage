@@ -33,6 +33,6 @@ while True:
                  exchange_ignore_reason)
 
     cycle_time = time.time() - start_time
-    sleep_time = max(0, API_QUERY_FREQUENCY['default'] - cycle_time)
+    sleep_time = max(0, API_QUERY_FREQUENCY['_all'] - cycle_time)
     logger.info("spent {0}, sleeping {1}".format(cycle_time, sleep_time))
     time.sleep(sleep_time)

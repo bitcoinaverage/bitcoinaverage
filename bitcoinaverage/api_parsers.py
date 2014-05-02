@@ -68,8 +68,11 @@ def callAPI(exchange_name):
     else:
         try:
             try:
-                if (exchange_name in API_QUERY_FREQUENCY
-                    and API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_QUERY_FREQUENCY[exchange_name] > current_timestamp):
+                exchange_query_frequency = API_QUERY_FREQUENCY.get(
+                    exchange_name,
+                    API_QUERY_FREQUENCY['_default'])
+                if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] + exchange_query_frequency > current_timestamp:
+                    # Retrieve data from cache
                     result = API_QUERY_CACHE[exchange_name]['result']
                 else:
                     if '_{exchange_name}ApiCall'.format(exchange_name=exchange_name) in globals():

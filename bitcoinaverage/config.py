@@ -39,13 +39,15 @@ API_CALL_TIMEOUT_THRESHOLD = 15 #seconds before exchange API call timeout. excha
                                 #and total time spent querying one exchange will be threshold * number of calls
 
 #seconds between calls to various exchanges APIs
-API_QUERY_FREQUENCY = { 'default': 60,
-                        'bitcoincharts': 900,
-                        }
-
+API_QUERY_FREQUENCY = {
+    '_all': 10,  # parser daemon cycle duration
+    '_default': 60,
+    'bitcoincharts': 900,
+    'bitstamp': 30,
+}
 
 if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
-    API_QUERY_FREQUENCY['default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE
+    API_QUERY_FREQUENCY['_default'] = bitcoinaverage.server.DEFAULT_API_QUERY_FREQUENCY_OVERRIDE
 
 #seconds before a consequently failing API will be put into ignored list (in the mean time data will be taken from cache)
 API_IGNORE_TIMEOUT = 1800
