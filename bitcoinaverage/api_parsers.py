@@ -19,12 +19,11 @@ from bitcoinaverage.server import BITCOIN_DE_API_KEY
 
 API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
 
-exchanges_rates = []
-exchanges_ignored = {}
-
 
 def callAll():
-    global EXCHANGE_LIST, exchanges_rates, exchanges_ignored
+    """
+    Concurrently collects data from exchanges 
+    """
     pool = eventlet.GreenPool()
 
     exchanges_rates = []
@@ -33,15 +32,6 @@ def callAll():
     for exchange_name, exchange_data, exchange_ignore_reason in pool.imap(callAPI, EXCHANGE_LIST):
         if exchange_ignore_reason is None:
             if exchange_data is not None:
-                exchange_data['exchange_name'] = exchange_name
-                try:
-                    exchange_data['exchange_display_name'] = EXCHANGE_LIST[exchange_name]['display_name']
-                except KeyError:
-                    exchange_data['exchange_display_name'] = exchange_name
-                try:
-                    exchange_data['exchange_display_URL'] = EXCHANGE_LIST[exchange_name]['URL']
-                except KeyError:
-                    pass
                 exchanges_rates.append(exchange_data)
         else:
             exchanges_ignored[exchange_name] = exchange_ignore_reason
@@ -153,6 +143,14 @@ def callAPI(exchange_name):
                     raise exception
         except (NoApiException, NoVolumeException, CacheTimeoutException) as error:
             exchange_ignore_reason = error.strerror
+
+    if result is not None:
+        result['exchange_name'] = exchange_name
+        result['exchange_display_name'] = EXCHANGE_LIST[exchange_name].get('display_name', exchange_name)
+        try:
+            result['exchange_display_URL'] = EXCHANGE_LIST[exchange_name]['URL']
+        except KeyError:
+            pass
 
     return exchange_name, result, exchange_ignore_reason
 
