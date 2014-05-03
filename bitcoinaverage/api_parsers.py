@@ -46,57 +46,64 @@ def callAPI(exchange_name):
     result = None
     exchange_ignore_reason = None
 
-    if exchange_name not in API_QUERY_CACHE:
-        API_QUERY_CACHE[exchange_name] = {
-            'last_call_timestamp': 0,
-            'result': None,
-            'call_fail_count': 0,
-        }
-
     if exchange_config.get('ignored') and 'ignore_reason' in exchange_config:
         exchange_ignore_reason = exchange_config['ignore_reason']
     else:
-        try:
-            try:
-                exchange_query_frequency = API_QUERY_FREQUENCY.get(
-                    exchange_name,
-                    API_QUERY_FREQUENCY['_default'])
-                if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] + exchange_query_frequency > current_timestamp:
-                    # Retrieve data from cache
-                    result = API_QUERY_CACHE[exchange_name]['result']
-                else:
-                    api_parser = globals().get('_{}ApiCall'.format(exchange_name))
-                    if api_parser is not None:
-                        try:
-                            result = api_parser(**exchange_config)
-                            result['data_source'] = 'api'
-                        except (
-                                KeyError,
-                                TypeError,
-                                ValueError,
-                                DivisionByZero,
-                                simplejson.decoder.JSONDecodeError,
-                                socket.error,
-                                urllib2.URLError,
-                                httplib.BadStatusLine,
-                                httplib.IncompleteRead,
-                                CallTimeoutException) as error:
-                            if 'bitcoincharts_symbols' in exchange_config:
-                                result = getData(exchange_config['bitcoincharts_symbols'])
-                                result['data_source'] = 'bitcoincharts'
-                            else:
-                                raise error
-                    elif 'bitcoincharts_symbols' in exchange_config:
-                        result = getData(exchange_config['bitcoincharts_symbols'])
-                        result['data_source'] = 'bitcoincharts'
-                    else:
-                        raise NoApiException
 
-                    API_QUERY_CACHE[exchange_name] = {
-                        'last_call_timestamp': current_timestamp,
-                        'result': result,
-                        'call_fail_count': 0,
-                    }
+        if exchange_name not in API_QUERY_CACHE:
+            API_QUERY_CACHE[exchange_name] = {
+                'last_call': 0,
+                'last_successful_call': 0,
+                'result': None,
+                'ignore_reason': None,
+                'call_fail_count': 0,
+            }
+
+        exchange_query_frequency = API_QUERY_FREQUENCY.get(
+            exchange_name,
+            API_QUERY_FREQUENCY['_default'])
+        if API_QUERY_CACHE[exchange_name]['last_call'] + exchange_query_frequency > current_timestamp:
+            # Retrieve data from cache
+            result = API_QUERY_CACHE[exchange_name]['result']
+            exchange_ignore_reason = API_QUERY_CACHE[exchange_name]['ignore_reason']
+
+        else:
+            # Call parser
+            try:
+                api_parser = globals().get('_{}ApiCall'.format(exchange_name))
+                if api_parser is not None:
+                    try:
+                        result = api_parser(**exchange_config)
+                        result['data_source'] = 'api'
+                    except (
+                            KeyError,
+                            TypeError,
+                            ValueError,
+                            DivisionByZero,
+                            simplejson.decoder.JSONDecodeError,
+                            socket.error,
+                            urllib2.URLError,
+                            httplib.BadStatusLine,
+                            httplib.IncompleteRead,
+                            CallTimeoutException) as error:
+                        if 'bitcoincharts_symbols' in exchange_config:
+                            result = getData(exchange_config['bitcoincharts_symbols'])
+                            result['data_source'] = 'bitcoincharts'
+                        else:
+                            raise error
+                elif 'bitcoincharts_symbols' in exchange_config:
+                    result = getData(exchange_config['bitcoincharts_symbols'])
+                    result['data_source'] = 'bitcoincharts'
+                else:
+                    raise NoApiException
+                # Update cache
+                API_QUERY_CACHE[exchange_name] = {
+                    'last_call': current_timestamp,
+                    'last_successful_call': current_timestamp,
+                    'result': result,
+                    'ignore_reason': None,
+                    'call_fail_count': 0,
+                }
             except (
                     KeyError,
                     TypeError,
@@ -107,9 +114,11 @@ def callAPI(exchange_name):
                     urllib2.URLError,
                     httplib.IncompleteRead,
                     httplib.BadStatusLine,
-                    CallTimeoutException) as error:
+                    CallTimeoutException,
+                    NoApiException) as error:
+                API_QUERY_CACHE[exchange_name]['last_call'] = current_timestamp
                 API_QUERY_CACHE[exchange_name]['call_fail_count'] = API_QUERY_CACHE[exchange_name]['call_fail_count'] + 1
-                if (API_QUERY_CACHE[exchange_name]['last_call_timestamp'] + API_IGNORE_TIMEOUT > current_timestamp):
+                if (API_QUERY_CACHE[exchange_name]['last_successful_call'] + API_IGNORE_TIMEOUT > current_timestamp):
                     # Retrieve data from cache
                     result = API_QUERY_CACHE[exchange_name]['result']
                     result['data_source'] = 'cache'
@@ -117,36 +126,38 @@ def callAPI(exchange_name):
                               % (exchange_name,
                                  type(error).__name__,
                                  str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                 str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
+                                 str(current_timestamp - API_QUERY_CACHE[exchange_name]['last_successful_call']) ),
                               'WARNING')
                 else:
                     # Ignore
-                    last_call_datetime = datetime.datetime.fromtimestamp(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
-                    today = datetime.datetime.now()
-                    if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] == 0:
-                        datetime_str = today.strftime('%H:%M')
-                        API_QUERY_CACHE[exchange_name]['last_call_timestamp'] = current_timestamp - API_IGNORE_TIMEOUT
-                    elif last_call_datetime.day == today.day and last_call_datetime.month == today.month:
-                        datetime_str = last_call_datetime.strftime('%H:%M')
+                    last_successful_call = API_QUERY_CACHE[exchange_name]['last_successful_call']
+                    if last_successful_call == 0:
+                        last_successful_call_strdate = 'never'
                     else:
-                        datetime_str = last_call_datetime.strftime('%d %b, %H:%M')
-
-                    last_call_strdate = 'never'
-                    if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] != 0:
-                        last_call_strdate = email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
+                        last_successful_call_strdate = email.utils.formatdate(last_successful_call)
 
                     log_message = ('%s call failed, %s, %s fails in a row, last successful call - %s, cache timeout, exchange ignored'
                                    % (exchange_name,
                                       type(error).__name__,
                                       str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                      last_call_strdate,
+                                      last_successful_call_strdate,
                                         ))
                     write_log(log_message, 'ERROR')
-                    exception = CacheTimeoutException()
-                    exception.strerror = exception.strerror % datetime_str
-                    raise exception
-        except (NoApiException, CacheTimeoutException) as error:
-            exchange_ignore_reason = error.strerror
+
+                    last_successful_call_datetime = datetime.datetime.fromtimestamp(last_successful_call)
+                    today = datetime.datetime.now()
+                    if last_successful_call == 0:
+                        last_successful_call_datetime_str = today.strftime('%H:%M')
+                    elif (
+                        last_successful_call_datetime.day == today.day
+                        and last_successful_call_datetime.month == today.month
+                    ):
+                        last_successful_call_datetime_str = last_successful_call_datetime.strftime('%H:%M')
+                    else:
+                        last_successful_call_datetime_str = last_successful_call_datetime.strftime('%d %b, %H:%M')
+                    exchange_ignore_reason = CacheTimeoutException.strerror % last_successful_call_datetime_str
+                    API_QUERY_CACHE[exchange_name]['result'] = None
+                    API_QUERY_CACHE[exchange_name]['ignore_reason'] = exchange_ignore_reason
 
     if result is not None:
         result['exchange_name'] = exchange_name
