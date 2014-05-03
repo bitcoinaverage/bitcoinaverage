@@ -32,9 +32,11 @@ while True:
         time.sleep(API_QUERY_FREQUENCY['default'])
         continue
     exchanges_rates = []
-    for exchange in red.hgetall("ba:exchanges").itervalues():
-        exchanges_rates.append(json.loads(exchange, use_decimal=True))
-    exchanges_ignored = json.loads(red.get("ba:ignored"))
+    exchanges_ignored = {}
+    for exchange_data in red.hgetall("ba:exchanges").itervalues():
+        exchanges_rates.append(json.loads(exchange_data, use_decimal=True))
+    for exchange_name, exchange_ignore_reason in red.hgetall("ba:exchanges_ignored").iteritems():
+        exchanges_ignored[exchange_name] = exchange_ignore_reason
 
     total_currency_volumes, total_currency_volumes_ask, total_currency_volumes_bid = calculateTotalVolumes(exchanges_rates)
     calculated_volumes = calculateRelativeVolumes(exchanges_rates,

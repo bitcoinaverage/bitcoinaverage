@@ -22,11 +22,15 @@ while True:
     start_time = time.time()
 
     exchanges_rates, exchanges_ignored = api_parsers.callAll()
-    for exchange in exchanges_rates:
+    red.delete("ba:exchanges", "ba:exchanges_ignored")
+    for exchange_data in exchanges_rates:
         red.hset("ba:exchanges",
-                 exchange['exchange_name'],
-                 json.dumps(exchange, use_decimal=True))
-    red.set("ba:ignored", json.dumps(exchanges_ignored))
+                 exchange_data['exchange_name'],
+                 json.dumps(exchange_data, use_decimal=True))
+    for exchange_name, exchange_ignore_reason in exchanges_ignored.iteritems():
+        red.hset("ba:exchanges_ignored",
+                 exchange_name,
+                 exchange_ignore_reason)
 
     cycle_time = time.time() - start_time
     sleep_time = max(0, API_QUERY_FREQUENCY['default'] - cycle_time)
