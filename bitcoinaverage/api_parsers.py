@@ -12,7 +12,7 @@ import socket
 
 from bitcoinaverage.bitcoinchart_fallback import getData
 from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD, CURRENCY_LIST
-from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException, NoVolumeException
+from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException
 from bitcoinaverage.helpers import write_log
 from bitcoinaverage.server import BITCOIN_DE_API_KEY
 
@@ -120,6 +120,7 @@ def callAPI(exchange_name):
                                  str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
                               'WARNING')
                 else:
+                    # Ignore
                     last_call_datetime = datetime.datetime.fromtimestamp(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
                     today = datetime.datetime.now()
                     if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] == 0:
@@ -144,7 +145,7 @@ def callAPI(exchange_name):
                     exception = CacheTimeoutException()
                     exception.strerror = exception.strerror % datetime_str
                     raise exception
-        except (NoApiException, NoVolumeException, CacheTimeoutException) as error:
+        except (NoApiException, CacheTimeoutException) as error:
             exchange_ignore_reason = error.strerror
 
     if result is not None:
