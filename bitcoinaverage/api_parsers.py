@@ -65,6 +65,8 @@ def callAPI(exchange_name):
         if API_QUERY_CACHE[exchange_name]['last_call'] + exchange_query_frequency > current_timestamp:
             # Retrieve data from cache
             result = API_QUERY_CACHE[exchange_name]['result']
+            if result is not None:
+                result['data_source'] = 'cache'
             exchange_ignore_reason = API_QUERY_CACHE[exchange_name]['ignore_reason']
 
         else:
