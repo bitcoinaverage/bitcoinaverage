@@ -457,6 +457,11 @@ API_USERS = [
           'image': 'https://lh5.ggpht.com/9pS6MKseKSl06PwreFjZ4RnVuf0wCy_pBk00ZpHWXKNzY4N0otRm6OFMXjiCCpPJDGHq=w300',
           'href': 'https://play.google.com/store/apps/details?id=com.mycelium.wallet'
      },
+     {
+	  'name': 'Localbitcoins',
+	  'image': 'https://bitcoinaverage.com/img/localbitcoins.png',
+	  'href': 'https://localbitcoins.com/',
+     },
     {
             'name': 'Hive Wallet',
             'image': 'https://bitcoinaverage.com/img/hive.png',
