@@ -1156,10 +1156,10 @@ def _coinfloorApiCall(ticker_url, *args, **kwargs):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
-        result = {}
-        result['GBP'] = {'ask': Decimal(ticker[0]['ask']/100.0).quantize(DEC_PLACES),
-                         'bid': Decimal(ticker[0]['bid']/100.0).quantize(DEC_PLACES),
-                         'last': Decimal(ticker[0]['last']/100.0).quantize(DEC_PLACES),
-                         'volume': Decimal(ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
-                         }
-        return result
+    result = {}
+    result['GBP'] = {'ask': Decimal(ticker[0]['ask']/100.0).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker[0]['bid']/100.0).quantize(DEC_PLACES),
+                     'last': Decimal(ticker[0]['last']/100.0).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+                     }
+    return result
