@@ -1157,9 +1157,9 @@ def _coinfloorApiCall(ticker_url, *args, **kwargs):
         ticker = json.loads(response)
 
         result = {}
-        result['GBP'] = {'ask': Decimal(ticker[0]['ask']/100).quantize(DEC_PLACES),
-                         'bid': Decimal(ticker[0]['bid']/100).quantize(DEC_PLACES),
-                         'last': Decimal(ticker[0]['last']/100).quantize(DEC_PLACES),
-                         'volume': Decimal(ticker[0]['volume']/10000).quantize(DEC_PLACES),
+        result['GBP'] = {'ask': Decimal(ticker[0]['ask']/100.0).quantize(DEC_PLACES),
+                         'bid': Decimal(ticker[0]['bid']/100.0).quantize(DEC_PLACES),
+                         'last': Decimal(ticker[0]['last']/100.0).quantize(DEC_PLACES),
+                         'volume': Decimal(ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
                          }
         return result
