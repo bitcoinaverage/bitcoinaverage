@@ -463,6 +463,11 @@ API_USERS = [
 	  'href': 'https://localbitcoins.com/',
      },
     {
+	  'name': 'Lamassu',
+	  'image': 'https://bitcoinaverage.com/img/lamassu.png',
+	  'href': 'https://lamassu.is/',
+    },
+    {
             'name': 'Hive Wallet',
             'image': 'https://bitcoinaverage.com/img/hive.png',
             'href': 'https://www.hivewallet.com',
