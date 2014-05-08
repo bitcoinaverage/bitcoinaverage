@@ -4,9 +4,11 @@ import sys
 import time
 from email import utils
 
+import redis
+import simplejson as json
+
 import bitcoinaverage as ba
 import bitcoinaverage.server
-from bitcoinaverage import api_parsers
 from bitcoinaverage import api_custom_writers
 from bitcoinaverage.config import API_QUERY_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
@@ -18,13 +20,23 @@ helpers.write_fiat_rates_config()
 last_fiat_exchange_rate_update = time.time()
 helpers.write_api_index_files()
 
+red = redis.StrictRedis(host="localhost", port=6379, db=0)
+
 while True:
     if last_fiat_exchange_rate_update < int(time.time())-FIAT_RATES_QUERY_FREQUENCY:
         helpers.write_fiat_rates_config()
 
     start_time = int(time.time())
 
-    exchanges_rates, exchanges_ignored = ba.api_parsers.callAll()
+    if not red.exists("ba:exchanges"):
+        time.sleep(API_QUERY_FREQUENCY['default'])
+        continue
+    exchanges_rates = []
+    exchanges_ignored = {}
+    for exchange_data in red.hgetall("ba:exchanges").itervalues():
+        exchanges_rates.append(json.loads(exchange_data, use_decimal=True))
+    for exchange_name, exchange_ignore_reason in red.hgetall("ba:exchanges_ignored").iteritems():
+        exchanges_ignored[exchange_name] = exchange_ignore_reason
 
     total_currency_volumes, total_currency_volumes_ask, total_currency_volumes_bid = calculateTotalVolumes(exchanges_rates)
     calculated_volumes = calculateRelativeVolumes(exchanges_rates,
