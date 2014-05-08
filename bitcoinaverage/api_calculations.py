@@ -11,12 +11,15 @@ from eventlet.green import httplib
 from eventlet.timeout import Timeout
 import socket
 import json
+import logging
 
 import bitcoinaverage as ba
 import bitcoinaverage.server as server
 from bitcoinaverage.config import DEC_PLACES, API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, CURRENCY_LIST, API_FILES, EXCHANGE_LIST, INDEX_DOCUMENT_NAME
 from bitcoinaverage.exceptions import CallTimeoutException
 import bitcoinaverage.helpers as helpers
+
+logger = logging.getLogger(__name__)
 
 
 def get24hAverage(currency_code):
@@ -443,6 +446,5 @@ def writeAPIFiles(api_path, timestamp, calculated_average_rates_formatted, calcu
 
     except IOError as error:
         error_text = '%s, %s ' % (sys.exc_info()[0], error)
-        helpers.write_log(error_text)
-        print 'ERROR: %s ' % (error_text)
+        logger.error(error_text)
         raise error

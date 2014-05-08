@@ -1,4 +1,4 @@
-import email
+import email.utils
 import json
 import time
 from decimal import Decimal, DivisionByZero
@@ -9,13 +9,14 @@ from eventlet.green import httplib
 from eventlet.timeout import Timeout
 import simplejson
 import socket
+import logging
 
 from bitcoinaverage.bitcoinchart_fallback import getData
 from bitcoinaverage.config import DEC_PLACES, API_QUERY_FREQUENCY, API_IGNORE_TIMEOUT, API_REQUEST_HEADERS, EXCHANGE_LIST, API_CALL_TIMEOUT_THRESHOLD, CURRENCY_LIST
 from bitcoinaverage.exceptions import CallTimeoutException, NoApiException, CacheTimeoutException, NoVolumeException
-from bitcoinaverage.helpers import write_log
 from bitcoinaverage.server import BITCOIN_DE_API_KEY
 
+logger = logging.getLogger(__name__)
 
 API_QUERY_CACHE = {} #holds last calls to APIs and last received data between calls
 
@@ -117,12 +118,12 @@ def callAPI(exchange_name):
                 if (API_QUERY_CACHE[exchange_name]['last_call_timestamp']+API_IGNORE_TIMEOUT > current_timestamp):
                     result = API_QUERY_CACHE[exchange_name]['result']
                     result['data_source'] = 'cache'
-                    write_log('%s call failed, %s, %s fails in a row, using cache, cache age %ss'
-                              % (exchange_name,
-                                 type(error).__name__,
-                                 str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                 str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']) ),
-                              'WARNING')
+                    log_message = "{0} call failed, {1}, {2} fails in a row, using cache, cache age {3}s".format(
+                        exchange_name,
+                        type(error).__name__,
+                        str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']))
+                    logger.warning(log_message)
                 else:
                     last_call_datetime = datetime.datetime.fromtimestamp(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
                     today = datetime.datetime.now()
@@ -138,13 +139,12 @@ def callAPI(exchange_name):
                     if API_QUERY_CACHE[exchange_name]['last_call_timestamp'] != 0:
                         last_call_strdate = email.utils.formatdate(API_QUERY_CACHE[exchange_name]['last_call_timestamp'])
 
-                    log_message = ('%s call failed, %s, %s fails in a row, last successful call - %s, cache timeout, exchange ignored'
-                                   % (exchange_name,
-                                      type(error).__name__,
-                                      str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                                      last_call_strdate,
-                                        ))
-                    write_log(log_message, 'ERROR')
+                    log_message = "{0} call failed, {1}, {2} fails in a row, last successful call - {3}, cache timeout, exchange ignored".format(
+                        exchange_name,
+                        type(error).__name__,
+                        str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
+                        last_call_strdate)
+                    logger.error(log_message)
                     exception = CacheTimeoutException()
                     exception.strerror = exception.strerror % datetime_str
                     raise exception
@@ -186,8 +186,7 @@ def _campbxApiCall(api_ticker_url, api_trades_url, *args, **kwargs):
             if trade['date'] > last_24h_timestamp:
                 volume = volume + Decimal(trade['amount'])
         except TypeError as error:
-            print 'CampBX error'
-            print trade
+            logger.error("CampBX error: {0}".format(trade))
             raise error
 
     result = {}

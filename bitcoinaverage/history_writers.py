@@ -4,11 +4,14 @@ import datetime
 from decimal import Decimal
 import csv
 import json
+import logging
 
 import bitcoinaverage as ba
 import bitcoinaverage.server
 from bitcoinaverage import helpers
 from bitcoinaverage.config import DEC_PLACES, CURRENCY_LIST
+
+logger = logging.getLogger(__name__)
 
 
 def write_24h_csv(currency_code, current_data, current_timestamp):
@@ -36,6 +39,8 @@ def write_24h_csv(currency_code, current_data, current_timestamp):
     if len(current_24h_sliding_data) > 0:
         last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_24h_sliding_data[len(current_24h_sliding_data)-1][0],
                                                            '%Y-%m-%d %H:%M:%S').timetuple())
+    else:
+        logger.warning("{0} is empty".format(current_24h_sliding_file_path))
 
     if current_timestamp - last_recorded_timestamp > 60*2:
         #-60 added because otherwise the timestamp will point to the the beginning of next period and not current
@@ -68,6 +73,8 @@ def write_24h_global_average_csv(fiat_data_all , currency_data_all, currency_cod
     if len(current_24h_sliding_data) > 0:
         last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_24h_sliding_data[len(current_24h_sliding_data)-1]['datetime'],
                                                           '%Y-%m-%d %H:%M:%S').timetuple())
+    else:
+        logger.warning("{0} is empty".format(current_24h_sliding_file_path))
 
     if current_timestamp - last_recorded_timestamp > 60*2:
         new_row = {}
@@ -131,6 +138,8 @@ def write_24h_global_average_short_csv(currency_data_all, currency_code,  curren
     if len(current_24h_sliding_data) > 0:
         last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_24h_sliding_data[len(current_24h_sliding_data)-1][0],
                                                           '%Y-%m-%d %H:%M:%S').timetuple())
+    else:
+        logger.warning("{0} is empty".format(current_24h_sliding_file_path))
 
     if current_timestamp - last_recorded_timestamp > 60*2:
         row = []
@@ -175,6 +184,8 @@ def write_1mon_csv(currency_code, current_timestamp):
     if len(current_1mon_sliding_data) > 0:
         last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_1mon_sliding_data[len(current_1mon_sliding_data)-1][0],
                                                            '%Y-%m-%d %H:%M:%S').timetuple())
+    else:
+        logger.warning("{0} is empty".format(current_1h_1mon_sliding_file_path))
 
     if int(time.time())-last_recorded_timestamp > 3600*2:
         current_24h_sliding_file_path = os.path.join(ba.server.HISTORY_DOCUMENT_ROOT, currency_code, 'per_minute_24h_sliding_window.csv')
@@ -314,6 +325,8 @@ def write_volumes_csv(currency_code, currency_data, current_timestamp):
         except ValueError:
             last_recorded_timestamp = time.mktime(datetime.datetime.strptime(current_volumes_data[len(current_volumes_data)-1][0],
                                                                '%Y-%m-%d').timetuple())
+    else:
+        logger.warning("{0} is empty".format(current_volumes_file_path))
 
     timestamp_delta = datetime.timedelta(seconds=(current_timestamp - last_recorded_timestamp))
     if timestamp_delta >= datetime.timedelta(days=2):
