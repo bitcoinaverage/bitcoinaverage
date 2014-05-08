@@ -1,11 +1,6 @@
 #!/usr/bin/python2.7
 import os
 import sys
-
-include_path = os.path.abspath(os.path.join(__file__, os.pardir))
-sys.path.insert(0, include_path)
-
-
 import time
 from email import utils
 
@@ -16,17 +11,6 @@ from bitcoinaverage import api_custom_writers
 from bitcoinaverage.config import API_QUERY_FREQUENCY, FIAT_RATES_QUERY_FREQUENCY
 import bitcoinaverage.helpers as helpers
 from bitcoinaverage.api_calculations import calculateTotalVolumes, calculateRelativeVolumes, calculateAverageRates, formatDataForAPI, writeAPIFiles, calculateAllGlobalAverages
-
-if ba.server.PROJECT_PATH == '':
-    ba.server.PROJECT_PATH = include_path
-if ba.server.LOG_PATH == '':
-    ba.server.LOG_PATH = os.path.join(ba.server.PROJECT_PATH, 'runtime', 'app.log')
-if ba.server.API_DOCUMENT_ROOT == '':
-    ba.server.API_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'api')
-if ba.server.WWW_DOCUMENT_ROOT == '':
-    ba.server.WWW_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'www')
-if ba.server.HISTORY_DOCUMENT_ROOT == '':
-    ba.server.HISTORY_DOCUMENT_ROOT = os.path.join(ba.server.PROJECT_PATH, 'api', 'history')
 
 helpers.write_log('script started', 'LOG')
 helpers.write_js_config()
