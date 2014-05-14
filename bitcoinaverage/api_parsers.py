@@ -143,7 +143,7 @@ def callAPI(exchange_name):
                         exchange_name,
                         type(error).__name__,
                         str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                        last_call_strdate)
+                        last_successful_call_strdate)
                     logger.error(log_message)
 
                     last_successful_call_datetime = datetime.datetime.fromtimestamp(last_successful_call)
