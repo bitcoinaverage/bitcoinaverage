@@ -32,6 +32,7 @@ while True:
     start_time = int(time.time())
 
     if not red.exists("ba:exchanges"):
+        logger.warning("database is empty")
         time.sleep(API_WRITE_FREQUENCY)
         continue
     exchanges_rates = []

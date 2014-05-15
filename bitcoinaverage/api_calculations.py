@@ -60,6 +60,10 @@ def get24hAverage(currency_code):
     return average_price
 
 def get24hGlobalAverage(currency_code):
+
+    if currency_code not in CURRENCY_LIST:
+        return DEC_PLACES
+
     history_currency_API_24h_path = '%s%s/per_minute_24h_global_average_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
 
     try:
@@ -72,7 +76,10 @@ def get24hGlobalAverage(currency_code):
             simplejson.decoder.JSONDecodeError,
             urllib2.URLError,
             httplib.BadStatusLine,
-            CallTimeoutException):
+            CallTimeoutException) as error:
+        logger.error("can not get history data from {0}: {1}".format(
+            history_currency_API_24h_path,
+            str(error)))
         return DEC_PLACES
 
     csvfile = StringIO.StringIO(csv_result)
