@@ -15,6 +15,7 @@ from bitcoinaverage.config import HISTORY_QUERY_FREQUENCY, CURRENCY_LIST
 from bitcoinaverage import history_writers
 
 logger = logging.getLogger("history_daemon")
+logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger.info("script started")
 
 
