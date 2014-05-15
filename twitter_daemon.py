@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
 import time
+import logging
 
 import twitter
 import simplejson
@@ -9,6 +9,7 @@ import requests
 
 from bitcoinaverage.twitter_config import api
 
+logger = logging.getLogger("twitter_daemon")
 
 URL = "https://api.bitcoinaverage.com/ticker/global/USD"
 
@@ -49,7 +50,7 @@ while True:
     try:
         result = api.PostUpdate(status)
     except twitter.TwitterError, err:
-        print("Twitter error: {0}".format(str(err)))
+        logger.error("Twitter error: {0}".format(str(err)))
     else:
         oldprice = newprice
 

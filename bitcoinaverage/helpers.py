@@ -11,7 +11,6 @@ from eventlet.green import urllib2
 from eventlet.timeout import Timeout
 from eventlet.green import httplib
 import simplejson
-import subprocess
 import hashlib
 import gzip
 
@@ -19,17 +18,6 @@ import bitcoinaverage as ba
 from bitcoinaverage.config import API_CALL_TIMEOUT_THRESHOLD, API_REQUEST_HEADERS, API_FILES
 from bitcoinaverage.server import OPENEXCHANGERATES_APP_ID
 from bitcoinaverage.exceptions import CallTimeoutException
-
-
-def write_log(log_string, message_type='ERROR'):
-    global ba
-
-    timestamp = utils.formatdate(time.time())
-
-    with open(ba.server.LOG_PATH, 'a') as log_file:
-        log_string = '%s; %s: %s' % (timestamp, message_type, log_string)
-        print log_string
-        log_file.write(log_string+'\n')
 
 
 def write_js_config():
