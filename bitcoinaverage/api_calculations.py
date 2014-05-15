@@ -23,7 +23,8 @@ logger = logging.getLogger(__name__)
 
 
 def get24hAverage(currency_code):
-    history_currency_API_24h_path = '%s%s/per_minute_24h_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+    history_currency_API_24h_path = "{0}/per_minute_24h_sliding_window.csv".format(
+        getattr(server, "API_INDEX_URL_HISTORY_OVERRIDE", server.API_INDEX_URL_HISTORY) + currency_code)
 
     try:
         with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
@@ -35,7 +36,10 @@ def get24hAverage(currency_code):
             simplejson.decoder.JSONDecodeError,
             urllib2.URLError,
             httplib.BadStatusLine,
-            CallTimeoutException):
+            CallTimeoutException) as error:
+        logger.error("can not get history data from {0}: {1}".format(
+            history_currency_API_24h_path,
+            str(error)))
         return DEC_PLACES
 
     csvfile = StringIO.StringIO(csv_result)
@@ -64,7 +68,8 @@ def get24hGlobalAverage(currency_code):
     if currency_code not in CURRENCY_LIST:
         return DEC_PLACES
 
-    history_currency_API_24h_path = '%s%s/per_minute_24h_global_average_sliding_window.csv' % (ba.server.API_INDEX_URL_HISTORY, currency_code)
+    history_currency_API_24h_path = "{0}/per_minute_24h_global_average_sliding_window.csv".format(
+        getattr(server, "API_INDEX_URL_HISTORY_OVERRIDE", server.API_INDEX_URL_HISTORY) + currency_code)
 
     try:
         with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
