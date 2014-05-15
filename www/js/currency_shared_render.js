@@ -88,16 +88,22 @@ var isCurrencyBelongsToPrimaryList = function(currencyCode) {
 
 }
 
-var renderSecondsSinceUpdate = function(){
-    var seconds = Math.round(new Date().getTime()/1000) - Math.round(Date.parse(API_data['timestamp'])/1000) - timeGap;
-    if (seconds < 120) {
-        var timeString = seconds+' sec';
-    } else if (seconds < 120*60) {
-        var timeString = Math.round(seconds/60)+' min';
+var renderUpdateTime = function () {
+    var sinceUpdate = Math.round(new Date().getTime() / 1000) - Math.round(Date.parse(API_data['timestamp']) / 1000) - timeGap;
+    if (sinceUpdate < 120) {
+        sinceUpdate = sinceUpdate + ' sec';
+    } else if (sinceUpdate < 120 * 60) {
+        sinceUpdate = Math.round(sinceUpdate / 60) + ' min';
     } else {
-        var timeString = Math.round(seconds/60/60)+' hours';
+        sinceUpdate = Math.round(sinceUpdate / 3600) + ' hours';
     }
-    $('#legend-update-time-ago').html(timeString);
+    sinceUpdate = 'data ' + sinceUpdate + ' old';
+    var lastUpdate = moment(API_data['timestamp']);
+    if (moment(lastUpdate).startOf('day').diff(moment().startOf('day')) === 0) {
+        $('#legend-update-time').html('last update: ' + lastUpdate.format('HH:mm:ss'));
+    } else {
+        $('#legend-update-time').html('last update: ' + lastUpdate.format('YYYY-MM-DD HH:mm:ss'));
+    }
 };
 
 var currencyNavigationClick = function(event){

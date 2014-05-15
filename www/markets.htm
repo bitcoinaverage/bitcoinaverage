@@ -70,6 +70,7 @@
     <script type="text/javascript" src="js/lib/lightbox.js"></script>
     <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="js/lib/jquery.formatCurrency.js"></script>
+    <script type="text/javascript" src="js/lib/moment.min.js"></script>
 
 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
@@ -210,18 +211,15 @@
                         <div>
                             <span id="legend-last"></span>
                         </div>
-
                         <div>
-                            <small>
-                                data <span id="legend-update-time-ago"></span> old
-                            </small>
+                            <small id="legend-update-time"></small>
                         </div>
                     </div>
                 </th>
             </tr>
         </thead>
         <tbody>
-    	    <tr style=" border-top:0px solid #fff; background:none; height:10px;">
+            <tr style=" border-top:0px solid #fff; background:none; height:10px;">
                 <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 <td class="" width="34%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>
                 <td class="" width="33%" style="padding:0px; background:none; border-bottom:2px solid #DDDDDD; border-top:none;"></td>

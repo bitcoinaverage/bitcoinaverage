@@ -128,7 +128,7 @@ var renderAll = function(result, status, responseObj){
     API_data = result;
 
     renderCurrencyTabs();
-    renderSecondsSinceUpdate();
+    renderUpdateTime();
 
     if (!firstRenderDone) {
         var currencyCode = window.location.hash;
@@ -422,7 +422,7 @@ $(function(){
     callAPI();
 
     setInterval(callAPI, config.refreshRate);
-    setInterval(renderSecondsSinceUpdate, 5000);
+    setInterval(renderUpdateTime, 5000);
 
     renderMajorCurrencies();
     renderSecondaryCurrencies();

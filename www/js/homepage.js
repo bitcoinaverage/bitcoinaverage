@@ -52,7 +52,7 @@ var renderAll = function(result, status, responseObj){
 
     API_data = result;
 
-    renderSecondsSinceUpdate();
+    renderUpdateTime();
 
     if (!firstRenderDone) {
         var currencyCode = window.location.hash;
@@ -463,7 +463,7 @@ $(function(){
     callAPI();
 
     setInterval(callAPI, config.refreshRate);
-    setInterval(renderSecondsSinceUpdate, 5000);
+    setInterval(renderUpdateTime, 5000);
 
     $('#legend-block').click(function(event){
         event.stopPropagation();
