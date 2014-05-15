@@ -129,7 +129,7 @@ def callAPI(exchange_name):
                         exchange_name,
                         type(error).__name__,
                         str(API_QUERY_CACHE[exchange_name]['call_fail_count']),
-                        str(current_timestamp-API_QUERY_CACHE[exchange_name]['last_call_timestamp']))
+                        str(current_timestamp - API_QUERY_CACHE[exchange_name]['last_successful_call']))
                     logger.warning(log_message)
                 else:
                     # Ignore
