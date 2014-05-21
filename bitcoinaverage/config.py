@@ -54,7 +54,7 @@ if hasattr(bitcoinaverage.server, 'DEFAULT_API_QUERY_FREQUENCY_OVERRIDE'):
 API_IGNORE_TIMEOUT = 1800
 
 # API daemon write frequency
-API_WRITE_FREQUENCY = 60
+API_WRITE_FREQUENCY = 10
 
 DEC_PLACES = Decimal('0.00')
 
