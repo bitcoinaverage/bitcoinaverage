@@ -36,6 +36,7 @@ def write_js_config():
     config_data['majorCurrencies'] = ba.config.FRONTEND_MAJOR_CURRENCIES
     config_data['scaleDivizer'] = ba.config.FRONTEND_SCALE_DIVIZER
     config_data['precision'] = ba.config.FRONTEND_PRECISION
+    config_data['chartType'] = ba.config.FRONTEND_CHART_TYPE
     config_data['exchangesColors'] = {ex: exchange_color(ex) for ex in ba.config.EXCHANGE_LIST.keys()}
     config_data['currencySymbols'] = ba.config.FRONTEND_CURRENCY_SYMBOLS
     config_data['apiUsers'] = ba.config.API_USERS

@@ -134,7 +134,7 @@ var buttons = [{
     {
     type: 'all',
     count: 1,
-    text: 'All	'
+    text: 'All  '
     }];
 
 var parseDate = function(dateString){
@@ -355,6 +355,9 @@ var commonChartOptions = {
         type: 'datetime',
         ordinal: false
     },
+    yAxis: {
+        type: config.chartType,
+    },
     exporting: {
         buttons: {
             contextButton: {
@@ -382,7 +385,7 @@ var renderPriceChart = function(currencyCode){
     var dataMonthlyURL = config.apiHistoryIndexUrl + currencyCode + '/per_hour_monthly_sliding_window.csv';
 
     var data = [];
-	ajaxCall(data24hURL, function(csv){
+    ajaxCall(data24hURL, function(csv){
         $.each(csv.split('\n'), function(i, line){
             var values = line.split(',');
             if (i == 0 || line.length == 0 || values.length != 2){
@@ -579,13 +582,13 @@ var renderVolumeChart = function(currencyCode){
 var getRandomArbitrary = function(min, max) {
   return Math.random() * (max - min) + min;
 }
-    </script>
+</script>
 
-    <style>
+<style>
     .responsive-banner-home { width: 320px; height: 50px; }
     @media(min-width: 500px) { .responsive-banner-home { width: 468px; height: 60px; } }
     @media(min-width: 800px) { .responsive-banner-home { width: 728px; height: 90px; } }
-    </style>
+</style>
 
 </head>
 <body>

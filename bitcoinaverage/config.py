@@ -11,6 +11,7 @@ FRONTEND_LEGEND_SLOTS = 20
 FRONTEND_MAJOR_CURRENCIES = 5
 FRONTEND_SCALE_DIVIZER = 1  # 1000 for millibitcoins
 FRONTEND_PRECISION = 1  # Digits after dot; 3 for millibitcoins
+FRONTEND_CHART_TYPE = 'linear'
 
 API_FILES = {'TICKER_PATH': 'ticker/',
              'GLOBAL_TICKER_PATH': 'ticker/global/',
