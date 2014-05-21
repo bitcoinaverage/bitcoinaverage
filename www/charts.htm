@@ -308,6 +308,18 @@ $(function(){
         renderVolumeChart(currencyCode);
     });
 
+    $('.chart-type-switch').text(config.chartType);
+    $('.chart-type-switch').on('click', function () {
+        if (config.chartType == 'linear') {
+            config.chartType = 'logarithmic';
+        } else {
+            config.chartType = 'linear';
+        }
+        $(this).text(config.chartType);
+        commonChartOptions.yAxis.type = config.chartType;
+        $('#' + chartMode + '-chart').click();
+    });
+
     $('body').show();
 
     $('#'+chartMode+'-chart').click();
@@ -356,7 +368,7 @@ var commonChartOptions = {
         ordinal: false
     },
     yAxis: {
-        type: config.chartType,
+        type: config.chartType
     },
     exporting: {
         buttons: {
@@ -585,6 +597,13 @@ var getRandomArbitrary = function(min, max) {
 </script>
 
 <style>
+    .chart-controls {
+        margin-top: 10px;
+        text-align: center;
+    }
+    .chart-type-switch {
+        cursor: pointer;
+    }
     .responsive-banner-home { width: 320px; height: 50px; }
     @media(min-width: 500px) { .responsive-banner-home { width: 468px; height: 60px; } }
     @media(min-width: 800px) { .responsive-banner-home { width: 728px; height: 90px; } }
@@ -625,6 +644,7 @@ var getRandomArbitrary = function(min, max) {
             <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
         </div>
         <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0 v-offset4"></div>
+        <div class="col-md-8 col-md-offset-2 chart-controls">axis type: <a class="chart-type-switch"></a></div>
         <div class="row text-center">
             <div style="font-weight: bold;">
                 <ul class="pagination">
