@@ -10,7 +10,7 @@ CHARTS_DUMMY_PAGES_SUBFOLDER_NAME = 'charts'
 FRONTEND_LEGEND_SLOTS = 20
 FRONTEND_MAJOR_CURRENCIES = 5
 FRONTEND_SCALE_DIVIZER = 1  # 1000 for millibitcoins
-FRONTEND_PRECISION = 1  # Digits after dot; 3 for millibitcoins
+FRONTEND_PRECISION = 2  # Digits after dot; 3 for millibitcoins
 FRONTEND_CHART_TYPE = 'linear'
 
 API_FILES = {'TICKER_PATH': 'ticker/',
@@ -175,11 +175,11 @@ EXCHANGE_LIST = {
                                   'URL': 'https://btcchina.com/',
                                   'display_name': 'BTC China',
                                     },
-                    'fxbtc':  {'ticker_url': 'https://data.fxbtc.com/api?op=query_ticker&symbol=btc_cny',
-                               'trades_url_template': 'https://data.fxbtc.com/api?op=query_history_trades&symbol=btc_cny&since={timestamp_sec}000000', #zeroes for millisec
-                               'URL': 'https://fxbtc.com/',
-                               'display_name': 'FXBTC',
-                                    },
+#                    'fxbtc':  {'ticker_url': 'https://data.fxbtc.com/api?op=query_ticker&symbol=btc_cny',
+#                               'trades_url_template': 'https://data.fxbtc.com/api?op=query_history_trades&symbol=btc_cny&since={timestamp_sec}000000', #zeroes for millisec
+#                               'URL': 'https://fxbtc.com/',
+#                               'display_name': 'FXBTC',
+#                                    },
                     'bter':  {'ticker_url': 'https://bter.com/api/1/ticker/btc_cny',
                               'URL': 'https://bter.com/',
                               'display_name': 'Bter',
@@ -194,10 +194,10 @@ EXCHANGE_LIST = {
                               'URL': 'https://bitx.co.za/',
                               'display_name': 'BitX',
                                   },
-                    'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
-                                  'URL': 'https://justcoin.com/',
-                                  'display_name': 'Justcoin',
-                                    },
+#                    'justcoin':  {'ticker_url': 'https://justcoin.com/api/v1/markets',
+#                                  'URL': 'https://justcoin.com/',
+#                                  'display_name': 'Justcoin',
+#                                    },
                     'kraken':  {'usd_ticker_url': 'https://api.kraken.com/0/public/Ticker?pair=XBTUSD',
                                 'eur_ticker_url': 'https://api.kraken.com/0/public/Ticker?pair=XBTEUR',
                                 'URL': 'https://kraken.com/',
