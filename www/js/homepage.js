@@ -134,7 +134,7 @@ var renderMarketsData = function(apiData, currency){
 
         var volumePercent = item['global_averages']['volume_percent'].toFixed(2);
         var pad = "00000";
-        volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
+        // volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
 
         var lastPrice = item['averages']['last'].toFixed(config.precision);
         var crossPrice = (fiatCurrencies[currency]['rate'] / fiatCurrencies[currencyCode]['rate']) * lastPrice;
