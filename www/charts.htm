@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Charts | BitcoinAverage Price Index</title>
+    <title>Charts | BitcoinAverage - Bitcoin Price Index</title>
 
     <meta name="description" content="BitcoinAverage Price Index Charts provide detailed bitcoin price and trading volume history.">
     <meta charset="UTF-8">
@@ -53,8 +53,6 @@
     <meta name="twitter:creator:id" content="1620115130"/>
     <meta name="twitter:image" content="https://bitcoinaverage.com/img/logo_full.png"/>
 
-
-
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
     <link href="css/font-awesome.3.2.1/font-awesome.css" rel="stylesheet" type="text/css" />
@@ -66,7 +64,6 @@
     <script type="text/javascript" src="js/lib/highstock.js"></script>
     <script type="text/javascript" src="js/lib/highstock.exporting.js"></script>
     <script type="text/javascript" src="js/lib/lightbox.js"></script>
-
 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
 
@@ -95,7 +92,7 @@ var currencyCode;
 var chartMode;
 var rangesArray = { '1h' : 0 , '12h' : 1 , '1d' : 2 , '1w' : 3 , '1m' : 4 , '3m' : 5 , '1y' : 6 , 'all' : 7 };
 var defaultPriceSelectedRangeValue = rangesArray['1d']
-var defaultVolumesSelectedRangeValue = rangesArray['1w']
+var defaultVolumesSelectedRangeValue = rangesArray['1m']
 // these buttons are common for both charts
 var buttons = [{
     type: 'minute',
@@ -391,7 +388,7 @@ var commonChartOptions = {
 };
 
 var renderPriceChart = function(currencyCode){
-    document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
+    document.title = currencyCode+' charts | BitcoinAverage - bitcoin price index';
 
     var data24hURL = config.apiHistoryIndexUrl + currencyCode + '/per_minute_24h_sliding_window.csv';
     var dataAllTimeURL = config.apiHistoryIndexUrl + currencyCode + '/per_day_all_time_history.csv';
@@ -496,7 +493,7 @@ var renderPriceChart = function(currencyCode){
 }
 
 var renderVolumeChart = function(currencyCode){
-    document.title = currencyCode+' charts | BitcoinAverage - independent bitcoin price';
+    document.title = currencyCode+' charts | BitcoinAverage - bitcoin price index';
 
     var dataVolumesURL = config.apiHistoryIndexUrl + currencyCode + '/volumes.csv';
     var dataSeries = [];
