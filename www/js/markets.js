@@ -1,4 +1,5 @@
 var legendSlots = 20;
+var legendSlots = 20;
 var majorCurrencies = 6; //first X currencies in the config are major
 
 var API_data = {};
@@ -279,10 +280,7 @@ var renderLegend = function(currencyCode){
     $('#legend-api-down-note').hide();
     for(var slotNum in exchangeArray){
         exchangeArray[slotNum]['display_name'] = exchangeArray[slotNum]['display_name'].replace(/\*+/, '')
-        if (exchangeArray[slotNum]['source'] == 'cache') {
-            exchangeArray[slotNum]['display_name'] += '**';
-            $('#legend-api-down-note').show();
-        } else if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
+        if (exchangeArray[slotNum]['source'] == 'bitcoincharts') {
             exchangeArray[slotNum]['display_name'] += '*';
             $('#legend-api-unavailable-note').show();
         }
