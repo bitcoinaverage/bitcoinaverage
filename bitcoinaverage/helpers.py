@@ -188,17 +188,17 @@ def write_sitemap():
             urlset.append(_sitemap_append_url('%s%s/%s' % (ba.server.FRONTEND_INDEX_URL,
                                                         ba.config.CURRENCY_DUMMY_PAGES_SUBFOLDER_NAME,
                                                         filename), today, 'hourly', '1.0'))
-    charts_static_seo_pages_dir = os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME)
-    index = 0
-    for dirname, dirnames, filenames in os.walk(currency_static_seo_pages_dir):
-        for filename in filenames:
-            urlset.append(_sitemap_append_url('%s%s/%s' % (ba.server.FRONTEND_INDEX_URL,
-                                                        ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME,
-                                                        filename), today, 'hourly', '0.8'))
-            index = index + 1
-            if index == ba.config.FRONTEND_MAJOR_CURRENCIES:
-                break
-        break
+    #charts_static_seo_pages_dir = os.path.join(ba.server.WWW_DOCUMENT_ROOT, ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME)
+    #index = 0
+    #for dirname, dirnames, filenames in os.walk(currency_static_seo_pages_dir):
+    #    for filename in filenames:
+    #        urlset.append(_sitemap_append_url('%s%s/%s' % (ba.server.FRONTEND_INDEX_URL,
+    #                                                    ba.config.CHARTS_DUMMY_PAGES_SUBFOLDER_NAME,
+    #                                                    filename), today, 'hourly', '0.8'))
+    #        index = index + 1
+    #        if index == ba.config.FRONTEND_MAJOR_CURRENCIES:
+    #            break
+    #    break
 
     xml_sitemap_contents = '<?xml version="1.0" encoding="UTF-8"?>\n' + etree.tostring(urlset, pretty_print=True)
     with open(os.path.join(ba.server.WWW_DOCUMENT_ROOT, 'sitemap.xml'), 'w') as sitemap_file:
