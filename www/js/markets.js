@@ -287,7 +287,7 @@ var renderLegend = function(currencyCode){
 
         var volumePercent = exchangeArray[slotNum]['volume_percent'].toFixed(2);
         var pad = "00000";
-        volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
+        // volumePercent = pad.substring(0, pad.length - volumePercent.length) + volumePercent;
 
         var exchange_link = $('<a>', {
             href: exchangeArray[slotNum]['display_URL'],
