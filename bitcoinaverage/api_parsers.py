@@ -1155,6 +1155,7 @@ def _btcxchangeApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
+
 def _bitsoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -1168,6 +1169,7 @@ def _bitsoApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
+
 def _coinfloorApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -1178,5 +1180,19 @@ def _coinfloorApiCall(ticker_url, *args, **kwargs):
                      'bid': Decimal(ticker[0]['bid']/100.0).quantize(DEC_PLACES),
                      'last': Decimal(ticker[0]['last']/100.0).quantize(DEC_PLACES),
                      'volume': Decimal(ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+                     }
+    return result
+
+
+def _bitcoin_co_idApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['IDR'] = {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['ticker']['vol_btc']).quantize(DEC_PLACES),
                      }
     return result

@@ -78,6 +78,7 @@ CURRENCY_LIST = (
     'HKD',
     'RON',
     'MXN',
+    'IDR',
     #'JPY',
     #'CZK',
     #'DKK',
@@ -106,6 +107,7 @@ FRONTEND_CURRENCY_SYMBOLS = {
     'HKD': ['0024'],
     'RON': [],
     'MXN': [],
+    'IDR': [],
     #'JPY': ['00a5'],
 }
 
@@ -144,7 +146,7 @@ EXCHANGE_LIST = {
                    'display_name': 'BitBargain',
                    },
     'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
-                      'URL': 'https://localbitcoins.com/',
+                      'URL': 'https://localbitcoins.com/?ch=22yh',
                       'display_name': 'LocalBitcoins',
                       },
     'cryptotrade': {'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
@@ -306,12 +308,16 @@ EXCHANGE_LIST = {
                    },
     'bitso': {'ticker_url': 'https://api.bitso.com/public/info',
               'URL': 'https://bitso.com/',
-              'display_name': 'bitso',
+              'display_name': 'Bitso',
               },
     'coinfloor': {'ticker_url': 'https://webapi.coinfloor.co.uk:8443/XBT/GBP/ticker',
                   'URL': 'https://coinfloor.co.uk/',
                   'display_name': 'Coinfloor',
                   },
+    'bitcoin_co_id': {'ticker_url': 'https://vip.bitcoin.co.id/api/btc_idr/ticker',
+                      'URL': 'https://bitcoin.co.id/',
+                      'display_name': 'Bitcoin.co.in',
+                      },
 
 
     #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
@@ -453,7 +459,7 @@ API_USERS = [
     {
         'name': 'Localbitcoins',
         'image': 'https://bitcoinaverage.com/img/localbitcoins.png',
-        'href': 'https://localbitcoins.com/',
+        'href': 'https://localbitcoins.com/?ch=22yh',
     },
     {
         'name': 'KryptoKit',
