@@ -93,6 +93,8 @@ var chartMode;
 var rangesArray = { '1h' : 0 , '12h' : 1 , '1d' : 2 , '1w' : 3 , '1m' : 4 , '3m' : 5 , '1y' : 6 , 'all' : 7 };
 var defaultPriceSelectedRangeValue = rangesArray['1d']
 var defaultVolumesSelectedRangeValue = rangesArray['1m']
+var currentPriceSelectedRangeValue = defaultPriceSelectedRangeValue;
+var currentVolumesSelectedRangeValue = defaultVolumesSelectedRangeValue;
 // these buttons are common for both charts
 var buttons = [{
     type: 'minute',
@@ -282,8 +284,16 @@ $(function(){
     $('#averages-chart').click(function(event){
         event.stopPropagation();
         event.preventDefault();
+        if ($('#volumes-chart').hasClass('active')) 
+            currentVolumesSelectedRangeValue = selectedRangeValue;
+	
         $('#averages-chart').addClass('active');
         $('#volumes-chart').removeClass('active');
+
+        $("#axis-type").show();
+
+        selectedRangeValue = currentPriceSelectedRangeValue;
+        selectedRange = searchKeyByVal(selectedRangeValue);
 
         chartMode = 'averages';
         var currentLocation = document.location.href;
@@ -295,9 +305,23 @@ $(function(){
     $('#volumes-chart').click(function(event){
         event.stopPropagation();
         event.preventDefault();
+        if ($('#averages-chart').hasClass('active')) 
+            currentPriceSelectedRangeValue = selectedRangeValue;
+
         $('#averages-chart').removeClass('active');
         $('#volumes-chart').addClass('active');
 
+        $("#axis-type").hide();
+
+        selectedRangeValue = currentVolumesSelectedRangeValue;
+        selectedRange = searchKeyByVal(selectedRangeValue);
+
+        if (config.chartType == 'logarithmic') {
+            config.chartType = 'linear';
+            $('.chart-type-switch').text(config.chartType);
+            commonChartOptions.yAxis.type = config.chartType;
+        }
+ 
         chartMode = 'volumes';
         var currentLocation = document.location.href;
         var newLocation = getNewLocation(currentLocation);
@@ -543,6 +567,15 @@ var renderVolumeChart = function(currencyCode){
         });
 
         $('#big-chart').highcharts('StockChart', $.extend(true, {
+            chart : {
+                events: {
+                    redraw: function(event) {
+                        setTimeout( 'setNewRangeUrl()', 1000);
+                        countPercent();
+                    }
+                }
+            },
+
             title: { text: currencyCode+' daily volumes history'},
             rangeSelector: {
                 buttons: buttons,
@@ -642,7 +675,7 @@ var getRandomArbitrary = function(min, max) {
             <ul class="currency-navigation secondary-currency-switch col-md-4 col-sm-6 col-xs-8"></ul>
         </div>
         <div id="big-chart" class="col-lg-10 col-lg-offset-1 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0 v-offset4"></div>
-        <div class="col-md-8 col-md-offset-2 chart-controls">axis type: <a class="chart-type-switch"></a></div>
+        <div id="axis-type" class="col-md-8 col-md-offset-2 chart-controls">axis type: <a class="chart-type-switch"></a></div>
         <div class="row text-center">
             <div style="font-weight: bold;">
                 <ul class="pagination">
