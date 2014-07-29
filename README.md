@@ -6,7 +6,7 @@ run instructions
 ---------------------
 - download sources
 - copy server.py.dist into server.py in the same folder and setup paths to folders (see comments in the file).
-- install dependencies with `sudo apt-get install python-dev libevent-dev libxml2-dev python-pip libxslt1-dev redis-server && sudo apt-get build-dep libxml2 && sudo pip install SQLObject eventlet requests libxslt-dev lxml redis`
+- install dependencies with `sudo apt-get install python-dev libevent-dev libxml2-dev python-pip libxslt1-dev redis-server && sudo apt-get build-dep libxml2 && sudo pip install SQLObject eventlet requests libxslt-dev lxml redis simplejson`
 - to run the api_daemon.py you need python 2.7, no db or other storage engines needed. Install any other missing dependencies if needed.
 
 system structure
