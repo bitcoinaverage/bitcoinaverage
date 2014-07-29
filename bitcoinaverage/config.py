@@ -486,4 +486,9 @@ API_USERS = [
         'image': 'https://bitcoinaverage.com/img/kitco.jpg',
         'href': 'http://www.kitco.com/finance/bitcoin/',
     },
+    {
+        'name': 'Bitalo Wallet',
+        'image': 'https://lh3.ggpht.com/ozbDf5tW9k-42ICHkjmrKg65MnEVZjIuLx62Pddzr6YPnUaeWZjCDlq9fWn1ssTZ3DQ=w300-rw',
+        'href': 'https://play.google.com/store/apps/details?id=org.hofmannt.bwallet',
+    },
 ]
