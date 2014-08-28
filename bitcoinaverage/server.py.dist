@@ -16,3 +16,6 @@ API_INDEX_URL_HISTORY = '' #should be not empty, default - 'https://api.bitcoina
 FONT_PATH = ''
 OPENEXCHANGERATES_APP_ID = '' # for openexchangerates.org integration, for fiat exchange rates
 BITCOIN_DE_API_KEY = '' # for bitcoin.de integration
+
+MONITOR_RECIPIENT_EMAIL = '' # email to receive monitor notices
+MONITOR_SENDER_EMAIL = '' # email that the monitor will be sent from
