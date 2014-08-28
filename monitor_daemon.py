@@ -10,15 +10,10 @@ import datetime
 import csv
 import StringIO
 from email import Utils
+from bitcoinaverage.server import MONITOR_RECIPIENT_EMAIL, MONITOR_SENDER_EMAIL
 
 ticker_URL = "http://api.bitcoinaverage.com/ticker/USD"
 history_URL = "http://api.bitcoinaverage.com/history/USD/per_minute_24h_sliding_window.csv"
-
-# email address to use in the to field
-recipient = 'bitcoinaverage@gmail.com'
-
-# email address to use in the from field
-sender = 'bitcoinaverage@gmail.com'
 
 # email body
 message = '''To: %s
@@ -88,11 +83,11 @@ def history_time_diff():
 
 def send_email(daemon):
     try:
-        ssmtp = subprocess.Popen(('/usr/sbin/ssmtp', recipient), stdin=subprocess.PIPE)
+        ssmtp = subprocess.Popen(('/usr/sbin/ssmtp', MONITOR_RECIPIENT_EMAIL), stdin=subprocess.PIPE)
     except OSError:
         print 'could not start sSMTP, email not sent'
     # pass the email contents to sSMTP over stdin
-    ssmtp.communicate(message % (recipient, sender, daemon, daemon))
+    ssmtp.communicate(message % (MONITOR_RECIPIENT_EMAIL, MONITOR_SENDER_EMAIL, daemon, daemon))
     # wait until the email has finished sending
     ssmtp.wait()
 
