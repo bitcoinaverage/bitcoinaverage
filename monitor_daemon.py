@@ -11,9 +11,10 @@ import csv
 import StringIO
 from email import Utils
 from bitcoinaverage.server import MONITOR_RECIPIENT_EMAIL, MONITOR_SENDER_EMAIL
+from bitcoinaverage.server import API_INDEX_URL, API_INDEX_URL_HISTORY
 
-ticker_URL = "http://api.bitcoinaverage.com/ticker/USD"
-history_URL = "http://api.bitcoinaverage.com/history/USD/per_minute_24h_sliding_window.csv"
+ticker_URL = API_INDEX_URL + "ticker/USD"
+history_URL = API_INDEX_URL_HISTORY + "USD/per_minute_24h_sliding_window.csv"
 
 # email body
 message = '''To: %s

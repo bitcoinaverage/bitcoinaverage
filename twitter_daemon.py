@@ -7,11 +7,12 @@ import twitter
 import simplejson
 import requests
 
+from bitcoinaverage.server import API_INDEX_URL
 from bitcoinaverage.twitter_config import api
 
 logger = logging.getLogger("twitter_daemon")
 
-URL = "https://api.bitcoinaverage.com/ticker/global/USD"
+URL = API_INDEX_URL + "ticker/global/USD"
 
 change = 0
 oldprice = 0
