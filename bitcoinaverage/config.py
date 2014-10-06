@@ -310,7 +310,7 @@ EXCHANGE_LIST = {
               'URL': 'https://bitso.com/',
               'display_name': 'Bitso',
               },
-    'coinfloor': {'ticker_url': 'https://webapi.coinfloor.co.uk:8443/XBT/GBP/ticker',
+    'coinfloor': {'ticker_url': 'http://webapi.coinfloor.co.uk:8089/XBT/GBP/ticker',
                   'URL': 'https://coinfloor.co.uk/',
                   'display_name': 'Coinfloor',
                   },
