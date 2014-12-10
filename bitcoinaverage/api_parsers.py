@@ -23,7 +23,7 @@ API_QUERY_CACHE = {} #holds last calls to APIs and last received data between ca
 
 def callAll():
     """
-    Concurrently collects data from exchanges 
+    Concurrently collects data from exchanges
     """
     pool = eventlet.GreenPool()
 
