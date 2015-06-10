@@ -594,6 +594,19 @@ def _okcoinApiCall(ticker_url, *args, **kwargs):
                     },
             }
 
+def foxbitApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['BRL'] = {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
+    }
+    return result
+
 
 def _mercadoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
