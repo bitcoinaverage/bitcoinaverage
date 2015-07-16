@@ -624,14 +624,21 @@ def _mercadoApiCall(ticker_url, *args, **kwargs):
 def _bitxApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
-        ticker = json.loads(response)
+        tickers = json.loads(response)
 
-    return {'ZAR': {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
-                    'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
-                    'last': Decimal(ticker['last_trade']).quantize(DEC_PLACES),
-                    'volume': Decimal(ticker['rolling_24_hour_volume']).quantize(DEC_PLACES),
-                    },
-            }
+    result = {}
+    for ticker in tickers['tickers']:
+        pair = ticker['pair']
+        if len(pair) != 6 or pair[:3] != 'XBT':
+            continue
+        currency = pair[3:]
+        result[currency] = {'ask': Decimal(ticker['ask']).quantize(DEC_PLACES),
+                            'bid': Decimal(ticker['bid']).quantize(DEC_PLACES),
+                            'last': Decimal(ticker['last_trade']).quantize(DEC_PLACES),
+                            'volume': Decimal(ticker['rolling_24_hour_volume']).quantize(DEC_PLACES),
+                        }
+
+    return result
 
 
 def _btctradeApiCall(ticker_url, *args, **kwargs):
