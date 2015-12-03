@@ -1,3 +1,11 @@
+03/12/2015
+
+This version of the reposisitory will remain "as-is" going forward. Many changes have been made privately to this version. The repository is working but will no longer be maintained.
+
+Version 2 is now under development and this will be developed privately, look out for upcoming updates at https://bitcoinaverage.com !
+
+
+------------------------------------------------------------------------------------
 *this is the source of BitcoinAverage.com website*
 
 *licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License*
