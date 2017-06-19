@@ -78,6 +78,7 @@ CURRENCY_LIST = (
     'HKD',
     'RON',
     'MXN',
+    'IDR',
     #'JPY',
     #'CZK',
     #'DKK',
@@ -106,6 +107,7 @@ FRONTEND_CURRENCY_SYMBOLS = {
     'HKD': ['0024'],
     'RON': [],
     'MXN': [],
+    'IDR': [],
     #'JPY': ['00a5'],
 }
 
@@ -144,7 +146,7 @@ EXCHANGE_LIST = {
                    'display_name': 'BitBargain',
                    },
     'localbitcoins': {'api_url': 'https://localbitcoins.com/bitcoinaverage/ticker-all-currencies/',
-                      'URL': 'https://localbitcoins.com/',
+                      'URL': 'https://localbitcoins.com/?ch=22yh',
                       'display_name': 'LocalBitcoins',
                       },
     'cryptotrade': {'usd_api_url': 'https://crypto-trade.com/api/1/ticker/btc_usd',
@@ -180,6 +182,10 @@ EXCHANGE_LIST = {
              'URL': 'https://bter.com/',
              'display_name': 'Bter',
              },
+    'foxbit': {'api_ticker_url': 'https://api.blinktrade.com/api/v1/BRL/ticker?crypto_currency=BTC',
+                 'display_name': 'FoxBit',
+                 'URL': 'https://foxbit.exchange/',
+                 },
     'mercado':  {'ticker_url': 'https://www.mercadobitcoin.com.br/api/ticker/',
                  'display_name': 'Mercado Bitcoin',
                  'URL': 'https://www.mercadobitcoin.com.br/',
@@ -306,12 +312,19 @@ EXCHANGE_LIST = {
                    },
     'bitso': {'ticker_url': 'https://api.bitso.com/public/info',
               'URL': 'https://bitso.com/',
-              'display_name': 'bitso',
+              'display_name': 'Bitso',
               },
-    'coinfloor': {'ticker_url': 'https://webapi.coinfloor.co.uk:8443/XBT/GBP/ticker',
+    'coinfloor': {'gbp_ticker_url': 'http://webapi.coinfloor.co.uk:8089/XBT/GBP/ticker',
+                  'eur_ticker_url': 'http://webapi.coinfloor.co.uk:8089/XBT/EUR/ticker',
+                  'usd_ticker_url': 'http://webapi.coinfloor.co.uk:8089/XBT/USD/ticker',
+                  'pln_ticker_url': 'http://webapi.coinfloor.co.uk:8089/XBT/PLN/ticker',
                   'URL': 'https://coinfloor.co.uk/',
                   'display_name': 'Coinfloor',
                   },
+    'bitcoin_co_id': {'ticker_url': 'https://vip.bitcoin.co.id/api/btc_idr/ticker',
+                      'URL': 'https://bitcoin.co.id/',
+                      'display_name': 'Bitcoin.co.in',
+                      },
 
 
     #EXCHANGES RECEIVED THROUGH BITCOINCHARTS
@@ -453,7 +466,7 @@ API_USERS = [
     {
         'name': 'Localbitcoins',
         'image': 'https://bitcoinaverage.com/img/localbitcoins.png',
-        'href': 'https://localbitcoins.com/',
+        'href': 'https://localbitcoins.com/?ch=22yh',
     },
     {
         'name': 'KryptoKit',
@@ -479,5 +492,10 @@ API_USERS = [
         'name': 'Kitco',
         'image': 'https://bitcoinaverage.com/img/kitco.jpg',
         'href': 'http://www.kitco.com/finance/bitcoin/',
+    },
+    {
+        'name': 'Bitalo Wallet',
+        'image': 'https://lh3.ggpht.com/ozbDf5tW9k-42ICHkjmrKg65MnEVZjIuLx62Pddzr6YPnUaeWZjCDlq9fWn1ssTZ3DQ=w300-rw',
+        'href': 'https://play.google.com/store/apps/details?id=org.hofmannt.bwallet',
     },
 ]

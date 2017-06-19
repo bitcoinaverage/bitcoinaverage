@@ -1,3 +1,23 @@
+
+19/06/2017
+----------
+
+Version 2 of our API has now been running for around 9 months, as such Version 1 of the API has been switched off.
+
+**All bitcoin, ethereum, litecoin, ripple price data is freely available.**
+
+* Documentation: https://apiv2.bitcoinaverage.com/
+* Register: https://bitcoinaverage.com/en/register
+* Homepage: https://bitcoinaverage.com/
+
+------------------------------------------------------------------------------------
+
+03/12/2015
+----------
+
+This version of the reposisitory will remain "as-is" going forward. Many changes have been made privately to this version. The repository is working but will no longer be maintained.
+
+------------------------------------------------------------------------------------
 *this is the source of BitcoinAverage.com website*
 
 *licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License*
@@ -6,7 +26,7 @@ run instructions
 ---------------------
 - download sources
 - copy server.py.dist into server.py in the same folder and setup paths to folders (see comments in the file).
-- install dependencies with `sudo apt-get install python-dev libevent-dev libxml2-dev python-pip libxslt1-dev && sudo apt-get build-dep libxml2 && sudo pip install SQLObject eventlet requests libxslt-dev lxml`
+- install dependencies with `sudo apt-get install python-dev libevent-dev libxml2-dev python-pip libxslt1-dev redis-server && sudo apt-get build-dep libxml2 && sudo pip install SQLObject eventlet requests libxslt-dev lxml redis simplejson`
 - to run the api_daemon.py you need python 2.7, no db or other storage engines needed. Install any other missing dependencies if needed.
 
 system structure

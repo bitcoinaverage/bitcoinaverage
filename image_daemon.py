@@ -5,7 +5,7 @@ import sys
 import requests
 import time
 from PIL import Image, ImageDraw, ImageFont
-from bitcoinaverage.server import FONT_PATH, WWW_DOCUMENT_ROOT
+from bitcoinaverage.server import FONT_PATH, WWW_DOCUMENT_ROOT, API_INDEX_URL
 try:
     from cStringIO import StringIO
 except:
@@ -13,7 +13,7 @@ except:
 
 
 # config locations
-base_url = "https://api.bitcoinaverage.com/ticker/"
+base_url = API_INDEX_URL + "ticker/"
 base = WWW_DOCUMENT_ROOT + "/img/" + "logo_xsmall.png"
 font_loc = FONT_PATH + "arialbd.ttf"
 

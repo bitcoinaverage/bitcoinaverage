@@ -23,7 +23,7 @@ API_QUERY_CACHE = {} #holds last calls to APIs and last received data between ca
 
 def callAll():
     """
-    Concurrently collects data from exchanges 
+    Concurrently collects data from exchanges
     """
     pool = eventlet.GreenPool()
 
@@ -594,6 +594,19 @@ def _okcoinApiCall(ticker_url, *args, **kwargs):
                     },
             }
 
+def foxbitApiCall(ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
+        ticker = json.loads(response)
+
+    result = {}
+    result['BRL'] = {'ask': Decimal(ticker['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['vol']).quantize(DEC_PLACES),
+    }
+    return result
+
 
 def _mercadoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
@@ -1155,6 +1168,7 @@ def _btcxchangeApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
+
 def _bitsoApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
@@ -1168,15 +1182,54 @@ def _bitsoApiCall(ticker_url, *args, **kwargs):
                      }
     return result
 
-def _coinfloorApiCall(ticker_url, *args, **kwargs):
+
+def _coinfloorApiCall(gbp_ticker_url, eur_ticker_url, usd_ticker_url, pln_ticker_url, *args, **kwargs):
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=gbp_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        gbp_ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=eur_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        eur_ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=usd_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        usd_ticker = json.loads(response)
+    with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
+        response = urllib2.urlopen(urllib2.Request(url=pln_ticker_url, headers=API_REQUEST_HEADERS)).read()
+        pln_ticker = json.loads(response)
+
+    result = {}
+    result['GBP'] = {'ask': Decimal(gbp_ticker[0]['ask']/100.0).quantize(DEC_PLACES),
+                     'bid': Decimal(gbp_ticker[0]['bid']/100.0).quantize(DEC_PLACES),
+                     'last': Decimal(gbp_ticker[0]['last']/100.0).quantize(DEC_PLACES),
+                     'volume': Decimal(gbp_ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+                     }
+    result['EUR'] = {'ask': Decimal(eur_ticker[0]['ask']/100.0).quantize(DEC_PLACES),
+                     'bid': Decimal(eur_ticker[0]['bid']/100.0).quantize(DEC_PLACES),
+                     'last': Decimal(eur_ticker[0]['last']/100.0).quantize(DEC_PLACES),
+                     'volume': Decimal(eur_ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+                     }
+    result['USD'] = {'ask': Decimal(usd_ticker[0]['ask']/100.0).quantize(DEC_PLACES),
+                     'bid': Decimal(usd_ticker[0]['bid']/100.0).quantize(DEC_PLACES),
+                     'last': Decimal(usd_ticker[0]['last']/100.0).quantize(DEC_PLACES),
+                     'volume': Decimal(usd_ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+                     }
+    result['PLN'] = {'ask': Decimal(pln_ticker[0]['ask']/100.0).quantize(DEC_PLACES),
+                     'bid': Decimal(pln_ticker[0]['bid']/100.0).quantize(DEC_PLACES),
+                     'last': Decimal(pln_ticker[0]['last']/100.0).quantize(DEC_PLACES),
+                     'volume': Decimal(pln_ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+                     }
+    return result
+
+
+def _bitcoin_co_idApiCall(ticker_url, *args, **kwargs):
     with Timeout(API_CALL_TIMEOUT_THRESHOLD, CallTimeoutException):
         response = urllib2.urlopen(urllib2.Request(url=ticker_url, headers=API_REQUEST_HEADERS)).read()
         ticker = json.loads(response)
 
     result = {}
-    result['GBP'] = {'ask': Decimal(ticker[0]['ask']/100.0).quantize(DEC_PLACES),
-                     'bid': Decimal(ticker[0]['bid']/100.0).quantize(DEC_PLACES),
-                     'last': Decimal(ticker[0]['last']/100.0).quantize(DEC_PLACES),
-                     'volume': Decimal(ticker[0]['volume']/10000.0).quantize(DEC_PLACES),
+    result['IDR'] = {'ask': Decimal(ticker['ticker']['sell']).quantize(DEC_PLACES),
+                     'bid': Decimal(ticker['ticker']['buy']).quantize(DEC_PLACES),
+                     'last': Decimal(ticker['ticker']['last']).quantize(DEC_PLACES),
+                     'volume': Decimal(ticker['ticker']['vol_btc']).quantize(DEC_PLACES),
                      }
     return result
