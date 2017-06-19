@@ -4,11 +4,11 @@
 
 Version 2 of our API has now been running for around 9 months, as such Version 1 of the API has been switched off.
 
-All bitcoin, ethereum, litecoin, ripple price data is freely available.
+*All bitcoin, ethereum, litecoin, ripple price data is freely available.*
 
-Documentation: https://apiv2.bitcoinaverage.com/
-Register: https://bitcoinaverage.com/en/register
-Homepage: https://bitcoinaverage.com/
+* Documentation: https://apiv2.bitcoinaverage.com/
+* Register: https://bitcoinaverage.com/en/register
+* Homepage: https://bitcoinaverage.com/
 
 ------------------------------------------------------------------------------------
 
