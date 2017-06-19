@@ -1,8 +1,17 @@
 03/12/2015
 
 This version of the reposisitory will remain "as-is" going forward. Many changes have been made privately to this version. The repository is working but will no longer be maintained.
+------------------------------------------------------------------------------------
 
-Version 2 is now under development and this will be developed privately, look out for upcoming updates at https://bitcoinaverage.com !
+19/06/2017
+
+Version 2 of our API has now been running for around 9 months, as such Version 1 of the API has been switched off.
+
+All bitcoin, ethereum, litecoin, ripple price data is freely available.
+
+Documentation: https://apiv2.bitcoinaverage.com/
+Register: https://bitcoinaverage.com/en/register
+Homepage: https://bitcoinaverage.com/
 
 
 ------------------------------------------------------------------------------------
